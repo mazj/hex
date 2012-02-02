@@ -3,6 +3,7 @@
 %}
 
 %%
+#keywords
 bool{1}                 printf("keyword: %s", yytext);
 break{1}                printf("keyword: %s", yytext);
 char{1}                 printf("keyword: %s", yytext);
@@ -48,26 +49,29 @@ void[*]{1}              printf("keyword: %s", yytext);
 volatile{1}             printf("keyword: %s", yytext);
 while{1}                printf("keyword: %s", yytext);
 
+#identifiers
 [_a-zA-Z][_a-zA-Z0-9]*    printf("identifier: %s", yytext);
 
+#inline
+#comment
 \/\/.*                     printf("inline comment: %s", yytext);
 
 
+#multiline
+"/*"(.|\n)*"*/"     printf("multiline comment:\n %s", yytext);
 
-(\/"*"){1}.*("*"\/){1}      printf("multiline comment: %s", yytext);
-
+#operators
 ">"{1,2}                    printf("operator: %s", yytext);
 "<"{1,2}                    printf("operator: %s", yytext);
 "="{1,2}                    printf("operator: %s", yytext);
 "+"{1,2}                    printf("operator: %s", yytext);
 "-"{1,2}                    printf("operator: %s", yytext);
-"*"                        printf("operator: %s", yytext);
-\/                  printf("operator: %s", yytext);
-"%"                        printf("operator: %s", yytext);
+"*"{1}                    printf("operator: %s", yytext);
+\/{1}                 printf("operator: %s", yytext);
+"%"{1}                      printf("operator: %s", yytext);
 
+#dot
 "."               printf("dot: %s\n", yytext);
-
-
 
 %%
 
