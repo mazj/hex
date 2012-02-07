@@ -4,98 +4,120 @@
 
 %%
 #keywords
-bool                 printf("keyword: %s\n", yytext);
-break                printf("keyword: %s\n", yytext);
-catch                printf("keyword: %s\n", yytext);
-char                 printf("keyword: %s\n", yytext);
-class                printf("keyword: %s\n", yytext);
-const                printf("keyword: %s\n", yytext);
-continue             printf("keyword: %s\n", yytext);
-coroutine            printf("keyword: %s\n", yytext);
-def                  printf("keyword: %s\n", yytext);
-default              printf("keyword: %s\n", yytext);
-define               printf("keyword: %s\n", yytext);
-do                   printf("keyword: %s\n", yytext);
-double               printf("keyword: %s\n", yytext);
-else                 printf("keyword: %s\n", yytext);
-enum                 printf("keyword: %s\n", yytext);
-ext                  printf("keyword: %s\n", yytext);
-float                printf("keyword: %s\n", yytext);
-for                  printf("keyword: %s\n", yytext);
-goto                 printf("keyword: %s\n", yytext);
-if                   printf("keyword: %s\n", yytext);
-in               printf("keyword: %s\n", yytext);
-include              printf("keyword: %s\n", yytext);
-int                  printf("keyword: %s\n", yytext);
-interface          printf("keyword: %s\n", yytext);
-long          printf("keyword: %s\n", yytext);
-"long long" printf("keyword: %s\n", yytext);
-new                 printf("keyword: %s\n", yytext);
-pass                 printf("keyword: %s\n", yytext);
-private              printf("keyword: %s\n", yytext);
-protected            printf("keyword: %s\n", yytext);
-public               printf("keyword: %s\n", yytext);
-readonly               printf("keyword: %s\n", yytext);
-register             printf("keyword: %s\n", yytext);
-return               printf("keyword: %s\n", yytext);
-select               printf("keyword: %s\n", yytext);
-short                printf("keyword: %s\n", yytext);
-signed               printf("keyword: %s\n", yytext);
-sizeof               printf("keyword: %s\n", yytext);
-static               printf("keyword: %s\n", yytext);
-string               printf("keyword: %s\n", yytext);
-struct               printf("keyword: %s\n", yytext);
-switch               printf("keyword: %s\n", yytext);
-task                 printf("keyword: %s\n", yytext);
-this                 printf("keyword: %s\n", yytext);
-throw                printf("keyword: %s\n", yytext);
-try                  printf("keyword: %s\n", yytext);
-typeof               printf("keyword: %s\n", yytext);
-unsigned" "(char|short|int|long|"long long") printf("keyword: %s\n", yytext);
-virtual              printf("keyword: %s\n", yytext);
-void                 printf("keyword: %s\n", yytext);
-void"*"{1}              printf("keyword: %s\n", yytext);
-volatile             printf("keyword: %s\n", yytext);
-where                printf("keyword: %s\n", yytext);
-while                printf("keyword: %s\n", yytext);
-finally              printf("keyword: %s\n", yytext);
+base                 printf("[KEYWORD]\n%s\n\n", yytext);
+bool                 printf("[KEYWORD]\n%s\n\n", yytext);
+break                printf("[KEYWORD]\n%s\n\n", yytext);
+catch                printf("[KEYWORD]\n%s\n\n", yytext);
+char                 printf("[KEYWORD]\n%s\n\n", yytext);
+class                printf("[KEYWORD]\n%s\n\n", yytext);
+const                printf("[KEYWORD]\n%s\n\n", yytext);
+continue             printf("[KEYWORD]\n%s\n\n", yytext);
+coroutine            printf("[KEYWORD]\n%s\n\n", yytext);
+def                  printf("[KEYWORD]\n%s\n\n", yytext);
+default              printf("[KEYWORD]\n%s\n\n", yytext);
+define               printf("[KEYWORD]\n%s\n\n", yytext);
+do                   printf("[KEYWORD]\n%s\n\n", yytext);
+double               printf("[KEYWORD]\n%s\n\n", yytext);
+else                 printf("[KEYWORD]\n%s\n\n", yytext);
+enum                 printf("[KEYWORD]\n%s\n\n", yytext);
+ext                  printf("[KEYWORD]\n%s\n\n", yytext);
+float                printf("[KEYWORD]\n%s\n\n", yytext);
+for                  printf("[KEYWORD]\n%s\n\n", yytext);
+goto                 printf("[KEYWORD]\n%s\n\n", yytext);
+if                   printf("[KEYWORD]\n%s\n\n", yytext);
+in                   printf("[KEYWORD]\n%s\n\n", yytext);
+include              printf("[KEYWORD]\n%s\n\n", yytext);
+int                  printf("[KEYWORD]\n%s\n\n", yytext);
+interface            printf("[KEYWORD]\n%s\n\n", yytext);
+long                 printf("[KEYWORD]\n%s\n\n", yytext);
+"long long"          printf("[KEYWORD]\n%s\n\n", yytext);
+new                  printf("[KEYWORD]\n%s\n\n", yytext);
+pass                 printf("[KEYWORD]\n%s\n\n", yytext);
+private              printf("[KEYWORD]\n%s\n\n", yytext);
+protected            printf("[KEYWORD]\n%s\n\n", yytext);
+public               printf("[KEYWORD]\n%s\n\n", yytext);
+readonly             printf("[KEYWORD]\n%s\n\n", yytext);
+register             printf("[KEYWORD]\n%s\n\n", yytext);
+return               printf("[KEYWORD]\n%s\n\n", yytext);
+select               printf("[KEYWORD]\n%s\n\n", yytext);
+short                printf("[KEYWORD]\n%s\n\n", yytext);
+signed               printf("[KEYWORD]\n%s\n\n", yytext);
+sizeof               printf("[KEYWORD]\n%s\n\n", yytext);
+static               printf("[KEYWORD]\n%s\n\n", yytext);
+string               printf("[KEYWORD]\n%s\n\n", yytext);
+struct               printf("[KEYWORD]\n%s\n\n", yytext);
+switch               printf("[KEYWORD]\n%s\n\n", yytext);
+task                 printf("[KEYWORD]\n%s\n\n", yytext);
+this                 printf("[KEYWORD]\n%s\n\n", yytext);
+throw                printf("[KEYWORD]\n%s\n\n", yytext);
+try                  printf("[KEYWORD]\n%s\n\n", yytext);
+typeof               printf("[KEYWORD]\n%s\n\n", yytext);
+unsigned" "(char|short|int|long|"long long") printf("[KEYWORD]\n%s\n\n", yytext);
+virtual              printf("[KEYWORD]\n%s\n\n", yytext);
+void                 printf("[KEYWORD]\n%s\n\n", yytext);
+void"*"{1}           printf("[KEYWORD]\n%s\n\n", yytext);
+volatile             printf("[KEYWORD]\n%s\n\n", yytext);
+where                printf("[KEYWORD]\n%s\n\n", yytext);
+while                printf("[KEYWORD]\n%s\n\n", yytext);
+finally              printf("[KEYWORD]\n%s\n\n", yytext);
 
 #identifiers
-[_a-zA-Z][_a-zA-Z0-9]*    printf("identifier: %s\n", yytext);
+[_a-zA-Z][_a-zA-Z0-9]*    printf("[IDENTIFIER]\n%s\n\n", yytext);
 
 #inline
 #comment
-\/\/.*                     printf("inline comment: %s\n", yytext);
+\/\/.*                     printf("[INLINE COMMENT]\n%s\n\n", yytext);
 
 
 #multiline
-"/*"(.|\n)*"*/"     printf("multiline comment: %s\n", yytext);
+"/*"(.|\n)*"*/"     printf("[MULTILINE COMMENT]\n%s\n\n", yytext);
 
 #operators
-">"{1,2}                    printf("operator: %s\n", yytext);
-"<"{1,2}                    printf("operator: %s\n", yytext);
-"="{1,2}                    printf("operator: %s\n", yytext);
-"+"{1,2}                    printf("operator: %s\n", yytext);
-"-"{1,2}                    printf("operator: %s\n", yytext);
-"*"{1}                    printf("operator: %s\n", yytext);
-\/{1}                 printf("operator: %s\n", yytext);
-"%"{1}                      printf("operator: %s\n", yytext);
+">"{1,2}                    printf("[OPERATOR]\n%s\n\n", yytext);
+"<"{1,2}                    printf("[OPERATOR]\n%s\n\n", yytext);
+"="{1,2}                    printf("[OPERATOR]\n%s\n\n", yytext);
+"+"{1,2}                    printf("[OPERATOR]\n%s\n\n", yytext);
+"-"{1,2}                    printf("[OPERATOR]\n%s\n\n", yytext);
+"*"{1}                      printf("[OPERATOR]\n%s\n\n", yytext);
+\/{1}                       printf("[OPERATOR]\n%s\n\n", yytext);
+"%"{1}                      printf("[OPERATOR]\n%s\n\n", yytext);
 
 #dot
-"."               printf("dot: %s\n", yytext);
+"."               printf("[DOT]\n\n");
+
+#comma
+","             printf("[COMMA]\n\n");
 
 #space
-" "             printf("[SPACE]\n", yytext);
+" "             printf("[SPACE]\n\n");
 
-\b             printf("[BACKSPACE]\n");
-\f             printf("[FORM FEED]\n");
-\n             printf("[CARRIAGE RETURN]\n");
-\t              printf("[TAB]\n");
-\0             printf("[NULL CHARACTER]\n");
+#colon
+":"               printf("[COLON]\n\n");
+
+#left_bracket
+"("               printf("[LEFT BRACKET]\n\n");
+
+#right_brakcet
+")"               printf("[RIGHT BRACKET]\n\n");
+
+#left_square_bracket
+"["               printf("[LEFT SQUARE BRACKET]\n\n");
+
+#right_square_brakcet
+"]"               printf("[RIGHT SQUARE BRACKET]\n\n");
+
+#pond
+"#"              printf("[POND]\n\n");
+
+\b             printf("[BACKSPACE]\n\n");
+\f             printf("[FORM FEED]\n\n");
+\n             printf("[CARRIAGE RETURN]\n\n");
+\t              printf("[TAB]\n\n");
+\0             printf("[NULL CHARACTER]\n\n");
 %%
 
 int main(int argc, char** argv) {
-    if((yyin = fopen("lexer_file", "r")) == 0) {
+    if((yyin = fopen(argv[1], "r")) == 0) {
         exit(1);
     }
     yylex();
