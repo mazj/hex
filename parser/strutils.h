@@ -1,5 +1,7 @@
 /* Helper functions on null-terminated strings. */
 
+#include <stddef.h>
+
 /* Copies the source to the destination.
  * If the destination length is shorter than the source
  * length, then the destination is re-allocated. */

@@ -45,4 +45,5 @@ void* bst_back(const BinaryNode* node) {
 	return (node->right == 0) ? node->value : bst_back(node->right);
 }
 
+
 #endif // BST_H
