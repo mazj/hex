@@ -4,15 +4,7 @@
 
 #define BUF_SIZE 200
 
-char* trim(char * s) {
-	//size_t l = strlen(s);
-	// while(l && isspace(s[l-1])) s[--l] = '\0';
-	// while(*s && isspace(*s)) *s = '\0', ++s;
-	size_t l = strlen(s);
-	while(l > 1 && isspace(s[l-1])) s[--l] = '\0';
-	while(*s && isspace(*s)) *s = '\0',++s;
-	return s;
-}
+
 
 static process_line(char* line) {
 	
