@@ -1,6 +1,6 @@
 /* Binary search tree. */
-#ifndef BST_H
-#define BST_H
+#ifndef _BST_H_
+#define _BST_H_
 
 #include "utils.h"
 
@@ -46,4 +46,5 @@ void* bst_back(const BinaryNode* node) {
 }
 
 
-#endif // BST_H
+
+#endif // _BST_H_
