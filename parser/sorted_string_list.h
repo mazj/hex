@@ -9,18 +9,32 @@
 BinaryNode* stl_insert(BinaryNode* node, const char* value) {
     if(!node) {
         node = (BinaryNode*)malloc(sizeof(BinaryNode));
-        strcpy(node->value, value);
-        return node;
-    }
-    if(!node->value) {
         node->value = malloc(sizeof(strlen(value)));
-        strcpy((char*)(node->value), "ab");
+        strcpy((char*)node->value, value);
         return node;
     }
-    int i = strcmp((char*)(node->value), value);
-    if(i == 0) return node;
-    if(i > 0) return stl_insert(node->left, value);
-    if(i < 0) return stl_insert(node->right, value);
+    else if(!node->value) {
+        node->value = malloc(sizeof(strlen(value)));
+        strcpy((char*)(node->value), value);
+        return node;
+    } else {
+        int i = strcmp((char*)(node->value), value);
+        if(i == 0) return node;
+        if(i > 0) {
+            BinaryNode* n = stl_insert(node->left, value);
+            if(n) {
+                node->left = n;
+                return n;
+            }
+        }
+        if(i < 0) {
+            BinaryNode* n = stl_insert(node->right, value);
+            if(n) {
+                node->right = n;
+                return n;
+            }
+        }
+    }
 }
 
 /* Insert node2 as a child node of node1.

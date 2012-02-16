@@ -10,6 +10,9 @@ typedef struct {
 	void* value;
 } BinaryNode;
 
+#define BST_LEFT(x) (x) ? (BinaryNode*)(x)->left : 0
+#define BST_RIGHT(x) (x) ? (BinaryNode*)(x)->right : 0
+
 BinaryNode* bst_left(BinaryNode* node) {
 	return node ? node->left : 0;
 }

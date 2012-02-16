@@ -126,21 +126,55 @@ int main() {
 	*/
 	BinaryNode* left_node = stl_insert(head, "ab");
 	assert(bst_left(head));
-	// assert(!bst_right(head));
-	// assert(bst_value(head));
-	// assert(!bst_empty(head));
-	// assert(!bst_isleafnode(head));
-	// assert(!bst_isfullnode(head));
-	// assert(bst_size(head) == 2);
-	// assert(bst_height(head) == 1);
-	// assert(strcmp((char*)bst_front(head), (char*)left->value) == 0);
-	// assert(strcmp((char*)bst_back(head), (char*)head->value) == 0);
-	// assert(stl_find(head, head->value) == head);
+	assert(!bst_right(head));
+	assert(bst_value(head));
+	assert(!bst_empty(head));
+	assert(!bst_isleafnode(head));
+	assert(!bst_isfullnode(head));
+	assert(bst_size(head) == 2);
+	assert(bst_height(head) == 1);
+	assert(left_node == (BinaryNode*)head->left);
+	assert(strcmp((char*)bst_front(head), (char*)bst_left(head)->value) == 0);
+	assert(strcmp((char*)bst_back(head), (char*)head->value) == 0);
+	assert(stl_find(head, (char*)head->value) == head);
+	assert(stl_find(head, bst_left(head)->value) == bst_left(head));
 	// assert(!stl_remove(head, 0, ""));
 	i++;
 	printf("TEST[%d]: PASS\n", i);	// TEST 6
 	sleep(1);
 
+	/*
+			(head->v="abc")
+			 /           \
+			/             \
+		 (left->v=ab)   (right->v=ad)
+		  /      \        /     \
+ 		 /        \      /       \
+	    0          0    0         0
+	*/
+	BinaryNode* right = stl_insert(head, "ad");
+	assert(bst_left(head));
+	assert(bst_right(head));
+	assert(bst_value(head));
+	assert(bst_value(bst_left(head)));
+	assert(bst_value(bst_right(head)));
+	assert(!bst_empty(head));
+	assert(!bst_isleafnode(head));
+	assert(bst_isfullnode(head));
+	assert(bst_size(head) == 3);
+	assert(bst_height(head) == 1);
+	assert(left_node == (BinaryNode*)head->left);
+	assert(right == (BinaryNode*)head->right);
+	assert(strcmp((char*)bst_front(head), (char*)bst_left(head)->value) == 0);
+	assert(strcmp((char*)bst_back(head), (char*)bst_right(head)->value) == 0);
+	assert(stl_find(head, (char*)head->value) == head);
+	assert(stl_find(head, bst_left(head)->value) == bst_left(head));
+	assert(stl_find(head, bst_right(head)->value) == bst_right(head));
+	i++;
+	printf("TEST[%d]: PASS\n", i);	// TEST 7
+	sleep(1);
+
+	// End of test.
 	printf("TEST SUCCESSFUL...\n");
 	return 0;
 }
