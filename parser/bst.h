@@ -5,13 +5,29 @@
 #include "utils.h"
 
 typedef struct {
-	void* left;
-	void* right;
+	struct BinaryNode* left;
+	struct BinaryNode* right;
 	void* value;
 } BinaryNode;
 
+BinaryNode* bst_left(BinaryNode* node) {
+	return node ? node->left : 0;
+}
+
+BinaryNode* bst_right(BinaryNode* node) {
+	return node ? node->right : 0;
+}
+
+BinaryNode* bst_create_node() {
+	return (BinaryNode*)malloc(sizeof(BinaryNode));
+}
+
+void* bst_value(BinaryNode* node) {
+	return node ? node->value : 0;
+}
+
 /* Determines if the given node is a leaf node. */
-int bst_isleaf(const BinaryNode* node) {
+int bst_isleafnode(const BinaryNode* node) {
 	return !node || (!node->left && !node->right);
 }
 
@@ -22,7 +38,7 @@ int bst_isfullnode(const BinaryNode* node) {
 
 /* Determines if the given node is empty. */
 int bst_empty(const BinaryNode* node) {
-	return node == 0;
+	return node == 0 || (!node->left && !node->right);
 }
 
 /* Gets the size of the subtree starting with the given node. */
@@ -37,14 +53,14 @@ int bst_height(const BinaryNode* node) {
 
 /* Gets the front of the subtree starting with the give node. */
 void* bst_front(const BinaryNode* node) {
-	return (node->left == 0) ? node->value : bst_front(node->left);
+	if(!node || !node->value) return 0;
+	return (node->left == 0) ? node->value : bst_front(node->left) ? bst_front(node->left) : node->value;
 }
 
 /* Gets the back of the subtree starting with the given node. */
 void* bst_back(const BinaryNode* node) {
-	return (node->right == 0) ? node->value : bst_back(node->right);
+	if(!node || !node->value) return 0;
+	return (node->right == 0) ? node->value : bst_back(node->right) ? bst_back(node->right) : node->value;
 }
-
-
 
 #endif // _BST_H_

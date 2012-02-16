@@ -6,7 +6,7 @@
  * If the destination length is shorter than the source
  * length, then the destination is re-allocated. */
 char* strcpy_hard(char* destination, const char* source) {
-	if(strlen(destination) < strelen(source)) {
+	if(strlen(destination) < strlen(source)) {
 		free(destination);
 		destination = (char*)malloc(strlen(source) * sizeof(char));
 	}
