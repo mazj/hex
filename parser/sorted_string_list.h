@@ -7,22 +7,17 @@
 
 
 BinaryNode* stl_insert(BinaryNode* node, const char* value) {
-    printf("stl_insert\n");
     if(!node) {
-        printf("!!!!");
         node = (BinaryNode*)malloc(sizeof(BinaryNode));
         strcpy(node->value, value);
         return node;
     }
     if(!node->value) {
-        printf("node->value: %s\n", node->value);
-        printf("value: %s\n", value);
+        node->value = malloc(sizeof(strlen(value)));
         strcpy((char*)(node->value), "ab");
-        printf("done...\n");
         return node;
     }
     int i = strcmp((char*)(node->value), value);
-    printf("i: %d\n", i);
     if(i == 0) return node;
     if(i > 0) return stl_insert(node->left, value);
     if(i < 0) return stl_insert(node->right, value);
@@ -39,8 +34,8 @@ BinaryNode* stl_insert_node(BinaryNode* node1, BinaryNode* node2) {
         strcpy_hard((char*)(node1->value), (const char*)(node2->value));
         return node1;
     }
-    if(i < 0) return stl_insert_node(node1->left, node2);
-    if(i > 0) return stl_insert_node(node1->right, node2);
+    if(i > 0) return stl_insert_node(node1->left, node2);
+    if(i < 0) return stl_insert_node(node1->right, node2);
 }
 
 /* Find the specified string value among the given node
@@ -51,8 +46,8 @@ BinaryNode* stl_find(BinaryNode* node, const char* value) {
     if(!node || !node->value) return 0;
 	int i = strcmp((char*)(node->value), value);
 	if(i == 0) return node;
-	if(i < 0) return stl_find(node->left, value);
-	if(i > 0) return stl_find(node->right, value);
+	if(i > 0) return stl_find(node->left, value);
+	if(i < 0) return stl_find(node->right, value);
 }
 
 
