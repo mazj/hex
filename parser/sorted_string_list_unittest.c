@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "sorted_string_list.h"
-#include "assert.h"
-#include "time.h"
+#include "unittest.h"
 
 int main() {
 	int i = 0;
@@ -119,12 +118,13 @@ int main() {
 			(head->v="abc")
 			 /        \
 			/          \
-		 (left->v=ab)   0
+	   (left->v="ab")   0
 		  /      \
 		 /        \
 	    0          0
 	*/
 	BinaryNode* left_node = stl_insert(head, "ab");
+	assert(left == left_node);
 	assert(bst_left(head));
 	assert(!bst_right(head));
 	assert(bst_value(head));
@@ -144,13 +144,13 @@ int main() {
 	sleep(1);
 
 	/*
-			(head->v="abc")
-			 /           \
-			/             \
-		 (left->v=ab)   (right->v=ad)
-		  /      \        /     \
- 		 /        \      /       \
-	    0          0    0         0
+				(head->v="abc")
+				 /           \
+				/             \
+		  (left->v="ab")   (right->v="ad")
+			  /      \        /     \
+	 		 /        \      /       \
+		    0          0    0         0
 	*/
 	BinaryNode* right = stl_insert(head, "ad");
 	assert(bst_left(head));
@@ -172,6 +172,119 @@ int main() {
 	assert(stl_find(head, bst_right(head)->value) == bst_right(head));
 	i++;
 	printf("TEST[%d]: PASS\n", i);	// TEST 7
+	sleep(1);
+
+	/*
+				(head->v="abc")
+				 /           \
+				/             \
+			 (left->v="ab")  (right->v="ad")
+			  /      \          /     \
+	 		 /        \        /       \
+	 	(front->="a")  0      0         0
+	 	   /    \
+	 	  /      \
+	 	 0        0
+	*/
+	BinaryNode* front = stl_insert(left, "a");
+	assert(bst_left(head) == left);
+	assert(bst_left(left) == front);
+	assert(!bst_right(left));
+	assert(bst_value(bst_left(left)));
+	assert(!bst_value(bst_right(left)));
+	assert(bst_value(front));
+	assert(!bst_value(bst_left(front)));
+	assert(!bst_value(bst_right(front)));
+	assert(!bst_empty(left));
+	assert(bst_empty(front));
+	assert(bst_empty(right));
+	assert(!bst_isleafnode(left));
+	assert(bst_isleafnode(front));
+	assert(bst_isleafnode(right));
+	assert(!bst_isfullnode(left));
+	assert(!bst_isfullnode(front));
+	assert(!bst_isfullnode(right));
+	assert(bst_size(head) == 4);
+	assert(bst_size(left) == 2);
+	assert(bst_size(right) == 1);
+	assert(bst_size(front) == 1);
+	assert(bst_height(head) == 2);
+	assert(bst_height(left) == 1);
+	assert(bst_height(right) == 0);
+	assert(bst_height(front) == 0);
+	assert(strcmp((char*)bst_front(head), (char*)bst_left(left)->value) == 0);
+	assert(strcmp((char*)bst_back(head), (char*)bst_right(head)->value) == 0);
+	assert(stl_find(head, (char*)head->value) == head);
+	assert(stl_find(head, bst_left(head)->value) == bst_left(head));
+	assert(stl_find(head, bst_right(head)->value) == bst_right(head));
+	assert(stl_find(left, bst_value(left)) == left);
+	assert(stl_find(left, bst_value(left)) == bst_left(head));
+	assert(stl_find(left, bst_value(front)) == bst_left(left));
+	i++;
+	printf("TEST[%d]: PASS\n", i);	// TEST 8
+	sleep(1);
+
+	/*
+				(head->v="abc")
+				 /           \
+				/             \
+			 (left->v="ab")  (right->v="ad")
+			  /      \          /     \
+	 		 /        \        /       \
+	 	(front->="a")  0      0     (back->="b")
+	 	   /    \                      /    \
+	 	  /      \                    /      \
+	 	 0        0                  0        0
+	*/
+	BinaryNode* back = stl_insert(head, "b");
+	assert(bst_right(head) == right);
+	assert(bst_right(right) == back);
+	assert(!bst_left(right));
+	assert(bst_value(bst_left(left)));
+	assert(!bst_value(bst_right(left)));
+	assert(!bst_value(bst_left(right)));
+	assert(bst_value(bst_right(right)));
+	assert(bst_value(front));
+	assert(bst_value(back));
+	assert(!bst_value(bst_left(front)));
+	assert(!bst_value(bst_right(front)));
+	assert(!bst_value(bst_left(back)));
+	assert(!bst_value(bst_right(back)));
+	assert(!bst_empty(left));
+	assert(bst_empty(front));
+	assert(!bst_empty(right));
+	assert(bst_empty(back));
+	assert(!bst_isleafnode(left));
+	assert(bst_isleafnode(front));
+	assert(!bst_isleafnode(right));
+	assert(bst_isleafnode(back));
+	assert(!bst_isfullnode(left));
+	assert(!bst_isfullnode(front));
+	assert(!bst_isfullnode(right));
+	assert(!bst_isfullnode(back));
+	assert(bst_size(head) == 5);
+	assert(bst_size(left) == 2);
+	assert(bst_size(right) == 2);
+	assert(bst_size(front) == 1);
+	assert(bst_size(back) == 1);
+	assert(bst_height(head) == 2);
+	assert(bst_height(left) == 1);
+	assert(bst_height(right) == 1);
+	assert(bst_height(front) == 0);
+	assert(bst_height(back) == 0);
+	assert(strcmp((char*)bst_front(head), (char*)bst_left(left)->value) == 0);
+	assert(strcmp((char*)bst_back(head), (char*)bst_right(right)->value) == 0);
+	assert(stl_find(head, (char*)head->value) == head);
+	assert(stl_find(head, bst_left(head)->value) == bst_left(head));
+	assert(stl_find(head, bst_right(head)->value) == bst_right(head));
+	assert(stl_find(left, bst_value(left)) == left);
+	assert(stl_find(left, bst_value(left)) == bst_left(head));
+	assert(stl_find(left, bst_value(front)) == bst_left(left));
+	assert(stl_find(right, bst_value(right)) == right);
+	assert(stl_find(right, bst_value(right)) == bst_right(head));
+	assert(stl_find(right, bst_value(back)) == bst_right(right));
+	i++;
+	printf("TEST[%d]: PASS\n", i);	// TEST 8
 	sleep(1);
 
 	// End of test.
