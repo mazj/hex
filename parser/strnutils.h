@@ -1,5 +1,8 @@
 /* Helper functions on null-terminated strings. */
 
+#ifndef _STRNUTILS_H_
+#define _STRNUTILS_H_
+
 #include <stddef.h>
 
 /* Copies the source to the destination.
@@ -21,3 +24,5 @@ char* trim_hard(char * s) {
 	while(*s && isspace(*s)) *s = '\0', ++s;
 	return s;
 }
+
+#endif // _STRNUTILS_H_

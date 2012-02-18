@@ -66,4 +66,27 @@ void* bst_back(const BinaryNode* node) {
 	return (node->right == 0) ? node->value : bst_back(node->right) ? bst_back(node->right) : node->value;
 }
 
+static void bst_append_to_list(BinaryNode* node, Node* list) {
+    if(!node) return;
+    bst_append_to_list(node->left, list);
+    if(node->value) {
+        Node* tmp = (Node*)malloc(sizeof(Node));
+        memset(tmp->value, list->value, sizeof(list->value));
+        list->next = tmp;
+        tmp->next = 0;
+    } else return;
+    bst_append_to_list(node->right, list);
+}
+
+/* Generates a singly linked list of all
+   the values contained by the given node
+   and its children in ascending order. */
+Node* bst_to_list(BinaryNode* node) {
+    Node* list = (Node*)malloc(sizeof(Node));
+    bst_append_to_list(node, list);
+    return list;
+}
+
+
+
 #endif // _BST_H_

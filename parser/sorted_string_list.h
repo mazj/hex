@@ -22,17 +22,17 @@ BinaryNode* stl_insert(BinaryNode* node, const char* value) {
         if(i == 0) return node;
         if(i > 0) {
             BinaryNode* n = stl_insert(node->left, value);
-            if(n) {
+            if(n && !node->left) {
                 node->left = n;
-                return n;
             }
+            return n;
         }
         if(i < 0) {
             BinaryNode* n = stl_insert(node->right, value);
-            if(n) {
+            if(n && !node->right) {
                 node->right = n;
-                return n;
             }
+            return n;
         }
     }
 }
