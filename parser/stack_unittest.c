@@ -55,6 +55,15 @@ int main(int argc, char const *argv[])
 	printf("TEST[%d]: PASS\n", i);	// TEST 6
 	sleep(1);
 
+	v = stack_pop(s);
+	assert(s != 0);
+	assert(stack_size(s) == 0);
+	assert(stack_top(s) == 0);
+	assert(v == 0);
+	i++;
+	printf("TEST[%d]: PASS\n", i);	// TEST 6
+	sleep(1);
+
 	// End of test.
 	printf("TEST SUCCESSFUL...\n");
 	return 0;
