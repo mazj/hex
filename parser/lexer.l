@@ -20,10 +20,10 @@ ESCAPE              BACKSLASH | SINGLEQUOTE | DOUBLEQUOTE | "\\"
 LOWERLETTER         [a-z]                       // lower case letters
 UPPERLETTER         [A-Z]                       // upper case letters
 LETTER              LOWERLETTER | UPPERLETTER   // letters
-
 STRINGPREFIX        "r" | "u" | "ur" | "R" | "U" | "UR" | "Ur" | "uR" | "b" | "B" | "br" | "Br" | "bR" | "BR"
-
-
+STRINGCHAR			[^ESCAPE \n]
+STRING              "\"" STRINGCHAR* "\""
+STRINGLITERAL       [STRINGPREFIX]STRING
 
 /* digits */
 DIGIT               [0-9]
