@@ -18,7 +18,7 @@
 #define TEST_CHECK()					\
 		i++;							\
 		printf("TEST[%d]: PASS\n", i);	\
-		sleep(1);
+		//sleep(1);
 #endif  // TEST_CHECK()
 
 #ifndef TEST_END()
