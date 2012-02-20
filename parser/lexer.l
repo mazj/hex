@@ -12,7 +12,7 @@ DIGITS              [0-9]
 %%
 
 
-/* keywords */
+#keywords
 and					 RETURN("KEYWORD", "and");
 base                 RETURN("KEYWORD", "base");
 bool                 RETURN("KEYWORD", "bool");
@@ -67,24 +67,24 @@ where                RETURN("KEYWORD", "where");
 while                RETURN("KEYWORD", "while");
 finally              RETURN("KEYWORD", "finally");
 
-/* identifiers */
+#identifiers
 [_a-zA-Z][_a-zA-Z0-9]*    RETURN("IDENTIFIER", yytext);
 
-/* inline comment */
+#inline_comment
 \/\/.*                     RETURN("COMMENT", yytext);
 
 
-/* multi-line comment */
+#multi-line_comment
 "/*"(.|\n)*"*/"     		RETURN("COMMENT", yytext);
 
-/* arithmetic operator */
+#arithmetic_operator
 "+"		                    RETURN("OP_ARITHMETIC", yytext);
 "-"		                    RETURN("OP_ARITHMETIC", yytext);
 "*"{1}                      RETURN("OP_ARITHMETIC", yytext);
 \/{1}                       RETURN("OP_ARITHMETIC", yytext);
 "%"{1}                      RETURN("OP_ARITHMETIC", yytext);
 
-/* assignment operator */
+#assignment_operator
 "="		                    RETURN("OP_ASSIGNMENT", yytext);
 "+="						RETURN("OP_ASSIGNMENT", yytext);
 "-="						RETURN("OP_ASSIGNMENT", yytext);
@@ -92,7 +92,7 @@ finally              RETURN("KEYWORD", "finally");
 "/="						RETURN("OP_ASSIGNMENT", yytext);
 "%="						RETURN("OP_ASSIGNMENT", yytext);
 
-/* bitwise operator */
+#bitwise_operator
 "~"							RETURN("OP_BITWISE", yytext);
 "&"							RETURN("OP_BITWISE", yytext);
 "|"							RETURN("OP_BITWISE", yytext);
@@ -106,46 +106,42 @@ finally              RETURN("KEYWORD", "finally");
 "<<="						RETURN("OP_BITWISE", yytext);
 ">>="						RETURN("OP_BITWISE", yytext);
 
-/* equality operator */
+#equality_operator
 "=="						RETURN("OP_EQUALITY", yytext);
 ">"                    		RETURN("OP_EQUALITY", yytext);
 "<"                    		RETURN("OP_EQUALITY", yytext);
 ">="                    	RETURN("OP_EQUALITY", yytext);
 "<="                    	RETURN("OP_EQUALITY", yytext);
 
-/* increment & decrement */
+#increment_&_decrement
 "++"						RETURN("OP_INCREMENT", yytext);
 "--"						RETURN("OP_DECREMENT", yytext);
 
-/* lambda operator */
+#lambda_operator
 "=>"						RETURN("OP_LAMBDA", yytext);
 
-/* dot */
+#dot
 "."               			RETURN("DOT", yytext);
 
 #comma
-","             printf("[COMMA]\n\n");
+","             			RETURN("COMMA", yytext);
 
 #space
-" "             printf("[SPACE]\n\n");
+" "             			RETURN("SPACE", yytext);
 
 #colon
-":"               printf("[COLON]\n\n");
+":"              			RETURN("COLON", yytext);
 
-#left_bracket
-"("               printf("[LEFT BRACKET]\n\n");
+#bracket
+("("|")")               	RETURN("BRACKET", yytext);
 
-#right_brakcet
-")"               printf("[RIGHT BRACKET]\n\n");
 
-#left_square_bracket
-"["               printf("[LEFT SQUARE BRACKET]\n\n");
+#sqaure_bracket
+"["|"]"               		RETURN("SQUARE_BRACKET", yytext);
 
-#right_square_brakcet
-"]"               printf("[RIGHT SQUARE BRACKET]\n\n");
 
 #pond
-"#"              printf("[POND]\n\n");
+"#"              			RETURN("POND", yytext);
 
 \b             printf("[BACKSPACE]\n\n");
 \f             printf("[FORM FEED]\n\n");
