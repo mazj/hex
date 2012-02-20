@@ -19,7 +19,7 @@ int queue_size(Queue* q) {
 /* Gets the value at the front of the queue. */
 #define QUEUE_FRONT(q) (q)->front ? (q)->front->value : 0
 void* queue_front(Queue* q) {
-	return q->front ? q->front->value : 0;
+	return (q && q->front) ? q->front->value : 0;
 }
 
 /* Gets the value at the back of the queue. */
