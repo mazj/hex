@@ -77,18 +77,51 @@ finally              RETURN("KEYWORD", "finally");
 /* multi-line comment */
 "/*"(.|\n)*"*/"     		RETURN("COMMENT", yytext);
 
-#operators
-">"{1,2}                    RETURN("OP_GREATER", yytext);
-"<"{1,2}                    RETURN("OP_LESS", yytext);
-"="{1,2}                    RETURN("OP_EQUALITY", yytext);
-"+"{1,2}                    RETURN("OP_PLUS", yytext);
-"-"{1,2}                    RETURN("OP_MINUS", yytext);
-"*"{1}                      RETURN("OP_MULTIPLY", yytext);
-\/{1}                       RETURN("OP_DIV", yytext);
-"%"{1}                      RETURN("OP_MODULUS", yytext);
+/* arithmetic operator */
+"+"		                    RETURN("OP_ARITHMETIC", yytext);
+"-"		                    RETURN("OP_ARITHMETIC", yytext);
+"*"{1}                      RETURN("OP_ARITHMETIC", yytext);
+\/{1}                       RETURN("OP_ARITHMETIC", yytext);
+"%"{1}                      RETURN("OP_ARITHMETIC", yytext);
 
-#dot
-"."               printf("[DOT]\n\n");
+/* assignment operator */
+"="		                    RETURN("OP_ASSIGNMENT", yytext);
+"+="						RETURN("OP_ASSIGNMENT", yytext);
+"-="						RETURN("OP_ASSIGNMENT", yytext);
+"*="						RETURN("OP_ASSIGNMENT", yytext);
+"/="						RETURN("OP_ASSIGNMENT", yytext);
+"%="						RETURN("OP_ASSIGNMENT", yytext);
+
+/* bitwise operator */
+"~"							RETURN("OP_BITWISE", yytext);
+"&"							RETURN("OP_BITWISE", yytext);
+"|"							RETURN("OP_BITWISE", yytext);
+"^"							RETURN("OP_BITWISE", yytext);
+"~="						RETURN("OP_BITWISE", yytext);
+"&="						RETURN("OP_BITWISE", yytext);
+"|="						RETURN("OP_BITWISE", yytext);
+"^="						RETURN("OP_BITWISE", yytext);
+"<<"						RETURN("OP_BITWISE", yytext);
+">>"						RETURN("OP_BITWISE", yytext);
+"<<="						RETURN("OP_BITWISE", yytext);
+">>="						RETURN("OP_BITWISE", yytext);
+
+/* equality operator */
+"=="						RETURN("OP_EQUALITY", yytext);
+">"                    		RETURN("OP_EQUALITY", yytext);
+"<"                    		RETURN("OP_EQUALITY", yytext);
+">="                    	RETURN("OP_EQUALITY", yytext);
+"<="                    	RETURN("OP_EQUALITY", yytext);
+
+/* increment & decrement */
+"++"						RETURN("OP_INCREMENT", yytext);
+"--"						RETURN("OP_DECREMENT", yytext);
+
+/* lambda operator */
+"=>"						RETURN("OP_LAMBDA", yytext);
+
+/* dot */
+"."               			RETURN("DOT", yytext);
 
 #comma
 ","             printf("[COMMA]\n\n");
