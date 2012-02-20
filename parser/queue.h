@@ -10,6 +10,15 @@ typedef struct {
 	int size;	
 } Queue;
 
+
+Queue* queue_makeQueue() {
+	Queue* q = (Queue*)malloc(sizeof(Queue));
+	q->front = 0;
+	q->back = 0;
+	q->size = 0;
+	return q;
+}
+
 /* Gets the size of the queue. */
 #define QUEUE_SIZE(q) (q) ? (q)->size : 0
 int queue_size(Queue* q) {
@@ -32,7 +41,7 @@ void* queue_back(Queue* q) {
 #define QUEUE_PUSH(q, value)										\
 	if(!(q)) return;												\
 	DoubleNode* node = (DoubleNode*)malloc(sizeof(DoubleNode));		\
-	memset(node->value, value, sizeof(*(value));					\
+	node->value = value;											\
 	node->next = (q)->back;											\
 	node->back = 0;													\
 	(q)->back->previous = node;										\
@@ -42,12 +51,14 @@ void* queue_back(Queue* q) {
 void queue_push(Queue* q, void* value) {
 	if(!q) return;
 	DoubleNode* node = (DoubleNode*)malloc(sizeof(DoubleNode));
-	memset(node->value, value, sizeof(*value));
+	node->value = value;
 	node->next = q->back;
 	node->previous = 0;
+	if(!q->back) q->back = (DoubleNode*)malloc(sizeof(DoubleNode));	
 	q->back->previous = node;
 	q->back = node;
 	q->size++;
+	if(q->size == 1) q->front = node;
 }
 
 /* Returns the value at the front of the queue. */
@@ -59,6 +70,7 @@ void* queue_pop(Queue* q) {
 		q->front = front->previous;
 	} else { // has only one node
 		q->front = 0;
+		q->back = 0;
 	}
 	q->size--;
 	return front->value;
