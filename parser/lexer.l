@@ -4,6 +4,7 @@
 
 #define RETURN(type, token)	\
 		printf("[%s]: %s\n", (type), (token));
+		return token;
 %}
 
 /* digits */
