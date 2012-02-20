@@ -1,86 +1,91 @@
 %{
 #include <stdio.h>
+#include "parser.tab.h"
+
+#define RETURN(type, token)	\
+		printf("[%s]: %s\n", (type), (token));
 %}
 
+/* digits */
+DIGITS              [0-9]
+
 %%
-#keywords
-base                 printf("[KEYWORD]\n%s\n\n", yytext);
-bool                 printf("[KEYWORD]\n%s\n\n", yytext);
-break                printf("[KEYWORD]\n%s\n\n", yytext);
-catch                printf("[KEYWORD]\n%s\n\n", yytext);
-char                 printf("[KEYWORD]\n%s\n\n", yytext);
-class                printf("[KEYWORD]\n%s\n\n", yytext);
-const                printf("[KEYWORD]\n%s\n\n", yytext);
-continue             printf("[KEYWORD]\n%s\n\n", yytext);
-coroutine            printf("[KEYWORD]\n%s\n\n", yytext);
-def                  printf("[KEYWORD]\n%s\n\n", yytext);
-default              printf("[KEYWORD]\n%s\n\n", yytext);
-define               printf("[KEYWORD]\n%s\n\n", yytext);
-do                   printf("[KEYWORD]\n%s\n\n", yytext);
-double               printf("[KEYWORD]\n%s\n\n", yytext);
-else                 printf("[KEYWORD]\n%s\n\n", yytext);
-enum                 printf("[KEYWORD]\n%s\n\n", yytext);
-ext                  printf("[KEYWORD]\n%s\n\n", yytext);
-float                printf("[KEYWORD]\n%s\n\n", yytext);
-for                  printf("[KEYWORD]\n%s\n\n", yytext);
-goto                 printf("[KEYWORD]\n%s\n\n", yytext);
-if                   printf("[KEYWORD]\n%s\n\n", yytext);
-in                   printf("[KEYWORD]\n%s\n\n", yytext);
-include              printf("[KEYWORD]\n%s\n\n", yytext);
-int                  printf("[KEYWORD]\n%s\n\n", yytext);
-interface            printf("[KEYWORD]\n%s\n\n", yytext);
-long                 printf("[KEYWORD]\n%s\n\n", yytext);
-"long long"          printf("[KEYWORD]\n%s\n\n", yytext);
-new                  printf("[KEYWORD]\n%s\n\n", yytext);
-pass                 printf("[KEYWORD]\n%s\n\n", yytext);
-private              printf("[KEYWORD]\n%s\n\n", yytext);
-protected            printf("[KEYWORD]\n%s\n\n", yytext);
-public               printf("[KEYWORD]\n%s\n\n", yytext);
-readonly             printf("[KEYWORD]\n%s\n\n", yytext);
-register             printf("[KEYWORD]\n%s\n\n", yytext);
-return               printf("[KEYWORD]\n%s\n\n", yytext);
-select               printf("[KEYWORD]\n%s\n\n", yytext);
-short                printf("[KEYWORD]\n%s\n\n", yytext);
-signed               printf("[KEYWORD]\n%s\n\n", yytext);
-sizeof               printf("[KEYWORD]\n%s\n\n", yytext);
-static               printf("[KEYWORD]\n%s\n\n", yytext);
-string               printf("[KEYWORD]\n%s\n\n", yytext);
-struct               printf("[KEYWORD]\n%s\n\n", yytext);
-switch               printf("[KEYWORD]\n%s\n\n", yytext);
-task                 printf("[KEYWORD]\n%s\n\n", yytext);
-this                 printf("[KEYWORD]\n%s\n\n", yytext);
-throw                printf("[KEYWORD]\n%s\n\n", yytext);
-try                  printf("[KEYWORD]\n%s\n\n", yytext);
-typeof               printf("[KEYWORD]\n%s\n\n", yytext);
-unsigned" "(char|short|int|long|"long long") printf("[KEYWORD]\n%s\n\n", yytext);
-virtual              printf("[KEYWORD]\n%s\n\n", yytext);
-void                 printf("[KEYWORD]\n%s\n\n", yytext);
-void"*"{1}           printf("[KEYWORD]\n%s\n\n", yytext);
-volatile             printf("[KEYWORD]\n%s\n\n", yytext);
-where                printf("[KEYWORD]\n%s\n\n", yytext);
-while                printf("[KEYWORD]\n%s\n\n", yytext);
-finally              printf("[KEYWORD]\n%s\n\n", yytext);
-
-#identifiers
-[_a-zA-Z][_a-zA-Z0-9]*    printf("[IDENTIFIER]\n%s\n\n", yytext);
-
-#inline
-#comment
-\/\/.*                     printf("[INLINE COMMENT]\n%s\n\n", yytext);
 
 
-#multiline
-"/*"(.|\n)*"*/"     printf("[MULTILINE COMMENT]\n%s\n\n", yytext);
+/* keywords */
+and					 RETURN("KEYWORD", "and");
+base                 RETURN("KEYWORD", "base");
+bool                 RETURN("KEYWORD", "bool");
+break                RETURN("KEYWORD", "break");
+catch                RETURN("KEYWORD", "catch");
+char                 RETURN("KEYWORD", "char");
+class                RETURN("KEYWORD", "class");
+const                RETURN("KEYWORD", "const");
+continue             RETURN("KEYWORD", "continue");
+coroutine            RETURN("KEYWORD", "coroutine");
+def                  RETURN("KEYWORD", "def");
+defer                RETURN("KEYWORD", "defer");
+default              RETURN("KEYWORD", "default");
+do                   RETURN("KEYWORD", "do");
+double               RETURN("KEYWORD", "double");
+else                 RETURN("KEYWORD", "else");
+enum                 RETURN("KEYWORD", "enum");
+ext                  RETURN("KEYWORD", "ext");
+float                RETURN("KEYWORD", "float");
+for                  RETURN("KEYWORD", "for");
+if                   RETURN("KEYWORD", "if");
+import               RETURN("KEYWORD", "import");
+in                   RETURN("KEYWORD", "in");
+int                  RETURN("KEYWORD", "int");
+interface            RETURN("KEYWORD", "interface");
+lazy                 RETURN("KEYWORD", "lazy");
+long                 RETURN("KEYWORD", "long");
+new                  RETURN("KEYWORD", "new");
+not					 RETURN("KEYWORD", "not");
+or                   RETURN("KEYWORD", "or");
+pass                 RETURN("KEYWORD", "pass");
+private              RETURN("KEYWORD", "private");
+protected            RETURN("KEYWORD", "protected");
+public               RETURN("KEYWORD", "public");
+return               RETURN("KEYWORD", "return");
+short                RETURN("KEYWORD", "short");
+sizeof               RETURN("KEYWORD", "sizeof");
+stackalloc		     RETURN("KEYWORD", "stackalloc");
+static               RETURN("KEYWORD", "static");
+string               RETURN("KEYWORD", "string");
+struct               RETURN("KEYWORD", "struct");
+switch               RETURN("KEYWORD", "switch");
+task                 RETURN("KEYWORD", "task");
+this                 RETURN("KEYWORD", "this");
+throw                RETURN("KEYWORD", "throw");
+try                  RETURN("KEYWORD", "try");
+typeof               RETURN("KEYWORD", "typeof");
+unsigned" "(char|short|int|long) RETURN("KEYWORD", "TYPE ALIAS");
+virtual              RETURN("KEYWORD", "virtual");
+volatile             RETURN("KEYWORD", "volatile");
+where                RETURN("KEYWORD", "where");
+while                RETURN("KEYWORD", "while");
+finally              RETURN("KEYWORD", "finally");
+
+/* identifiers */
+[_a-zA-Z][_a-zA-Z0-9]*    RETURN("IDENTIFIER", yytext);
+
+/* inline comment */
+\/\/.*                     RETURN("COMMENT", yytext);
+
+
+/* multi-line comment */
+"/*"(.|\n)*"*/"     		RETURN("COMMENT", yytext);
 
 #operators
-">"{1,2}                    printf("[OPERATOR]\n%s\n\n", yytext);
-"<"{1,2}                    printf("[OPERATOR]\n%s\n\n", yytext);
-"="{1,2}                    printf("[OPERATOR]\n%s\n\n", yytext);
-"+"{1,2}                    printf("[OPERATOR]\n%s\n\n", yytext);
-"-"{1,2}                    printf("[OPERATOR]\n%s\n\n", yytext);
-"*"{1}                      printf("[OPERATOR]\n%s\n\n", yytext);
-\/{1}                       printf("[OPERATOR]\n%s\n\n", yytext);
-"%"{1}                      printf("[OPERATOR]\n%s\n\n", yytext);
+">"{1,2}                    RETURN("OP_GREATER", yytext);
+"<"{1,2}                    RETURN("OP_LESS", yytext);
+"="{1,2}                    RETURN("OP_EQUALITY", yytext);
+"+"{1,2}                    RETURN("OP_PLUS", yytext);
+"-"{1,2}                    RETURN("OP_MINUS", yytext);
+"*"{1}                      RETURN("OP_MULTIPLY", yytext);
+\/{1}                       RETURN("OP_DIV", yytext);
+"%"{1}                      RETURN("OP_MODULUS", yytext);
 
 #dot
 "."               printf("[DOT]\n\n");
