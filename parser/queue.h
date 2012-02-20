@@ -46,7 +46,8 @@ void* queue_back(Queue* q) {
 	node->back = 0;													\
 	(q)->back->previous = node;										\
 	(q)->back = node;												\
-	(q)->size++;
+	(q)->size++;													\
+	if((q)->size == 1) (q)->front = node;
 
 void queue_push(Queue* q, void* value) {
 	if(!q) return;
