@@ -10,10 +10,20 @@
 /* underscore */
 UNDERSCORE          "_"
 
+/* escape sequences */
+BACKSLASH           "\\\\"
+SINGLEQUOTE         "\'"
+DOUBLEQUOTE         "\""
+ESCAPE              BACKSLASH | SINGLEQUOTE | DOUBLEQUOTE | "\\"
+
 /* string literals */
 LOWERLETTER         [a-z]                       // lower case letters
 UPPERLETTER         [A-Z]                       // upper case letters
 LETTER              LOWERLETTER | UPPERLETTER   // letters
+
+STRINGPREFIX        "r" | "u" | "ur" | "R" | "U" | "UR" | "Ur" | "uR" | "b" | "B" | "br" | "Br" | "bR" | "BR"
+
+
 
 /* digits */
 DIGIT               [0-9]
@@ -50,11 +60,7 @@ TAB                 \t
 NULL                \0
 WHITESPACE          BACKSPACE | FORMFEED | CARRIAGERETURN | NEWLINE | TAB | NULL
 
-/* escape sequences */
-BACKSLASH           "\\"
-SINGLEQUOTE         "\'"
-DOUBLEQUOTE         "\""
-ESCAPE              BACKSLASH | SINGLEQUOTE | DOUBLEQUOTE
+
 
 
 
