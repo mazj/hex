@@ -110,7 +110,11 @@ ESCAPE              BACKSLASH | SINGLEQUOTE | DOUBLEQUOTE
 "throw"                RETURN("KEYWORD", "throw");
 "try"                  RETURN("KEYWORD", "try");
 "typeof"               RETURN("KEYWORD", "typeof");
+"uchar"                 RETURN("KEYWORD", "typeof");
 "unsigned "("char"|"short"|"int"|"long") RETURN("KEYWORD", "TYPE ALIAS");
+"uint"                  RETURN("KEYWORD", "typeof");
+"ulong"                 RETURN("KEYWORD", "typeof");
+"ushort"                RETURN("KEYWORD", "typeof");
 "virtual"              RETURN("KEYWORD", "virtual");
 "volatile"             RETURN("KEYWORD", "volatile");
 "where"                RETURN("KEYWORD", "where");
