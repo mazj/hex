@@ -2,19 +2,43 @@
 #include <stdio.h>
 #include "parser.tab.h"
 
-#define RETURN(type, token)	\
-		printf("[%s]: %s\n", (type), (token));
-		return token;
+#define RETURN(type, token)						\
+		printf("[%s]: %s\n", (type), (token));	\
+		//return token;
 %}
 
 /* digits */
 DIGITS              [0-9]
+BINDIGIT 			"0" | "1"								// binary digit
+OCTDIGIT			"0"..."7"								// oct digit
+NONZERODIGIT		"1"..."9"								// none zero digit
+HEXDIGIT			DIGIT | "a"..."f" | "A"..."F"			// hex digit
+
+/* integer and long integer literals */
+BININTEGER			"0"("b"|"B") BINDIGIT+					// binary integer
+OCTINTEGER			"0"("o"|"O") OCTDIGIT+ | "0" OCTDIGIT+	// oct integer
+HEXINTEGER			"0"("x"|"X") HEXDIGIT+					// hex integer
+DECIMALINTEGER		NONZERODIGIT DIGIT* | "0"				// decimal integer
+INTEGER             DECIMALINTEGER | OCTINTEGER | HEXINTEGER | BININTEGER	// integer
+LONGINTEGER			INTEGER("l"|"L")
+
+/* floating point literals */
+INTPART				DIGIT+
+EXPONENT            ("e" | "E") ["+" | "-"] DIGIT+
+FRACTION			"." DIGIT+
+POINTFLOAT			[INTPART] FRACTION | INTPART "."
+EXPONENTFLOAT		(INTPART | POINTFLOAT) EXPONENT
+FLOATNUMBER			POINTFLOAT | EXPONENTFLOAT
+
+
+
 
 %%
 
 
 #keywords
 and					 RETURN("KEYWORD", "and");
+as					 RETURN("KEYWORD", "as");
 base                 RETURN("KEYWORD", "base");
 bool                 RETURN("KEYWORD", "bool");
 break                RETURN("KEYWORD", "break");
