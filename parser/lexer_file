@@ -65,6 +65,16 @@ int123
 _123
 _append_string
 
+/* string literals */
+""
+"0"
+";"
+":"
+"char"
+"volatile"
+"this is a test string\n"
+"\tthis is another test string\n"
+
 /* integers */
 0
 +0
