@@ -31,7 +31,7 @@ STRINGLITERAL       [STRINGPREFIX]STRING
 DIGIT               [0-9]											// decimal digit
 BINDIGIT 			[0-1]											// binary digit
 OCTDIGIT			[0-7]												// oct digit
-NONZERODIGIT		[0-9]												// none zero digit
+NONZERODIGIT		[1-9]												// none zero digit
 HEXDIGIT			[0-9] | [a-f] | [A-F]							// hex digit
 
 /* integer and long integer literals */
@@ -147,15 +147,18 @@ WHITESPACE          BACKSPACE | FORMFEED | CARRIAGERETURN | NEWLINE | TAB | NULL
 
 
 
+#integer
+[-+]?([0]|[1-9]*)[lL]?	RETURN("INTEGER", yytext);
+
 
 #binary_integer
-0[bB][0-1]+             RETURN("BININTEGER", yytext);
+[-+]?0[bB][0-1]+             RETURN("BININTEGER", yytext);
 
 #oct_integer
-0[oO]?[0-7]+				RETURN("OCTINTEGER", yytext);
+[-+]?0[oO]?[0-7]+				RETURN("OCTINTEGER", yytext);
 
 #hexidecimal_integer
-0[xX][0-9a-fA-F]+					RETURN("HEXINTEGER", yytext);
+[-+]?0[xX][0-9a-fA-F]+					RETURN("HEXINTEGER", yytext);
 
 #floating_number
 FLOATNUMBER                 RETURN("FLOATINTEGER", yytext);
