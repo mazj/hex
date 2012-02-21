@@ -32,12 +32,12 @@ DIGIT               [0-9]											// decimal digit
 BINDIGIT 			[0-1]											// binary digit
 OCTDIGIT			[0-7]												// oct digit
 NONZERODIGIT		[0-9]												// none zero digit
-HEXDIGIT			DIGIT | [a-f] | [A-F]							// hex digit
+HEXDIGIT			[0-9] | [a-f] | [A-F]							// hex digit
 
 /* integer and long integer literals */
 BININTEGER			"0"("b"|"B") BINDIGIT+									// binary integer
 OCTINTEGER			"0"("o"|"O") OCTDIGIT+ | "0" OCTDIGIT+					// oct integer
-HEXINTEGER			"0"("x"|"X") HEXDIGIT+									// hex integer
+HEXINTEGER			"0"("x"|"X") ([0-9] | [a-f] | [A-F])+									// hex integer
 DECIMALINTEGER		NONZERODIGIT DIGIT* | "0"								// decimal integer
 INTEGER             DECIMALINTEGER | OCTINTEGER | HEXINTEGER | BININTEGER	// integer
 LONGINTEGER			INTEGER("l"|"L")
@@ -62,7 +62,7 @@ TAB                 \t
 NULL                \0
 WHITESPACE          BACKSPACE | FORMFEED | CARRIAGERETURN | NEWLINE | TAB | NULL
 
-
+/*In comment state */
 %x IN_COMMENT
 
 %%
@@ -148,8 +148,14 @@ WHITESPACE          BACKSPACE | FORMFEED | CARRIAGERETURN | NEWLINE | TAB | NULL
 
 
 
-#integer_number
+#binary_integer
+0[bB][0-1]+             RETURN("BININTEGER", yytext);
 
+#oct_integer
+0[oO]?[0-7]+				RETURN("OCTINTEGER", yytext);
+
+#hexidecimal_integer
+0[xX][0-9a-fA-F]+					RETURN("HEXINTEGER", yytext);
 
 #floating_number
 FLOATNUMBER                 RETURN("FLOATINTEGER", yytext);
