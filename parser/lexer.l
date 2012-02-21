@@ -7,11 +7,6 @@
 %}
 
 
-/* underscore */
-UNDERSCORE          "_"
-
-COMMENT            "/*"(.|\n)*"*/"
-
 /* escape sequences */
 BACKSLASH           "\\\\"
 SINGLEQUOTE         "\'"
@@ -62,8 +57,12 @@ TAB                 \t
 NULL                \0
 WHITESPACE          BACKSPACE | FORMFEED | CARRIAGERETURN | NEWLINE | TAB | NULL
 
-/*In comment state */
+/* Multi-line comment state */
 %x IN_COMMENT
+
+/* String literal state */
+%x IN_STRING
+
 
 %%
 
@@ -129,6 +128,15 @@ WHITESPACE          BACKSPACE | FORMFEED | CARRIAGERETURN | NEWLINE | TAB | NULL
 
 #identifiers
 [_a-zA-Z][_a-zA-Z0-9]*  				RETURN("IDENTIFIER", yytext);
+
+#string_literal
+<INITIAL>{
+	"\""					BEGIN(IN_STRING);
+}
+<IN_STRING>{
+	"\""					BEGIN(INITIAL);
+	([^\"\\\\]|\\\\)*		RETURN("STRING", yytext);
+}
 
 #inline_comment
 \/\/.*                     RETURN("COMMENT", yytext);
