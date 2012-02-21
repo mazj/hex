@@ -1,0 +1,199 @@
+/* keywords */
+and
+as
+bool
+break
+catch
+char
+class
+const
+continue
+coroutine
+def
+defer
+default
+do
+double
+else
+enum
+ext
+float
+for
+if
+import
+in
+int
+interface
+lazy
+long
+new
+not
+or
+pass
+private
+protected
+public
+return
+short
+sizeof
+stackalloc
+static
+string
+struct
+switch
+task
+this
+throw
+try
+typeof
+uchar
+uint
+ulong
+ushort
+virtual
+volatile
+where
+while
+finally
+
+
+/* identifiers */
+_
+___
+strName
+int123
+_123
+_append_string
+
+/* integers */
+0
++0
+-0
+123
++123
+-123
+7890l
++7890l
+-7890l
+1234L
++1234L
+-1234L
+
+/* binary integers */
+0b01
++0b01
+-0b01
+0B11
++0B11
+-0B11
+
+/* octodecimal integers */
+077
++077
+-077
+0o123
++0o123
+-0o123
+0O4567
++0O4567
+-0O4567
+
+/* hexidecimal integers */
+0x78
++0x78
+-0x78
+0XAF
++0XAF
+-0XAF
+
+/* floating number */
+0.0
+-0.0
++0.0
+-9999.98898888
++09999.123212323
+-0.1e+5
++999.0E-1000000000
+
+/* arithmetic operators */
++
+-
+*
+/
+%
+
+/* assignment operator */
+=
++=
+-=
+*=
+/=
+%=
+
+/* bitwise operator */
+~
+&
+|
+^
+~=
+&=
+|=
+^=
+<<
+>>
+<<=
+>>=
+
+/* equality operator */
+==
+>
+<
+>=
+<=
+
+/* increment & decrement */
+++
+--
+
+/* lambda operator */
+=>
+
+/* dot */
+.
+
+/* comma */
+,
+
+/* space */
+ 
+
+/* colon */
+:
+
+/* bracket */
+(
+)
+
+/* sqaure bracket */
+[
+]
+
+/* curly brace */
+{
+}
+
+/* pond */
+#
+
+// inline comment...
+
+/* 123
+456 float int >> . */
+
+     
+     
+     
+     
+
+
+
