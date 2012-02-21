@@ -12,6 +12,10 @@ typedef struct KVpair {
 	void* value;
 } Pair;
 
+typedef struct MapStruct {
+    BinaryNode* head;
+    int size;  
+} Map;
 
 //===========================================================================
 // A generic comparing function that compares the value of arg1 and arg2.
@@ -22,27 +26,47 @@ typedef struct KVpair {
 //===========================================================================
 typedef int (*CmpFunc) (void* arg1, void* arg2);
 
-BinaryNode* map_insert(BinaryNode* node, Pair* pair, CmpFunc* cmpfunc) {
+Map* map_createMap() {
+    Map* m = (Map*)malloc(sizeof(Map));
+    m->head = 0;
+    m->size = 0;
+    return m;
+}
+
+int map_size(Map* map) {
+    return map ? map->size : 0;
+}
+
+BinaryNode* map_head(Map* map) {
+    return map ? map->head : 0;
+}
+
+static BinaryNode* _map_insert(BinaryNode* node, void* key, void* value, CmpFunc cmpfunc) {
     if(!node) {
         node = (BinaryNode*)malloc(sizeof(BinaryNode));
+        Pair *pair = (Pair*)malloc(sizeof(Pair));
+        pair->key = key;
+        pair->value = value;
         node->value = pair;
         return node;
-    }
-    else if(!node->value) {
+    } else if(!node->value) {
+        Pair *pair = (Pair*)malloc(sizeof(Pair));
+        pair->key = key;
+        pair->value = value;
         node->value = pair;
         return node;
     } else {
-    	int i = (*cmpfunc)(((Pair*)(node->value))->key, pair->key);
+        int i = (*cmpfunc)(((Pair*)(node->value))->key, key);
         if(i == 0) return node;
         if(i > 0) {
-            BinaryNode* n = map_insert(node->left, pair, cmpfunc);
+            BinaryNode* n = _map_insert(node->left, key, value, cmpfunc);
             if(n && !node->left) {
                 node->left = n;
             }
             return n;
         }
         if(i < 0) {
-            BinaryNode* n = map_insert(node->right, pair, cmpfunc);
+            BinaryNode* n = _map_insert(node->right, key, value, cmpfunc);
             if(n && !node->right) {
                 node->right = n;
             }
@@ -51,14 +75,27 @@ BinaryNode* map_insert(BinaryNode* node, Pair* pair, CmpFunc* cmpfunc) {
     }
 }
 
+BinaryNode* map_insert(Map* map, void* key, void* value, CmpFunc cmpfunc) {
+    BinaryNode* node = _map_insert(map->head, key, value, cmpfunc);
+    if(node) {
+        map->size++;
+        if(map->size == 1) map->head = node; 
+    }
+    return node;
+}
+
 /* Find the value that corresponds to the given key. 
    Returns 0 if not found. */
-void* map_find(BinaryNode* node, const void* key, CmpFunc cmpfunc) {
+static void* _map_find(BinaryNode* node, const void* key, CmpFunc cmpfunc) {
     if(!node || !node->value) return 0;
 	int i = (*cmpfunc)(((Pair*)(node->value))->key, key);
-	if(i == 0) return node;
-	if(i > 0) return map_find(node->left, key, cmpfunc);
-	if(i < 0) return stl_find(node->right, key, cmpfunc);
+	if(i == 0) return ((Pair*)node->value)->value;
+	if(i > 0) return _map_find(node->left, key, cmpfunc);
+	if(i < 0) return _map_find(node->right, key, cmpfunc);
+}
+
+void* map_find(Map* map, const void* key, CmpFunc cmpfunc) {
+    return _map_find(map->head, key, cmpfunc);
 }
 
 /* Removes the node in the container that has the same value as
