@@ -10,6 +10,9 @@ lexer.yy.c:
 lexer.out:
 	make LDLIBS=-ll lexer
 
+map_unittest: unittest.h
+	gcc map.h map_unittest.c
+
 queue_unittest: unittest.h
 	gcc queue.h queue_unittest.c
 
