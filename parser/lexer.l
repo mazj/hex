@@ -3,7 +3,7 @@
 #include "parser.tab.h"
 
 #define RETURN(type, token)						\
-		printf("[%s]: %s\n", (type), (token));	
+		printf("[%s]: %s", (type), (token));	
 %}
 
 
@@ -145,8 +145,6 @@ WHITESPACE          BACKSPACE | FORMFEED | CARRIAGERETURN | NEWLINE | TAB | NULL
 \n        				yylineno++;
  }
 
-
-
 #integer
 [-+]?([0]|[1-9]*)[lL]?	RETURN("INTEGER", yytext);
 
@@ -161,15 +159,15 @@ WHITESPACE          BACKSPACE | FORMFEED | CARRIAGERETURN | NEWLINE | TAB | NULL
 [-+]?0[xX][0-9a-fA-F]+					RETURN("HEXINTEGER", yytext);
 
 #floating_number
-FLOATNUMBER                 RETURN("FLOATINTEGER", yytext);
+[-+]?[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?    RETURN("FLOATINTEGER", yytext);
 
 
 #arithmetic_operator
 "+"		                    RETURN("OP_ARITHMETIC", yytext);
 "-"		                    RETURN("OP_ARITHMETIC", yytext);
-"*"{1}                      RETURN("OP_ARITHMETIC", yytext);
-\/{1}                       RETURN("OP_ARITHMETIC", yytext);
-"%"{1}                      RETURN("OP_ARITHMETIC", yytext);
+"*"                      	RETURN("OP_ARITHMETIC", yytext);
+\/                       	RETURN("OP_ARITHMETIC", yytext);
+"%"                      	RETURN("OP_ARITHMETIC", yytext);
 
 #assignment_operator
 "="		                    RETURN("OP_ASSIGNMENT", yytext);
