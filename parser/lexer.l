@@ -3,12 +3,14 @@
 #include "parser.tab.h"
 
 #define RETURN(type, token)						\
-		printf("[%s]: %s\n", (type), (token));	\
-		//return token;
+		printf("[%s]: %s\n", (type), (token));	
 %}
+
 
 /* underscore */
 UNDERSCORE          "_"
+
+COMMENT            "/*"(.|\n)*"*/"
 
 /* escape sequences */
 BACKSLASH           "\\\\"
@@ -26,11 +28,11 @@ STRING              "\"" STRINGCHAR* "\""
 STRINGLITERAL       [STRINGPREFIX]STRING
 
 /* digits */
-DIGIT               [0-9]
+DIGIT               [0-9]											// decimal digit
 BINDIGIT 			[0-1]											// binary digit
 OCTDIGIT			[0-7]												// oct digit
 NONZERODIGIT		[0-9]												// none zero digit
-HEXDIGIT			DIGIT | [a-f]] | [A-F]							// hex digit
+HEXDIGIT			DIGIT | [a-f] | [A-F]							// hex digit
 
 /* integer and long integer literals */
 BININTEGER			"0"("b"|"B") BINDIGIT+									// binary integer
@@ -49,7 +51,7 @@ EXPONENTFLOAT		(INTPART | POINTFLOAT) EXPONENT
 FLOATNUMBER			POINTFLOAT | EXPONENTFLOAT                                // floating number
 
 /* identifier */
-IDENTIFIER          (UNDERSCORE | LETTER) (UNDERSCORE | LETTER | DIGIT)*   // identifier
+IDENTIFIER          (UNDERSCORE | LETTER)(UNDERSCORE | LETTER | DIGIT)*   // identifier
 
 /* whitespaces */
 BACKSPACE           \b
@@ -61,8 +63,7 @@ NULL                \0
 WHITESPACE          BACKSPACE | FORMFEED | CARRIAGERETURN | NEWLINE | TAB | NULL
 
 
-
-
+%x IN_COMMENT
 
 %%
 
@@ -117,7 +118,6 @@ WHITESPACE          BACKSPACE | FORMFEED | CARRIAGERETURN | NEWLINE | TAB | NULL
 "try"                  RETURN("KEYWORD", "try");
 "typeof"               RETURN("KEYWORD", "typeof");
 "uchar"                 RETURN("KEYWORD", "typeof");
-"unsigned "("char"|"short"|"int"|"long") RETURN("KEYWORD", "TYPE ALIAS");
 "uint"                  RETURN("KEYWORD", "typeof");
 "ulong"                 RETURN("KEYWORD", "typeof");
 "ushort"                RETURN("KEYWORD", "typeof");
@@ -128,18 +128,28 @@ WHITESPACE          BACKSPACE | FORMFEED | CARRIAGERETURN | NEWLINE | TAB | NULL
 "finally"              RETURN("KEYWORD", "finally");
 
 #identifiers
-IDENTIFIER    RETURN("IDENTIFIER", yytext);
+[_a-zA-Z][_a-zA-Z0-9]*  				RETURN("IDENTIFIER", yytext);
 
 #inline_comment
 \/\/.*                     RETURN("COMMENT", yytext);
 
 
 #multi-line_comment
-"/*"(.|\n)*"*/"     		RETURN("COMMENT", yytext);
+<INITIAL>{
+     "/*"              	BEGIN(IN_COMMENT);
+}
+<IN_COMMENT>{
+"*/"      				BEGIN(INITIAL);
+[^*\n]+   				// eat comment in chunks
+"*"       				// eat the lone star
+\n        				yylineno++;
+ }
+
+
+
 
 #integer_number
-INTEGER                		RETURN("INTEGER", yytext);
-LONGINTEGER					RETURN("LONGINTEGER", yytext);
+
 
 #floating_number
 FLOATNUMBER                 RETURN("FLOATINTEGER", yytext);
@@ -187,6 +197,7 @@ FLOATNUMBER                 RETURN("FLOATINTEGER", yytext);
 
 #lambda_operator
 "=>"						RETURN("OP_LAMBDA", yytext);
+
 
 #dot
 "."               			RETURN("DOT", yytext);
