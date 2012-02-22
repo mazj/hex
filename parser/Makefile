@@ -10,6 +10,9 @@ lexer.yy.c:
 lexer.out:
 	make LDLIBS=-ll lexer strnutils.h
 
+parser.tab.h:
+	bison -d parser.y
+
 map_unittest: unittest.h
 	gcc map.h map_unittest.c
 
