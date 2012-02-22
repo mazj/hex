@@ -1,61 +1,12 @@
 %{
 #include <stdio.h>
+#include "strnutils.h"
 #include "parser.tab.h"
 
-#define RETURN(type, token)						\
-		printf("[%s]: %s", (type), (token));	
+#define RETURN(type, token_string, token)			\
+		printf("[%s]: %s", (type), (token_string));	\
+        return token;
 %}
-
-
-/* escape sequences */
-BACKSLASH           "\\\\"
-SINGLEQUOTE         "\'"
-DOUBLEQUOTE         "\""
-ESCAPE              BACKSLASH | SINGLEQUOTE | DOUBLEQUOTE | "\\"
-
-/* string literals */
-LOWERLETTER         [a-z]                       // lower case letters
-UPPERLETTER         [A-Z]                       // upper case letters
-LETTER              LOWERLETTER | UPPERLETTER   // letters
-STRINGPREFIX        "r" | "u" | "ur" | "R" | "U" | "UR" | "Ur" | "uR" | "b" | "B" | "br" | "Br" | "bR" | "BR"
-STRINGCHAR			[^ESCAPE \n]
-STRING              "\"" STRINGCHAR* "\""
-STRINGLITERAL       [STRINGPREFIX]STRING
-
-/* digits */
-DIGIT               [0-9]											// decimal digit
-BINDIGIT 			[0-1]											// binary digit
-OCTDIGIT			[0-7]												// oct digit
-NONZERODIGIT		[1-9]												// none zero digit
-HEXDIGIT			[0-9] | [a-f] | [A-F]							// hex digit
-
-/* integer and long integer literals */
-BININTEGER			"0"("b"|"B") BINDIGIT+									// binary integer
-OCTINTEGER			"0"("o"|"O") OCTDIGIT+ | "0" OCTDIGIT+					// oct integer
-HEXINTEGER			"0"("x"|"X") ([0-9] | [a-f] | [A-F])+									// hex integer
-DECIMALINTEGER		NONZERODIGIT DIGIT* | "0"								// decimal integer
-INTEGER             DECIMALINTEGER | OCTINTEGER | HEXINTEGER | BININTEGER	// integer
-LONGINTEGER			INTEGER("l"|"L")
-
-/* floating point literals */
-INTPART				DIGIT+
-EXPONENT            ("e" | "E") ["+" | "-"] DIGIT+
-FRACTION			"." DIGIT+
-POINTFLOAT			[INTPART] FRACTION | INTPART "."
-EXPONENTFLOAT		(INTPART | POINTFLOAT) EXPONENT
-FLOATNUMBER			POINTFLOAT | EXPONENTFLOAT                                // floating number
-
-/* identifier */
-IDENTIFIER          (UNDERSCORE | LETTER)(UNDERSCORE | LETTER | DIGIT)*   // identifier
-
-/* whitespaces */
-BACKSPACE           \b
-FORMFEED            \f
-CARRIAGERETURN      \r
-NEWLINE             \n
-TAB                 \t
-NULL                \0
-WHITESPACE          BACKSPACE | FORMFEED | CARRIAGERETURN | NEWLINE | TAB | NULL
 
 /* Multi-line comment state */
 %x IN_COMMENT
@@ -64,82 +15,76 @@ WHITESPACE          BACKSPACE | FORMFEED | CARRIAGERETURN | NEWLINE | TAB | NULL
 %x IN_STRING
 
 
+
 %%
 
-
 #keywords
-"and"                   RETURN("KEYWORD", "AND");
-"as"			        RETURN("KEYWORD", "AS");
-"base"                  RETURN("KEYWORD", "BASE");
-"bool"                  RETURN("KEYWORD", "BOOL");
-"break"                 RETURN("KEYWORD", "BREAK");
-"catch"                 RETURN("KEYWORD", "CATCH");
-"char"                  RETURN("KEYWORD", "CHAR");
-"class"                 RETURN("KEYWORD", "CLASS");
-"const"                 RETURN("KEYWORD", "CONST");
-"continue"              RETURN("KEYWORD", "CONTINUE");
-"coroutine"             RETURN("KEYWORD", "COROUTINE");
-"def"                   RETURN("KEYWORD", "DEF");
-"defer"                 RETURN("KEYWORD", "DEFER");
-"default"               RETURN("KEYWORD", "DEFAULT");
-"do"                    RETURN("KEYWORD", "DO");
-"double"                RETURN("KEYWORD", "DOUBLE");
-"else"                  RETURN("KEYWORD", "ELSE");
-"enum"                  RETURN("KEYWORD", "ENUM");
-"ext"                   RETURN("KEYWORD", "EXT");
-"float"                 RETURN("KEYWORD", "FLOAT");
-"for"                   RETURN("KEYWORD", "FOR");
-"if"                    RETURN("KEYWORD", "IF");
-"import"                RETURN("KEYWORD", "IMPORT");
-"in"                    RETURN("KEYWORD", "IN");
-"int"                   RETURN("KEYWORD", "INT");
-"interface"             RETURN("KEYWORD", "INTERFACE");
-"lazy"                  RETURN("KEYWORD", "LAZY");
-"long"                  RETURN("KEYWORD", "LONG");
-"new"                   RETURN("KEYWORD", "NEW");
-"not"				    RETURN("KEYWORD", "NOT");
-"or"                    RETURN("KEYWORD", "OR");
-"pass"                  RETURN("KEYWORD", "PASS");
-"private"               RETURN("KEYWORD", "PRIVATE");
-"protected"             RETURN("KEYWORD", "PROTECTED");
-"public"                RETURN("KEYWORD", "PUBLIC");
-"return"                RETURN("KEYWORD", "RETURN");
-"short"                 RETURN("KEYWORD", "SHORT");
-"sizeof"                RETURN("KEYWORD", "SIZEOF");
-"stackalloc"            RETURN("KEYWORD", "STACKALLOC");
-"static"                RETURN("KEYWORD", "STATIC");
-"string"                RETURN("KEYWORD", "STRING");
-"struct"                RETURN("KEYWORD", "STRUCT");
-"switch"                RETURN("KEYWORD", "SWITCH");
-"task"                  RETURN("KEYWORD", "TASK");
-"this"                  RETURN("KEYWORD", "THIS");
-"throw"                 RETURN("KEYWORD", "THROW");
-"try"                   RETURN("KEYWORD", "TRY");
-"typeof"                RETURN("KEYWORD", "TYPEOF");
-"uchar"                 RETURN("KEYWORD", "UCHAR");
-"uint"                  RETURN("KEYWORD", "UINT");
-"ulong"                 RETURN("KEYWORD", "ULONG");
-"ushort"                RETURN("KEYWORD", "USHORT");
-"virtual"               RETURN("KEYWORD", "VIRTUAL");
-"volatile"              RETURN("KEYWORD", "VOLATILE");
-"where"                 RETURN("KEYWORD", "WHERE");
-"while"                 RETURN("KEYWORD", "WHILE");
-"finally"               RETURN("KEYWORD", "FINALLY");
+"and"                   RETURN("KEYWORD", strtoupper(yytext), AND);
+"as"			        RETURN("KEYWORD", strtoupper(yytext), AS);
+"base"                  RETURN("KEYWORD", strtoupper(yytext), BASE);
+"bool"                  RETURN("KEYWORD", strtoupper(yytext), BOOL);
+"break"                 RETURN("KEYWORD", strtoupper(yytext), BREAK);
+"catch"                 RETURN("KEYWORD", strtoupper(yytext), CATCH);
+"char"                  RETURN("KEYWORD", strtoupper(yytext), CHAR);
+"class"                 RETURN("KEYWORD", strtoupper(yytext), CLASS);
+"const"                 RETURN("KEYWORD", strtoupper(yytext), CONST);
+"continue"              RETURN("KEYWORD", strtoupper(yytext), CONTINUE);
+"coroutine"             RETURN("KEYWORD", strtoupper(yytext), COROUTINE);
+"def"                   RETURN("KEYWORD", strtoupper(yytext), DEF);
+"defer"                 RETURN("KEYWORD", strtoupper(yytext), DEFER);
+"default"               RETURN("KEYWORD", strtoupper(yytext), DEFAULT);
+"do"                    RETURN("KEYWORD", strtoupper(yytext), DO);
+"double"                RETURN("KEYWORD", strtoupper(yytext), DOUBLE);
+"else"                  RETURN("KEYWORD", strtoupper(yytext), ELSE);
+"enum"                  RETURN("KEYWORD", strtoupper(yytext), ENUM);
+"ext"                   RETURN("KEYWORD", strtoupper(yytext), EXT);
+"float"                 RETURN("KEYWORD", strtoupper(yytext), FLOAT);
+"for"                   RETURN("KEYWORD", strtoupper(yytext), FOR);
+"if"                    RETURN("KEYWORD", strtoupper(yytext), IF);
+"import"                RETURN("KEYWORD", strtoupper(yytext), IMPORT);
+"in"                    RETURN("KEYWORD", strtoupper(yytext), IN);
+"int"                   RETURN("KEYWORD", strtoupper(yytext), INT);
+"interface"             RETURN("KEYWORD", strtoupper(yytext), INTERFACE);
+"lazy"                  RETURN("KEYWORD", strtoupper(yytext), LAZY);
+"long"                  RETURN("KEYWORD", strtoupper(yytext), LONG);
+"new"                   RETURN("KEYWORD", strtoupper(yytext), NEW);
+"not"				    RETURN("KEYWORD", strtoupper(yytext), NOT);
+"or"                    RETURN("KEYWORD", strtoupper(yytext), OR);
+"pass"                  RETURN("KEYWORD", strtoupper(yytext), PASS);
+"private"               RETURN("KEYWORD", strtoupper(yytext), PRIVATE);
+"protected"             RETURN("KEYWORD", strtoupper(yytext), PROTECTED);
+"public"                RETURN("KEYWORD", strtoupper(yytext), PUBLIC);
+"return"                RETURN("KEYWORD", strtoupper(yytext), RETURN);
+"short"                 RETURN("KEYWORD", strtoupper(yytext), SHORT);
+"sizeof"                RETURN("KEYWORD", strtoupper(yytext), SIZEOF);
+"stackalloc"            RETURN("KEYWORD", strtoupper(yytext), STACKALLOC);
+"static"                RETURN("KEYWORD", strtoupper(yytext), STATIC);
+"string"                RETURN("KEYWORD", strtoupper(yytext), STRING);
+"struct"                RETURN("KEYWORD", strtoupper(yytext), STRUCT);
+"switch"                RETURN("KEYWORD", strtoupper(yytext), SWITCH);
+"task"                  RETURN("KEYWORD", strtoupper(yytext), TASK);
+"this"                  RETURN("KEYWORD", strtoupper(yytext), THIS);
+"throw"                 RETURN("KEYWORD", strtoupper(yytext), THROW);
+"try"                   RETURN("KEYWORD", strtoupper(yytext), TRY);
+"typeof"                RETURN("KEYWORD", strtoupper(yytext), TYPEOF);
+"uchar"                 RETURN("KEYWORD", strtoupper(yytext), UCHAR);
+"uint"                  RETURN("KEYWORD", strtoupper(yytext), UINT);
+"ulong"                 RETURN("KEYWORD", strtoupper(yytext), ULONG);
+"ushort"                RETURN("KEYWORD", strtoupper(yytext), USHORT);
+"virtual"               RETURN("KEYWORD", strtoupper(yytext), VIRTUAL);
+"volatile"              RETURN("KEYWORD", strtoupper(yytext), VOLATILE);
+"where"                 RETURN("KEYWORD", strtoupper(yytext), WHERE);
+"while"                 RETURN("KEYWORD", strtoupper(yytext), WHILE);
+"finally"               RETURN("KEYWORD", strtoupper(yytext), FINALLY);
 
 #identifiers
-[_a-zA-Z][_a-zA-Z0-9]*  				RETURN("IDENTIFIER", yytext);
+[_a-zA-Z][_a-zA-Z0-9]*  RETURN("IDENTIFIER", yytext, IDENTIFIER);
 
 #string_literal
-<INITIAL>{
-	"\""					BEGIN(IN_STRING);
-}
-<IN_STRING>{
-	"\""					BEGIN(INITIAL);
-	([^\"\\\\]|\\\\)*		RETURN("STRING", yytext);
-}
+L?\"(\\.|[^\\"])*\"     RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 
 #inline_comment
-\/\/.*                     RETURN("COMMENT", yytext);
+\/\/.*                  RETURN("COMMENT", yytext, COMMENT);
 
 
 #multi-line_comment
@@ -154,97 +99,97 @@ WHITESPACE          BACKSPACE | FORMFEED | CARRIAGERETURN | NEWLINE | TAB | NULL
  }
 
 #integer
-[-+]?([0]|[1-9]*)[lL]?	RETURN("INTEGER", yytext);
+[-+]?([0]|[1-9]*)[lL]?	RETURN("INTEGER", yytext, INTEGER);
 
 
 #binary_integer
-[-+]?0[bB][0-1]+             RETURN("BININTEGER", yytext);
+[-+]?0[bB][0-1]+        RETURN("BININTEGER", yytext, BININTEGER);
 
 #oct_integer
-[-+]?0[oO]?[0-7]+				RETURN("OCTINTEGER", yytext);
+[-+]?0[oO][0-7]+		RETURN("OCTINTEGER", yytext, OCTINTEGER);
 
 #hexidecimal_integer
-[-+]?0[xX][0-9a-fA-F]+					RETURN("HEXINTEGER", yytext);
+[-+]?0[xX][0-9a-fA-F]+	RETURN("HEXINTEGER", yytext, HEXINTEGER);
 
 #floating_number
-[-+]?[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?    RETURN("FLOATINGNUMBER", yytext);
-
+[-+]?[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?    RETURN("FLOATINGNUM", yytext, FLOATINGNUM);
 
 #arithmetic_operator
-"+"		                    RETURN("OP_ARITHMETIC", yytext);
-"-"		                    RETURN("OP_ARITHMETIC", yytext);
-"*"                      	RETURN("OP_ARITHMETIC", yytext);
-\/                       	RETURN("OP_ARITHMETIC", yytext);
-"%"                      	RETURN("OP_ARITHMETIC", yytext);
+"+"                         RETURN("ARITHMETIC OPERATOR", yytext, PLUS_OP);
+"-"                         RETURN("ARITHMETIC OPERATOR", yytext, MINUS_OP);
+"*"                      	RETURN("ARITHMETIC OPERATOR", yytext, MUL_OP);
+"/"                       	RETURN("ARITHMETIC OPERATOR", yytext, DIV_OP);
+"%"                      	RETURN("ARITHMETIC OPERATOR", yytext, MOD_OP);
 
 #assignment_operator
-"="		                    RETURN("OP_ASSIGNMENT", yytext);
-"+="						RETURN("OP_ASSIGNMENT", yytext);
-"-="						RETURN("OP_ASSIGNMENT", yytext);
-"*="						RETURN("OP_ASSIGNMENT", yytext);
-"/="						RETURN("OP_ASSIGNMENT", yytext);
-"%="						RETURN("OP_ASSIGNMENT", yytext);
+"="		                    RETURN("ASSIGNMENT OPERATOR", yytext, '=');
+"+="						RETURN("ASSIGNMENT OPERATOR", yytext, PLUS_ASSIGN);
+"-="						RETURN("ASSIGNMENT OPERATOR", yytext, MINUS_ASSIGN);
+"*="						RETURN("ASSIGNMENT OPERATOR", yytext, MUL_ASSIGN);
+"/="						RETURN("ASSIGNMENT OPERATOR", yytext, DIV_ASSIGN);
+"%="						RETURN("ASSIGNMENT OPERATOR", yytext, MOD_ASSIGN);
 
 #bitwise_operator
-"~"							RETURN("OP_BITWISE", yytext);
-"&"							RETURN("OP_BITWISE", yytext);
-"|"							RETURN("OP_BITWISE", yytext);
-"^"							RETURN("OP_BITWISE", yytext);
-"~="						RETURN("OP_BITWISE", yytext);
-"&="						RETURN("OP_BITWISE", yytext);
-"|="						RETURN("OP_BITWISE", yytext);
-"^="						RETURN("OP_BITWISE", yytext);
-"<<"						RETURN("OP_BITWISE", yytext);
-">>"						RETURN("OP_BITWISE", yytext);
-"<<="						RETURN("OP_BITWISE", yytext);
-">>="						RETURN("OP_BITWISE", yytext);
+"~"							RETURN("BITWISE OPERATOR", yytext, NOT_BITWISE);
+"&"							RETURN("BITWISE OPERATOR", yytext, AND_BITWISE);
+"|"							RETURN("BITWISE OPERATOR", yytext, OR_BITWISE);
+"^"							RETURN("BITWISE OPERATOR", yytext, XOR_BITWISE);
+"~="						RETURN("BITWISE OPERATOR", yytext, NOT_ASSIGN);
+"&="						RETURN("BITWISE OPERATOR", yytext, AND_ASSIGN);
+"|="						RETURN("BITWISE OPERATOR", yytext, OR_ASSIGN);
+"^="						RETURN("BITWISE OPERATOR", yytext, XOR_ASSIGN);
+"<<"						RETURN("BITWISE OPERATOR", yytext, SHIFTLEFT_BITWISE);
+">>"						RETURN("BITWISE OPERATOR", yytext, SHIFTRIGHT_BITWISE);
+"<<="						RETURN("BITWISE OPERATOR", yytext, SHIFTLEFT_ASSIGN);
+">>="						RETURN("BITWISE OPERATOR", yytext, SHIFTRIGHT_ASSIGN);
 
 #equality_operator
-"=="						RETURN("OP_EQUALITY", yytext);
-">"                    		RETURN("OP_EQUALITY", yytext);
-"<"                    		RETURN("OP_EQUALITY", yytext);
-">="                    	RETURN("OP_EQUALITY", yytext);
-"<="                    	RETURN("OP_EQUALITY", yytext);
+"=="						RETURN("EQUALITY OPERATOR", yytext, EQ_OP);
+">"                    		RETURN("EQUALITY OPERATOR", yytext, GREATER_OP);
+"<"                    		RETURN("EQUALITY OPERATOR", yytext, LESS_OP);
+">="                    	RETURN("EQUALITY OPERATOR", yytext, GEQ_OP);
+"<="                    	RETURN("EQUALITY OPERATOR", yytext, LEQ_OP);
 
 #increment_&_decrement
-"++"						RETURN("OP_INCREMENT", yytext);
-"--"						RETURN("OP_DECREMENT", yytext);
+"++"						RETURN("INCREMENT & DECREMENT", yytext, INC_OP);
+"--"						RETURN("INCREMENT & DECREMENT", yytext, DEC_OP);
 
 #lambda_operator
-"=>"						RETURN("OP_LAMBDA", yytext);
+"=>"						RETURN("LAMBDA OPERATOR", yytext, LAMBDA_OP);
 
 
 #dot
-"."               			RETURN("DOT", yytext);
+"."               			RETURN("DOT", yytext, '.');
 
 #comma
-","             			RETURN("COMMA", yytext);
+","             			RETURN("COMMA", yytext, ',');
 
-#space
-" "             			RETURN("SPACE", yytext);
 
 #colon
-":"              			RETURN("COLON", yytext);
+":"              			RETURN("COLON", yytext, ':');
 
 #bracket
-"("|")"               	     RETURN("BRACKET", yytext);
+"("                         RETURN("BRACKET", yytext, '(');
+")"               	        RETURN("BRACKET", yytext, ')');
 
 
 #sqaure_bracket
-"["|"]"               		RETURN("SQUARE_BRACKET", yytext);
+"["                         RETURN("SQUARE_BRACKET", yytext, '[');
+"]"               		    RETURN("SQUARE_BRACKET", yytext, ']');
 
 
 #curly_braces
-"{"|"}"                     RETURN("CURLY_BRACE", yytext);
+"{"                         RETURN("CURLY_BRACE", yytext, '{');
+"}"                         RETURN("CURLY_BRACE", yytext, '}');
+
+#ellipsis
+"..."                       RETURN("POND", yytext, ELLIPSIS);
 
 #pond
-"#"              			RETURN("POND", yytext);
+"#"              			RETURN("POND", yytext, POND);
 
-#whitespace
-WHITESPACE                 RETURN("WHITESPACE", yytext);
 
-#escape
-ESCAPE                     RETURN("ESCAPE", yytext);
+.                           { /* ignore bad characters */ }
 %%
 
 int main(int argc, char** argv) {
