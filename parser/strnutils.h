@@ -4,6 +4,15 @@
 #define _STRNUTILS_H_
 
 #include <stddef.h>
+#include "ctype.h"
+
+char* strtoupper(char* c) {
+	while(c) {
+		*c = toupper(*c);
+		c++;
+	}
+	return c;
+}
 
 /* Copies the source to the destination.
  * If the destination length is shorter than the source
