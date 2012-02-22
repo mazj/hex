@@ -80,39 +80,30 @@
 #identifiers
 [_a-zA-Z][_a-zA-Z0-9]*  RETURN("IDENTIFIER", yytext, IDENTIFIER);
 
+#character_literal
+L?'(\\.|[^\\'])+'       RETURN("CHARACTER_LITERAL", yytext, CHARACTER_LITERAL);
+
 #string_literal
 L?\"(\\.|[^\\"])*\"     RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 
 #inline_comment
-\/\/.*                  RETURN("COMMENT", yytext, COMMENT);
-
-
-#multi-line_comment
-<INITIAL>{
-     "/*"              	BEGIN(IN_COMMENT);
-}
-<IN_COMMENT>{
-"*/"      				BEGIN(INITIAL);
-[^*\n]+   				// eat comment in chunks
-"*"       				// eat the lone star
-\n        				yylineno++;
- }
+\/\/.*                    RETURN("COMMENT", yytext, COMMENT);
 
 #integer
-[-+]?([0]|[1-9]*)[lL]?	RETURN("INTEGER", yytext, INTEGER);
+([0]|[1-9]*)[lL]?	RETURN("INTEGER", yytext, INTEGER);
 
 
 #binary_integer
-[-+]?0[bB][0-1]+        RETURN("BININTEGER", yytext, BININTEGER);
+0[bB][0-1]+        RETURN("BININTEGER", yytext, BININTEGER);
 
 #oct_integer
-[-+]?0[oO][0-7]+		RETURN("OCTINTEGER", yytext, OCTINTEGER);
+0[oO][0-7]+		RETURN("OCTINTEGER", yytext, OCTINTEGER);
 
 #hexidecimal_integer
-[-+]?0[xX][0-9a-fA-F]+	RETURN("HEXINTEGER", yytext, HEXINTEGER);
+0[xX][0-9a-fA-F]+	RETURN("HEXINTEGER", yytext, HEXINTEGER);
 
 #floating_number
-[-+]?[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?    RETURN("FLOATINGNUM", yytext, FLOATINGNUM);
+[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?    RETURN("FLOATINGNUM", yytext, FLOATINGNUM);
 
 #arithmetic_operator
 "+"                         RETURN("ARITHMETIC OPERATOR", yytext, PLUS_OP);
@@ -188,6 +179,17 @@ L?\"(\\.|[^\\"])*\"     RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 #pond
 "#"              			RETURN("POND", yytext, POND);
 
+
+#multi-line_comment
+<INITIAL>{
+     "/*"               BEGIN(IN_COMMENT);
+}
+<IN_COMMENT>{
+"*/"                    BEGIN(INITIAL);
+[^*\n]+                 // eat comment in chunks
+"*"                     // eat the lone star
+\n                      yylineno++;
+ }
 
 .                           { /* ignore bad characters */ }
 %%
