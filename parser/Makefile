@@ -8,7 +8,7 @@ lexer.yy.c:
 	lex lexer.l
 
 lexer.out:
-	make LDLIBS=-ll lexer
+	make LDLIBS=-ll lexer strnutils.h
 
 map_unittest: unittest.h
 	gcc map.h map_unittest.c
@@ -20,4 +20,4 @@ stack_unittest: unittest.h
 	gcc stack.h stack_unittest.c
 
 clean:
-	rm *.gch *.out *.o
+	rm *.gch *.out *.o *.swp .lexer.l.swp lexer
