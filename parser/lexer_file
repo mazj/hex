@@ -65,6 +65,12 @@ int123
 _123
 _append_string
 
+/* character literals */
+''
+'c'
+'0'
+'\0'
+
 /* string literals */
 ""
 "0"
