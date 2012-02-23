@@ -26,7 +26,7 @@
 
 %token COMMENT
 
-%token INTEGER BININTEGER OCTINTEGER HEXINTEGER FLOATINGNUM
+%token DECIMALINTEGER BININTEGER OCTINTEGER HEXINTEGER FLOATINGNUM
 
 %token PLUS_OP MINUS_OP MUL_OP DIV_OP MOD_OP
 
@@ -48,6 +48,57 @@
 %%
 
 input: /* empty line */
+
+INTEGER
+  : DECIMALINTEGER
+  | BININTEGER
+  | OCTINTEGER
+  | HEXINTEGER
+  ;
+
+LITERAL
+  : STRINGLITERAL
+  | INTEGER
+  | FLOATINGNUM
+  ;
+
+ELLIPSIS
+  : "..."
+  ;
+
+and_expr
+  : shift_expr
+  | and_expr '&' shift_expr
+  ;
+
+xor_expr
+  : and_expr | and_expr '^' and_expr
+  ;
+
+or_expr
+  : xor_expr
+  | or_expr '|' xor_expr 
+  ;
+
+comp_op
+  : EQ_OP
+  | NEQ_OP
+  | LESS_OP
+  | GREATER_OP 
+  | GEQ_OP
+  | LEQ_OP
+  | IS [NOT]
+  | [NOT] IN
+  ;
+
+assign_op
+  : ASSIGN
+  | PLUS_ASSIGN
+  | MINUS_ASSIGN
+  | MUL_ASSIGN
+  | DIV_ASSIGN
+  | MOD_ASSIGN
+  ;
 
 
 /* statements */
@@ -140,6 +191,11 @@ labeled_stmt
   : CASE const_expr ':'  stmt
   | DEFAULT ':' stmt
   ;
+
+pass_stmt
+  : PASS
+  ;
+
 %%
 
 int yyerror(char* s) {
