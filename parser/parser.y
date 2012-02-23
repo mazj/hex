@@ -167,17 +167,28 @@ expr_stmt
   : expr NEWLINE
   ;
 
-selection_stmt
-  : IF '(' expr ')' stmt
-  | IF '(' expr ')' stmr ELSE stmt
-  | SWITCH '(' expr ')' stmr
+if_stmt
+  : IF expr : suite (ELIF expr ':' suite)* [ELSE ':' suite]
   ;
 
-iteration_stmt
-  : FOR '(' expr_stmt expr_stmr ')' stmr
-  | FOR '(' expr_stmt expr_stmr ')' WHERE  expr stmr
-  | FOR '(' expr_stmt expr_stmr expr ')' WHERE  expr stmr
-  | DO stmr WHILE '(' expr ')'
+while_stmt
+  : WHILE expr ':' suite [ELSE ':' suite]
+  ;
+
+for_stmt
+  : FOR target_list IN expr_list ':' suite [WHERE comp_expr] [ELSE ':' suite]
+  ;
+
+
+try_stmt
+  : try1_stmt | try2_stmt
+
+try1_stmt
+  : TRY ':' suite (CATCH [expr [(AS | ',') target]] ':' suite)+ [ELSE : suite]
+  ;
+
+try2_stmt
+  : TRY ':' suite FINALLY ':' suite
   ;
 
 jump_statement
