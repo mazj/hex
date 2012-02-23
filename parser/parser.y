@@ -4,7 +4,7 @@
 
 %token AND AS
 %token BASE BOOL BREAK
-%token CATCH CHAR CLASS CONST CONTINUE COROUTINE
+%token CASE CATCH CHAR CLASS CONST CONTINUE COROUTINE
 %token DEF DEFER DEFAULT DO DOUBLE
 %token ELSE ENUM EXT FLOAT FOR IF IMPORT IN INT INTERFACE
 %token LAZY LONG
@@ -45,10 +45,101 @@
 
 %token POND
 
-
-
 %%
+
 input: /* empty line */
+
+
+/* statements */
+
+initializer
+  : literal ',' literal
+  ;
+
+list_initializer_list
+  : '[' initializer ']'
+  ;
+
+array_initializer_list
+  : '{' initializer '}'
+  ;
+
+tuple_initializer_list
+  : '(' initializer ')'
+  ;
+
+struct_initializer
+  : literal '=' literal
+  ;
+
+struct_initializer_list
+  : '{' struct_initializer '}'
+
+set_initializer_list
+  : '(' list_initializer_list ')'
+
+map_initializer
+  : literal ':' literal
+  ;
+
+map_initializer_list
+  : '{' map_initializer '}'
+  ;
+
+multiset_initializer
+  : '{' literal ',' set_initializer '}'
+  | '{' '}'
+  ;
+
+multiset_initializer_list
+  : '(' multset_initializer ')'
+  ;
+
+initializer_list
+  : assignment_expr
+  | list_initializer_list       /* list initialization */
+  | array_initializer_list      /* array initialization */
+  | tuple_initializer_list      /* tuple initialization */
+  | struct_initializer_list     /* struct initialization */
+  | set_initializer_list        /* set initialization */
+  | map_initializer_list        /* map initialization */
+  | multimap_initializer_list   /* multimap initialization */ 
+  ;
+
+stmr
+  : expr_stmt
+  | selection_stmt
+  | iteration_stmt
+  | jump_stmt
+
+expr_stmt
+  : expr NEWLINE
+  ;
+
+selection_stmt
+  : IF '(' expr ')' stmt
+  | IF '(' expr ')' stmr ELSE stmt
+  | SWITCH '(' expr ')' stmr
+  ;
+
+iteration_stmt
+  : FOR '(' expr_stmt expr_stmr ')' stmr
+  | FOR '(' expr_stmt expr_stmr ')' WHERE  expr stmr
+  | FOR '(' expr_stmt expr_stmr expr ')' WHERE  expr stmr
+  | DO stmr WHILE '(' expr ')'
+  ;
+
+jump_statement
+  : CONTINUE
+  | BREAK
+  | RETURN
+  | RETURN expr
+  ;
+
+labeled_stmt
+  : CASE const_expr ':'  stmt
+  | DEFAULT ':' stmt
+  ;
 %%
 
 int yyerror(char* s) {
