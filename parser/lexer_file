@@ -141,6 +141,7 @@ _append_string
 
 /* assignment operator */
 =
+!=
 +=
 -=
 *=
