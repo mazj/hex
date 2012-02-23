@@ -23,6 +23,7 @@
 "base"                  RETURN("KEYWORD", yytext, BASE);
 "bool"                  RETURN("KEYWORD", yytext, BOOL);
 "break"                 RETURN("KEYWORD", yytext, BREAK);
+"case"                  RETURN("KEYWORD", yytext, CASE);
 "catch"                 RETURN("KEYWORD", yytext, CATCH);
 "char"                  RETURN("KEYWORD", yytext, CHAR);
 "class"                 RETURN("KEYWORD", yytext, CLASS);
