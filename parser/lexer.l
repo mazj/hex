@@ -136,6 +136,7 @@ L?\"(\\.|[^\\"])*\"     RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 
 #equality_operator
 "=="						RETURN("EQUALITY OPERATOR", yytext, EQ_OP);
+"!="                        RETURN("EQUALITY OPERATOR", yytext, NEQ_OP);
 ">"                    		RETURN("EQUALITY OPERATOR", yytext, GREATER_OP);
 "<"                    		RETURN("EQUALITY OPERATOR", yytext, LESS_OP);
 ">="                    	RETURN("EQUALITY OPERATOR", yytext, GEQ_OP);
