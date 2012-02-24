@@ -30,7 +30,7 @@
 
 %token PLUS_OP MINUS_OP MUL_OP DIV_OP MOD_OP
 
-%token ASSIGN PLUS_ASSIGN MINUS_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
+%token ASSIGN_OP PLUS_ASSIGN MINUS_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
 
 %token NOT_BITWISE AND_BITWISE OR_BITWISE XOR_BITWISE SHIFTLEFT_BITWISE SHIFTRIGHT_BITWISE
 %token NOT_ASSIGN AND_ASSIGN OR_ASSIGN XOR_ASSIGN SHIFTLEFT_ASSIGN SHIFTRIGHT_ASSIGN
@@ -66,39 +66,232 @@ ELLIPSIS
   : "..."
   ;
 
-and_expr
+primary_expr
+  : IDENTIFIER
+  | LITERAL 
+  ;
+
+postfix_expre
+  : primary_expr
+  | postfix_expr '[' expr ']'
+  | postfix_expr '(' ')'
+  | postfix_expr '(' arg_expr_list ')'
+  | postfix_expr '.' IDENTIFIER
+  | postfix_expr INC_OP
+  | postfix_expr DEC_OP
+  ;
+
+arg_expr_list
+  : assignment_expr
+  | arg_expr_list ',' assignment_exprs
+  ;
+
+unary_expr
+  : postfix_expr
+  | INC_OP unary_expr
+  | DEC_OP unary_expr
+  | unary_operator cast_expr
+  | SIZEOF (IDENTIFIER | TYPE)
+  ;
+
+unary_operator
+  : AND_BITWISE
+  | MUL_OP
+  | PLUS_OP
+  | MINUS_OP
+  | NOT_BITWISE
+  | NOT
+  ;
+
+cast_expr
+  : unary_expr
+  | '(' typename ')' cast_expr
+  ;
+
+multiplicative_expr
+  : cast_expr
+  | multiplicative_expr MUL_OP cast_expr
+  | multiplicative_expr DIV_OP cast_expr
+  | multiplicative_expr MOD_OP cast_expr
+  ;
+
+additive_expr
+  : multiplicative_expr
+  | additive_expr PLUS_OP multiplicative_expr
+  | additive_expr MINUS_OP multiplicative_expr
+  ;
+
+shift_expr
+  : additive_expr
+  | shift_expr SHIFTLEFT_BITWISE additive_expr
+  | shift_expr SHIFTRIGHT_BITWISE additive_expr
+  ;
+
+relational_expr
   : shift_expr
-  | and_expr '&' shift_expr
+  | relational_expr LESS_OP shift_expr
+  | relational_expr GREATER_OP shift_expr
+  | relational_expr LE_OP shift_expr
+  | relational_expr GE_OP shift_expr
   ;
 
-xor_expr
-  : and_expr | and_expr '^' and_expr
+equality_expr
+  : relational_expr
+  | equality_expr EQ_OP relational_expr
+  | equality_expr NEQ_OP relational_expr
   ;
 
-or_expr
-  : xor_expr
-  | or_expr '|' xor_expr 
+and_expr
+  : equality_expr
+  | and_expr '&' equality_expr
   ;
 
-comp_op
-  : EQ_OP
-  | NEQ_OP
-  | LESS_OP
-  | GREATER_OP 
-  | GEQ_OP
-  | LEQ_OP
-  | IS [NOT]
-  | [NOT] IN
+exclusive_or_expr
+  : and_expr
+  | exclusive_or_expr '^' and_expr
   ;
 
-assign_op
-  : ASSIGN
-  | PLUS_ASSIGN
-  | MINUS_ASSIGN
+inclusive_or_expr
+  : exclusive_or_expr
+  | inclusive_or_expr '|' exclusive_or_expr
+  ;
+
+logical_and_expr
+  : inclusive_or_expr
+  | logical_and_expr AND inclusive_or_expr
+  ;
+
+logical_or_expr
+  : logical_and_expr
+  | logical_or_expr OR logical_and_expr
+  ;
+
+conditional_expr
+  : logical_or_expr
+  | expression IF logical_or_expr ELSE conditional_expr
+  ;
+
+assignment_expr
+  : conditional_expr
+  | unary_expr assignment_operator assignment_expr
+  ;
+
+assignment_operator
+  : ASSIGN_OP
   | MUL_ASSIGN
   | DIV_ASSIGN
   | MOD_ASSIGN
+  | PLUS_ASSIGN
+  | MINUS_ASSIGN
+  | SHIFTLEFT_ASSIGN
+  | SHIFTRIGHT_ASSIGN
+  | NOT_ASSIGN
+  | AND_ASSIGN
+  | OR_ASSIGN
+  | XOR_ASSIGN
+  | [LAZY] NEW
   ;
+
+expr
+  : assignment_expr
+  | expression ',' assignment_expr
+  ;
+
+declaration
+  : declaration_specifiers ';'
+  | declaration_specifiers init_declarator_list ';'
+  ;
+
+declaration_specifiers
+  : storage_class_specifier
+  | storage_class_specifier declaration_specifiers
+  | [type_specifier]
+  | [type_specifier] declaration_specifiers
+  | type_qualifier
+  | type_qualifier declaration_specifiers
+  ;
+
+init_declarator_list
+  : init_declarator
+  | init_declarator_list ',' init_declarator
+  ;
+
+storage_class_specifier
+  : CONST
+  | STATIC
+  | VOLATILE
+  ;
+
+type_specifier
+  : CHAR
+  | SHORT
+  | INT
+  | LONG
+  | FLOAT
+  | DOUBLE
+  | UCHAR
+  | USHORT
+  | UINT
+  | ULONG
+  | IDENTIFIER
+  ;
+
+stmr
+  : expr_stmt
+  | selection_stmt
+  | iteration_stmt
+  | jump_stmt
+  ;
+
+expr_stmt
+  : expr NEWLINE
+  ;
+
+if_stmt
+  : IF expr : stmt (ELIF expr ':' stmt)* [ELSE ':' stmt]
+  ;
+
+while_stmt
+  : WHILE expr ':' suite [ELSE ':' suite]
+  ;
+
+for_stmt
+  : FOR target_list IN expr_list ':' suite [WHERE comp_expr] [ELSE ':' suite]
+  ;
+
+
+try_stmt
+  : try1_stmt | try2_stmt
+
+try1_stmt
+  : TRY ':' suite (CATCH [expr [(AS | ',') target]] ':' suite)+ [ELSE : suite]
+  ;
+
+try2_stmt
+  : TRY ':' suite FINALLY ':' suite
+  ;
+
+jump_statement
+  : CONTINUE NEWLINE
+  | BREAK NEWLINE
+  | RETURN NEWLINE
+  | RETURN expr NEWLINE
+  ;
+
+labeled_stmt
+  : CASE const_expr ':'  stmt
+  | DEFAULT ':' stmt
+  ;
+
+pass_stmt
+  : PASS
+  ;
+
+lambda_form
+  : parameter_list "=>" expression
+
+
+
 
 
 /* statements */
@@ -157,55 +350,6 @@ initializer_list
   | multimap_initializer_list   /* multimap initialization */ 
   ;
 
-stmr
-  : expr_stmt
-  | selection_stmt
-  | iteration_stmt
-  | jump_stmt
-
-expr_stmt
-  : expr NEWLINE
-  ;
-
-if_stmt
-  : IF expr : suite (ELIF expr ':' suite)* [ELSE ':' suite]
-  ;
-
-while_stmt
-  : WHILE expr ':' suite [ELSE ':' suite]
-  ;
-
-for_stmt
-  : FOR target_list IN expr_list ':' suite [WHERE comp_expr] [ELSE ':' suite]
-  ;
-
-
-try_stmt
-  : try1_stmt | try2_stmt
-
-try1_stmt
-  : TRY ':' suite (CATCH [expr [(AS | ',') target]] ':' suite)+ [ELSE : suite]
-  ;
-
-try2_stmt
-  : TRY ':' suite FINALLY ':' suite
-  ;
-
-jump_statement
-  : CONTINUE
-  | BREAK
-  | RETURN
-  | RETURN expr
-  ;
-
-labeled_stmt
-  : CASE const_expr ':'  stmt
-  | DEFAULT ':' stmt
-  ;
-
-pass_stmt
-  : PASS
-  ;
 
 %%
 
