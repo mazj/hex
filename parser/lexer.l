@@ -113,7 +113,7 @@ L?\"(\\.|[^\\"])*\"     RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 "%"                      	RETURN("ARITHMETIC OPERATOR", yytext, MOD_OP);
 
 #assignment_operator
-"="		                    RETURN("ASSIGNMENT OPERATOR", yytext, ASSIGN);
+"="		                    RETURN("ASSIGNMENT OPERATOR", yytext, ASSIGN_OP);
 "+="						RETURN("ASSIGNMENT OPERATOR", yytext, PLUS_ASSIGN);
 "-="						RETURN("ASSIGNMENT OPERATOR", yytext, MINUS_ASSIGN);
 "*="						RETURN("ASSIGNMENT OPERATOR", yytext, MUL_ASSIGN);
