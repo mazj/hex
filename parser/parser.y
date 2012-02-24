@@ -236,6 +236,80 @@ type_specifier
   | IDENTIFIER
   ;
 
+paramter_type_list
+  : parameter_list
+  | parameter_list ',' ELIPSIS
+  ;
+
+parameter_list
+  : parameter_declaration
+  | parameter_list, parameter_declaration
+  ;
+
+parameter_declaration
+  : declaration_specifiers declarator
+  | declaration_specifiers abstract_declarator
+  | declaration_specifiers;
+  ;
+
+/* initializers */
+
+initializer
+  : assignment_expr
+  | '[' list_initializer_list ']'               /* list */
+  | '[' list_initializer_list ',' ']'           /* list */
+  | '{' array_initializer_list '}'              /* array */
+  | '{' array_initializer_list ',' '}'          /* array */
+  | '(' tuple_initializer_list ')'              /* tuple */
+  | '(' tuple_initializer_list ',' ')'          /* tuple */
+  | '{' struct_initializer_list '}'             /* struct */
+  | '{' struct_initializer_list ',' '}'         /* struct */
+  | '(' '[' list_initializer_list  ']' ')'      /* set */
+  | '(' '[' list_initializer_list ','  ']' ')'  /* set */
+  | '{' map_initializer_list '}'                /* map */
+  | '{' map_initializer_list ',' '}'            /* map */
+  | '[' multimap_initializer_list ']'           /* multimap */
+  | '[' multimap_initializer_list ',' ']'       /* multimap */
+  ;
+
+list_initializer_list
+  : initializer
+  | list_initializer_list ',' initializer
+  ;
+
+array_initializer_list
+  : list_initializer_list
+  | array_initializer_list ',' list_initializer_list
+  ;
+
+tuple_initializer_list
+  : array_initializer_list
+  | tuple_initializer_list ',' array_initializer_list
+  ;
+
+struct_initializer_list
+  : IDENTIFIER '=' LITERAL
+  | IDENTIFIER '=' assignment_expr
+  | struct_initializer_list ',' IDENTIFIER '=' LITERAL
+  | struct_initializer_list ',' IDENTIFIER '=' assignment_expr
+  ;
+
+map_initializer_list
+  : LITERAL ':' LITERAL
+  | LITERAL ':' IDENTIFIER
+  | IDENTIFIER ':' LITERAL
+  | IDENTIFIER ':' IDENTIFIER
+  | map_initializer_list ',' LITERAL ':' LITERAL
+  | map_initializer_list ',' LITERAL ':' IDENTIFIER
+  | map_initializer_list ',' IDENTIFIER ':' LITERAL
+  | map_initializer_list ',' IDENTIFIER ':' IDENTIFIER
+  ;
+
+
+ 
+
+
+
 stmr
   : expr_stmt
   | selection_stmt
@@ -289,66 +363,16 @@ pass_stmt
 
 lambda_form
   : parameter_list "=>" expression
-
-
-
-
-
-/* statements */
-
-initializer
-  : literal ',' literal
   ;
 
-list_initializer_list
-  : '[' initializer ']'
-  ;
 
-array_initializer_list
-  : '{' initializer '}'
-  ;
 
-tuple_initializer_list
-  : '(' initializer ')'
-  ;
 
-struct_initializer
-  : literal '=' literal
-  ;
 
-struct_initializer_list
-  : '{' struct_initializer '}'
 
-set_initializer_list
-  : '(' list_initializer_list ')'
 
-map_initializer
-  : literal ':' literal
-  ;
 
-map_initializer_list
-  : '{' map_initializer '}'
-  ;
 
-multiset_initializer
-  : '{' literal ',' set_initializer '}'
-  | '{' '}'
-  ;
-
-multiset_initializer_list
-  : '(' multset_initializer ')'
-  ;
-
-initializer_list
-  : assignment_expr
-  | list_initializer_list       /* list initialization */
-  | array_initializer_list      /* array initialization */
-  | tuple_initializer_list      /* tuple initialization */
-  | struct_initializer_list     /* struct initialization */
-  | set_initializer_list        /* set initialization */
-  | map_initializer_list        /* map initialization */
-  | multimap_initializer_list   /* multimap initialization */ 
-  ;
 
 
 %%
