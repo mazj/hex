@@ -322,6 +322,20 @@ init_declarator
   ;
 
 /*
+ *  Declarator
+ */
+declarator
+  : direct_declarator
+  ;
+
+direct_declarator
+  : IDENTIFIER
+  | '(' declarator ')'
+  | direct_declarator '[' const_expr ']'
+  | direct_declarator '[' ']'
+  ;
+
+/*
  *  Storage class specifier 
  */
 storage_class_specifier
@@ -347,6 +361,9 @@ type_specifier
   | IDENTIFIER
   ;
 
+/*
+ *
+ */
 paramter_type_list
   : parameter_list
   | parameter_list ',' ELIPSIS
