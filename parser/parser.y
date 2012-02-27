@@ -413,7 +413,24 @@ parameter_declaration
 
 /******************** initializers ********************/
 
-
+/*
+ *  Initializer
+ *
+ *  Initializers for basic data structures supported by HEX.
+ *
+ *  Examples of these basic structures:
+ *
+ *  Type          |   Literal Example                                               |       Description
+ *  ______________|_________________________________________________________________|________________________________________
+ *                |                                                                 |
+ *  list          |   ["HEX", 5, 'e']                                               |   Mutable array-type list
+ *  array         |   int numbers[5] = {1,2,3,4,5}                                  |   Immutable sequence of data
+ *  tuple         |   ("HEX", 5, 'e')                                               |   Immutable tuple
+ *  struct        |   {name = "HEX", version = 0.1}                                 |   Mutable struct
+ *  set           |   [("HEX", 5, 'e')]                                             |   Unordered collection of unique data
+ *  map           |   {"apple" : "sweet", "orange" : "sour"}                        |   Key-value dictionary
+ *  multimap      |   {"apple" : ("sweet", "red"), "orange" : ("sour", "orange")}   |   Single key multiple value dictionary 
+ */
 initializer
   : assignment_expr
   | '[' list_initializer_list ']'               /* list */
@@ -432,83 +449,146 @@ initializer
   | '{' multimap_initializer_list ',' '}'       /* multimap */
   ;
 
+/*
+ *  List initializer list
+ */
 list_initializer_list
   : initializer
   | list_initializer_list ',' initializer
   ;
 
+/*
+ *  Array initializer list
+ */
 array_initializer_list
   : list_initializer_list
   | array_initializer_list ',' list_initializer_list
   ;
 
+/*
+ *  Tuple initializer list
+ */
 tuple_initializer_list
   : array_initializer_list
   | tuple_initializer_list ',' array_initializer_list
   ;
 
+/*
+ *  Struct initializer list
+ */
 struct_initializer_list
   : IDENTIFIER '=' LITERAL
-  | IDENTIFIER '=' assignment_expr
+  | IDENTIFIER '=' initializer
   | struct_initializer_list ',' IDENTIFIER '=' LITERAL
-  | struct_initializer_list ',' IDENTIFIER '=' assignment_expr
+  | struct_initializer_list ',' IDENTIFIER '=' initializer
   ;
 
+/*
+ *  Set initializer list
+ */
 set_initializer_list
   : tuple_initializer_list
   | set_initializer_list ',' tuple_initializer_list
   ;
 
+/*
+ *  Map initializer list
+ */
 map_initializer_list
   : LITERAL ':' LITERAL
-  | LITERAL ':' IDENTIFIER
+  | LITERAL ':' set_initializer_list
   | IDENTIFIER ':' LITERAL
-  | IDENTIFIER ':' IDENTIFIER
+  | IDENTIFIER ':' set_initializer_list
   | map_initializer_list ',' LITERAL ':' LITERAL
-  | map_initializer_list ',' LITERAL ':' IDENTIFIER
+  | map_initializer_list ',' LITERAL ':' set_initializer_list
   | map_initializer_list ',' IDENTIFIER ':' LITERAL
-  | map_initializer_list ',' IDENTIFIER ':' IDENTIFIER
+  | map_initializer_list ',' IDENTIFIER ':' set_initializer_list
   ;
 
+/*
+ *  Multimap initializer list
+ */
 multimap_initializer_list
-  : LITERAL ':' '(' list_initializer ')'
+  : LITERAL ':' '(' ')'
+  | LITERAL ':' '(' map_initializer_list ')'
+  | IDENTIFIER ':' '(' ')'
+  | IDENTIFIER ':' '(' map_initializer_list ')'
+  | multimap_initializer_list ',' LITERAL ':' '(' ')'
+  | multimap_initializer_list ',' LITERAL ':' '(' map_initializer_list ')'
+  | multimap_initializer_list ',' IDENTIFIER ':' '(' ')'
+  | multimap_initializer_list ',' IDENTIFIER ':' set_initializer_list
   ;
 
 
 /******************** statements ********************/
 
 
+/*
+ *  Statement
+ */
 stmr
   : expr_stmt
-  | selection_stmt
-  | iteration_stmt
+  | if_stmt
+  | for_stmt
+  | while_stmt
+  | dowhile_stmt
+  | try_stmt
   | jump_stmt
   ;
 
+/*
+ *  Statement list
+ */
+stmt_list
+  : stmt
+  | stmt_list stmt
+  ;
+
+/*
+ *  Expression statement
+ */
 expr_stmt
   : expr NEWLINE
   ;
 
+/*
+ * If statement
+ */
 if_stmt
   : IF expr : stmt (ELIF expr ':' stmt)* [ELSE ':' stmt]
   ;
 
+/*
+ *  For statement
+ */
 for_stmt
   : FOR target_list IN expr [WHERE comp_expr] stmt
   ;
 
+/*
+ *  While statement
+ */
 while_stmt
   : WHILE expr ':' stmt
   ;
 
-do_stmt
+/*
+ *  Do-while statement
+ */
+dowhile_stmt
   : DO stmt WHILE expr
   ;
 
+/*
+ *  Try statement
+ */
 try_stmt
   : TRY ':' stmt CATCH expr ':' (FINALLY stmt)
   ;
 
+/*
+ *  Jump statement
+ */
 jump_statement
   : CONTINUE NEWLINE
   | BREAK NEWLINE
@@ -516,6 +596,9 @@ jump_statement
   | RETURN expr NEWLINE
   ;
 
+/*
+ *  Pass statement
+ */
 pass_stmt
   : PASS NEWLINE
   ;
