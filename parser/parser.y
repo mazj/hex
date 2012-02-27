@@ -65,6 +65,8 @@ LITERAL
 unary_operator
   : PLUS_OP
   | MINUS_OP
+  | INC_OP
+  | DEC_OP
   | NOT_BITWISE
   | NOT
   ;
@@ -72,7 +74,9 @@ unary_operator
 
 /******************** expressions ********************/
 
-
+/* 
+ *  Primary expressions
+ */
 primary_expr
   : IDENTIFIER
   | STRING_LITERAL
@@ -80,21 +84,22 @@ primary_expr
   ;
 
 /*
- * Postfix expression consist of primary expressions in which
- * postfix operators follow a primary expression. The postfix
- * operator. The postfix operators are listed below:
+ *  Postfix expression
  *
- * Operator Name                |         Operator Notation
- * _____________________________|_______________________________
- *                              |
- * Subscript operator           |         []
- * Function call operators      |         ()
- * Member access                |         .
- * Postfix increment operator   |         ++
- * Postfix decrement operator   |         --
+ *  Postfix expression consist of primary expressions in which
+ *  postfix operators follow a primary expression. The postfix
+ *  operator. The postfix operators are listed below:
  *
-*/
-
+ *  Operator Name                |         Operator Notation
+ *  _____________________________|____________________________
+ *                               |
+ *  Subscript operator           |         []
+ *  Function call operators      |         ()
+ *  Member access                |         .
+ *  Postfix increment operator   |         ++
+ *  Postfix decrement operator   |         --
+ *
+ */
 postfix_expr
   : primary_expr
   | postfix_expr '[' expr ']'
@@ -105,24 +110,37 @@ postfix_expr
   | postfix_expr DEC_OP
   ;
 
+/*
+ *  Argument expression list
+ */
 arg_expr_list
   : assignment_expr
   | arg_expr_list ',' assignment_exprs
   ;
 
+/*
+ *  Unary expression
+ */
 unary_expr
   : postfix_expr
   | INC_OP unary_expr
   | DEC_OP unary_expr
   | unary_operator cast_expr
-  | SIZEOF (IDENTIFIER | TYPE)
+  | SIZEOF IDENTIDIER | TYPE
+  | SIZEOF '(' IDENTIFIER | TYPE ')'
   ;
 
+/*
+ *  Cast expression
+ */
 cast_expr
   : unary_expr
   | '(' typename ')' cast_expr
   ;
 
+/*
+ *  Multiplicative expression
+ */
 multiplicative_expr
   : cast_expr
   | multiplicative_expr MUL_OP cast_expr
@@ -130,18 +148,27 @@ multiplicative_expr
   | multiplicative_expr MOD_OP cast_expr
   ;
 
+/*
+ *  Additive expression
+ */
 additive_expr
   : multiplicative_expr
   | additive_expr PLUS_OP multiplicative_expr
   | additive_expr MINUS_OP multiplicative_expr
   ;
 
+/*
+ * Shift expression
+ */
 shift_expr
   : additive_expr
   | shift_expr SHIFTLEFT_BITWISE additive_expr
   | shift_expr SHIFTRIGHT_BITWISE additive_expr
   ;
 
+/*
+ * Relational expression
+ */
 relational_expr
   : shift_expr
   | relational_expr LESS_OP shift_expr
@@ -150,6 +177,9 @@ relational_expr
   | relational_expr GE_OP shift_expr
   ;
 
+/*
+ *  Equality expression
+ */
 equality_expr
   : relational_expr
   | equality_expr EQ_OP relational_expr
