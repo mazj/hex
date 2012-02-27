@@ -71,6 +71,23 @@ unary_operator
   | NOT
   ;
 
+assignment_operator
+  : ASSIGN_OP
+  | ASSIGN_OP [NEW]
+  | ASSIGN_OP [LAZY NEW]
+  | MUL_ASSIGN
+  | DIV_ASSIGN
+  | MOD_ASSIGN
+  | PLUS_ASSIGN
+  | MINUS_ASSIGN
+  | SHIFTLEFT_ASSIGN
+  | SHIFTRIGHT_ASSIGN
+  | NOT_ASSIGN
+  | AND_ASSIGN
+  | OR_ASSIGN
+  | XOR_ASSIGN
+  | [LAZY] NEW
+  ;
 
 /******************** expressions ********************/
 
@@ -115,7 +132,9 @@ postfix_expr
  */
 arg_expr_list
   : assignment_expr
-  | arg_expr_list ',' assignment_exprs
+  | assignment_expr AS IDENTIFIER
+  | arg_expr_list ',' assignment_expr
+  | arg_expr_list ',' assignment_expr AS IDENTIFIER
   ;
 
 /*
@@ -186,65 +205,78 @@ equality_expr
   | equality_expr NEQ_OP relational_expr
   ;
 
+/*
+ *  Bitwise AND expression
+ */
 and_expr
   : equality_expr
   | and_expr '&' equality_expr
   ;
 
+/*
+ *  Bitwise XOR expression
+ */
 exclusive_or_expr
   : and_expr
   | exclusive_or_expr '^' and_expr
   ;
 
+/*
+ *  Bitwise OR expression
+ */
 inclusive_or_expr
   : exclusive_or_expr
   | inclusive_or_expr '|' exclusive_or_expr
   ;
 
+/*
+ *  Logical AND expression
+ */
 logical_and_expr
   : inclusive_or_expr
   | logical_and_expr AND inclusive_or_expr
   ;
 
+/*
+ *  Logical OR expression
+ */
 logical_or_expr
   : logical_and_expr
   | logical_or_expr OR logical_and_expr
   ;
 
+/*
+ *  Conditional expression
+ */
 conditional_expr
   : logical_or_expr
   | expression IF logical_or_expr ELSE conditional_expr
   ;
 
+/*
+ *  Assignment expression
+ */
 assignment_expr
   : conditional_expr
   | unary_expr assignment_operator assignment_expr
   ;
 
-assignment_operator
-  : ASSIGN_OP
-  | MUL_ASSIGN
-  | DIV_ASSIGN
-  | MOD_ASSIGN
-  | PLUS_ASSIGN
-  | MINUS_ASSIGN
-  | SHIFTLEFT_ASSIGN
-  | SHIFTRIGHT_ASSIGN
-  | NOT_ASSIGN
-  | AND_ASSIGN
-  | OR_ASSIGN
-  | XOR_ASSIGN
-  | [LAZY] NEW
+/*
+ *  Lambda expression
+ */
+lambda_expr
+  : arg_expr_list LAMBDA_OP expression
   ;
 
+/* 
+ *  expression
+ */
 expr
   : assignment_expr
   | expression ',' assignment_expr
   ;
 
-lambda_expr
-  : parameter_list LAMBDA_OP expression
-  ;
+
 
 
 declaration
