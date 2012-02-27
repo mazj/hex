@@ -264,12 +264,12 @@ initializer
   | '(' tuple_initializer_list ',' ')'          /* tuple */
   | '{' struct_initializer_list '}'             /* struct */
   | '{' struct_initializer_list ',' '}'         /* struct */
-  | '(' '[' list_initializer_list  ']' ')'      /* set */
-  | '(' '[' list_initializer_list ','  ']' ')'  /* set */
+  | '(' '[' set_initializer_list  ']' ')'      /* set */
+  | '(' '[' set_initializer_list ','  ']' ')'  /* set */
   | '{' map_initializer_list '}'                /* map */
   | '{' map_initializer_list ',' '}'            /* map */
-  | '[' multimap_initializer_list ']'           /* multimap */
-  | '[' multimap_initializer_list ',' ']'       /* multimap */
+  | '{' multimap_initializer_list '}'           /* multimap */
+  | '{' multimap_initializer_list ',' '}'       /* multimap */
   ;
 
 list_initializer_list
@@ -294,6 +294,11 @@ struct_initializer_list
   | struct_initializer_list ',' IDENTIFIER '=' assignment_expr
   ;
 
+set_initializer_list
+  : tuple_initializer_list
+  | set_initializer_list ',' tuple_initializer_list
+  ;
+
 map_initializer_list
   : LITERAL ':' LITERAL
   | LITERAL ':' IDENTIFIER
@@ -305,8 +310,10 @@ map_initializer_list
   | map_initializer_list ',' IDENTIFIER ':' IDENTIFIER
   ;
 
+multimap_initializer_list
+  : LITERAL ':' '(' list_initializer ')'
+  ;
 
- 
 
 
 
