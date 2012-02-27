@@ -328,6 +328,9 @@ declarator
   : direct_declarator
   ;
 
+/*
+ *  Direct declarator
+ */
 direct_declarator
   : IDENTIFIER
   | '(' declarator ')'
@@ -339,13 +342,11 @@ direct_declarator
  *  Storage class specifier 
  */
 storage_class_specifier
-  : CONST
-  | STATIC
-  | VOLATILE
+  : STATIC
   ;
 
 /*
- * Type specifier
+ *  Type specifier
  */
 type_specifier
   : CHAR
@@ -362,22 +363,51 @@ type_specifier
   ;
 
 /*
- *
+ *  Type qualifier
+ */
+type_qualifier
+  : CONST
+  | VOLATILE
+  ;
+
+/*
+ *  Type qualifier list
+ */
+ type_qualifier_list
+  : type_qualifier
+  | type_qualifier_list type_qualifier
+  ;
+
+/*
+ *  Identifier list
+ */
+identifier_list
+  : IDENTIFIER
+  | identifier_list ',' IDENTIFIER
+  ;
+
+/*
+ * Parameter type list
  */
 paramter_type_list
   : parameter_list
   | parameter_list ',' ELIPSIS
   ;
 
+/*
+ *  Parameter list
+ */
 parameter_list
   : parameter_declaration
   | parameter_list, parameter_declaration
   ;
 
+/*
+ *  Parameter declaration
+ */
 parameter_declaration
-  : declaration_specifiers declarator
-  | declaration_specifiers abstract_declarator
-  | declaration_specifiers;
+  : IDENTIFIER
+  | declaration_specifiers declarator
   ;
 
 
