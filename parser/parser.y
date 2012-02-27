@@ -303,6 +303,8 @@ declaration_specifiers
   | storage_class_specifier declaration_specifiers
   | type_specifier
   | type_specifier declaration_specifiers
+  | type_qualifier
+  | type_qualifier declaration_specifiers
   ;
 
 /*
@@ -603,6 +605,11 @@ pass_stmt
   : PASS NEWLINE
   ;
 
+/*
+ *  function_definition
+ */
+function_definition
+  : 
 
 %%
 
