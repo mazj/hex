@@ -62,16 +62,23 @@ LITERAL
   | FLOATINGNUM
   ;
 
-ELLIPSIS
-  : "..."
+unary_operator
+  : PLUS_OP
+  | MINUS_OP
+  | NOT_BITWISE
+  | NOT
   ;
+
+
+/******************** expressions ********************/
+
 
 primary_expr
   : IDENTIFIER
   | LITERAL 
   ;
 
-postfix_expre
+postfix_expr
   : primary_expr
   | postfix_expr '[' expr ']'
   | postfix_expr '(' ')'
@@ -92,15 +99,6 @@ unary_expr
   | DEC_OP unary_expr
   | unary_operator cast_expr
   | SIZEOF (IDENTIFIER | TYPE)
-  ;
-
-unary_operator
-  : AND_BITWISE
-  | MUL_OP
-  | PLUS_OP
-  | MINUS_OP
-  | NOT_BITWISE
-  | NOT
   ;
 
 cast_expr
@@ -197,6 +195,11 @@ expr
   | expression ',' assignment_expr
   ;
 
+lambda_expr
+  : parameter_list LAMBDA_OP expression
+  ;
+
+
 declaration
   : declaration_specifiers ';'
   | declaration_specifiers init_declarator_list ';'
@@ -252,7 +255,9 @@ parameter_declaration
   | declaration_specifiers;
   ;
 
-/* initializers */
+
+/******************** initializers ********************/
+
 
 initializer
   : assignment_expr
@@ -264,8 +269,8 @@ initializer
   | '(' tuple_initializer_list ',' ')'          /* tuple */
   | '{' struct_initializer_list '}'             /* struct */
   | '{' struct_initializer_list ',' '}'         /* struct */
-  | '(' '[' set_initializer_list  ']' ')'      /* set */
-  | '(' '[' set_initializer_list ','  ']' ')'  /* set */
+  | '(' '[' set_initializer_list  ']' ')'       /* set */
+  | '(' '[' set_initializer_list ','  ']' ')'   /* set */
   | '{' map_initializer_list '}'                /* map */
   | '{' map_initializer_list ',' '}'            /* map */
   | '{' multimap_initializer_list '}'           /* multimap */
@@ -315,6 +320,7 @@ multimap_initializer_list
   ;
 
 
+/******************** statements ********************/
 
 
 stmr
@@ -332,24 +338,20 @@ if_stmt
   : IF expr : stmt (ELIF expr ':' stmt)* [ELSE ':' stmt]
   ;
 
-while_stmt
-  : WHILE expr ':' suite [ELSE ':' suite]
-  ;
-
 for_stmt
-  : FOR target_list IN expr_list ':' suite [WHERE comp_expr] [ELSE ':' suite]
+  : FOR target_list IN expr [WHERE comp_expr] stmt
   ;
 
+while_stmt
+  : WHILE expr ':' stmt
+  ;
+
+do_stmt
+  : DO stmt WHILE expr
+  ;
 
 try_stmt
-  : try1_stmt | try2_stmt
-
-try1_stmt
-  : TRY ':' suite (CATCH [expr [(AS | ',') target]] ':' suite)+ [ELSE : suite]
-  ;
-
-try2_stmt
-  : TRY ':' suite FINALLY ':' suite
+  : TRY ':' stmt CATCH expr ':' (FINALLY stmt)
   ;
 
 jump_statement
@@ -359,27 +361,9 @@ jump_statement
   | RETURN expr NEWLINE
   ;
 
-labeled_stmt
-  : CASE const_expr ':'  stmt
-  | DEFAULT ':' stmt
-  ;
-
 pass_stmt
-  : PASS
+  : PASS NEWLINE
   ;
-
-lambda_form
-  : parameter_list "=>" expression
-  ;
-
-
-
-
-
-
-
-
-
 
 
 %%
