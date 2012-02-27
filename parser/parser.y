@@ -57,7 +57,7 @@ INTEGER
   ;
 
 LITERAL
-  : STRINGLITERAL
+  : STRING_LITERAL
   | INTEGER
   | FLOATINGNUM
   ;
@@ -75,8 +75,25 @@ unary_operator
 
 primary_expr
   : IDENTIFIER
-  | LITERAL 
+  | STRING_LITERAL
+  | expr
   ;
+
+/*
+ * Postfix expression consist of primary expressions in which
+ * postfix operators follow a primary expression. The postfix
+ * operator. The postfix operators are listed below:
+ *
+ * Operator Name                |         Operator Notation
+ * _____________________________|_______________________________
+ *                              |
+ * Subscript operator           |         []
+ * Function call operators      |         ()
+ * Member access                |         .
+ * Postfix increment operator   |         ++
+ * Postfix decrement operator   |         --
+ *
+*/
 
 postfix_expr
   : primary_expr
