@@ -605,11 +605,24 @@ pass_stmt
   : PASS NEWLINE
   ;
 
+
+/******************** function ********************/
+
+
+/*
+ *  Function declaration specifier
+ */
+func_declaration_specifier
+  : DEF
+  ;
+
 /*
  *  function_definition
  */
-function_definition
-  : 
+func_definition
+  : func_declaration_specifier [declaration_specifiers] IDENTIFIER stmt_list
+  ;
+
 
 %%
 
