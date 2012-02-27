@@ -254,6 +254,13 @@ conditional_expr
   ;
 
 /*
+ * Constant expression
+ */
+const_expr
+  : conditional_expr
+  ;
+
+/*
  *  Assignment expression
  */
 assignment_expr
@@ -277,33 +284,55 @@ expr
   ;
 
 
+/******************** declarations ********************/
 
 
+/*
+ *  Declaration
+ */
 declaration
-  : declaration_specifiers ';'
-  | declaration_specifiers init_declarator_list ';'
+  : declaration_specifiers NEWLINE
+  | declaration_specifiers init_declarator_list NEWLINE
   ;
 
+/*
+ *  Declaration specifiers
+ */
 declaration_specifiers
   : storage_class_specifier
   | storage_class_specifier declaration_specifiers
-  | [type_specifier]
-  | [type_specifier] declaration_specifiers
-  | type_qualifier
-  | type_qualifier declaration_specifiers
+  | type_specifier
+  | type_specifier declaration_specifiers
   ;
 
+/*
+ *  Init declaration list
+ */
 init_declarator_list
   : init_declarator
   | init_declarator_list ',' init_declarator
   ;
 
+/*
+ *  Init declarator
+ */
+init_declarator
+  : declarator
+  | init_declarator_list ',' init_declarator
+  ;
+
+/*
+ *  Storage class specifier 
+ */
 storage_class_specifier
   : CONST
   | STATIC
   | VOLATILE
   ;
 
+/*
+ * Type specifier
+ */
 type_specifier
   : CHAR
   | SHORT
