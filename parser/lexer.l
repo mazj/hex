@@ -90,20 +90,20 @@ L?\"(\\.|[^\\"])*\"     RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 \/\/.*                    RETURN("COMMENT", yytext, COMMENT);
 
 #integer
-([0]|[1-9]*)[lL]?	RETURN("INTEGER", yytext, INTEGER);
+([0]|[1-9]*)[lL]?	      yylval.number = atoi(yytext); RETURN("INTEGER", yytext, INTEGER);
 
 
 #binary_integer
-0[bB][0-1]+        RETURN("BININTEGER", yytext, BININTEGER);
+0[bB][0-1]+               yylval.number = atoi(yytext); RETURN("BININTEGER", yytext, BININTEGER);
 
 #oct_integer
-0[oO][0-7]+		RETURN("OCTINTEGER", yytext, OCTINTEGER);
+0[oO][0-7]+		          yylval.number = atoi(yytext); RETURN("OCTINTEGER", yytext, OCTINTEGER);
 
 #hexidecimal_integer
-0[xX][0-9a-fA-F]+	RETURN("HEXINTEGER", yytext, HEXINTEGER);
+0[xX][0-9a-fA-F]+	      yylval.number = atoi(yytext); RETURN("HEXINTEGER", yytext, HEXINTEGER);
 
 #floating_number
-[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?    RETURN("FLOATINGNUM", yytext, FLOATINGNUM);
+[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?   yylval.number = atof(yytext); RETURN("FLOATINGNUM", yytext, FLOATINGNUM);
 
 #arithmetic_operator
 "+"                         RETURN("ARITHMETIC OPERATOR", yytext, PLUS_OP);
