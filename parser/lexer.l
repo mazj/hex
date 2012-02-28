@@ -119,6 +119,7 @@ L?\"(\\.|[^\\"])*\"     RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 #floating_number
 [0-9]*\.[0-9]+([eE][-+]?[0-9]+)?  RETURN("FLOATINGNUM", yytext, FLOATINGNUM);
 
+
 #arithmetic_operator
 "+"                         RETURN("ARITHMETIC OPERATOR", yytext, PLUS_OP);
 "-"                         RETURN("ARITHMETIC OPERATOR", yytext, MINUS_OP);
