@@ -4,6 +4,20 @@
 
 #define RETURN(type, token_string, token)			\
 		printf("[%s]: %s", (type), (token_string));	\
+        switch(token) {                             \
+            case INTEGER:                           \
+            case BININTEGER:                        \
+            case OCTINTEGER:                        \
+            case HEXINTEGER:                        \
+                yylval.integer = atoi(yytext);      \
+                break;                              \
+            case FLOATINGNUM:                       \
+                yylval.float = atof(yytext);        \
+                break;                              \
+            default:                                \
+                yylval.string = yytext;             \
+                break;                              \
+        }                                           \
         //return token;
 %}
 
@@ -90,20 +104,20 @@ L?\"(\\.|[^\\"])*\"     RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 \/\/.*                    RETURN("COMMENT", yytext, COMMENT);
 
 #integer
-([0]|[1-9]*)[lL]?	RETURN("INTEGER", yytext, INTEGER);
+([0]|[1-9]*)[lL]?	      RETURN("INTEGER", yytext, INTEGER);
 
 
 #binary_integer
-0[bB][0-1]+        RETURN("BININTEGER", yytext, BININTEGER);
+0[bB][0-1]+               RETURN("BININTEGER", yytext, BININTEGER);
 
 #oct_integer
-0[oO][0-7]+		RETURN("OCTINTEGER", yytext, OCTINTEGER);
+0[oO][0-7]+		          RETURN("OCTINTEGER", yytext, OCTINTEGER);
 
 #hexidecimal_integer
-0[xX][0-9a-fA-F]+	RETURN("HEXINTEGER", yytext, HEXINTEGER);
+0[xX][0-9a-fA-F]+	      RETURN("HEXINTEGER", yytext, HEXINTEGER);
 
 #floating_number
-[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?    RETURN("FLOATINGNUM", yytext, FLOATINGNUM);
+[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?  RETURN("FLOATINGNUM", yytext, FLOATINGNUM);
 
 #arithmetic_operator
 "+"                         RETURN("ARITHMETIC OPERATOR", yytext, PLUS_OP);

@@ -1,6 +1,17 @@
 %{
 #include <stdio.h>
+
+#define YYSTYPE char*
+extern YYSTYPE yylval;
 %}
+
+%union
+{
+  char character;
+  char* string;
+  int integer;
+  double float;
+}
 
 %token AND AS
 %token BASE BOOL BREAK
@@ -20,13 +31,15 @@
 
 %token IDENTIFIER
 
-%token CHARACTER_LITERAL
+%token <character> CHARACTER_LITERAL
 
-%token STRING_LITERAL
+%token <string> STRING_LITERAL
 
 %token COMMENT
 
-%token DECIMALINTEGER BININTEGER OCTINTEGER HEXINTEGER FLOATINGNUM
+%token <integer> DECIMALINTEGER BININTEGER OCTINTEGER HEXINTEGER
+
+%token <float> FLOATINGNUM
 
 %token PLUS_OP MINUS_OP MUL_OP DIV_OP MOD_OP
 
@@ -45,9 +58,12 @@
 
 %token POND
 
+
+
 %%
 
 input: /* empty line */
+  ;
 
 INTEGER
   : DECIMALINTEGER
@@ -629,6 +645,13 @@ func_definition
 
 int yyerror(char* s) {
 	printf("%s\n", s);
+}
+
+/* Return 1 stops at EOF,
+ * return 0 continues reading. 
+ */
+int yywrap() {
+  return 1;
 }
 
 int main() {
