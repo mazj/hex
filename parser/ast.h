@@ -41,6 +41,40 @@ typedef struct HexCastExpr {
 	char* cast_type;
 } CastExpr;
 
+typedef struct HexArithmeticExpr {
+	enum {multiplicative, additive} type;
+	Expr* left_expr;
+	Expr* right_expr;
+} ArithmeticExpr;
+
+typedef struct HexEqualityExpr {
+	enum {eq, neq, less, greater, le, ge} type;
+	Expr* left_expr;
+	Expr* right_expr;
+} EqualityExpr;
+
+typedef struct HexLogicExpr {
+	enum {logic_and, logic_or} type;
+	Expr* left_expr;
+	Expr* right_expr;
+} LogicExpr;
+
+typedef struct HexBitwiseExpr {
+	enum {shift_left, shift_right, bitwise_and, bitwise_or, bitwise_xor} type;
+	Expr* left_expr;
+	Expr* right_expr;
+} BitwiseExpr;
+
+typedef struct HexConditionalExpr {
+	Expr* consequent;
+	Expr* predicate;
+	Expr* alternative;
+} ConditionalExpr;
+
+typedef struct HexLambdaExpr {
+	
+} LambdaExpr;
+
 struct HexExpr {
 	enum {primary, postfix, unary, cast, arithmetic, logic, bitwise, lambda} type;
 	union {
@@ -48,9 +82,11 @@ struct HexExpr {
 		PostfixExpr postfix_expr;
 		UnaryExpr unary_expr;
 		CastExpr cast_expr;
-		Arithmetic arithmetic_expr;
+		ArithmeticExpr arithmetic_expr;
+		EqualityExpr equality_expr;
 		LogicExpr logic_expr;
 		BitwiseExpr bitwise_expr;
+		ConditionalExpr conditional_expr;
 		LambdaExpr lambda_expr;
 	} u;
 };
