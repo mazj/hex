@@ -113,7 +113,7 @@ assignment_operator
  */
 primary_expr
   : IDENTIFIER
-  | STRING_LITERAL
+  | LITERAL
   | expr
   ;
 
