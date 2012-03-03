@@ -3,11 +3,20 @@
 #ifndef _AST_H_
 #define _AST_H_
 
+#include <string.h>
+
+
 typedef struct HexExpr Expr;
 
 /* Unary operator */
-typedef enum HexUnaryOp {plus, minus, inc, dec, not_bitwise, not} UnaryOp;
-
+typedef enum HexUnaryOp {
+    plus,
+    minus,
+    inc,
+    dec,
+    not_bitwise,
+    not
+} UnaryOp;
 
 /* Assignment operator */
 typedef enum HexAssignmentOp {
@@ -64,7 +73,7 @@ typedef struct HexPrimaryExpr {
  *  expr--
  */
 typedef struct HexPostfixExpr {
-    enum {index, inc_or_dec_post} type;
+    enum {postfix_index, postfix_inc_or_dec} type;
     union {
         struct {Expr* expr; int index;} index_expr;
         struct {Expr* expr; int inc_or_dec;} inc_or_dec_expr;
@@ -206,6 +215,37 @@ typedef struct HexAssignmentExpr {
     Expr* right_expr;
 } AssignmentExpr;
 
+
+/*
+ * Argument expression
+ *
+ * Syntax:
+ *  arg = assignmentExpr()
+ *  arg = assignmentExpr() as alias
+ */
+typedef struct HexArgExpr {
+    AssignmentExpr* assign_expr;    /* Assignment expression */
+    char *alias;                    /* The identifier alias for that assignment expression. */
+} ArgExpr;
+
+
+/*
+ * Argument expression list
+ *
+ *  A list of argument expressions.
+ *
+ * Syntax:
+ *  (arg1, arg2 = assignmentExpr2(), arg3 = assignmentExpr3() as alias) 
+ */
+typedef struct HexArgExprList {                  
+    size_t arg_count;               /* Number of argument expressions. */
+    ArgExpr **next_arg;             /* An array of argument expressions. */
+} ArgExprList;
+
+
+/*
+ * Expression.
+ */
 struct HexExpr {
     enum {primary, postfix, unary, cast, arithmetic, logic, bitwise, lambda} type;
     union {
