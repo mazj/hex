@@ -5,6 +5,9 @@
 
 #include <string.h>
 
+/***********************************************************************
+ *  Expression definitions
+ ***********************************************************************/
 
 typedef struct HexExpr Expr;
 
@@ -262,5 +265,35 @@ struct HexExpr {
         LambdaExpr lambda_expr;
     };
 };
+
+
+/***********************************************************************
+ *  Declaration definitions
+ ***********************************************************************/
+
+/*
+ * Storage class specifier
+ */
+typedef enum HexStorageClassSpecifier {
+    storage_class_specifier_static
+} StorageClassSpecifier;
+
+
+/*
+ * Type specifier
+ */
+typedef enum HexTypeSpecifier {
+    type_specifier_char,            /* type char */
+    type_specifier_short,           /* type short */
+    type_specifier_int,             /* type int */
+    type_specifier_long,            /* type long */
+    type_specifier_float,           /* type float */
+    type_specifier_double,          /* type double */
+    type_specifier_uchar,           /* type uchar */
+    type_specifier_ushort,          /* type ushort */
+    type_specifier_uint,            /* type uint */
+    type_specifier_ulong,           /* type ulong */
+    type_specifier_identifier       /* custom type */
+} TypeSpecifier;
 
 #endif // _AST_H_
