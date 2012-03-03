@@ -197,6 +197,12 @@ typedef struct HexConditionalExpr {
 } ConditionalExpr;
 
 
+/*
+ * Const expression
+ */
+typedef ConditionalExpr ConstExpr;
+
+
 /* Assignment expression 
  *  
  * Syntax:
