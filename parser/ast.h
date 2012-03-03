@@ -312,6 +312,15 @@ typedef enum HexTypeQualifier {
 
 
 /*
+ * Type qualifier list
+ */
+typedef struct HexTypeQualifierList {
+    TypeQualifier *type_qualifier;
+    struct HexTypeQualifierList *type_qualifier_list;
+} TypeQualifierList;
+
+
+/*
  * Direct declarator
  */
 typedef struct HexDirectDeclarator {
@@ -322,9 +331,56 @@ typedef struct HexDirectDeclarator {
     } type;
     union {
         char *identifier;
-        struct { struct DirectDeclarator* declarator; struct ConstExpr* const_expr;} const_index_declarator;
+        struct { struct DirectDeclarator* declarator; ConstExpr* const_expr;} const_index_declarator;
         struct { struct DirectDeclarator* declarator;} empty_index_declarator;
     };
 } DirectDeclarator;
+
+
+/*
+ * Declarator
+ */
+typedef DirectDeclarator Declarator;
+
+
+/*
+ * Init declarator list
+ */
+typedef struct HexInitDeclaratorList {
+    Declarator **declarators;
+    size_t declarator_count;
+} InitDeclaratorList;
+
+
+/*
+ * Declaration specifier
+ */
+typedef struct HexDeclarationSpecifiers {
+    StorageClassSpecifier *storage_class_specifier;
+    TypeSpecifier *type_specifier;
+    struct HexDeclarationSpecifiers *declaration_specifiers;
+} DeclarationSpecifiers;
+
+
+/*
+ *  Declaration
+ */
+typedef struct HexDeclaration {
+    DeclarationSpecifiers *declaration_specifiers;
+    size_t specifier_count;
+    InitDeclaratorList *declarator_list;
+} Declaration;
+
+
+/*
+ * Identifier list
+ */
+typedef struct HexIdentifierList {
+    char* identifier;
+    struct HexIdentifierList *identifier_list;
+} IdentifierList;
+
+
+
 
 #endif // _AST_H_
