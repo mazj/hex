@@ -275,7 +275,7 @@ struct HexExpr {
  * Storage class specifier
  */
 typedef enum HexStorageClassSpecifier {
-    storage_class_specifier_static
+    storage_class_specifier_static  /* storage class specifier static */
 } StorageClassSpecifier;
 
 
@@ -295,5 +295,13 @@ typedef enum HexTypeSpecifier {
     type_specifier_ulong,           /* type ulong */
     type_specifier_identifier       /* custom type */
 } TypeSpecifier;
+
+/*
+ * Type qualifier
+ */
+typedef enum HexTypeQualifier {
+    type_qualifier_const,           /* qualifier const */
+    type_qualifier_volatile         /* qualifier volatile */
+} TypeQualifier;
 
 #endif // _AST_H_
