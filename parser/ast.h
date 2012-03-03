@@ -194,16 +194,6 @@ typedef struct HexConditionalExpr {
 } ConditionalExpr;
 
 
-/* Lambda expression 
- *  
- * Syntax:
- *  target_expr = (arg_init_list) => expr
- */
-typedef struct HexLambdaExpr {
-
-} LambdaExpr;
-
-
 /* Assignment expression 
  *  
  * Syntax:
@@ -241,6 +231,17 @@ typedef struct HexArgExprList {
     size_t arg_count;               /* Number of argument expressions. */
     ArgExpr **next_arg;             /* An array of argument expressions. */
 } ArgExprList;
+
+
+/* Lambda expression 
+ *  
+ * Syntax:
+ *  target_expr = (arg_init_list) => expr
+ */
+typedef struct HexLambdaExpr {
+    ArgExprList* arg_list;
+    Expr* expr;
+} LambdaExpr;
 
 
 /*
