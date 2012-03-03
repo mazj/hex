@@ -304,4 +304,21 @@ typedef enum HexTypeQualifier {
     type_qualifier_volatile         /* qualifier volatile */
 } TypeQualifier;
 
+
+/*
+ * Direct declarator
+ */
+typedef struct HexDirectDeclarator {
+    enum {
+        declarator_identifier_type,      /* corresponds to IDENTIFIER */
+        declarator_const_index_type,     /* corresponds to direct_declarator '[' const_expr ']' */
+        declarator_empty_index_type      /* corresponds to direct_declarator '[' ']' */
+    } type;
+    union {
+        char *identifier;
+        struct { struct DirectDeclarator* declarator; struct ConstExpr* const_expr;} const_index_declarator;
+        struct { struct DirectDeclarator* declarator;} empty_index_declarator;
+    };
+} DirectDeclarator;
+
 #endif // _AST_H_
