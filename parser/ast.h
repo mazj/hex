@@ -611,4 +611,55 @@ typedef struct HexIfStmt {
 } IfStmt;
 
 
+/*
+ * While statement
+ */
+typedef struct HexWhileStmt {
+    Expr *while_expr;
+    Stmt *while_stmt;
+} WhileStmt;
+
+
+/*
+ * Do-while statement
+ */
+typedef struct HexDoWhileStmt {
+    Stmt *dowhile_stmt;
+    Expr *dowhile_expr;
+} DoWhileStmt;
+
+
+/*
+ * Try statement
+ */
+typedef struct HexTryStmt {
+    Expr *try_expr;
+    Expr *catch_expr;
+    Expr *finally_expr;
+} TryStmt;
+
+
+/*
+ * Return statement
+ */
+typedef struct HexReturnStmt {
+    Expr *return_expr;
+} ReturnStmt;
+
+
+/*
+ * Jump statement
+ */
+typedef struct HexJumpStmt {
+    enum {
+        jump_stmt_type_continue,
+        jump_stmt_type_break,
+        jump_stmt_type_return
+    } jump_stmt_type;
+    union {
+        ReturnStmt *return_stmt;
+    };
+} JumpStmt;
+
+
 #endif // _AST_H_
