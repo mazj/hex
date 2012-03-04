@@ -40,7 +40,7 @@ extern YYSTYPE yylval;
 %token <float>      FLOATINGNUM
 %token <string>     PLUS_OP MINUS_OP MUL_OP DIV_OP MOD_OP
 %token <string>     ASSIGN_OP PLUS_ASSIGN MINUS_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
-%token <string>     NOT_BITWISE AND_BITWISE OR_BITWISE XOR_BITWISE SHIFTLEFT_BITWISE SHIFTRIGHT_BITWISE
+%token <string>     BITWISE_NOT BITWISE_AND BITWISE_OR BITWISE_XOR BITWISE_SHIFTLEFT BITWISE_SHIFTRIGHT
 %token <string>     NOT_ASSIGN AND_ASSIGN OR_ASSIGN XOR_ASSIGN SHIFTLEFT_ASSIGN SHIFTRIGHT_ASSIGN
 %token <string>     EQ_OP GREATER_OP LESS_OP GEQ_OP LEQ_OP
 %token <string>     INC_OP DEC_OP
@@ -135,10 +135,10 @@ primary_expr
  */
 postfix_expr
   : primary_expr
-  | postfix_expr '[' expr ']'
-  | postfix_expr '(' ')'
-  | postfix_expr '(' arg_expr_list ')'
-  | postfix_expr '.' IDENTIFIER
+  | postfix_expr LBRACKET expr RBRACKET
+  | postfix_expr LPAREN RPAREN
+  | postfix_expr LPAREN arg_expr_list RPAREN
+  | postfix_expr DOT IDENTIFIER
   | postfix_expr INC_OP
   | postfix_expr DEC_OP
   ;
@@ -149,8 +149,8 @@ postfix_expr
 arg_expr_list
   : assignment_expr
   | assignment_expr AS IDENTIFIER
-  | arg_expr_list ',' assignment_expr
-  | arg_expr_list ',' assignment_expr AS IDENTIFIER
+  | arg_expr_list COMMA assignment_expr
+  | arg_expr_list COMMA assignment_expr AS IDENTIFIER
   ;
 
 /*
@@ -161,8 +161,8 @@ unary_expr
   | INC_OP unary_expr
   | DEC_OP unary_expr
   | unary_operator cast_expr
-  | SIZEOF IDENTIDIER | TYPE
-  | SIZEOF '(' IDENTIFIER | TYPE ')'
+  | SIZEOF IDENTIDIER
+  | SIZEOF LPAREN IDENTIFIER RPAREN
   ;
 
 /*
@@ -170,7 +170,7 @@ unary_expr
  */
 cast_expr
   : unary_expr
-  | '(' typename ')' cast_expr
+  | LPAREN typename RPAREN cast_expr
   ;
 
 /*

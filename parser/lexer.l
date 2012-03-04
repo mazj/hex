@@ -137,13 +137,13 @@ L?\"(\\.|[^\\"])*\"     RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 "%="						RETURN("ASSIGNMENT OPERATOR", yytext, MOD_ASSIGN);
 
 #bitwise_operator
-"~"							RETURN("BITWISE OPERATOR", yytext, NOT_BITWISE);
-"&"							RETURN("BITWISE OPERATOR", yytext, AND_BITWISE);
-"|"							RETURN("BITWISE OPERATOR", yytext, OR_BITWISE);
-"^"							RETURN("BITWISE OPERATOR", yytext, XOR_BITWISE);
-"<<"                        RETURN("BITWISE OPERATOR", yytext, SHIFTLEFT_BITWISE);
-">>"                        RETURN("BITWISE OPERATOR", yytext, SHIFTRIGHT_BITWISE);
-"~="						RETURN("BITWISE OPERATOR", yytext, NOT_ASSIGN);
+"~"							RETURN("BITWISE OPERATOR", yytext, BITWISE_NOT);
+"&"							RETURN("BITWISE OPERATOR", yytext, BITWISE_AND);
+"|"							RETURN("BITWISE OPERATOR", yytext, BITWISE_OR);
+"^"							RETURN("BITWISE OPERATOR", yytext, BITWISE_XOR);
+"<<"                        RETURN("BITWISE OPERATOR", yytext, BITWISE_SHIFTLEFT);
+">>"                        RETURN("BITWISE OPERATOR", yytext, BITWISE_SHIFTRIGHT);
+"~="						RETURN("BITWISE OPERATOR", yytext, NOT_ASSIGN);   
 "&="						RETURN("BITWISE OPERATOR", yytext, AND_ASSIGN);
 "|="						RETURN("BITWISE OPERATOR", yytext, OR_ASSIGN);
 "^="						RETURN("BITWISE OPERATOR", yytext, XOR_ASSIGN);
