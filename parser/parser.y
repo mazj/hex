@@ -29,21 +29,30 @@ extern YYSTYPE yylval;
 %token <string> WHERE WHILE
 %token <string> FINALLY
 
-%token <string> IDENTIFIER
-%token <character> CHARACTER_LITERAL
-%token <string> STRING_LITERAL
-%token <string> COMMENT
-%token <integer> DECIMALINTEGER BININTEGER OCTINTEGER HEXINTEGER
-%token <float> FLOATINGNUM
-%token <string> PLUS_OP MINUS_OP MUL_OP DIV_OP MOD_OP
-%token <string> ASSIGN_OP PLUS_ASSIGN MINUS_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
-%token <string> NOT_BITWISE AND_BITWISE OR_BITWISE XOR_BITWISE SHIFTLEFT_BITWISE SHIFTRIGHT_BITWISE
-%token <string> NOT_ASSIGN AND_ASSIGN OR_ASSIGN XOR_ASSIGN SHIFTLEFT_ASSIGN SHIFTRIGHT_ASSIGN
-%token <string> EQ_OP GREATER_OP LESS_OP GEQ_OP LEQ_OP
-%token <string> INC_OP DEC_OP
-%token <string> LAMBDA_OP
-%token <string> ELLIPSIS
-%token <string> POND
+%token <string>     IDENTIFIER
+%token <character>  CHARACTER_LITERAL
+%token <string>     STRING_LITERAL
+%token <string>     COMMENT
+%token <integer>    DECIMALINTEGER BININTEGER OCTINTEGER HEXINTEGER
+%token <float>      FLOATINGNUM
+%token <string>     PLUS_OP MINUS_OP MUL_OP DIV_OP MOD_OP
+%token <string>     ASSIGN_OP PLUS_ASSIGN MINUS_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
+%token <string>     NOT_BITWISE AND_BITWISE OR_BITWISE XOR_BITWISE SHIFTLEFT_BITWISE SHIFTRIGHT_BITWISE
+%token <string>     NOT_ASSIGN AND_ASSIGN OR_ASSIGN XOR_ASSIGN SHIFTLEFT_ASSIGN SHIFTRIGHT_ASSIGN
+%token <string>     EQ_OP GREATER_OP LESS_OP GEQ_OP LEQ_OP
+%token <string>     INC_OP DEC_OP
+%token <string>     LAMBDA_OP
+%token <string>     DOT
+%token <string>     COMMA
+%token <string>     COLON
+%token <string>     LPAREN
+%token <string>     RPAREN
+%token <string>     LBRACKET
+%token <string>     RBRACKET
+%token <string>     LBRACE
+%token <string>     RBRACE
+%token <string>     ELLIPSIS
+%token <string>     POND
 
 %%
 
@@ -92,6 +101,11 @@ assignment_operator
   ;
 
 /******************** expressions ********************/
+
+suite
+  : stmt
+  | NEWLINE INDENT (stmt)+ DEDENT
+  ;
 
 /* 
  *  Primary expressions
@@ -622,7 +636,7 @@ func_declaration_specifier
  *  function_definition
  */
 func_definition
-  : func_declaration_specifier [declaration_specifiers] IDENTIFIER stmt_list
+  : func_declaration_specifier [declaration_specifiers IDENTIFIER]? IDENTIFIER '(' parameter_type_list stmt_list ':'
   ;
 
 

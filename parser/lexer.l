@@ -166,28 +166,28 @@ L?\"(\\.|[^\\"])*\"     RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 
 
 #dot
-"."               			RETURN("DOT", yytext, '.');
+"."               			RETURN("DOT", yytext, DOT);
 
 #comma
-","             			RETURN("COMMA", yytext, ',');
+","             			RETURN("COMMA", yytext, COMMA);
 
 
 #colon
-":"              			RETURN("COLON", yytext, ':');
+":"              			RETURN("COLON", yytext, COLON);
 
 #bracket
-"("                         RETURN("BRACKET", yytext, '(');
-")"               	        RETURN("BRACKET", yytext, ')');
+"("                         RETURN("BRACKET", yytext, LPARAN);
+")"               	        RETURN("BRACKET", yytext, RPARAN);
 
 
 #sqaure_bracket
-"["                         RETURN("SQUARE_BRACKET", yytext, '[');
-"]"               		    RETURN("SQUARE_BRACKET", yytext, ']');
+"["                         RETURN("SQUARE_BRACKET", yytext, LBRACKET);
+"]"               		    RETURN("SQUARE_BRACKET", yytext, RBRACKET);
 
 
 #curly_braces
-"{"                         RETURN("CURLY_BRACE", yytext, '{');
-"}"                         RETURN("CURLY_BRACE", yytext, '}');
+"{"                         RETURN("CURLY_BRACE", yytext, LBRACE);
+"}"                         RETURN("CURLY_BRACE", yytext, RBRACE);
 
 #ellipsis
 "..."                       RETURN("POND", yytext, ELLIPSIS);
