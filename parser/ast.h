@@ -11,6 +11,25 @@
 
 typedef struct HexExpr Expr;
 
+/*
+ * Literal
+ */
+typedef struct HexLiteral {
+    enum {
+        literal_type_char,          /* character literal */
+        literal_type_string,        /* string literal */
+        literal_type_integer,       /* integer literal */
+        literal_type_float,         /* floating number literal */
+    } literal_type;
+    union {
+        char literal_char;          /* character literal */
+        char* literal_string;       /* string literal */
+        int literal_integer;        /* integer literal */
+        double literal_float;       /* floating number literal */
+    };
+} Literal;
+
+
 /* Unary operator */
 typedef enum HexUnaryOp {
     plus,
@@ -462,6 +481,51 @@ typedef struct HexInitializer {
         MultimapInitializerList *multimap_initializer_list;     /* multimap initializer */
     };
 } Initializer;
+
+
+/*
+ *  List initializer list 
+ */
+struct ListInitializerList {
+    Initializer *initializer;
+    ListInitializerList *list_initializer_list;
+};
+
+
+/*
+ * Array initializer list
+ */
+struct ArrayInitializerList {
+    Initializer *initializer;
+    ArrayInitializerList *array_initializer_list;
+};
+
+
+/*
+ * Tuple initializer list
+ */
+struct TupleInitializerList {
+    Initializer *initializer;
+    TupleInitializerList *tuple_initializer_list;
+};
+
+
+/*
+ * Struct initializer list
+ */
+struct StructInitializerList {
+    enum {
+        struct_value_type_literal,      /* if prop value is literal */
+        struct_value_type_initializer   /* if prop value is initializer */
+    } value_type;
+    union {
+        Literal *struct_value_literal;
+        Initializer *initializer;
+    };
+    StructInitializerList *struct_initializer_list;
+};
+
+
 
 
 #endif // _AST_H_
