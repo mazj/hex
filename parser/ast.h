@@ -421,4 +421,47 @@ typedef struct HexParameterTypeList {
 } ParameterTypeList;
 
 
+/***********************************************************************
+ *  Initializer definitions
+ ***********************************************************************/
+
+/*
+ * Data struct typedefs
+ */
+typedef struct HexListInitializerList ListInitializerList;
+typedef struct HexArrayInitializerList ArrayInitializerList;
+typedef struct HexTupleInitializerList TupleInitializerList;
+typedef struct HexStructInitializerList StructInitializerList;
+typedef struct HexSetInitializerList SetInitializerList;
+typedef struct HexMapInitializerList MapInitializerList;
+typedef struct HexMultimapInitializerList MultimapInitializerList;
+
+
+/*
+ * Initializer
+ */
+typedef struct HexInitializer {
+    enum {
+        initializer_type_assign_expr,                           /* assignment expression initializer */
+        initializer_type_list,                                  /* list initializer */
+        initializer_type_array,                                 /* array initializer */
+        initializer_type_tuple,                                 /* tuple initializer */
+        initializer_type_struct,                                /* struct initializer */
+        initializer_type_set,                                   /* set initializer */
+        initializer_type_map,                                   /* map initializer */
+        initializer_type_multimap                               /* multimap initializer */
+    } initializer_type;
+    union {
+        AssignmentExpr *assignment_expr;                        /* assignment expression initializer */
+        ListInitializerList *list_initializer_list;             /* list initializer */
+        ArrayInitializerList *array_initializer_list;           /* array initializer */
+        TupleInitializerList *tuple_initializer_list;           /* tuple initializer */
+        StructInitializerList *struct_initializer_list;         /* struct initializer */
+        SetInitializerList *set_initialier_list;                /* set initializer */
+        MapInitializerList *map_initializer_list;               /* map initializer */
+        MultimapInitializerList *multimap_initializer_list;     /* multimap initializer */
+    };
+} Initializer;
+
+
 #endif // _AST_H_
