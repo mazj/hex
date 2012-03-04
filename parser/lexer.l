@@ -130,11 +130,11 @@ L?\"(\\.|[^\\"])*\"     RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 
 #assignment_operator
 "="		                    RETURN("ASSIGNMENT OPERATOR", yytext, ASSIGN_OP);
-"+="						RETURN("ASSIGNMENT OPERATOR", yytext, PLUS_ASSIGN);
-"-="						RETURN("ASSIGNMENT OPERATOR", yytext, MINUS_ASSIGN);
-"*="						RETURN("ASSIGNMENT OPERATOR", yytext, MUL_ASSIGN);
-"/="						RETURN("ASSIGNMENT OPERATOR", yytext, DIV_ASSIGN);
-"%="						RETURN("ASSIGNMENT OPERATOR", yytext, MOD_ASSIGN);
+"+="						RETURN("ASSIGNMENT OPERATOR", yytext, ASSIGN_PLUS);
+"-="						RETURN("ASSIGNMENT OPERATOR", yytext, ASSIGN_MINUS);
+"*="						RETURN("ASSIGNMENT OPERATOR", yytext, ASSIGN_MUL);
+"/="						RETURN("ASSIGNMENT OPERATOR", yytext, ASSIGN_DIV);
+"%="						RETURN("ASSIGNMENT OPERATOR", yytext, ASSIGN_MOD);
 
 #bitwise_operator
 "~"							RETURN("BITWISE OPERATOR", yytext, BITWISE_NOT);
@@ -143,12 +143,12 @@ L?\"(\\.|[^\\"])*\"     RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 "^"							RETURN("BITWISE OPERATOR", yytext, BITWISE_XOR);
 "<<"                        RETURN("BITWISE OPERATOR", yytext, BITWISE_SHIFTLEFT);
 ">>"                        RETURN("BITWISE OPERATOR", yytext, BITWISE_SHIFTRIGHT);
-"~="						RETURN("BITWISE OPERATOR", yytext, NOT_ASSIGN);   
-"&="						RETURN("BITWISE OPERATOR", yytext, AND_ASSIGN);
-"|="						RETURN("BITWISE OPERATOR", yytext, OR_ASSIGN);
-"^="						RETURN("BITWISE OPERATOR", yytext, XOR_ASSIGN);
-"<<="						RETURN("BITWISE OPERATOR", yytext, SHIFTLEFT_ASSIGN);
-">>="						RETURN("BITWISE OPERATOR", yytext, SHIFTRIGHT_ASSIGN);
+"~="						RETURN("BITWISE OPERATOR", yytext, ASSIGN_NOT);   
+"&="						RETURN("BITWISE OPERATOR", yytext, ASSIGN_AND);
+"|="						RETURN("BITWISE OPERATOR", yytext, ASSIGN_OR);
+"^="						RETURN("BITWISE OPERATOR", yytext, ASSIGN_XOR);
+"<<="						RETURN("BITWISE OPERATOR", yytext, ASSIGN_SHIFTLEFT);
+">>="						RETURN("BITWISE OPERATOR", yytext, ASSIGN_SHIFTRIGHT);
 
 #equality_operator
 "=="						RETURN("EQUALITY OPERATOR", yytext, EQ_OP);
