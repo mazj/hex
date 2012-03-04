@@ -526,6 +526,33 @@ struct StructInitializerList {
 };
 
 
+/*
+ * Set initializer list
+ */
+struct SetInitializerList {
+    Initializer *initializer;
+    SetInitializerList *set_initializer_list;
+};
+
+
+/*
+ * Map initializer list
+ */
+struct MapInitializerList {
+    Literal *key;
+    Initializer *value;
+    MapInitializerList *map_initializer_list;
+};
+
+
+/*
+ * Multimap initializer list
+ */
+struct MultimapInitializerList {
+    Literal *key;
+    MapInitializerList *values;
+    MultimapInitializerList *multimap_initializer_list;
+};
 
 
 #endif // _AST_H_
