@@ -54,6 +54,7 @@
 "ext"                   RETURN("KEYWORD", yytext, EXT);
 "float"                 RETURN("KEYWORD", yytext, FLOAT);
 "for"                   RETURN("KEYWORD", yytext, FOR);
+"from"                  RETURN("KEYWORD", yytext, FROM)
 "if"                    RETURN("KEYWORD", yytext, IF);
 "import"                RETURN("KEYWORD", yytext, IMPORT);
 "in"                    RETURN("KEYWORD", yytext, IN);
