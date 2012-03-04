@@ -81,7 +81,7 @@ unary_operator
   | MINUS_OP
   | INC_OP
   | DEC_OP
-  | NOT_BITWISE
+  | BITWISE_NOT
   | NOT
   ;
 
@@ -89,18 +89,17 @@ assignment_operator
   : ASSIGN_OP
   | ASSIGN_OP [NEW]
   | ASSIGN_OP [LAZY NEW]
-  | MUL_ASSIGN
-  | DIV_ASSIGN
-  | MOD_ASSIGN
-  | PLUS_ASSIGN
-  | MINUS_ASSIGN
-  | SHIFTLEFT_ASSIGN
-  | SHIFTRIGHT_ASSIGN
-  | NOT_ASSIGN
-  | AND_ASSIGN
-  | OR_ASSIGN
-  | XOR_ASSIGN
-  | [LAZY] NEW
+  | ASSIGN_MUL
+  | ASSIGN_DIV
+  | ASSIGN_MOD
+  | ASSIGN_PLUS
+  | ASSIGN_MINUS
+  | ASSIGN_SHIFTLEFT
+  | ASSIGN_SHIFTRIGHT
+  | ASSIGN_NOT
+  | ASSIGN_AND
+  | ASSIGN_OR
+  | ASSIGN_XOR
   ;
 
 /*************************************************************************
@@ -226,7 +225,7 @@ equality_expr
  */
 and_expr
   : equality_expr
-  | and_expr '&' equality_expr
+  | and_expr BITWISE_AND equality_expr
   ;
 
 /*
@@ -234,7 +233,7 @@ and_expr
  */
 exclusive_or_expr
   : and_expr
-  | exclusive_or_expr '^' and_expr
+  | exclusive_or_expr BITWISE_XOR and_expr
   ;
 
 /*
@@ -242,7 +241,7 @@ exclusive_or_expr
  */
 inclusive_or_expr
   : exclusive_or_expr
-  | inclusive_or_expr '|' exclusive_or_expr
+  | inclusive_or_expr BITWISE_OR exclusive_or_expr
   ;
 
 /*
@@ -296,7 +295,7 @@ lambda_expr
  */
 expr
   : assignment_expr
-  | expression ',' assignment_expr
+  | expression COMMA assignment_expr
   ;
 
 /*
@@ -337,7 +336,7 @@ declaration_specifiers
  */
 init_declarator_list
   : init_declarator
-  | init_declarator_list ',' init_declarator
+  | init_declarator_list COMMA init_declarator
   ;
 
 /*
@@ -345,7 +344,7 @@ init_declarator_list
  */
 init_declarator
   : declarator
-  | init_declarator_list ',' init_declarator
+  | init_declarator_list COMMA init_declarator
   ;
 
 /*
@@ -360,9 +359,9 @@ declarator
  */
 direct_declarator
   : IDENTIFIER
-  | '(' declarator ')'
-  | direct_declarator '[' const_expr ']'
-  | direct_declarator '[' ']'
+  | LPAREN declarator RPAREN
+  | direct_declarator LBRACKET const_expr 
+  | direct_declarator LBRACKET RBRACKET
   ;
 
 /*
@@ -410,7 +409,7 @@ type_qualifier
  */
 identifier_list
   : IDENTIFIER
-  | identifier_list ',' IDENTIFIER
+  | identifier_list COMMA IDENTIFIER
   ;
 
 /*
@@ -418,7 +417,7 @@ identifier_list
  */
 paramter_type_list
   : parameter_list
-  | parameter_list ',' ELIPSIS
+  | parameter_list COMMA ELIPSIS
   ;
 
 /*
@@ -462,20 +461,20 @@ parameter_declaration
  */
 initializer
   : assignment_expr
-  | '[' list_initializer_list ']'               /* list */
-  | '[' list_initializer_list ',' ']'           /* list */
-  | '{' array_initializer_list '}'              /* array */
-  | '{' array_initializer_list ',' '}'          /* array */
-  | '(' tuple_initializer_list ')'              /* tuple */
-  | '(' tuple_initializer_list ',' ')'          /* tuple */
-  | '{' struct_initializer_list '}'             /* struct */
-  | '{' struct_initializer_list ',' '}'         /* struct */
-  | '(' '[' set_initializer_list  ']' ')'       /* set */
-  | '(' '[' set_initializer_list ','  ']' ')'   /* set */
-  | '{' map_initializer_list '}'                /* map */
-  | '{' map_initializer_list ',' '}'            /* map */
-  | '{' multimap_initializer_list '}'           /* multimap */
-  | '{' multimap_initializer_list ',' '}'       /* multimap */
+  | LBRACKET list_initializer_list RBRACKET                       /* list */
+  | LBRACKET list_initializer_list COMMA RBRACKET                 /* list */
+  | LBRACE array_initializer_list RBRACE                          /* array */
+  | LBRACE array_initializer_list COMMA RBRACE                    /* array */
+  | LPAREN tuple_initializer_list RPAREN                          /* tuple */
+  | LPAREN tuple_initializer_list COMMA RPAREN                    /* tuple */
+  | LBRACE struct_initializer_list RBRACE                         /* struct */
+  | LBRACE struct_initializer_list COMMA RBRACE                   /* struct */
+  | LPAREN LBRACKET set_initializer_list  RBRACKET RPAREN         /* set */
+  | LPAREN LBRACKET set_initializer_list COMMA RBRACKET RPAREN    /* set */
+  | LBRACE map_initializer_list RBRACE                            /* map */
+  | LBRACE map_initializer_list COMMA RBRACE                      /* map */
+  | LBRACE multimap_initializer_list RBRACE                       /* multimap */
+  | LBRACE multimap_initializer_list COMMA RBRACE                 /* multimap */
   ;
 
 /*
@@ -483,7 +482,7 @@ initializer
  */
 list_initializer_list
   : initializer
-  | list_initializer_list ',' initializer
+  | list_initializer_list COMMA initializer
   ;
 
 /*
@@ -491,7 +490,7 @@ list_initializer_list
  */
 array_initializer_list
   : list_initializer_list
-  | array_initializer_list ',' list_initializer_list
+  | array_initializer_list COMMA list_initializer_list
   ;
 
 /*
@@ -499,17 +498,17 @@ array_initializer_list
  */
 tuple_initializer_list
   : array_initializer_list
-  | tuple_initializer_list ',' array_initializer_list
+  | tuple_initializer_list COMMA array_initializer_list
   ;
 
 /*
  *  Struct initializer list
  */
 struct_initializer_list
-  : IDENTIFIER '=' LITERAL
-  | IDENTIFIER '=' initializer
-  | struct_initializer_list ',' IDENTIFIER '=' LITERAL
-  | struct_initializer_list ',' IDENTIFIER '=' initializer
+  : IDENTIFIER ASSIGN_OP LITERAL
+  | IDENTIFIER ASSIGN_OP initializer
+  | struct_initializer_list COMMA IDENTIFIER '=' LITERAL
+  | struct_initializer_list COMMA IDENTIFIER '=' initializer
   ;
 
 /*
@@ -517,35 +516,35 @@ struct_initializer_list
  */
 set_initializer_list
   : tuple_initializer_list
-  | set_initializer_list ',' tuple_initializer_list
+  | set_initializer_list COMMA tuple_initializer_list
   ;
 
 /*
  *  Map initializer list
  */
 map_initializer_list
-  : LITERAL ':' LITERAL
-  | LITERAL ':' set_initializer_list
-  | IDENTIFIER ':' LITERAL
-  | IDENTIFIER ':' set_initializer_list
-  | map_initializer_list ',' LITERAL ':' LITERAL
-  | map_initializer_list ',' LITERAL ':' set_initializer_list
-  | map_initializer_list ',' IDENTIFIER ':' LITERAL
-  | map_initializer_list ',' IDENTIFIER ':' set_initializer_list
+  : LITERAL COLON LITERAL
+  | LITERAL COLON set_initializer_list
+  | IDENTIFIER COLON LITERAL
+  | IDENTIFIER COLON set_initializer_list
+  | map_initializer_list COMMA LITERAL COLON LITERAL
+  | map_initializer_list COMMA LITERAL COLON set_initializer_list
+  | map_initializer_list COMMA IDENTIFIER COLON LITERAL
+  | map_initializer_list COMMA IDENTIFIER COLON set_initializer_list
   ;
 
 /*
  *  Multimap initializer list
  */
 multimap_initializer_list
-  : LITERAL ':' '(' ')'
-  | LITERAL ':' '(' map_initializer_list ')'
-  | IDENTIFIER ':' '(' ')'
-  | IDENTIFIER ':' '(' map_initializer_list ')'
-  | multimap_initializer_list ',' LITERAL ':' '(' ')'
-  | multimap_initializer_list ',' LITERAL ':' '(' map_initializer_list ')'
-  | multimap_initializer_list ',' IDENTIFIER ':' '(' ')'
-  | multimap_initializer_list ',' IDENTIFIER ':' set_initializer_list
+  : LITERAL COLON LAPREN RPAREN
+  | LITERAL COLON LAPREN map_initializer_list RPAREN
+  | IDENTIFIER COLON LAPREN RPAREN
+  | IDENTIFIER COLON LAPREN map_initializer_list RPAREN
+  | multimap_initializer_list COMMA LITERAL COLON LAPREN RPAREN
+  | multimap_initializer_list COMMA LITERAL COLON LAPREN map_initializer_list RPAREN
+  | multimap_initializer_list COMMA IDENTIFIER COLON LAPREN RPAREN
+  | multimap_initializer_list COMMA IDENTIFIER COLON set_initializer_list
   ;
 
 
@@ -622,7 +621,7 @@ expr_stmt
  * If statement
  */
 if_stmt
-  : IF expr COLON suite (ELIF expr COLON suite)* [ELSE ':' suite]
+  : IF expr COLON suite (ELIF expr COLON suite)* [ELSE COLON suite]
   ;
 
 /*
