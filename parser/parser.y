@@ -103,12 +103,9 @@ assignment_operator
   | [LAZY] NEW
   ;
 
-/******************** expressions ********************/
-
-suite
-  : stmt
-  | NEWLINE INDENT (stmt)+ DEDENT
-  ;
+/*************************************************************************
+ ******************************* expressions *****************************
+ *************************************************************************/
 
 /* 
  *  Primary expressions
@@ -302,8 +299,17 @@ expr
   | expression ',' assignment_expr
   ;
 
+/*
+ * Expression list
+ */
+expr_list
+  : expr (COMMA expr)* [COMMA]
+  ;
 
-/******************** declarations ********************/
+
+/*************************************************************************
+ ******************************* declarations ****************************
+ *************************************************************************/
 
 
 /*
@@ -432,7 +438,9 @@ parameter_declaration
   ;
 
 
-/******************** initializers ********************/
+/*************************************************************************
+ ******************************* initializers ****************************
+ *************************************************************************/
 
 /*
  *  Initializer
@@ -541,28 +549,41 @@ multimap_initializer_list
   ;
 
 
-/******************** statements ********************/
+/*************************************************************************
+ ******************************* statements ******************************
+ *************************************************************************/
 
+suite
+  : stmt_list NEWLINE
+  | NEWLINE INDENT (stmt)+ DEDENT
+  ;
 
 /*
  *  Statement
  */
-stmr
-  : expr_stmt
-  | if_stmt
-  | for_stmt
-  | while_stmt
-  | dowhile_stmt
-  | try_stmt
-  | jump_stmt
+stmt
+  : stmt_list NEWLINE
+  | compound_stmt
   ;
 
 /*
  *  Statement list
  */
 stmt_list
-  : stmt
-  | stmt_list stmt
+  : simple_stmt (SEMICOLON simple_stmt)* [SEMICOLON]
+  ;
+
+/*
+ *  Simple statement
+ */
+simple_stmt
+  : expr_stmt
+  | assignment_expr
+  | pass_stmt
+  | return_stmt
+  | break_stmt
+  | continue_stmt
+  | import_stmt
   ;
 
 /*
@@ -594,42 +615,43 @@ import_stmt
  *  Expression statement
  */
 expr_stmt
-  : expr NEWLINE
+  : expr_list
   ;
 
 /*
  * If statement
  */
 if_stmt
-  : IF expr : stmt (ELIF expr ':' stmt)* [ELSE ':' stmt]
+  : IF expr COLON suite (ELIF expr COLON suite)* [ELSE ':' suite]
   ;
 
 /*
  *  For statement
  */
 for_stmt
-  : FOR target_list IN expr [WHERE comp_expr] stmt
+  : FOR target_list IN expr_list [WHERE equality_expr] suite
   ;
 
 /*
  *  While statement
  */
 while_stmt
-  : WHILE expr ':' stmt
+  : WHILE expr COLON suite
   ;
 
 /*
  *  Do-while statement
  */
 dowhile_stmt
-  : DO stmt WHILE expr
+  : DO suite WHILE expr
   ;
 
 /*
  *  Try statement
  */
 try_stmt
-  : TRY ':' stmt CATCH expr ':' (FINALLY stmt)
+  : TRY COLON suite (CATCH expr COLON suite)+ [FINALLY COLON suite]
+  | TRY COLON suite FINALLY COLON suite
   ;
 
 /*
@@ -649,8 +671,27 @@ pass_stmt
   : PASS NEWLINE
   ;
 
+/*
+ * Return statement
+ */
+return_stmt
+  : RETURN expr_list
+  ;
 
-/******************** function ********************/
+/*
+ * Compound statement
+ */
+compound_stmt
+  : if_stmt
+  | while_stmt
+  | try_stmt
+  | func_def
+  ;
+
+
+/*************************************************************************
+ ******************************* function ********************************
+ *************************************************************************/
 
 
 /*
@@ -663,7 +704,7 @@ func_declaration_specifier
 /*
  *  function_definition
  */
-func_definition
+func_def
   : func_declaration_specifier [declaration_specifiers IDENTIFIER]? IDENTIFIER '(' parameter_type_list stmt_list ':'
   ;
 
