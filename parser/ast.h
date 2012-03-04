@@ -342,6 +342,15 @@ struct HexExpr {
 };
 
 
+/*
+ * Expression list
+ */
+typedef struct HexExprList {
+    Expr *expr;
+    struct HexExprList *next;
+} ExprList;
+
+
 /***********************************************************************
  *  Declaration definitions
  ***********************************************************************/
@@ -350,7 +359,7 @@ struct HexExpr {
  * Storage class specifier
  */
 typedef enum HexStorageClassSpecifier {
-    storage_class_specifier_static  /* storage class specifier static */
+    storage_class_specifier_static          /* static */
 } StorageClassSpecifier;
 
 
@@ -370,6 +379,7 @@ typedef enum HexTypeSpecifier {
     type_specifier_ulong,           /* type ulong */
     type_specifier_identifier       /* custom type */
 } TypeSpecifier;
+
 
 /*
  * Type qualifier
@@ -400,8 +410,8 @@ typedef struct HexDirectDeclarator {
     } type;
     union {
         char *identifier;
-        struct { struct DirectDeclarator* declarator; ConstExpr* const_expr;} const_index_declarator;
-        struct { struct DirectDeclarator* declarator;} empty_index_declarator;
+        struct { struct HexDirectDeclarator* declarator; ConstExpr* const_expr;} const_index_declarator;
+        struct { struct HexDirectDeclarator* declarator;} empty_index_declarator;
     };
 } DirectDeclarator;
 
@@ -416,8 +426,8 @@ typedef DirectDeclarator Declarator;
  * Init declarator list
  */
 typedef struct HexInitDeclaratorList {
-    Declarator **declarators;
-    size_t declarator_count;
+    Declarator *declarator;
+    struct HexInitDeclaratorList* next;
 } InitDeclaratorList;
 
 
@@ -436,8 +446,7 @@ typedef struct HexDeclarationSpecifiers {
  */
 typedef struct HexDeclaration {
     DeclarationSpecifiers *declaration_specifiers;
-    size_t specifier_count;
-    InitDeclaratorList *declarator_list;
+    InitDeclaratorList *init_declarator_list;
 } Declaration;
 
 
@@ -617,19 +626,57 @@ typedef struct HexStmt Stmt;
 
 
 /*
+ * Suite
+ */
+typedef struct HexSuite Suite;
+
+
+/*
+ * Simple statement
+ */
+typedef struct HexSimpleStmt SimpleStmt;
+
+
+/*
  * Statement list
  */
 typedef struct HexStmtList {
-    Stmt *stmt;
+    SimpleStmt *simple_stmt;
     struct HexStmtList *next;
 } StmtList;
+
+
+/*
+ * Module
+ */
+typedef struct HexModule {
+    char *identifier;
+    struct HexModule *next;
+} Module;
+
+
+/*
+ * Relative module
+ */
+typedef struct HexRelativeModule {
+    Module *module;
+} RelativeModule;
+
+
+/*
+ * Import statement
+ */
+typedef struct HexImportStmt {
+    RelativeModule *relative_module;
+    char *alias;
+} ImportStmt;
 
 
 /*
  * Expression statement
  */
 typedef struct HexExprStmt {
-    Expr *expr;
+    ExprList *expr_list;
 } ExprStmt;
 
 
@@ -638,7 +685,7 @@ typedef struct HexExprStmt {
  */
 typedef struct HexElifStmt {
     Expr *elif_expr;
-    Stmt *elif_stmt;
+    Suite *elif_suite;
     struct HexElifStmt *next_elif_stmt;
 } ElifStmt;
 
@@ -647,7 +694,7 @@ typedef struct HexElifStmt {
  * Else statement
  */
 typedef struct HexElseStmt {
-    Stmt *else_stmt;
+    Suite *else_suite;
 } ElseStmt;
 
 
@@ -656,6 +703,7 @@ typedef struct HexElseStmt {
  */
 typedef struct HexIfStmt {
     Expr *if_expr;
+    Suite *if_suite;
     ElifStmt *elif_stmt;
     ElseStmt *else_stmt;
 } IfStmt;
@@ -666,7 +714,7 @@ typedef struct HexIfStmt {
  */
 typedef struct HexWhileStmt {
     Expr *while_expr;
-    Stmt *while_stmt;
+    Suite *while_suite;
 } WhileStmt;
 
 
@@ -674,7 +722,7 @@ typedef struct HexWhileStmt {
  * Do-while statement
  */
 typedef struct HexDoWhileStmt {
-    Stmt *dowhile_stmt;
+    Suite *dowhile_suite;
     Expr *dowhile_expr;
 } DoWhileStmt;
 
@@ -693,7 +741,7 @@ typedef struct HexTryStmt {
  * Return statement
  */
 typedef struct HexReturnStmt {
-    Expr *return_expr;
+    ExprList *return_expr_list;
 } ReturnStmt;
 
 
@@ -712,4 +760,32 @@ typedef struct HexJumpStmt {
 } JumpStmt;
 
 
+/*
+ * Pass statement
+ */
+typedef struct HexPassStmt PassStmt;
+
+
+/*
+ * Function definition
+ */
+typedef struct HexFuncDef FuncDef;
+
+/*
+ * Compound statement
+ */
+typedef struct HexCompoundStmt {
+    enum {
+        compound_stmt_type_if_stmt,             /* if statement */
+        compound_stmt_type_while_stmt,          /* while statement */
+        compound_stmt_type_try_stmt,            /* try statement */
+        compound_stmt_type_func_def             /* function definition */
+    } compound_stmt_type;
+    union {
+        IfStmt *compound_stmt_if_stmt;          /* if statement */
+        WhileStmt *compound_stmt_while_stmt;    /* while statement */
+        TryStmt *compound_stmt_try_stmt;        /* try statement */
+        FuncDef *compound_stmt_func_def;        /* function definition */
+    };
+} CompoundStmt;
 #endif // _AST_H_
