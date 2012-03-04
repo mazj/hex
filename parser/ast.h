@@ -5,11 +5,6 @@
 
 #include <string.h>
 
-/***********************************************************************
- *  Expression definitions
- ***********************************************************************/
-
-typedef struct HexExpr Expr;
 
 /*
  * Literal
@@ -30,57 +25,69 @@ typedef struct HexLiteral {
 } Literal;
 
 
-/* Unary operator */
+/*
+ * Unary operator
+ */
 typedef enum HexUnaryOp {
-    plus,
-    minus,
-    inc,
-    dec,
-    not_bitwise,
+    unary_op_plus,
+    unary_op_minus,
+    unary_op_inc,
+    unary_op_dec,
+    unary_op_bitwise_not,
     not
 } UnaryOp;
 
-/* Assignment operator */
+
+/*
+ * Assignment operator
+ */
 typedef enum HexAssignmentOp {
-    assignop,               /* = */
-    assignop_assign_new,    /* = new */
-    assignop_lazy_new,      /* = lazy new */
-    assign_mul,             /* *= */
-    assign_div,             /* /= */
-    assign_mod,             /* %= */
-    assign_plus,            /* += */
-    assign_minus,           /* -= */
-    assign_shift_left,      /* <<= */
-    assign_shift_right,     /* >>= */
-    assign_bitwise_not,     /* != */
-    assign_bitwise_and,     /* &= */
-    assign_bitwise_or,      /* |= */
-    assign_bitwise_xor      /* ^= */
+    assign_op,                  /* = */
+    assign_op_assign_new,       /* = new */
+    assign_op_lazy_new,         /* = lazy new */
+    assign_op_mul,              /* *= */
+    assign_op_div,              /* /= */
+    assign_op_mod,              /* %= */
+    assign_op_plus,             /* += */
+    assign_op_minus,            /* -= */
+    assign_op_shift_left,       /* <<= */
+    assign_op_shift_right,      /* >>= */
+    assign_op_bitwise_not,      /* != */
+    assign_op_bitwise_and,      /* &= */
+    assign_op_bitwise_or,       /* |= */
+    assign_op_bitwise_xor       /* ^= */
 } AssignmentOp; 
 
 
-/* Arithmetic expression
- *
- * Types:
- *  id_expr: identifier
- *  int_litr_expr: integer literal
- *  float_litr_expr: floating number literal
- *  char_litr_expr: character literal
- *  string_litr_expr: string literal
+/***********************************************************************
+ *  Expression definitions
+ ***********************************************************************/
+
+/*
+ * Expression
+ */
+typedef struct HexExpr Expr;
+
+
+/*
+ * Primary expression
  */
 typedef struct HexPrimaryExpr {
-    enum {id_expr, int_litr_expr, float_litr_expr, char_litr_expr, string_litr_expr} type;
+    enum {
+        primary_expr_type_identifier,       /* identifier */
+        primary_expr_type_literal,          /* literal */
+        primary_expr_type_expr              /* expression */
+    } primary_expr_type;
     union {
-        char* id;
-        int int_litr;
-        double float_litr;
-        char char_litr;
-        char* string_litr;
+        char *primary_expr_identifier;      /* identifier */
+        Literal* primary_expr_literal;      /* literal */
+        Expr *primary_expr_expr;            /* expression */
     };
 } PrimaryExpr;
 
 
-/* Postfix expression
+/* 
+ * Postfix expression
  *
  * Types:
  *  index: index expression
@@ -95,45 +102,54 @@ typedef struct HexPrimaryExpr {
  *  expr--
  */
 typedef struct HexPostfixExpr {
-    enum {postfix_index, postfix_inc_or_dec} type;
+    enum {
+        postfix_expr_type_index,                    /* index */
+        postfix_expr_type_postfix_inc,              /* increment */
+        postfix_expr_type_postfix_dec,              /* decrement */
+        postfix_expr_type_accessor                  /* accessor */
+    } postfix_expr_type;
     union {
-        struct {Expr* expr; int index;} index_expr;
-        struct {Expr* expr; int inc_or_dec;} inc_or_dec_expr;
+        struct {Expr *expr; int index;} postfix_expr_index_expr;            /* index */
+        Expr *postfix_expr_postfix_inc_expr;                                /* increment */
+        Expr *postfix_expr_postfic_dec_expr;                                /* decrement */            
+        struct {Expr *expr; char *accessor;} postfix_expr_accessor_expr;     /* accessor */
     };
 } PostfixExpr;
 
 
-/* Unary expression
- *
- * Types:
- *
- *
- *
- * Syntax:
- *
+/*
+ * Unary expression
  */
 typedef struct HexUnaryExpr {
-    enum {inc_or_dec_pre, unary_op, size_of} type;
+    enum {
+        unary_expr_type_prefix_inc,             /* prefix increment */
+        unary_expr_type_prefix_dec,             /* prefix decrement */
+        unary_expr_type_unary_op,               /* prefix unary operator */
+        unary_expr_type_sizeof                  /* prefix sizeof */
+    } unary_expr_type;
     union {
-        struct {Expr* expr; int inc_or_dec;} inc_or_dec_expr;
-        struct {Expr* expr; UnaryOp unary_op;} unary_op_expr;
-        Expr* sizeof_expr;
+        Expr *unary_expr_prefix_inc_expr;                                   /* prefix increment */
+        Expr *unary_expr_prefix_dec_expr;                                   /* prefix decrement */
+        struct {Expr* expr; UnaryOp unary_op;} unary_expr_unary_op_expr;    /* prefix unary operator */
+        Expr *unary_expr_sizeof_expr;                                       /* prefix sizeof */
     };
 } UnaryExpr;
 
 
-/*  Cast expression 
- *  
+/*
+ * Cast expression 
+ *
  * Syntax:
  *  target_expr = (cast_type)expr
  */
 typedef struct HexCastExpr {
-    Expr* expr;
+    Expr* cast_expr;
     char* cast_type;
 } CastExpr;
 
 
-/* Arithmetic expression
+/*
+ * Arithmetic expression
  *
  * Types:
  *  multiplicative: multiplication and division '*' or '/'
@@ -143,13 +159,17 @@ typedef struct HexCastExpr {
  *  target_expr = left_expr [ * | - | * | / ] right_expr
  */
 typedef struct HexArithmeticExpr {
-    enum {multiplicative, additive} type;
+    enum {
+        arithmetic_expr_type_multiplicative,
+        arithmetic_expr_type_additive
+    } arithmetic_expr_type;
     Expr* left_expr;
     Expr* right_expr;
 } ArithmeticExpr;
 
 
-/* Equality expression
+/*
+ * Equality expression
  *
  * Types:
  *  eq: equal               '=='
@@ -163,13 +183,21 @@ typedef struct HexArithmeticExpr {
  *  target_expr = left_expr [ == | not | < | > | <= | >= ] right_expr
  */
 typedef struct HexEqualityExpr {
-    enum {eq, neq, less, greater, le, ge} type;
+    enum {
+        equality_expr_type_eq,          /* == */
+        equality_expr_type_neq,         /* != */
+        equality_expr_type_less,        /* < */
+        equality_expr_type_greater,     /* > */
+        equality_expr_type_le,          /* <= */
+        equality_expr_type_ge           /* >= */
+    } equality_expr_type;
     Expr* left_expr;
     Expr* right_expr;
 } EqualityExpr;
 
 
-/* Logic expression 
+/*
+ * Logic expression 
  *  
  * Types:
  *  logic_and: logic and    "and"
@@ -179,13 +207,17 @@ typedef struct HexEqualityExpr {
  *  target_expr = left_expr [ and | or ] right_expr
  */
 typedef struct HexLogicExpr {
-    enum {logic_and, logic_or} type;
+    enum {
+        logic_expr_type_logic_and,      /* and */
+        logic_expr_type_logic_or        /* or */
+    } logic_expr_type;
     Expr* left_expr;
     Expr* right_expr;
 } LogicExpr;
 
 
-/* Bitwise expression 
+/*
+ * Bitwise expression 
  *  
  * Types:
  *  shift_left: left bitwise shift      "<<"
@@ -198,21 +230,28 @@ typedef struct HexLogicExpr {
  *  target_expr = left_expr [ >> | << | & | | | ^ ] right_expr
  */
 typedef struct HexBitwiseExpr {
-    enum {shift_left, shift_right, bitwise_and, bitwise_or, bitwise_xor} type;
+    enum {
+        bitwise_expr_type_shift_left,       /* << */
+        bitwise_expr_type_shift_right,      /* >> */
+        bitwise_expr_type_bitwise_and,      /* & */
+        bitwise_expr_type_bitwise_or,       /* | */
+        bitwise_expr_type_bitwise_xor       /* ^ */
+    } bitwise_expr_type;
     Expr* left_expr;
     Expr* right_expr;
 } BitwiseExpr;
 
 
-/* Conditional expression 
+/*
+ * Conditional expression 
  *  
  * Syntax:
  *  target_expr = consequent if predicate else alternative
  */
 typedef struct HexConditionalExpr {
-    Expr* consequent;
-    Expr* predicate;
-    Expr* alternative;
+    Expr* consequent_expr;
+    Expr* predicate_expr;
+    Expr* alternative_expr;
 } ConditionalExpr;
 
 
@@ -222,13 +261,14 @@ typedef struct HexConditionalExpr {
 typedef ConditionalExpr ConstExpr;
 
 
-/* Assignment expression 
+/*
+ * Assignment expression 
  *  
  * Syntax:
  *  target_expr [ = | new | lazy new | *= | /= | += | -= | <<= | >>= | != | &= | |= | ^= ] expr
  */
 typedef struct HexAssignmentExpr {
-    AssignmentOp op;
+    AssignmentOp assignment_expr_op;
     Expr* left_expr;
     Expr* right_expr;
 } AssignmentExpr;
@@ -256,18 +296,19 @@ typedef struct HexArgExpr {
  *  (arg1, arg2 = assignmentExpr2(), arg3 = assignmentExpr3() as alias) 
  */
 typedef struct HexArgExprList {                  
-    size_t arg_count;               /* Number of argument expressions. */
-    ArgExpr **next_arg;             /* An array of argument expressions. */
+    ArgExpr *arg_expr;
+    struct HexArgExprList *next;
 } ArgExprList;
 
 
-/* Lambda expression 
+/*
+ * Lambda expression 
  *  
  * Syntax:
  *  target_expr = (arg_init_list) => expr
  */
 typedef struct HexLambdaExpr {
-    ArgExprList* arg_list;
+    struct ParameterList* param_list;
     Expr* expr;
 } LambdaExpr;
 
@@ -276,7 +317,16 @@ typedef struct HexLambdaExpr {
  * Expression.
  */
 struct HexExpr {
-    enum {primary, postfix, unary, cast, arithmetic, logic, bitwise, lambda} type;
+    enum {
+        expr_type_primary,
+        expr_type_postfix,
+        expr_type_unary,
+        expr_type_cast,
+        expr_type_arithmetic,
+        expr_type_logic,
+        expr_type_bitwise,
+        expr_type_lambda
+    } expr_type;
     union {
         PrimaryExpr primary_expr;
         PostfixExpr postfix_expr;
