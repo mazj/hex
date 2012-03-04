@@ -381,6 +381,26 @@ typedef struct HexIdentifierList {
 } IdentifierList;
 
 
+/***********************************************************************
+ *  Parameter definitions
+ ***********************************************************************/
+
+/*
+ * Parameter declaration
+ */
+typedef struct HexParameterDeclaration {
+    enum {
+        param_declaration_type_simple,  /* single identifier parameter */
+        param_declaration_type_complex  /* other types of param with optional declaration specifiers. */
+    } type;
+    union {
+        char *identifier;
+        struct {
+            DeclarationSpecifiers *declaration_specifier;
+            Declarator *declarator;
+        };
+    };
+} ParameterDeclaration;
 
 
 #endif // _AST_H_
