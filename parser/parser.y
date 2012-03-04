@@ -17,7 +17,10 @@ extern YYSTYPE yylval;
 %token <string> BASE BOOL BREAK
 %token <string> CASE CATCH CHAR CLASS CONST CONTINUE COROUTINE
 %token <string> DEF DEFER DEFAULT DO DOUBLE
-%token <string> ELSE ENUM EXT FLOAT FOR IF IMPORT IN INT INTERFACE
+%token <string> ELSE ENUM EXT
+%token <string> FLOAT FOR FROM
+%token <string> IF IMPORT
+%token <string> IN INT INTERFACE
 %token <string> LAZY LONG
 %token <string> NEW NOT
 %token <string> OR
@@ -560,6 +563,31 @@ stmr
 stmt_list
   : stmt
   | stmt_list stmt
+  ;
+
+/*
+ * Module
+ */
+module
+  : (IDENTIFIER DOT)* IDENTIFIER
+  ;
+
+/*
+ * Relative module
+ */
+relative_module
+  : DOT* module
+  | DOT+
+  ;
+
+/*
+ * Import statement
+ */
+import_stmt
+  : IMPORT module [AS IDENTIFIER] (COMMA module [AS IDENTIFIER])*
+  | FROM relative_module IMPORT IDENTIFIER [AS IDENTIFIER] (COMMA IDENTIFIER [AS IDENTIFIER])*
+  | FROM relative_module IMPORT LPAREN IDENTIFIER [AS IDENTIFIER] (COMMA IDENTIFIER [AS IDENTIFIER])* [COMMA] RPAREN
+  | FROM module IMPORT "*"
   ;
 
 /*
