@@ -172,6 +172,8 @@ L?\"(\\.|[^\\"])*\"     RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 #comma
 ","             			RETURN("COMMA", yytext, COMMA);
 
+#semicolon
+";"                         RETURN("SEMICOLON", yytext, SEMICOLON);
 
 #colon
 ":"              			RETURN("COLON", yytext, COLON);
