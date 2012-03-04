@@ -403,4 +403,22 @@ typedef struct HexParameterDeclaration {
 } ParameterDeclaration;
 
 
+/*
+ * Parameter list
+ */
+typedef struct HexParameterList {
+    ParameterDeclaration *param_declaration;
+    struct HexParameterList *next;
+} ParameterList;
+
+
+/*
+ * Parameter type list
+ */
+typedef struct HexParameterTypeList {
+    ParameterList *param_list;
+    int is_varadic;             /* whether parameter list has elipsis at the end. */
+} ParameterTypeList;
+
+
 #endif // _AST_H_
