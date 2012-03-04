@@ -288,7 +288,7 @@ assignment_expr
  *  Lambda expression
  */
 lambda_expr
-  : arg_expr_list LAMBDA_OP expression
+  : parameter_list LAMBDA_OP expr
   ;
 
 /* 
