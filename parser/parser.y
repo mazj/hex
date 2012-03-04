@@ -705,7 +705,7 @@ func_declaration_specifier
  *  function_definition
  */
 func_def
-  : func_declaration_specifier [declaration_specifiers IDENTIFIER]? IDENTIFIER '(' parameter_type_list stmt_list ':'
+  : func_declaration_specifier [declaration_specifiers IDENTIFIER]? IDENTIFIER LPAREN parameter_type_list RPAREN COLON suite
   ;
 
 
