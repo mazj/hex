@@ -555,4 +555,60 @@ struct MultimapInitializerList {
 };
 
 
+/***********************************************************************
+ *  Statement definitions
+ ***********************************************************************/
+
+
+/*
+ * Statement
+ */
+typedef struct HexStmt Stmt;
+
+
+/*
+ * Statement list
+ */
+typedef struct HexStmtList {
+    Stmt *stmt;
+    struct HexStmtList *next;
+} StmtList;
+
+
+/*
+ * Expression statement
+ */
+typedef struct HexExprStmt {
+    Expr *expr;
+} ExprStmt;
+
+
+/*
+ * Elif statement
+ */
+typedef struct HexElifStmt {
+    Expr *elif_expr;
+    Stmt *elif_stmt;
+    struct HexElifStmt *next_elif_stmt;
+} ElifStmt;
+
+
+/*
+ * Else statement
+ */
+typedef struct HexElseStmt {
+    Stmt *else_stmt;
+} ElseStmt;
+
+
+/*
+ * If statement
+ */
+typedef struct HexIfStmt {
+    Expr *if_expr;
+    ElifStmt *elif_stmt;
+    ElseStmt *else_stmt;
+} IfStmt;
+
+
 #endif // _AST_H_
