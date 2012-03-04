@@ -1,12 +1,12 @@
 %{
 #include <stdio.h>
+#include "ast.h"
 
 #define YYSTYPE char*
 extern YYSTYPE yylval;
 %}
 
-%union
-{
+%union {
   char character;
   char* string;
   int integer;
@@ -30,35 +30,20 @@ extern YYSTYPE yylval;
 %token <string> FINALLY
 
 %token <string> IDENTIFIER
-
 %token <character> CHARACTER_LITERAL
-
 %token <string> STRING_LITERAL
-
 %token <string> COMMENT
-
 %token <integer> DECIMALINTEGER BININTEGER OCTINTEGER HEXINTEGER
-
 %token <float> FLOATINGNUM
-
 %token <string> PLUS_OP MINUS_OP MUL_OP DIV_OP MOD_OP
-
 %token <string> ASSIGN_OP PLUS_ASSIGN MINUS_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
-
 %token <string> NOT_BITWISE AND_BITWISE OR_BITWISE XOR_BITWISE SHIFTLEFT_BITWISE SHIFTRIGHT_BITWISE
 %token <string> NOT_ASSIGN AND_ASSIGN OR_ASSIGN XOR_ASSIGN SHIFTLEFT_ASSIGN SHIFTRIGHT_ASSIGN
-
 %token <string> EQ_OP GREATER_OP LESS_OP GEQ_OP LEQ_OP
-
 %token <string> INC_OP DEC_OP
-
 %token <string> LAMBDA_OP
-
 %token <string> ELLIPSIS
-
 %token <string> POND
-
-
 
 %%
 
