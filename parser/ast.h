@@ -652,12 +652,12 @@ typedef struct HexReturnStmt {
  */
 typedef struct HexJumpStmt {
     enum {
-        jump_stmt_type_continue,
-        jump_stmt_type_break,
-        jump_stmt_type_return
+        jump_stmt_type_continue,        /* continue statement */
+        jump_stmt_type_break,           /* break statement */
+        jump_stmt_type_return           /* return statement */
     } jump_stmt_type;
     union {
-        ReturnStmt *return_stmt;
+        ReturnStmt *return_stmt;        /* return statement */
     };
 } JumpStmt;
 
