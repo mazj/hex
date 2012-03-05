@@ -809,15 +809,14 @@ typedef struct HexCompoundStmt {
 /*
  * Function declaration specifier
  */
-typedef enum HexFuncDeclarationSpecifier {
-} FuncDeclarationSpecifier;
+typedef struct HexDeclarationSpecifiers FuncDeclarationSpecifiers;
 
 
 /*
  * Function definition
  */
 struct FuncDef {
-    DeclarationSpecifiers *func_declaration_specifiers;
+    FuncDeclarationSpecifiers *func_declaration_specifiers;
     char *func_name;
     ParameterTypeList *func_parameters;
     Suite *func_suite;

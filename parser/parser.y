@@ -697,6 +697,7 @@ compound_stmt
  *  Function declaration specifier
  */
 func_declaration_specifier
+  : declaration_specifier
   ;
 
 /*
