@@ -728,12 +728,22 @@ typedef struct HexDoWhileStmt {
 
 
 /*
+ * Catch statement (not standalone)
+ */
+typedef struct HexCatchStmt {
+    Expr *catch_expr;
+    Suite *catch_suite;
+    struct HexCatchStmt *next;
+} CatchStmt;
+
+
+/*
  * Try statement
  */
 typedef struct HexTryStmt {
-    Expr *try_expr;
-    Expr *catch_expr;
-    Expr *finally_expr;
+    Suite *try_suite;
+    CatchStmt *catch_stmt;
+    Suite *finally_suite;
 } TryStmt;
 
 
@@ -770,6 +780,7 @@ typedef struct HexPassStmt PassStmt;
  * Function definition
  */
 typedef struct HexFuncDef FuncDef;
+
 
 /*
  * Compound statement
