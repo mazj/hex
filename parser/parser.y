@@ -697,14 +697,13 @@ compound_stmt
  *  Function declaration specifier
  */
 func_declaration_specifier
-  : DEF
   ;
 
 /*
  *  function_definition
  */
 func_def
-  : func_declaration_specifier [declaration_specifiers IDENTIFIER]? IDENTIFIER LPAREN parameter_type_list RPAREN COLON suite
+  : DEF func_declaration_specifier [declaration_specifiers IDENTIFIER]? IDENTIFIER LPAREN parameter_type_list RPAREN COLON suite
   ;
 
 

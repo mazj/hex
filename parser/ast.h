@@ -788,4 +788,29 @@ typedef struct HexCompoundStmt {
         FuncDef *compound_stmt_func_def;        /* function definition */
     };
 } CompoundStmt;
+
+
+/***********************************************************************
+ *  Function definitions
+ ***********************************************************************/
+
+
+/*
+ * Function declaration specifier
+ */
+typedef enum HexFuncDeclarationSpecifier {
+} FuncDeclarationSpecifier;
+
+
+/*
+ * Function definition
+ */
+struct FuncDef {
+    DeclarationSpecifiers *func_declaration_specifiers;
+    char *func_name;
+    ParameterTypeList *func_parameters;
+    Suite *func_suite;
+};
+
+
 #endif // _AST_H_
