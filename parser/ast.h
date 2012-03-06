@@ -180,6 +180,12 @@ typedef struct HexCastExpr {
 } CastExpr;
 
 
+//===========================================================================
+// createCastExpr() - construct an AST node of type CastExpr.
+//===========================================================================
+CastExpr* createCastExpr(void* value1, void* value2);
+
+
 /*
  * Arithmetic expression
  *
