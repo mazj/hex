@@ -73,6 +73,7 @@ typedef enum HexAssignmentOp {
  *  Expression definitions
  ***********************************************************************/
 
+
 /*
  * Expression
  */
@@ -94,6 +95,12 @@ typedef struct HexPrimaryExpr {
         Expr *primary_expr_expr;            /* expression */
     };
 } PrimaryExpr;
+
+
+//===========================================================================
+// createPrimaryExpr() - construct an AST node of type PrimaryExpr.
+//===========================================================================
+PrimaryExpr* createPrimaryExpr(int type, void* value);
 
 
 /* 
