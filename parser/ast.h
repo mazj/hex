@@ -305,6 +305,12 @@ typedef struct HexLogicExpr {
 } LogicExpr;
 
 
+//===========================================================================
+// createLogicExpr() - construct an AST node of type LogicExpr.
+//===========================================================================
+LogicExpr* createLogicExpr(int type, void* value1, void* value2);
+
+
 /*
  * Bitwise expression 
  *  
