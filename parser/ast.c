@@ -8,6 +8,7 @@
 //===========================================================================
 Literal* createLiteral(int type, void* value) {
 	Literal* literal = MALLOC(Literal);
+
 	switch(type) {
 		case literal_type_char:
 			literal->literal_type = literal_type_char;
@@ -38,6 +39,7 @@ Literal* createLiteral(int type, void* value) {
 //===========================================================================
 PrimaryExpr* createPrimaryExpr(int type, void* value) {
 	PrimaryExpr *primary_expr = MALLOC(PrimaryExpr);
+
 	switch(type) {
 		case primary_expr_type_identifier:
 			primary_expr->primary_expr_type = primary_expr_type_identifier;
@@ -56,4 +58,39 @@ PrimaryExpr* createPrimaryExpr(int type, void* value) {
 			break;
 	}
 	return primary_expr;
+}
+
+
+//===========================================================================
+// createPostfixExpr() - construct an AST node of type PostfixExpr.
+//===========================================================================
+PostfixExpr* createPostfixExpr(int type, void* value1, void* value2) {
+	PostfixExpr *postfix_expr = MALLOC(PostfixExpr);
+
+	switch(type) {
+		case postfix_expr_type_index:
+			postfix_expr->postfix_expr_type = postfix_expr_type_index;
+			postfix_expr->postfix_expr_index_expr = MALLOC(PostfixIndexExpr);
+			postfix_expr->postfix_expr_index_expr->index_expr = (Expr*)value1;
+			postfix_expr->postfix_expr_index_expr->index = DEREF_VOID(int, value2);
+			break;
+		case postfix_expr_type_postfix_inc:
+			postfix_expr->postfix_expr_type = postfix_expr_type_postfix_inc;
+			postfix_expr->postfix_expr_postfix_inc_expr = (Expr*)value1;
+			break;
+		case postfix_expr_type_postfix_dec:
+			postfix_expr->postfix_expr_type = postfix_expr_type_postfix_dec;
+			postfix_expr->postfix_expr_postfix_dec_expr = (Expr*)value2;
+			break;
+		case postfix_expr_type_accessor:
+			postfix_expr->postfix_expr_type = postfix_expr_type_accessor;
+			postfix_expr->postfix_expr_accessor_expr = MALLOC(PostfixAccessorExpr);
+			postfix_expr->postfix_expr_accessor_expr->expr = (Expr*)value1;
+			postfix_expr->postfix_expr_accessor_expr->accessor = (char*)value2;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+	return postfix_expr;
 }

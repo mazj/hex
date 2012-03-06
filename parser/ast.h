@@ -118,6 +118,8 @@ PrimaryExpr* createPrimaryExpr(int type, void* value);
  *  expr++
  *  expr--
  */
+typedef struct HexPostfixIndexExpr {Expr *index_expr; int index;} PostfixIndexExpr;
+typedef struct PostfixAccessorExpr {Expr *expr; char *accessor;} PostfixAccessorExpr;
 typedef struct HexPostfixExpr {
     enum {
         postfix_expr_type_index,                    /* index */
@@ -126,12 +128,18 @@ typedef struct HexPostfixExpr {
         postfix_expr_type_accessor                  /* accessor */
     } postfix_expr_type;
     union {
-        struct {Expr *expr; int index;} postfix_expr_index_expr;            /* index */
-        Expr *postfix_expr_postfix_inc_expr;                                /* increment */
-        Expr *postfix_expr_postfic_dec_expr;                                /* decrement */            
-        struct {Expr *expr; char *accessor;} postfix_expr_accessor_expr;     /* accessor */
+        PostfixIndexExpr *postfix_expr_index_expr;            /* index */
+        Expr *postfix_expr_postfix_inc_expr;                  /* increment */
+        Expr *postfix_expr_postfix_dec_expr;                  /* decrement */            
+        PostfixAccessorExpr *postfix_expr_accessor_expr;      /* accessor */
     };
 } PostfixExpr;
+
+
+//===========================================================================
+// createPostfixExpr() - construct an AST node of type PostfixExpr.
+//===========================================================================
+PostfixExpr* createPostfixExpr(int type, void* value1, void* value2);
 
 
 /*
