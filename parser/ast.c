@@ -200,5 +200,21 @@ AdditiveExpr* createAdditiveExpr(int type, void* value1, void* value2) {
 //===========================================================================
 ArithmeticExpr* createArithmeticExpr(int type, void* value1, void* value2) {
 	ArithmeticExpr *arithmetic_expr = MALLOC(ArithmeticExpr);
+
+	switch(type) {
+		case arithmetic_expr_type_multiplicative:
+			arithmetic_expr->arithmetic_expr_type = arithmetic_expr_type_multiplicative;
+			break;
+		case arithmetic_expr_type_additive:
+			arithmetic_expr->arithmetic_expr_type = arithmetic_expr_type_additive;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+
+	arithmetic_expr->left_expr = (Expr*)value1;
+	arithmetic_expr->right_expr = (Expr*)value2;
+
 	return arithmetic_expr;
 }
