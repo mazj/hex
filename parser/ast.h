@@ -207,6 +207,25 @@ MultiplicativeExpr* createMultiplicativeExpr(int type, void* value1, void* value
 
 
 /*
+ * Additive expression
+ */
+typedef struct HexAdditiveExpr {
+    enum {
+        additive_expr_type_plus,
+        additive_expr_type_minus
+    } additive_expr_type;
+    Expr* left_expr;
+    Expr* right_expr;
+} AdditiveExpr;
+
+
+//===========================================================================
+// createAdditiveExpr() - construct an AST node of type AdditiveExpr.
+//===========================================================================
+AdditiveExpr* createAdditiveExpr(int type, void* value1, void* value2);
+
+
+/*
  * Arithmetic expression
  *
  * Types:
