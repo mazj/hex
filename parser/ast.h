@@ -187,6 +187,26 @@ CastExpr* createCastExpr(void* value1, void* value2);
 
 
 /*
+ * Multiplcative expression
+ */
+typedef struct HexMultiplicativeExpr {
+    enum {
+        multiplicative_expr_type_mul,
+        multiplicative_expr_type_div,
+        multiplicative_expr_type_mod
+    } multi_expr_type;
+    Expr* left_expr;
+    Expr* right_expr;
+} MultiplicativeExpr;
+
+
+//===========================================================================
+// createMultiplcativeExpr() - construct an AST node of type MultiplcativeExpr.
+//===========================================================================
+MultiplicativeExpr* createMultiplicativeExpr(int type, void* value1, void* value2);
+
+
+/*
  * Arithmetic expression
  *
  * Types:
@@ -204,6 +224,12 @@ typedef struct HexArithmeticExpr {
     Expr* left_expr;
     Expr* right_expr;
 } ArithmeticExpr;
+
+
+//===========================================================================
+// createArithmeticExpr() - construct an AST node of type ArithmeticExpr.
+//===========================================================================
+ArithmeticExpr* createArithmeticExpr(int type, void* value1, void* value2);
 
 
 /*

@@ -140,3 +140,40 @@ CastExpr* createCastExpr(void* value1, void* value2) {
 
 	return cast_expr;
 }
+
+
+//===========================================================================
+// createMultiplcativeExpr() - construct an AST node of type MultiplcativeExpr.
+//===========================================================================
+MultiplicativeExpr* createMultiplicativeExpr(int type, void* value1, void* value2) {
+	MultiplicativeExpr *multi_expr = MALLOC(MultiplicativeExpr);
+
+	switch(type) {
+		case multiplicative_expr_type_mul:
+			multi_expr->multi_expr_type = multiplicative_expr_type_mul;
+			break;
+		case multiplicative_expr_type_div:
+			multi_expr->multi_expr_type = multiplicative_expr_type_div;
+			break;
+		case multiplicative_expr_type_mod:
+			multi_expr->multi_expr_type = multiplicative_expr_type_mod;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+
+	multi_expr->left_expr = (Expr*)value1;
+	multi_expr->right_expr = (Expr*)value2;
+
+	return multi_expr;
+}
+
+
+//===========================================================================
+// createArithmeticExpr() - construct an AST node of type ArithmeticExpr.
+//===========================================================================
+ArithmeticExpr* createArithmeticExpr(int type, void* value1, void* value2) {
+	ArithmeticExpr *arithmetic_expr = MALLOC(ArithmeticExpr);
+	return arithmetic_expr;
+}
