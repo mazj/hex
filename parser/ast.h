@@ -4,6 +4,10 @@
 #define _AST_H_
 
 #include <string.h>
+#include "utils.h"
+
+
+#define AST_ERROR()
 
 
 /*
@@ -23,6 +27,12 @@ typedef struct HexLiteral {
         double literal_float;       /* floating number literal */
     };
 } Literal;
+
+
+//===========================================================================
+// createLiteral() - construct an AST node of type Literal.
+//===========================================================================
+Literal* createLiteral(int type, void* value);
 
 
 /*

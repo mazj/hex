@@ -13,6 +13,9 @@ lexer.out:
 parser.tab.h:
 	bison -d parser.y
 
+ast: ast.h ast.c utils.h
+	gcc -c ast.h ast.c utils.h
+
 map_unittest: unittest.h
 	gcc map.h map_unittest.c
 
