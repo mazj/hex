@@ -94,3 +94,36 @@ PostfixExpr* createPostfixExpr(int type, void* value1, void* value2) {
 	}
 	return postfix_expr;
 }
+
+
+//===========================================================================
+// createUnaryExpr() - construct an AST node of type UnaryExpr.
+//===========================================================================
+UnaryExpr* createUnaryExpr(int type, void* value1, void* value2) {
+	UnaryExpr *unary_expr = MALLOC(UnaryExpr);
+
+	switch(type) {
+		case unary_expr_type_prefix_inc:
+			unary_expr->unary_expr_type = unary_expr_type_prefix_inc;
+			unary_expr->unary_expr_prefix_inc_expr = (Expr*)value1;
+			break;
+		case unary_expr_type_prefix_dec:
+			unary_expr->unary_expr_type = unary_expr_type_prefix_dec;
+			unary_expr->unary_expr_prefix_dec_expr = (Expr*)value1;
+			break;
+		case unary_expr_type_unary_op:
+			unary_expr->unary_expr_type = unary_expr_type_unary_op;
+			unary_expr->unary_expr_unary_op_expr = MALLOC(PrefixUnaryOpExpr);
+			unary_expr->unary_expr_unary_op_expr->expr = (Expr*)value1;
+			unary_expr->unary_expr_unary_op_expr->unary_op = DEREF_VOID(int, value2);
+			break;
+		case unary_expr_type_sizeof:
+			unary_expr->unary_expr_type = unary_expr_type_sizeof;
+			unary_expr->unary_expr_sizeof_expr = (Expr*)value1;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+	return unary_expr;
+}

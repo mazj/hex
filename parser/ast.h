@@ -145,6 +145,7 @@ PostfixExpr* createPostfixExpr(int type, void* value1, void* value2);
 /*
  * Unary expression
  */
+typedef struct HexPrefixUnaryOpExpr {Expr* expr; UnaryOp unary_op;} PrefixUnaryOpExpr;
 typedef struct HexUnaryExpr {
     enum {
         unary_expr_type_prefix_inc,             /* prefix increment */
@@ -155,10 +156,16 @@ typedef struct HexUnaryExpr {
     union {
         Expr *unary_expr_prefix_inc_expr;                                   /* prefix increment */
         Expr *unary_expr_prefix_dec_expr;                                   /* prefix decrement */
-        struct {Expr* expr; UnaryOp unary_op;} unary_expr_unary_op_expr;    /* prefix unary operator */
+        PrefixUnaryOpExpr *unary_expr_unary_op_expr;    /* prefix unary operator */
         Expr *unary_expr_sizeof_expr;                                       /* prefix sizeof */
     };
 } UnaryExpr;
+
+
+//===========================================================================
+// createUnaryExpr() - construct an AST node of type UnaryExpr.
+//===========================================================================
+UnaryExpr* createUnaryExpr(int type, void* value1, void* value2);
 
 
 /*
