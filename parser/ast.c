@@ -218,3 +218,40 @@ ArithmeticExpr* createArithmeticExpr(int type, void* value1, void* value2) {
 
 	return arithmetic_expr;
 }
+
+
+//===========================================================================
+// createEqualityExpr() - construct an AST node of type EqualityExpr.
+//===========================================================================
+EqualityExpr* createEqualityExpr(int type, void* value1, void* value2) {
+	EqualityExpr* equality_expr = MALLOC(EqualityExpr);
+
+	switch(type) {
+		case equality_expr_type_eq:
+			equality_expr->equality_expr_type = equality_expr_type_eq;
+			break;
+		case equality_expr_type_neq:
+			equality_expr->equality_expr_type = equality_expr_type_neq;
+			break;
+		case equality_expr_type_less:
+			equality_expr->equality_expr_type = equality_expr_type_less;
+			break;
+		case equality_expr_type_greater:
+			equality_expr->equality_expr_type = equality_expr_type_greater;
+			break;
+		case equality_expr_type_le:
+			equality_expr->equality_expr_type = equality_expr_type_le;
+			break;
+		case equality_expr_type_ge:
+			equality_expr->equality_expr_type = equality_expr_type_ge;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+
+	equality_expr->left_expr = (Expr*)value1;
+	equality_expr->right_expr = (Expr*)value2;
+
+	return equality_expr;
+}
