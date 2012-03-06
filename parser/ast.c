@@ -314,3 +314,17 @@ BitwiseExpr* createBitwiseExpr(int type, void* value1, void* value2) {
 
 	return bitwise_expr;
 }
+
+
+//===========================================================================
+// createConditionalExpr() - construct an AST node of type ConditionalExpr.
+//===========================================================================
+ConditionalExpr* createConditionalExpr(void* value1, void* value2, void* value3) {
+	ConditionalExpr* conditional_expr = MALLOC(ConditionalExpr);
+
+	conditional_expr->consequent_expr = (Expr*)value1;
+	conditional_expr->predicate_expr = (Expr*)value2;
+	conditional_expr->alternative_expr = (Expr*)value3;
+
+	return conditional_expr;
+}

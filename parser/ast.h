@@ -356,6 +356,12 @@ typedef struct HexConditionalExpr {
 } ConditionalExpr;
 
 
+//===========================================================================
+// createConditionalExpr() - construct an AST node of type ConditionalExpr.
+//===========================================================================
+ConditionalExpr* createConditionalExpr(void* value1, void* value2, void* value3);
+
+
 /*
  * Const expression
  */
