@@ -389,3 +389,16 @@ AssignmentExpr* createAssignmentExpr(int type, void* value1, void* value2) {
 
 	return assignment_expr;
 }
+
+
+//===========================================================================
+// createLambdaExpr() - construct an AST node of type LambdaExpr.
+//===========================================================================
+LambdaExpr* createLambdaExpr(void* value1, void* value2) {
+	LambdaExpr* lambda_expr = MALLOC(LambdaExpr);
+
+	lambda_expr->lambda_param_list = (ParameterList*)value1;
+	lambda_expr->lambda_suite = (Suite*)value2;
+
+	return lambda_expr;
+}

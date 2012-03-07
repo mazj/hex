@@ -10,6 +10,30 @@
 #define AST_ERROR()
 
 
+//===========================================================================
+// global typedefs
+//===========================================================================
+/*
+ * Expression
+ */
+typedef struct HexExpr Expr;
+
+
+/*
+ * Statement
+ */
+typedef struct HexStmt Stmt;
+
+
+/*
+ * Suite
+ */
+typedef struct HexSuite Suite;
+//===========================================================================
+// global typedefs
+//===========================================================================
+
+
 /*
  * Literal
  */
@@ -72,12 +96,6 @@ typedef enum HexAssignmentOp {
 /***********************************************************************
  *  Expression definitions
  ***********************************************************************/
-
-
-/*
- * Expression
- */
-typedef struct HexExpr Expr;
 
 
 /*
@@ -421,9 +439,15 @@ typedef struct HexArgExprList {
  *  target_expr = (arg_init_list) => expr
  */
 typedef struct HexLambdaExpr {
-    struct ParameterList* param_list;
-    Expr* expr;
+    struct ParameterList* lambda_param_list;
+    Suite* lambda_suite;
 } LambdaExpr;
+
+
+//===========================================================================
+// createLambdaExpr() - construct an AST node of type LambdaExpr.
+//===========================================================================
+LambdaExpr* createLambdaExpr(void* value1, void* value2);
 
 
 /*
@@ -730,18 +754,6 @@ struct MultimapInitializerList {
 /***********************************************************************
  *  Statement definitions
  ***********************************************************************/
-
-
-/*
- * Statement
- */
-typedef struct HexStmt Stmt;
-
-
-/*
- * Suite
- */
-typedef struct HexSuite Suite;
 
 
 /*
