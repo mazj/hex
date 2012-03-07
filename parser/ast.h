@@ -462,19 +462,22 @@ struct HexExpr {
         expr_type_arithmetic,
         expr_type_logic,
         expr_type_bitwise,
+        expr_type_conditional,
+        expr_type_const,
         expr_type_lambda
     } expr_type;
     union {
-        PrimaryExpr primary_expr;
-        PostfixExpr postfix_expr;
-        UnaryExpr unary_expr;
-        CastExpr cast_expr;
-        ArithmeticExpr arithmetic_expr;
-        EqualityExpr equality_expr;
-        LogicExpr logic_expr;
-        BitwiseExpr bitwise_expr;
-        ConditionalExpr conditional_expr;
-        LambdaExpr lambda_expr;
+        PrimaryExpr *primary_expr;
+        PostfixExpr *postfix_expr;
+        UnaryExpr *unary_expr;
+        CastExpr *cast_expr;
+        ArithmeticExpr *arithmetic_expr;
+        EqualityExpr *equality_expr;
+        LogicExpr *logic_expr;
+        BitwiseExpr *bitwise_expr;
+        ConditionalExpr *conditional_expr;
+        ConstExpr *const_expr;
+        LambdaExpr *lambda_expr;
     };
 };
 
