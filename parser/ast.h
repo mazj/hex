@@ -53,7 +53,7 @@ typedef enum HexUnaryOp {
  */
 typedef enum HexAssignmentOp {
     assign_op,                  /* = */
-    assign_op_assign_new,       /* = new */
+    assign_op_new,              /* = new */
     assign_op_lazy_new,         /* = lazy new */
     assign_op_mul,              /* *= */
     assign_op_div,              /* /= */
@@ -379,6 +379,12 @@ typedef struct HexAssignmentExpr {
     Expr* left_expr;
     Expr* right_expr;
 } AssignmentExpr;
+
+
+//===========================================================================
+// createAssignmentExpr() - construct an AST node of type AssignmentExpr.
+//===========================================================================
+AssignmentExpr* createAssignmentExpr(int type, void* value1, void* value2);
 
 
 /*

@@ -328,3 +328,64 @@ ConditionalExpr* createConditionalExpr(void* value1, void* value2, void* value3)
 
 	return conditional_expr;
 }
+
+
+//===========================================================================
+// createAssignmentExpr() - construct an AST node of type AssignmentExpr.
+//===========================================================================
+AssignmentExpr* createAssignmentExpr(int type, void* value1, void* value2) {
+	AssignmentExpr* assignment_expr = MALLOC(AssignmentExpr);
+
+	switch(type) {
+		case assign_op:
+			assignment_expr->assignment_expr_op = assign_op;
+			break;
+		case assign_op_new:
+			assignment_expr->assignment_expr_op = assign_op_new;
+			break;
+		case assign_op_lazy_new:
+			assignment_expr->assignment_expr_op = assign_op_lazy_new;
+			break;
+		case assign_op_mul:
+			assignment_expr->assignment_expr_op = assign_op_mul;
+			break;
+		case assign_op_div:
+			assignment_expr->assignment_expr_op = assign_op_div;
+			break;
+		case assign_op_mod:
+			assignment_expr->assignment_expr_op = assign_op_mod;
+			break;
+		case assign_op_plus:
+			assignment_expr->assignment_expr_op = assign_op_plus;
+			break;
+		case assign_op_minus:
+			assignment_expr->assignment_expr_op = assign_op_minus;
+			break;
+		case assign_op_shift_left:
+			assignment_expr->assignment_expr_op = assign_op_shift_left;
+			break;
+		case assign_op_shift_right:
+			assignment_expr->assignment_expr_op = assign_op_shift_right;
+			break;
+		case assign_op_bitwise_not:
+			assignment_expr->assignment_expr_op = assign_op_bitwise_not;
+			break;
+		case assign_op_bitwise_and:
+			assignment_expr->assignment_expr_op = assign_op_bitwise_and;
+			break;
+		case assign_op_bitwise_or:
+			assignment_expr->assignment_expr_op = assign_op_bitwise_or;
+			break;
+		case assign_op_bitwise_xor:
+			assignment_expr->assignment_expr_op = assign_op_bitwise_xor;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+
+	assignment_expr->left_expr = (Expr*)value1;
+	assignment_expr->right_expr = (Expr*)value2;
+
+	return assignment_expr;
+}
