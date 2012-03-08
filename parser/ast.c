@@ -449,6 +449,11 @@ Expr* createExpr(int type, void* value) {
 			ArithmeticExpr* arithmetic_expr = (ArithmeticExpr*)value;
 			expr->arithmetic_expr = arithmetic_expr;
 			break;
+		case expr_type_equality:
+			expr->expr_type = expr_type_equality;
+			EqualityExpr* equality_expr = (EqualityExpr*)value;
+			expr->equality_expr = equality_expr;
+			break;
 		case expr_type_logic:
 			expr->expr_type = expr_type_logic;
 			LogicExpr* logic_expr = (LogicExpr*)value;
