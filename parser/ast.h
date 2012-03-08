@@ -596,8 +596,8 @@ typedef struct HexInitDeclaratorList {
  * Declaration specifier
  */
 typedef struct HexDeclarationSpecifiers {
-    StorageClassSpecifier *storage_class_specifier;
-    TypeSpecifier *type_specifier;
+    StorageClassSpecifier storage_class_specifier;
+    TypeSpecifier type_specifier;
     struct HexDeclarationSpecifiers *declaration_specifiers;
 } DeclarationSpecifiers;
 
