@@ -302,7 +302,7 @@ Expr* createLogicExpr(int type, void* value1, void* value2) {
 //===========================================================================
 // createBitwiseExpr() - construct an AST node of type BitwiseExpr.
 //===========================================================================
-BitwiseExpr* createBitwiseExpr(int type, void* value1, void* value2) {
+Expr* createBitwiseExpr(int type, void* value1, void* value2) {
 	BitwiseExpr* bitwise_expr = MALLOC(BitwiseExpr);
 
 	switch(type) {
@@ -329,7 +329,9 @@ BitwiseExpr* createBitwiseExpr(int type, void* value1, void* value2) {
 	bitwise_expr->left_expr = (Expr*)value1;
 	bitwise_expr->right_expr = (Expr*)value2;
 
-	return bitwise_expr;
+	Expr *expr = createExpr(expr_type_bitwise, bitwise_expr);
+
+	return expr;
 }
 
 

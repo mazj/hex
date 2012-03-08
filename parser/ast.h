@@ -358,7 +358,7 @@ typedef struct HexBitwiseExpr {
 //===========================================================================
 // createBitwiseExpr() - construct an AST node of type BitwiseExpr.
 //===========================================================================
-BitwiseExpr* createBitwiseExpr(int type, void* value1, void* value2);
+Expr* createBitwiseExpr(int type, void* value1, void* value2);
 
 
 /*
