@@ -464,6 +464,7 @@ struct HexExpr {
         expr_type_logic,
         expr_type_bitwise,
         expr_type_conditional,
+        expr_type_assignment,
         expr_type_const,
         expr_type_lambda
     } expr_type;
@@ -477,6 +478,7 @@ struct HexExpr {
         LogicExpr *logic_expr;
         BitwiseExpr *bitwise_expr;
         ConditionalExpr *conditional_expr;
+        AssignmentExpr *assignment_expr;
         ConstExpr *const_expr;
         LambdaExpr *lambda_expr;
     };
