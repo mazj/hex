@@ -479,6 +479,11 @@ Expr* createExpr(int type, void* value) {
 			ConditionalExpr* conditional_expr = (ConditionalExpr*)value;
 			expr->conditional_expr = conditional_expr;
 			break;
+		case expr_type_assignment:
+			expr->expr_type = expr_type_assignment;
+			AssignmentExpr* assignment_expr = (AssignmentExpr*)value;
+			expr->assignment_expr = assignment_expr;
+			break;
 		case expr_type_const:
 			expr->expr_type = expr_type_const;
 			ConstExpr* const_expr = (ConstExpr*)value;
