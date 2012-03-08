@@ -615,8 +615,8 @@ typedef struct HexDeclaration {
  * Identifier list
  */
 typedef struct HexIdentifierList {
-    char* identifier;
-    struct HexIdentifierList *identifier_list;
+    Literal* identifier_literal;
+    struct HexIdentifierList *next;
 } IdentifierList;
 
 
