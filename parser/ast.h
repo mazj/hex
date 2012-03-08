@@ -402,7 +402,7 @@ typedef struct HexAssignmentExpr {
 //===========================================================================
 // createAssignmentExpr() - construct an AST node of type AssignmentExpr.
 //===========================================================================
-AssignmentExpr* createAssignmentExpr(int type, void* value1, void* value2);
+Expr* createAssignmentExpr(int type, void* value1, void* value2);
 
 
 /*

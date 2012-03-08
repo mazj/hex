@@ -354,7 +354,7 @@ Expr* createConditionalExpr(void* value1, void* value2, void* value3) {
 //===========================================================================
 // createAssignmentExpr() - construct an AST node of type AssignmentExpr.
 //===========================================================================
-AssignmentExpr* createAssignmentExpr(int type, void* value1, void* value2) {
+Expr* createAssignmentExpr(int type, void* value1, void* value2) {
 	AssignmentExpr* assignment_expr = MALLOC(AssignmentExpr);
 
 	switch(type) {
@@ -408,7 +408,9 @@ AssignmentExpr* createAssignmentExpr(int type, void* value1, void* value2) {
 	assignment_expr->left_expr = (Expr*)value1;
 	assignment_expr->right_expr = (Expr*)value2;
 
-	return assignment_expr;
+	Expr *expr = createExpr(expr_type_assignment, assignment_expr);
+
+	return expr;
 }
 
 
