@@ -402,3 +402,69 @@ LambdaExpr* createLambdaExpr(void* value1, void* value2) {
 
 	return lambda_expr;
 }
+
+
+//===========================================================================
+// createExpr() - construct an AST node of type Expr.
+//===========================================================================
+Expr* createExpr(int type, void* value) {
+	Expr* expr = MALLOC(Expr);
+
+	switch(type) {
+		case expr_type_primary:
+			expr->expr_type = expr_type_primary;
+			PrimaryExpr* primary_expr = (PrimaryExpr*)value;
+			expr->primary_expr = primary_expr;
+			break;
+		case expr_type_postfix:
+			expr->expr_type = expr_type_postfix;
+			PostfixExpr* postfix_expr = (PostfixExpr*)value;
+			expr->postfix_expr = postfix_expr;
+			break;
+		case expr_type_unary:
+			expr->expr_type = expr_type_unary;
+			UnaryExpr* unary_expr = (UnaryExpr*)value;
+			expr->unary_expr = unary_expr;
+			break;
+		case expr_type_cast:
+			expr->expr_type = expr_type_cast;
+			CastExpr* cast_expr = (CastExpr*)value;
+			expr->cast_expr = cast_expr;
+			break;
+		case expr_type_arithmetic:
+			expr->expr_type = expr_type_arithmetic;
+			ArithmeticExpr* arithmetic_expr = (ArithmeticExpr*)value;
+			expr->arithmetic_expr = arithmetic_expr;
+			break;
+		case expr_type_logic:
+			expr->expr_type = expr_type_logic;
+			LogicExpr* logic_expr = (LogicExpr*)value;
+			expr->logic_expr = logic_expr;
+			break;
+		case expr_type_bitwise:
+			expr->expr_type = expr_type_bitwise;
+			BitwiseExpr* bitwise_expr = (BitwiseExpr*)value;
+			expr->bitwise_expr = bitwise_expr;
+			break;
+		case expr_type_conditional:
+			expr->expr_type = expr_type_conditional;
+			ConditionalExpr* conditional_expr = (ConditionalExpr*)value;
+			expr->conditional_expr = conditional_expr;
+			break;
+		case expr_type_const:
+			expr->expr_type = expr_type_const;
+			ConstExpr* const_expr = (ConstExpr*)value;
+			expr->const_expr = const_expr;
+			break;
+		case expr_type_lambda:
+			expr->expr_type = expr_type_lambda;
+			LambdaExpr* lambda_expr = (LambdaExpr*)value;
+			expr->lambda_expr = lambda_expr;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+
+	return expr;
+}

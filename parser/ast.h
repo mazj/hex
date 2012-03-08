@@ -482,6 +482,12 @@ struct HexExpr {
 };
 
 
+//===========================================================================
+// createExpr() - construct an AST node of type Expr.
+//===========================================================================
+Expr* createExpr(int type, void* value);
+
+
 /*
  * Expression list
  */
