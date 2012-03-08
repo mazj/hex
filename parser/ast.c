@@ -236,7 +236,7 @@ Expr* createArithmeticExpr(int type, void* value1, void* value2) {
 //===========================================================================
 // createEqualityExpr() - construct an AST node of type EqualityExpr.
 //===========================================================================
-EqualityExpr* createEqualityExpr(int type, void* value1, void* value2) {
+Expr* createEqualityExpr(int type, void* value1, void* value2) {
 	EqualityExpr* equality_expr = MALLOC(EqualityExpr);
 
 	switch(type) {
@@ -266,7 +266,9 @@ EqualityExpr* createEqualityExpr(int type, void* value1, void* value2) {
 	equality_expr->left_expr = (Expr*)value1;
 	equality_expr->right_expr = (Expr*)value2;
 
-	return equality_expr;
+	Expr *expr = createExpr(expr_type_equality, equality_expr);
+
+	return expr;
 }
 
 

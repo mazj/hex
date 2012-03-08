@@ -300,7 +300,7 @@ typedef struct HexEqualityExpr {
 //===========================================================================
 // createEqualityExpr() - construct an AST node of type EqualityExpr.
 //===========================================================================
-EqualityExpr* createEqualityExpr(int type, void* value1, void* value2);
+Expr* createEqualityExpr(int type, void* value1, void* value2);
 
 
 /*
