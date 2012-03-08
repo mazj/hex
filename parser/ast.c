@@ -141,13 +141,15 @@ Expr* createUnaryExpr(int type, void* value1, void* value2) {
 //===========================================================================
 // createCastExpr() - construct an AST node of type CastExpr.
 //===========================================================================
-CastExpr* createCastExpr(void* value1, void* value2) {
+Expr* createCastExpr(void* value1, void* value2) {
 	CastExpr *cast_expr = MALLOC(CastExpr);
 
 	cast_expr->cast_expr = (Expr*)value1;
 	cast_expr->cast_type = (char*)value2;
 
-	return cast_expr;
+	Expr* expr = createExpr(expr_type_cast, cast_expr);
+
+	return expr;
 }
 
 

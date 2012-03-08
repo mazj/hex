@@ -201,7 +201,7 @@ typedef struct HexCastExpr {
 //===========================================================================
 // createCastExpr() - construct an AST node of type CastExpr.
 //===========================================================================
-CastExpr* createCastExpr(void* value1, void* value2);
+Expr* createCastExpr(void* value1, void* value2);
 
 
 /*
