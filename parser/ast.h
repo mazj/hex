@@ -34,6 +34,12 @@ typedef struct HexSuite Suite;
 //===========================================================================
 
 
+//===========================================================================
+// createExpr() - construct an AST node of type Expr.
+//===========================================================================
+Expr* createExpr(int type, void* value);
+
+
 /*
  * Literal
  */
@@ -480,12 +486,6 @@ struct HexExpr {
         LambdaExpr *lambda_expr;
     };
 };
-
-
-//===========================================================================
-// createExpr() - construct an AST node of type Expr.
-//===========================================================================
-Expr* createExpr(int type, void* value);
 
 
 /*
