@@ -447,7 +447,7 @@ typedef struct HexLambdaExpr {
 //===========================================================================
 // createLambdaExpr() - construct an AST node of type LambdaExpr.
 //===========================================================================
-LambdaExpr* createLambdaExpr(void* value1, void* value2);
+Expr* createLambdaExpr(void* value1, void* value2);
 
 
 /*
