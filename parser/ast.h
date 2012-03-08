@@ -183,7 +183,7 @@ typedef struct HexUnaryExpr {
 //===========================================================================
 // createUnaryExpr() - construct an AST node of type UnaryExpr.
 //===========================================================================
-UnaryExpr* createUnaryExpr(int type, void* value1, void* value2);
+Expr* createUnaryExpr(int type, void* value1, void* value2);
 
 
 /*

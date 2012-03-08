@@ -105,7 +105,7 @@ Expr* createPostfixExpr(int type, void* value1, void* value2) {
 //===========================================================================
 // createUnaryExpr() - construct an AST node of type UnaryExpr.
 //===========================================================================
-UnaryExpr* createUnaryExpr(int type, void* value1, void* value2) {
+Expr* createUnaryExpr(int type, void* value1, void* value2) {
 	UnaryExpr *unary_expr = MALLOC(UnaryExpr);
 
 	switch(type) {
@@ -131,7 +131,10 @@ UnaryExpr* createUnaryExpr(int type, void* value1, void* value2) {
 			AST_ERROR();
 			break;
 	}
-	return unary_expr;
+
+	Expr* expr = createExpr(expr_type_unary, unary_expr);
+
+	return expr;
 }
 
 
