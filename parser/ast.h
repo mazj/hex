@@ -709,6 +709,12 @@ typedef struct HexInitializer {
 } Initializer;
 
 
+//===========================================================================
+// createInitializer() - construct an AST node of type Initializer.
+//===========================================================================
+Initializer* createInitializer(int type, void* value);
+
+
 /*
  *  List initializer list 
  */

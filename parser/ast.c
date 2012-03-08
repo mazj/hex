@@ -553,3 +553,47 @@ IdentifierList* createIdentifierList(Literal* literal, IdentifierList* parent_li
 		return identifier_list;
 	}
 }
+
+
+//===========================================================================
+// createInitializer() - construct an AST node of type Initializer.
+//===========================================================================
+Initializer* createInitializer(int type, void* value) {
+	Initializer* initializer = MALLOC(Initializer);
+
+	switch(type) {
+		case initializer_type_list:
+			initializer->initializer_type = initializer_type_list;
+			initializer->list_initializer_list = (ListInitializerList*)value;
+			break;
+		case initializer_type_array:
+			initializer->initializer_type = initializer_type_array;
+			initializer->array_initializer_list = (ArrayInitializerList*)value;
+			break;
+		case initializer_type_tuple:
+			initializer->initializer_type = initializer_type_tuple;
+			initializer->tuple_initializer_list = (TupleInitializerList*)value;
+			break;
+		case initializer_type_struct:
+			initializer->initializer_type = initializer_type_struct;
+			initializer->struct_initializer_list = (StructInitializerList*)value;
+			break;
+		case initializer_type_set:
+			initializer->initializer_type = initializer_type_set;
+			initializer->set_initialier_list = (SetInitializerList*)value;
+			break;
+		case initializer_type_map:
+			initializer->initializer_type = initializer_type_map;
+			initializer->map_initializer_list = (MapInitializerList*)value;
+			break;
+		case initializer_type_multimap:
+			initializer->initializer_type = initializer_type_multimap;
+			initializer->multimap_initializer_list = (MultimapInitializerList*)value;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+
+	return initializer;
+}
