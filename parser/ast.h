@@ -266,7 +266,7 @@ typedef struct HexArithmeticExpr {
 //===========================================================================
 // createArithmeticExpr() - construct an AST node of type ArithmeticExpr.
 //===========================================================================
-ArithmeticExpr* createArithmeticExpr(int type, void* value1, void* value2);
+Expr* createArithmeticExpr(int type, void* value1, void* value2);
 
 
 /*

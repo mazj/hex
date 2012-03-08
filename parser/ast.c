@@ -209,7 +209,7 @@ AdditiveExpr* createAdditiveExpr(int type, void* value1, void* value2) {
 //===========================================================================
 // createArithmeticExpr() - construct an AST node of type ArithmeticExpr.
 //===========================================================================
-ArithmeticExpr* createArithmeticExpr(int type, void* value1, void* value2) {
+Expr* createArithmeticExpr(int type, void* value1, void* value2) {
 	ArithmeticExpr *arithmetic_expr = MALLOC(ArithmeticExpr);
 
 	switch(type) {
@@ -227,7 +227,9 @@ ArithmeticExpr* createArithmeticExpr(int type, void* value1, void* value2) {
 	arithmetic_expr->left_expr = (Expr*)value1;
 	arithmetic_expr->right_expr = (Expr*)value2;
 
-	return arithmetic_expr;
+	Expr* expr = createExpr(expr_type_arithmetic, arithmetic_expr);
+
+	return expr;
 }
 
 
