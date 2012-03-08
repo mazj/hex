@@ -302,7 +302,8 @@ expr
  * Expression list
  */
 expr_list
-  : expr (COMMA expr)* [COMMA]
+  : expr
+  | expr_list COMMA expr
   ;
 
 
