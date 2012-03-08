@@ -549,7 +549,7 @@ typedef enum HexTypeQualifier {
  * Type qualifier list
  */
 typedef struct HexTypeQualifierList {
-    TypeQualifier *type_qualifier;
+    TypeQualifier type_qualifier;
     struct HexTypeQualifierList *type_qualifier_list;
 } TypeQualifierList;
 
