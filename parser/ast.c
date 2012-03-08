@@ -503,3 +503,19 @@ Expr* createExpr(int type, void* value) {
 
 	return expr;
 }
+
+
+//===========================================================================
+// createExprList() - construct an AST node of type ExprList.
+//===========================================================================
+ExprList *createExprList(Expr* expr, ExprList* parent_list) {
+	ExprList* expr_list = MALLOC(ExprList);
+	expr_list->expr = expr;
+
+	if(parent_list) {
+		parent_list->next = expr_list;
+		return parent_list;
+	} else {
+		return expr_list;
+	}
+}

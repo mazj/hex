@@ -500,6 +500,12 @@ typedef struct HexExprList {
 } ExprList;
 
 
+//===========================================================================
+// createExprList() - construct an AST node of type ExprList.
+//===========================================================================
+ExprList *createExprList(Expr* expr, ExprList* parent_list);
+
+
 /***********************************************************************
  *  Declaration definitions
  ***********************************************************************/
