@@ -718,10 +718,16 @@ Initializer* createInitializer(int type, void* value);
 /*
  *  List initializer list 
  */
-struct ListInitializerList {
+struct HexListInitializerList {
     Initializer *initializer;
-    ListInitializerList *list_initializer_list;
+    struct HexListInitializerList *next;
 };
+
+
+//===========================================================================
+// createListInitializerList() - construct an AST node of type ListInitializerList.
+//===========================================================================
+ListInitializerList* createListInitializerList(Initializer* initializer, ListInitializerList* parent_list);
 
 
 /*

@@ -597,3 +597,22 @@ Initializer* createInitializer(int type, void* value) {
 
 	return initializer;
 }
+
+
+//===========================================================================
+// createListInitializerList() - construct an AST node of type ListInitializerList.
+//===========================================================================
+ListInitializerList* createListInitializerList(Initializer* initializer, ListInitializerList* parent_list) {
+	ListInitializerList *list = MALLOC(ListInitializerList);
+	list->initializer = initializer;
+	list->next = 0;
+
+	if(parent_list) {
+		parent_list->next = list;
+		return parent_list;
+	} else {
+		return list;
+	}
+
+	return list;
+}
