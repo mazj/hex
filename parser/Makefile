@@ -1,3 +1,6 @@
+CC=gcc
+CFLAGS=-Wno-implicit
+
 a.out:
 	gcc sorted_string_list.h bst.h utils.h strnutils.h map.h unittest.h queue.h sorted_string_list_unittest.c
 
@@ -14,7 +17,7 @@ parser.tab.h:
 	bison -d parser.y
 
 ast: ast.h ast.c utils.h
-	gcc -c ast.h ast.c utils.h
+	$(CC) $(CFLAGS) -c ast.h ast.c utils.h
 
 map_unittest: unittest.h
 	gcc map.h map_unittest.c
