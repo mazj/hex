@@ -620,6 +620,12 @@ typedef struct HexIdentifierList {
 } IdentifierList;
 
 
+//===========================================================================
+// createIdentifierList() - construct an AST node of type IdentifierList.
+//===========================================================================
+IdentifierList* createIdentifierList(Literal* literal, IdentifierList* parent_list);
+
+
 /***********************************************************************
  *  Parameter definitions
  ***********************************************************************/

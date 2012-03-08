@@ -536,3 +536,20 @@ TypeQualifierList* createTypeQualifierList(TypeQualifier qualifier, TypeQualifie
 		return qualifier_list;
 	}
 }
+
+
+//===========================================================================
+// createIdentifierList() - construct an AST node of type IdentifierList.
+//===========================================================================
+IdentifierList* createIdentifierList(Literal* literal, IdentifierList* parent_list) {
+	IdentifierList *identifier_list = MALLOC(IdentifierList);
+	identifier_list->identifier_literal = literal;
+	identifier_list->next = 0;
+
+	if(parent_list) {
+		parent_list->next = identifier_list;
+		return parent_list;
+	} else {
+		return identifier_list;
+	}
+}
