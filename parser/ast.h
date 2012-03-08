@@ -157,7 +157,7 @@ typedef struct HexPostfixExpr {
 //===========================================================================
 // createPostfixExpr() - construct an AST node of type PostfixExpr.
 //===========================================================================
-PostfixExpr* createPostfixExpr(int type, void* value1, void* value2);
+Expr* createPostfixExpr(int type, void* value1, void* value2);
 
 
 /*

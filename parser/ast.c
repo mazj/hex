@@ -67,7 +67,7 @@ Expr* createPrimaryExpr(int type, void* value) {
 //===========================================================================
 // createPostfixExpr() - construct an AST node of type PostfixExpr.
 //===========================================================================
-PostfixExpr* createPostfixExpr(int type, void* value1, void* value2) {
+Expr* createPostfixExpr(int type, void* value1, void* value2) {
 	PostfixExpr *postfix_expr = MALLOC(PostfixExpr);
 
 	switch(type) {
@@ -95,7 +95,10 @@ PostfixExpr* createPostfixExpr(int type, void* value1, void* value2) {
 			AST_ERROR();
 			break;
 	}
-	return postfix_expr;
+
+	Expr* expr = createExpr(expr_type_postfix, postfix_expr);
+
+	return expr;
 }
 
 
