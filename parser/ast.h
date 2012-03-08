@@ -460,6 +460,7 @@ struct HexExpr {
         expr_type_unary,
         expr_type_cast,
         expr_type_arithmetic,
+        expr_type_equality,
         expr_type_logic,
         expr_type_bitwise,
         expr_type_conditional,
