@@ -524,7 +524,7 @@ ExprList *createExprList(Expr* expr, ExprList* parent_list) {
 //===========================================================================
 // createTypeQualifierList() - construct an AST node of type TypeQualifierList.
 //===========================================================================
-TypeQualifierList* createTypeQualifierList(TypeQualifier qualifier, TypeQualifierList* qualifier_list) {
+TypeQualifierList* createTypeQualifierList(TypeQualifier qualifier, TypeQualifierList* parent_list) {
 	TypeQualifierList *qualifier_list = MALLOC(TypeQualifierList);
 	qualifier_list->type_qualifier = qualifier;
 	qualifier_list->next = 0;
