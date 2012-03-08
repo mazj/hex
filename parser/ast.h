@@ -550,8 +550,14 @@ typedef enum HexTypeQualifier {
  */
 typedef struct HexTypeQualifierList {
     TypeQualifier type_qualifier;
-    struct HexTypeQualifierList *type_qualifier_list;
+    struct HexTypeQualifierList *next;
 } TypeQualifierList;
+
+
+//===========================================================================
+// createTypeQualifierList() - construct an AST node of type TypeQualifierList.
+//===========================================================================
+TypeQualifierList* createTypeQualifierList(TypeQualifier qualifier, TypeQualifierList* parent_list);
 
 
 /*
