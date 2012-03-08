@@ -361,7 +361,7 @@ declarator
 direct_declarator
   : IDENTIFIER
   | LPAREN declarator RPAREN
-  | direct_declarator LBRACKET const_expr 
+  | direct_declarator LBRACKET const_expr RBRACKET
   | direct_declarator LBRACKET RBRACKET
   ;
 
