@@ -37,7 +37,7 @@ Literal* createLiteral(int type, void* value) {
 //===========================================================================
 // createPrimaryExpr() - construct an AST node of type PrimaryExpr.
 //===========================================================================
-PrimaryExpr* createPrimaryExpr(int type, void* value) {
+Expr* createPrimaryExpr(int type, void* value) {
 	PrimaryExpr *primary_expr = MALLOC(PrimaryExpr);
 
 	switch(type) {
@@ -57,7 +57,10 @@ PrimaryExpr* createPrimaryExpr(int type, void* value) {
 			AST_ERROR();
 			break;
 	}
-	return primary_expr;
+
+	Expr* expr = createExpr(expr_type_primary, primary_expr);
+
+	return expr;
 }
 
 

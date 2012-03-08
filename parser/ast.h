@@ -118,7 +118,7 @@ typedef struct HexPrimaryExpr {
 //===========================================================================
 // createPrimaryExpr() - construct an AST node of type PrimaryExpr.
 //===========================================================================
-PrimaryExpr* createPrimaryExpr(int type, void* value);
+Expr* createPrimaryExpr(int type, void* value);
 
 
 /* 
