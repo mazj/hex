@@ -727,8 +727,7 @@ struct HexListInitializerList {
 //===========================================================================
 // createListInitializerList() - construct an AST node of type ListInitializerList.
 //===========================================================================
-ListInitializerList* createListInitializerList(Initializer* initializer,
-    ListInitializerList* parent_list);
+ListInitializerList* createListInitializerList(Initializer* initializer, ListInitializerList* parent_list);
 
 
 /*
@@ -921,12 +920,6 @@ typedef struct HexTryStmt {
 typedef struct HexReturnStmt {
     ExprList *return_expr_list;
 } ReturnStmt;
-
-
-/*
- * Continue statement
- */
-typedef struct HexContinueStatement ContinueStatement;
 
 
 /*
