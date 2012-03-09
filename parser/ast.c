@@ -619,6 +619,22 @@ ListInitializerList* createListInitializerList(Initializer* initializer, ListIni
 
 
 //===========================================================================
+// createWhileStmt() - construct an AST node of type WhileStmt.
+//===========================================================================
+CompoundStmt* createWhileStmt(Expr *while_expr, Suite *while_suite) {
+	WhileStmt *while_stmt = MALLOC(WhileStmt);
+
+	while_stmt->while_expr = while_expr;
+	while_stmt->while_suite = while_suite;
+
+	CompoundStmt *compound_stmt = createCompoundStmt(compound_stmt_type_while_stmt,
+		while_stmt);
+
+	return compound_stmt;
+}
+
+
+//===========================================================================
 // createDoWhileStmt() - construct an AST node of type DoWhileStmt.
 //===========================================================================
 CompoundStmt* createDoWhileStmt(Suite *dowhile_suite, Expr *dowhile_expr) {

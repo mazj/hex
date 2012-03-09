@@ -891,6 +891,12 @@ typedef struct HexWhileStmt {
 } WhileStmt;
 
 
+//===========================================================================
+// createWhileStmt() - construct an AST node of type WhileStmt.
+//===========================================================================
+CompoundStmt* createWhileStmt(Expr *while_expr, Suite *while_suite);
+
+
 /*
  * Do-while statement
  */
