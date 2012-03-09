@@ -29,4 +29,4 @@ stack_unittest: unittest.h
 	gcc stack.h stack_unittest.c
 
 clean:
-	rm *.gch *.out *.o *.swp .lexer.l.swp lexer
+	rm *.gch *.out *.o *.swp .lexer.l.swp lexer parser.tab.c parser.tab.h
