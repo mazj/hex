@@ -619,6 +619,45 @@ ListInitializerList* createListInitializerList(Initializer* initializer, ListIni
 
 
 //===========================================================================
+// createCompoundStmt() - construct an AST node of type CompoundStmt.
+//===========================================================================
+Stmt* createCompoundStmt(int type, void* value) {
+	CompoundStmt *compound_stmt = MALLOC(CompoundStmt);
+
+	switch(type) {
+		case compound_stmt_type_if_stmt:
+			compound_stmt->compound_stmt_type = compound_stmt_type_if_stmt;
+			compound_stmt->compound_stmt_if_stmt = (IfStmt*)value;
+			break;
+		case compound_stmt_type_while_stmt:
+			compound_stmt->compound_stmt_type = compound_stmt_type_while_stmt;
+			compound_stmt->compound_stmt_while_stmt = (WhileStmt*)value;
+			break;
+		case compound_stmt_type_dowhile_stmt:
+			compound_stmt->compound_stmt_type = compound_stmt_type_dowhile_stmt;
+			compound_stmt->compount_stmt_dowhile_stmt = (DoWhileStmt*)value;
+			break;
+		case compound_stmt_type_try_stmt:
+			compound_stmt->compound_stmt_type = compound_stmt_type_try_stmt;
+			compound_stmt->compound_stmt_try_stmt = (TryStmt*)value;
+		case compound_stmt_type_func_def:
+			break;
+			compound_stmt->compound_stmt_type = compound_stmt_type_func_def;
+			compound_stmt->compound_stmt_func_def = (FuncDef*)value;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+
+
+	Stmt *stmt = createStmt(stmt_type_compound_stmt, compound_stmt);
+
+	return stmt;
+}
+
+
+//===========================================================================
 // createStmt() - construct an AST node of type Stmt.
 //===========================================================================
 Stmt* createStmt(int type, void* value) {
@@ -672,6 +711,9 @@ Stmt* createStmt(int type, void* value) {
 		case stmt_type_compound_stmt:
 			stmt->stmt_type = stmt_type_compound_stmt;
 			stmt->stmt_compound_stmt = (CompoundStmt*)value;
+			break;
+		default:
+			AST_ERROR();
 			break;
 	}
 
