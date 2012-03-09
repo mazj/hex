@@ -929,6 +929,12 @@ typedef struct HexContinueStmt ContinueStmt;
 
 
 /*
+ * Break statement
+ */
+typedef struct HexBreakStmt BreakStmt;
+
+
+/*
  * Jump statement
  */
 typedef struct HexJumpStmt {
