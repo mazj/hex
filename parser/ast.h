@@ -992,7 +992,7 @@ Stmt* createCompoundStmt(int type, void* value);
 /*
  * Statement
  */
-struct Stmt {
+struct HexStmt {
     enum {
         stmt_type_stmt_list,                /* statement list */
         stmt_type_import_stmt,              /* import statement */
@@ -1026,6 +1026,12 @@ struct Stmt {
         CompoundStmt* stmt_compound_stmt;   /* compound statement */
     };
 };
+
+
+//===========================================================================
+// createStmt() - construct an AST node of type Stmt.
+//===========================================================================
+Stmt* createStmt(int type, void* value);
 
 
 /***********************************************************************
