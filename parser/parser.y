@@ -715,7 +715,7 @@ try_stmt
  */
 return_stmt
   : RETURN NEWLINE
-  | RETURN expr NEWLINE
+  | RETURN expr_list NEWLINE
   ;
 
 /*
