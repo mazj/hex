@@ -926,6 +926,12 @@ typedef struct HexFinallyStmt {
 } FinallyStmt;
 
 
+//===========================================================================
+// createFinallyStmt() - construct an AST node of type FinallyStmt.
+//===========================================================================
+Stmt* createFinallyStmt(Suite* suite);
+
+
 /*
  * Try statement
  */

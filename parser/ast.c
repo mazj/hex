@@ -619,6 +619,20 @@ ListInitializerList* createListInitializerList(Initializer* initializer, ListIni
 
 
 //===========================================================================
+// createFinallyStmt() - construct an AST node of type FinallyStmt.
+//===========================================================================
+Stmt* createFinallyStmt(Suite* suite) {
+	FinallyStmt *finally_stmt = MALLOC(FinallyStmt);
+
+	finally_stmt->finally_suite = suite;
+
+	Stmt *stmt = createStmt(stmt_type_finally_stmt, finally_stmt);
+
+	return stmt;
+}
+
+
+//===========================================================================
 // createTryStmt() - construct an AST node of type TryStmt.
 //===========================================================================
 CompoundStmt* createTryStmt(Suite* try_suite, CatchStmtGroup *catch_stmt_group,
