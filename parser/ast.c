@@ -619,6 +619,20 @@ ListInitializerList* createListInitializerList(Initializer* initializer, ListIni
 
 
 //===========================================================================
+// createReturnStmt() - construct an AST node of type ReturnStmt.
+//===========================================================================
+Stmt* createReturnStmt(ExprList* value) {
+	ReturnStmt *return_stmt = MALLOC(ReturnStmt);
+
+	return_stmt->return_expr_list = value;
+
+	Stmt *stmt = createStmt(stmt_type_return_stmt, return_stmt);
+
+	return stmt;
+}
+
+
+//===========================================================================
 // createCompoundStmt() - construct an AST node of type CompoundStmt.
 //===========================================================================
 Stmt* createCompoundStmt(int type, void* value) {

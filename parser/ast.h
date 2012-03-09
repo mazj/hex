@@ -938,6 +938,12 @@ typedef struct HexReturnStmt {
 } ReturnStmt;
 
 
+//===========================================================================
+// createReturnStmt() - construct an AST node of type ReturnStmt.
+//===========================================================================
+Stmt* createReturnStmt(ExprList* value);
+
+
 /*
  * Continue statement
  */
