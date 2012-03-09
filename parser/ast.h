@@ -805,6 +805,12 @@ typedef struct HexSimpleStmt SimpleStmt;
 
 
 /*
+ * Compound statement
+ */
+typedef struct HexCompoundStmt CompoundStmt;
+
+
+/*
  * Statement list
  */
 typedef struct HexStmtList {
@@ -930,6 +936,13 @@ typedef struct HexTryStmt {
 } TryStmt;
 
 
+//===========================================================================
+// createTryStmt() - construct an AST node of type TryStmt.
+//===========================================================================
+CompoundStmt* createTryStmt(Suite* try_suite, CatchStmtGroup *catch_stmt_group,
+    FinallyStmt *finally_stmt);
+
+
 /*
  * Return statement
  */
@@ -971,7 +984,7 @@ typedef struct HexFuncDef FuncDef;
 /*
  * Compound statement
  */
-typedef struct HexCompoundStmt {
+struct HexCompoundStmt {
     enum {
         compound_stmt_type_if_stmt,             /* if statement */
         compound_stmt_type_while_stmt,          /* while statement */
@@ -986,7 +999,7 @@ typedef struct HexCompoundStmt {
         TryStmt *compound_stmt_try_stmt;        /* try statement */
         FuncDef *compound_stmt_func_def;        /* function definition */
     };
-} CompoundStmt;
+};
 
 
 //===========================================================================

@@ -619,6 +619,23 @@ ListInitializerList* createListInitializerList(Initializer* initializer, ListIni
 
 
 //===========================================================================
+// createTryStmt() - construct an AST node of type TryStmt.
+//===========================================================================
+CompoundStmt* createTryStmt(Suite* try_suite, CatchStmtGroup *catch_stmt_group,
+    FinallyStmt *finally_stmt) {
+	TryStmt *try_stmt = MALLOC(TryStmt);
+
+	try_stmt->try_suite = try_suite;
+	try_stmt->catch_stmt_group = catch_stmt_group;
+	try_stmt->finally_stmt = finally_stmt;
+
+	CompoundStmt *compound_stmt = createCompoundStmt(compound_stmt_type_try_stmt, try_stmt);
+
+	return compound_stmt;
+}
+
+
+//===========================================================================
 // createReturnStmt() - construct an AST node of type ReturnStmt.
 //===========================================================================
 Stmt* createReturnStmt(ExprList* value) {
