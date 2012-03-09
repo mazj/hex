@@ -925,8 +925,8 @@ typedef struct HexFinallyStmt {
  */
 typedef struct HexTryStmt {
     Suite *try_suite;
-    CatchStmt *catch_stmt;
-    Suite *finally_suite;
+    CatchStmtGroup *catch_stmt_group;
+    FinallyStmt *finally_stmt;
 } TryStmt;
 
 
