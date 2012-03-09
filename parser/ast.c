@@ -616,3 +616,64 @@ ListInitializerList* createListInitializerList(Initializer* initializer, ListIni
 
 	return list;
 }
+
+
+//===========================================================================
+// createStmt() - construct an AST node of type Stmt.
+//===========================================================================
+Stmt* createStmt(int type, void* value) {
+	Stmt *stmt = MALLOC(Stmt);
+
+	switch(type) {
+		case stmt_type_stmt_list:
+			stmt->stmt_type = stmt_type_stmt_list;
+			stmt->stmt_stmt_list = (StmtList*)value;
+			break;
+		case stmt_type_import_stmt:
+			stmt->stmt_type = stmt_type_import_stmt;
+			stmt->stmt_import_stmt = (ImportStmt*)value;
+			break;
+		case stmt_type_expr_stmt:
+			stmt->stmt_type = stmt_type_expr_stmt;
+			stmt->stmt_expr_stmt = (ExprStmt*)value;
+			break;
+		case stmt_type_else_stmt:
+			stmt->stmt_type = stmt_type_else_stmt;
+			stmt->stmt_else_stmt = (ElseStmt*)value;
+			break;
+		case stmt_type_elif_stmt:
+			stmt->stmt_type = stmt_type_elif_stmt;
+			stmt->stmt_elif_stmt = (ElifStmt*)value;
+			break;
+		case stmt_type_catch_stmt:
+			stmt->stmt_type = stmt_type_catch_stmt;
+			stmt->stmt_catch_stmt = (CatchStmt*)value;
+			break;
+		case stmt_type_finally_stmt:
+			stmt->stmt_type = stmt_type_finally_stmt;
+			stmt->stmt_finally_stmt = (FinallyStmt*)value;
+			break;
+		case stmt_type_return_stmt:
+			stmt->stmt_type = stmt_type_return_stmt;
+			stmt->stmt_return_stmt = (ReturnStmt*)value;
+			break;
+		case stmt_type_continue_stmt:
+			stmt->stmt_type = stmt_type_continue_stmt;
+			stmt->stmt_continue_stmt = (ContinueStmt*)value;
+			break;
+		case stmt_type_break_stmt:
+			stmt->stmt_type = stmt_type_break_stmt;
+			stmt->stmt_continue_stmt = (BreakStmt*)value;
+			break;
+		case stmt_type_pass_stmt:
+			stmt->stmt_type = stmt_type_pass_stmt;
+			stmt->stmt_pass_stmt = (PassStmt*)value;
+			break;
+		case stmt_type_compound_stmt:
+			stmt->stmt_type = stmt_type_compound_stmt;
+			stmt->stmt_compound_stmt = (CompoundStmt*)value;
+			break;
+	}
+
+	return stmt;
+}
