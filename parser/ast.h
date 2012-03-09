@@ -900,7 +900,6 @@ typedef struct HexDoWhileStmt {
 typedef struct HexCatchStmt {
     Expr *catch_expr;
     Suite *catch_suite;
-    struct HexCatchStmt *next;
 } CatchStmt;
 
 
