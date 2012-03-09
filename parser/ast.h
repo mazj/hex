@@ -913,6 +913,14 @@ typedef struct HexCatchStmtGroup {
 
 
 /*
+ * Finally statement
+ */
+typedef struct HexFinallyStmt {
+    Suite* finally_suite;
+} FinallyStmt;
+
+
+/*
  * Try statement
  */
 typedef struct HexTryStmt {
