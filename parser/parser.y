@@ -694,20 +694,34 @@ dowhile_stmt
   ;
 
 /*
+ * Catch statement
+ */
+catch_stmt
+  : CATCH expr COLON suite
+  ;
+
+/*
  * Catch statement group
  */
 catch_stmt_group
-  : CATCH expr COLON suite
-  | catch_stmt_group CATCH expr COLON suite
+  : catch_stmt
+  | catch_stmt_group catch_stmt
+  ;
+
+/*
+ * Finally statement
+ */
+finally_stmt
+  : FINALLY COLON suite
   ;
 
 /*
  *  Try statement
  */
 try_stmt
-  : TRY COLON suite CATCH expr COLON suite
-  : TRY COLON suite CATCH expr COLON suite FINALLY COLON suite
-  | TRY COLON suite FINALLY COLON suite
+  : TRY COLON suite catch_stmt_group
+  : TRY COLON suite catch_stmt_group 
+  | TRY COLON suite finally_stmt
   ;
 
 /*
