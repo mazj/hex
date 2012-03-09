@@ -935,21 +935,6 @@ typedef struct HexBreakStmt BreakStmt;
 
 
 /*
- * Jump statement
- */
-typedef struct HexJumpStmt {
-    enum {
-        jump_stmt_type_continue,        /* continue statement */
-        jump_stmt_type_break,           /* break statement */
-        jump_stmt_type_return           /* return statement */
-    } jump_stmt_type;
-    union {
-        ReturnStmt *return_stmt;        /* return statement */
-    };
-} JumpStmt;
-
-
-/*
  * Pass statement
  */
 typedef struct HexPassStmt PassStmt;
