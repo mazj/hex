@@ -976,7 +976,7 @@ typedef struct HexCompoundStmt {
     union {
         IfStmt *compound_stmt_if_stmt;          /* if statement */
         WhileStmt *compound_stmt_while_stmt;    /* while statement */
-        DoWhileStmt *compount_stmt_dowhile_stmt;/* do-while statement */
+        DoWhileStmt *compount_stmt_dowhile_stmt;/* do-while statem */
         TryStmt *compound_stmt_try_stmt;        /* try statement */
         FuncDef *compound_stmt_func_def;        /* function definition */
     };
@@ -986,8 +986,46 @@ typedef struct HexCompoundStmt {
 //===========================================================================
 // createCompoundStmt() - construct an AST node of type CompoundStmt.
 //===========================================================================
-CompoundStmt* createCompoundStmt(int type, void* value);
+Stmt* createCompoundStmt(int type, void* value);
 
+
+/*
+ * Statement
+ */
+struct Stmt {
+    enum {
+        stmt_type_stmt_list,                /* statement list */
+        stmt_type_import_stmt,              /* import statement */
+        stmt_type_expr_stmt,                /* expression statement */
+        stmt_type_else_stmt,                /* else statement */
+        stmt_type_elif_stmt,                /* elif statement */
+        // stmt_type_if_stmt,               /* if statement */
+        // stmt_type_while_stmt,            /* while statement */
+        // stmt_type_dowhile_stmt,          /* do-while statement */
+        stmt_type_catch_stmt,               /* catch stmt */
+        stmt_type_finally_stmt,             /* finally statement */
+        // stmt_type_try_stmt,              /* try statement */
+        stmt_type_return_stmt,              /* return statement */
+        stmt_type_continue_stmt,            /* continue statement */
+        stmt_type_break_stmt,               /* break statement */
+        stmt_type_pass_stmt,                /* pass statement */
+        stmt_type_compound_stmt             /* compound statement */
+    } stmt_type;
+    union {
+        StmtList *stmt_stmt_list;           /* statement list */
+        ImportStmt *stmt_import_stmt;       /* import statement */
+        ExprStmt *stmt_expr_stmt;           /* expression statement */       
+        ElseStmt *stmt_else_stmt;           /* else statement */
+        ElifStmt *stmt_elif_stmt;           /* elif statement */
+        CatchStmt *stmt_catch_stmt;         /* catch stmt */
+        FinallyStmt *stmt_finally_stmt;     /* finally statement */
+        ReturnStmt *stmt_return_stmt;       /* return statement */
+        ContinueStmt *stmt_continue_stmt;   /* continue statement */
+        BreakStmt *stmt_break_stmt;         /* break statement */
+        PassStmt *stmt_pass_stmt;           /* pass statement */
+        CompoundStmt* stmt_compound_stmt;   /* compound statement */
+    };
+};
 
 
 /***********************************************************************
