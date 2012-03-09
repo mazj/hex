@@ -49,6 +49,7 @@
 "default"               RETURN("KEYWORD", yytext, DEFAULT);
 "do"                    RETURN("KEYWORD", yytext, DO);
 "double"                RETURN("KEYWORD", yytext, DOUBLE);
+"elif"                  RETURN("KEYWORD", yytext, ELIF);
 "else"                  RETURN("KEYWORD", yytext, ELSE);
 "enum"                  RETURN("KEYWORD", yytext, ENUM);
 "ext"                   RETURN("KEYWORD", yytext, EXT);
