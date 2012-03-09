@@ -619,6 +619,24 @@ ListInitializerList* createListInitializerList(Initializer* initializer, ListIni
 
 
 //===========================================================================
+// createCatchStmtGroup() - construct an AST node of type CatchStmtGroup.
+//===========================================================================
+CatchStmtGroup* createCatchStmtGroup(CatchStmt* catch_stmt, CatchStmtGroup* parent_group) {
+	CatchStmtGroup *catch_stmt_group = MALLOC(CatchStmtGroup);
+
+	catch_stmt_group->catch_stmt = catch_stmt;
+	catch_stmt_group->next = 0;
+
+	if(parent_group) {
+		parent_group->next = catch_stmt_group;
+		return parent_group;
+	}
+
+	return catch_stmt_group;
+}
+
+
+//===========================================================================
 // createFinallyStmt() - construct an AST node of type FinallyStmt.
 //===========================================================================
 Stmt* createFinallyStmt(Suite* suite) {

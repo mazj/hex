@@ -918,6 +918,13 @@ typedef struct HexCatchStmtGroup {
 } CatchStmtGroup;
 
 
+//===========================================================================
+// createCatchStmtGroup() - construct an AST node of type CatchStmtGroup.
+//===========================================================================
+CatchStmtGroup* createCatchStmtGroup(CatchStmt* catch_stmt,
+    CatchStmtGroup* parent_group);
+
+
 /*
  * Finally statement
  */
