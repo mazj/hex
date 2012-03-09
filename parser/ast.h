@@ -895,12 +895,21 @@ typedef struct HexDoWhileStmt {
 
 
 /*
- * Catch statement (not standalone)
+ * Catch statement
  */
 typedef struct HexCatchStmt {
     Expr *catch_expr;
     Suite *catch_suite;
 } CatchStmt;
+
+
+/*
+ * Catch statement group
+ */
+typedef struct HexCatchStmtGroup {
+    CatchStmt* catch_stmt;
+    struct HexCatchStmtGroup *next;
+} CatchStmtGroup;
 
 
 /*
