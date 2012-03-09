@@ -981,6 +981,13 @@ typedef struct HexCompoundStmt {
 } CompoundStmt;
 
 
+//===========================================================================
+// createCompoundStmt() - construct an AST node of type CompoundStmt.
+//===========================================================================
+CompoundStmt* createCompoundStmt(int type, void* value);
+
+
+
 /***********************************************************************
  *  Function definitions
  ***********************************************************************/
