@@ -766,6 +766,7 @@ return_stmt
 compound_stmt
   : if_stmt
   | while_stmt
+  | dowhile_stmt
   | try_stmt
   | func_def
   ;
