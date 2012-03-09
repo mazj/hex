@@ -909,6 +909,12 @@ typedef struct HexCatchStmt {
 } CatchStmt;
 
 
+//===========================================================================
+// createCatchStmt() - construct an AST node of type CatchStmt.
+//===========================================================================
+CatchStmt* createCatchStmt(Expr* catch_expr, Suite* catch_suite);
+
+
 /*
  * Catch statement group
  */
