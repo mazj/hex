@@ -17,7 +17,7 @@ extern YYSTYPE yylval;
 %token <string> BASE BOOL BREAK
 %token <string> CASE CATCH CHAR CLASS CONST CONTINUE COROUTINE
 %token <string> DEF DEFER DEFAULT DO DOUBLE
-%token <string> ELSE ENUM EXT
+%token <string> ELIF ELSE ENUM EXT
 %token <string> FLOAT FOR FROM
 %token <string> IF IMPORT
 %token <string> IN INT INTERFACE
@@ -42,12 +42,13 @@ extern YYSTYPE yylval;
 %token <string>     ASSIGN_OP ASSIGN_PLUS ASSIGN_MINUS ASSIGN_MUL ASSIGN_DIV ASSIGN_MOD
 %token <string>     BITWISE_NOT BITWISE_AND BITWISE_OR BITWISE_XOR BITWISE_SHIFTLEFT BITWISE_SHIFTRIGHT
 %token <string>     ASSIGN_NOT ASSIGN_AND ASSIGN_OR ASSIGN_XOR ASSIGN_SHIFTLEFT ASSIGN_SHIFTRIGHT
-%token <string>     EQ_OP GREATER_OP LESS_OP GEQ_OP LEQ_OP
+%token <string>     EQ_OP NEQ_OP GREATER_OP LESS_OP GEQ_OP LEQ_OP
 %token <string>     INC_OP DEC_OP
 %token <string>     LAMBDA_OP
 %token <string>     DOT
 %token <string>     COMMA
 %token <string>     COLON
+%token <string>     SEMICOLON
 %token <string>     LPAREN
 %token <string>     RPAREN
 %token <string>     LBRACKET
@@ -56,6 +57,9 @@ extern YYSTYPE yylval;
 %token <string>     RBRACE
 %token <string>     ELLIPSIS
 %token <string>     POND
+%token <string>     NEWLINE
+%token <string>     INDENT
+%token <string>     DEDENT
 
 %%
 
@@ -87,8 +91,8 @@ unary_operator
 
 assignment_operator
   : ASSIGN_OP
-  | ASSIGN_OP [NEW]
-  | ASSIGN_OP [LAZY NEW]
+  | ASSIGN_OP NEW
+  | ASSIGN_OP LAZY NEW
   | ASSIGN_MUL
   | ASSIGN_DIV
   | ASSIGN_MOD
@@ -160,7 +164,7 @@ unary_expr
   | INC_OP unary_expr
   | DEC_OP unary_expr
   | unary_operator cast_expr
-  | SIZEOF IDENTIDIER
+  | SIZEOF IDENTIFIER
   | SIZEOF LPAREN IDENTIFIER RPAREN
   ;
 
@@ -169,7 +173,7 @@ unary_expr
  */
 cast_expr
   : unary_expr
-  | LPAREN typename RPAREN cast_expr
+  | LPAREN IDENTIFIER RPAREN cast_expr
   ;
 
 /*
@@ -196,8 +200,8 @@ additive_expr
  */
 shift_expr
   : additive_expr
-  | shift_expr SHIFTLEFT_BITWISE additive_expr
-  | shift_expr SHIFTRIGHT_BITWISE additive_expr
+  | shift_expr BITWISE_SHIFTLEFT additive_expr
+  | shift_expr BITWISE_SHIFTRIGHT additive_expr
   ;
 
 /*
@@ -207,8 +211,8 @@ relational_expr
   : shift_expr
   | relational_expr LESS_OP shift_expr
   | relational_expr GREATER_OP shift_expr
-  | relational_expr LE_OP shift_expr
-  | relational_expr GE_OP shift_expr
+  | relational_expr LEQ_OP shift_expr
+  | relational_expr GEQ_OP shift_expr
   ;
 
 /*
@@ -265,7 +269,7 @@ logical_or_expr
  */
 conditional_expr
   : logical_or_expr
-  | expression IF logical_or_expr ELSE conditional_expr
+  | expr IF logical_or_expr ELSE conditional_expr
   ;
 
 /*
@@ -295,7 +299,7 @@ lambda_expr
  */
 expr
   : assignment_expr
-  | expression COMMA assignment_expr
+  | expr COMMA assignment_expr
   ;
 
 /*
@@ -418,7 +422,7 @@ identifier_list
  */
 paramter_type_list
   : parameter_list
-  | parameter_list COMMA ELIPSIS
+  | parameter_list COMMA ELLIPSIS
   ;
 
 /*
@@ -426,7 +430,7 @@ paramter_type_list
  */
 parameter_list
   : parameter_declaration
-  | parameter_list, parameter_declaration
+  | parameter_list COMMA parameter_declaration
   ;
 
 /*
@@ -538,13 +542,13 @@ map_initializer_list
  *  Multimap initializer list
  */
 multimap_initializer_list
-  : LITERAL COLON LAPREN RPAREN
-  | LITERAL COLON LAPREN map_initializer_list RPAREN
-  | IDENTIFIER COLON LAPREN RPAREN
-  | IDENTIFIER COLON LAPREN map_initializer_list RPAREN
-  | multimap_initializer_list COMMA LITERAL COLON LAPREN RPAREN
-  | multimap_initializer_list COMMA LITERAL COLON LAPREN map_initializer_list RPAREN
-  | multimap_initializer_list COMMA IDENTIFIER COLON LAPREN RPAREN
+  : LITERAL COLON LPAREN RPAREN
+  | LITERAL COLON LPAREN map_initializer_list RPAREN
+  | IDENTIFIER COLON LPAREN RPAREN
+  | IDENTIFIER COLON LPAREN map_initializer_list RPAREN
+  | multimap_initializer_list COMMA LITERAL COLON LPAREN RPAREN
+  | multimap_initializer_list COMMA LITERAL COLON LPAREN map_initializer_list RPAREN
+  | multimap_initializer_list COMMA IDENTIFIER COLON LPAREN RPAREN
   | multimap_initializer_list COMMA IDENTIFIER COLON set_initializer_list
   ;
 
@@ -553,9 +557,20 @@ multimap_initializer_list
  ******************************* statements ******************************
  *************************************************************************/
 
+/*
+ *  Statement group
+ */
+stmt_group
+  : stmt
+  | stmt_group stmt
+  ;
+
+/*
+ *  Suite
+ */
 suite
   : stmt_list NEWLINE
-  | NEWLINE INDENT (stmt)+ DEDENT
+  | NEWLINE INDENT stmt_group DEDENT
   ;
 
 /*
@@ -570,7 +585,8 @@ stmt
  *  Statement list
  */
 stmt_list
-  : simple_stmt (SEMICOLON simple_stmt)* [SEMICOLON]
+  : simple_stmt
+  | stmt_list SEMICOLON simple_stmt
   ;
 
 /*
@@ -590,25 +606,39 @@ simple_stmt
  * Module
  */
 module
-  : (IDENTIFIER DOT)* IDENTIFIER
+  : IDENTIFIER
+  | IDENTIFIER DOT module
   ;
 
 /*
  * Relative module
  */
 relative_module
-  : DOT* module
-  | DOT+
+  : module
+  ;
+
+/*
+ * Import alias
+ */
+import_alias
+  : module
+  | module AS IDENTIFIER 
+  ;
+
+/*
+ * Import alias list
+ */
+import_alias_list
+  : import_alias
+  | import_alias_list COMMA import_alias
   ;
 
 /*
  * Import statement
  */
 import_stmt
-  : IMPORT module [AS IDENTIFIER] (COMMA module [AS IDENTIFIER])*
-  | FROM relative_module IMPORT IDENTIFIER [AS IDENTIFIER] (COMMA IDENTIFIER [AS IDENTIFIER])*
-  | FROM relative_module IMPORT LPAREN IDENTIFIER [AS IDENTIFIER] (COMMA IDENTIFIER [AS IDENTIFIER])* [COMMA] RPAREN
-  | FROM module IMPORT "*"
+  : IMPORT import_alias_list
+  | FROM relative_module IMPORT import_alias_list
   ;
 
 /*
@@ -619,17 +649,34 @@ expr_stmt
   ;
 
 /*
+ * Elif statment group
+ */
+elif_group
+  : ELIF expr COLON suite
+  | elif_group ELIF expr COLON suite
+  ;
+
+/*
  * If statement
  */
 if_stmt
-  : IF expr COLON suite (ELIF expr COLON suite)* [ELSE COLON suite]
+  : IF expr COLON suite elif_group
+  | IF expr COLON suite elif_group ELSE COLON suite
+  ;
+
+/*
+ *
+ */
+target_list
+  :
   ;
 
 /*
  *  For statement
  */
 for_stmt
-  : FOR target_list IN expr_list [WHERE equality_expr] suite
+  : FOR target_list IN expr_list suite
+  : FOR target_list IN expr_list WHERE equality_expr suite
   ;
 
 /*
@@ -647,21 +694,42 @@ dowhile_stmt
   ;
 
 /*
+ * Catch statement group
+ */
+catch_stmt_group
+  : CATCH expr COLON suite
+  | catch_stmt_group CATCH expr COLON suite
+  ;
+
+/*
  *  Try statement
  */
 try_stmt
-  : TRY COLON suite (CATCH expr COLON suite)+ [FINALLY COLON suite]
+  : TRY COLON suite CATCH expr COLON suite
+  : TRY COLON suite CATCH expr COLON suite FINALLY COLON suite
   | TRY COLON suite FINALLY COLON suite
   ;
 
 /*
- *  Jump statement
+ *  Return statement
  */
-jump_statement
-  : CONTINUE NEWLINE
-  | BREAK NEWLINE
-  | RETURN NEWLINE
+return_stmt
+  : RETURN NEWLINE
   | RETURN expr NEWLINE
+  ;
+
+/*
+ * Continue statement
+ */
+continue_stmt
+  : CONTINUE NEWLINE
+  ;
+
+/*
+ * Break statement
+ */
+break_stmt
+  : BREAK NEWLINE
   ;
 
 /*
@@ -697,15 +765,15 @@ compound_stmt
 /*
  *  Function declaration specifier
  */
-func_declaration_specifier
-  : declaration_specifier
+func_declaration_specifiers
+  : declaration_specifiers
   ;
 
 /*
  *  function_definition
  */
 func_def
-  : DEF func_declaration_specifier [declaration_specifiers IDENTIFIER]? IDENTIFIER LPAREN parameter_type_list RPAREN COLON suite
+  : DEF func_declaration_specifiers IDENTIFIER LPAREN parameter_list RPAREN COLON suite
   ;
 
 
