@@ -923,6 +923,12 @@ typedef struct HexReturnStmt {
 
 
 /*
+ * Continue statement
+ */
+typedef struct HexContinueStmt ContinueStmt;
+
+
+/*
  * Jump statement
  */
 typedef struct HexJumpStmt {
