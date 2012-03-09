@@ -969,12 +969,14 @@ typedef struct HexCompoundStmt {
     enum {
         compound_stmt_type_if_stmt,             /* if statement */
         compound_stmt_type_while_stmt,          /* while statement */
+        compound_stmt_type_dowhile_stmt,        /* do-while statement */
         compound_stmt_type_try_stmt,            /* try statement */
         compound_stmt_type_func_def             /* function definition */
     } compound_stmt_type;
     union {
         IfStmt *compound_stmt_if_stmt;          /* if statement */
         WhileStmt *compound_stmt_while_stmt;    /* while statement */
+        DoWhileStmt *compount_stmt_dowhile_stmt;/* do-while statement */
         TryStmt *compound_stmt_try_stmt;        /* try statement */
         FuncDef *compound_stmt_func_def;        /* function definition */
     };
