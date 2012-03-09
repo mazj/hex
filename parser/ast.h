@@ -900,6 +900,12 @@ typedef struct HexDoWhileStmt {
 } DoWhileStmt;
 
 
+//===========================================================================
+// createDoWhileStmt() - construct an AST node of type DoWhileStmt.
+//===========================================================================
+CompoundStmt* createDoWhileStmt(Suite *dowhile_suite, Expr *dowhile_expr);
+
+
 /*
  * Catch statement
  */
