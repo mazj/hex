@@ -1,24 +1,42 @@
 %{
 #include <stdio.h>
-#include "parser.tab.h"
+#include "parser2.tab.h"
 
-#define RETURN(type, token_string, token)			\
-		printf("[%s]: %s", (type), (token_string));	\
-        switch(token) {                             \
-            case INTEGER:                           \
+#define RETURN(type, yytext, token_type)			\
+        switch(token_type) {                        \
+            case DECIMALINTEGER:                    \
+                yylval.integer = atoi(yytext);      \
+                return DECIMALINTEGER;              \
+                break;                              \
             case BININTEGER:                        \
+                yylval.integer = atoi(yytext);      \
+                return BININTEGER;                  \
+                break;                              \
             case OCTINTEGER:                        \
+                yylval.integer = atoi(yytext);      \
+                return OCTINTEGER;                  \
+                break;                              \
             case HEXINTEGER:                        \
                 yylval.integer = atoi(yytext);      \
+                return HEXINTEGER;                  \
                 break;                              \
             case FLOATINGNUM:                       \
-                yylval.float = atof(yytext);        \
+                yylval.floating = atof(yytext);     \
+                return FLOATINGNUM;                 \
+                break;                              \
+            case CHARACTER_LITERAL:                 \
+                yylval.character = yytext;          \
+                return CHARACTER_LITERAL;           \
+                break;                              \
+            case STRING_LITERAL:                    \
+                yylval.string = yytext;             \
+                return STRING_LITERAL;              \
                 break;                              \
             default:                                \
                 yylval.string = yytext;             \
+                return token_type;                  \
                 break;                              \
-        }                                           \
-        //return token;
+        }
 %}
 
 /* Multi-line comment state */
@@ -103,10 +121,10 @@ L?'(\\.|[^\\'])+'       RETURN("CHARACTER_LITERAL", yytext, CHARACTER_LITERAL);
 L?\"(\\.|[^\\"])*\"     RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 
 #inline_comment
-\/\/.*                    RETURN("COMMENT", yytext, COMMENT);
+\/\/.*                  RETURN("COMMENT", yytext, COMMENT);
 
 #integer
-([0]|[1-9]*)[lL]?	      RETURN("INTEGER", yytext, INTEGER);
+([0]|[1-9]*)[lL]?	      RETURN("INTEGER", yytext, DECIMALINTEGER);
 
 
 #binary_integer
@@ -180,8 +198,8 @@ L?\"(\\.|[^\\"])*\"     RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 ":"              			RETURN("COLON", yytext, COLON);
 
 #bracket
-"("                         RETURN("BRACKET", yytext, LPARAN);
-")"               	        RETURN("BRACKET", yytext, RPARAN);
+"("                         RETURN("BRACKET", yytext, LPAREN);
+")"               	        RETURN("BRACKET", yytext, RPAREN);
 
 
 #sqaure_bracket
@@ -219,11 +237,6 @@ int main(int argc, char** argv) {
         exit(1);
     }
     yylex();
+    yyparse();
     return 0;
 }
-
-int yywrap() {
-    fclose(yyin);
-    return 1;
-}
-
