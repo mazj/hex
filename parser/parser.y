@@ -2,16 +2,16 @@
 #include <stdio.h>
 #include "ast.h"
 
-#define YYSTYPE char*
-extern YYSTYPE yylval;
+#define YYERROR_VERBOSE
+#define TRACE printf("reduce at line %d\n", __LINE__);
 %}
 
 %union {
   char character;
   char* string;
   int integer;
-  double float;
-}
+  double floating;
+};
 
 %token <string> AND AS
 %token <string> BASE BOOL BREAK
@@ -37,7 +37,7 @@ extern YYSTYPE yylval;
 %token <string>     STRING_LITERAL
 %token <string>     COMMENT
 %token <integer>    DECIMALINTEGER BININTEGER OCTINTEGER HEXINTEGER
-%token <float>      FLOATINGNUM
+%token <floating>   FLOATINGNUM
 %token <string>     PLUS_OP MINUS_OP MUL_OP DIV_OP MOD_OP
 %token <string>     ASSIGN_OP ASSIGN_PLUS ASSIGN_MINUS ASSIGN_MUL ASSIGN_DIV ASSIGN_MOD
 %token <string>     BITWISE_NOT BITWISE_AND BITWISE_OR BITWISE_XOR BITWISE_SHIFTLEFT BITWISE_SHIFTRIGHT
@@ -61,6 +61,9 @@ extern YYSTYPE yylval;
 %token <string>     INDENT
 %token <string>     DEDENT
 
+%type <integer> INTEGER
+
+%error-verbose
 %%
 
 input: /* empty line */
