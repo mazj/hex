@@ -25,7 +25,7 @@
                 return FLOATINGNUM;                 \
                 break;                              \
             case CHARACTER_LITERAL:                 \
-                yylval.character = yytext;          \
+                yylval.character = yytext[1];       \
                 return CHARACTER_LITERAL;           \
                 break;                              \
             case STRING_LITERAL:                    \
