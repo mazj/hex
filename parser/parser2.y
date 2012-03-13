@@ -82,10 +82,8 @@
 
 input
   : NEWLINE /* empty line */
-  | expr NEWLINE
+  | stmt NEWLINE
   ;
-
-
 
 stmt_group
   : stmt
@@ -102,11 +100,9 @@ stmt_list
   | stmt_list SEMICOLON simple_stmt
   ;
 
-
-
 simple_stmt
   : expr_stmt
-  | assignment_expr
+  | assignment_stmt
   | pass_stmt
   | return_stmt
   | break_stmt
@@ -143,9 +139,14 @@ compound_stmt
   | func_def
   ;
 
+func_def
+  : DEF declaration_specifiers IDENTIFIER LPAREN parameter_list RPAREN COLON suite
+  | DEF LPAREN parameter_list RPAREN COLON suite
+  ;
+
 try_stmt
-  : TRY COLON suite catch_stmt_group
-  : TRY COLON suite catch_stmt_group 
+  : TRY COLON suite catch_group
+  : TRY COLON suite catch_group finally_stmt
   | TRY COLON suite finally_stmt
   ;
 
@@ -153,9 +154,9 @@ finally_stmt
   : FINALLY COLON suite
   ;
 
-catch_stmt_group
+catch_group
   : catch_stmt
-  | catch_stmt_group catch_stmt
+  | catch_group catch_stmt
   ;
 
 catch_stmt
@@ -171,10 +172,9 @@ while_stmt
   ;
 
 for_stmt
-  : FOR IDENTIFIER IN expr_list suite
-  : FOR IDENTIFIER IN expr_list WHERE equality_expr suite
+  : FOR IDENTIFIER IN expr suite
+  : FOR IDENTIFIER IN expr WHERE expr suite
   ;
-
 
 if_stmt
   : IF expr COLON suite elif_group
@@ -182,14 +182,17 @@ if_stmt
   ;
 
 elif_group
-  : ELIF expr COLON suite
-  | elif_group ELIF expr COLON suite
+  : elif_stmt
+  | elif_group elif_stmt
   ;
 
+elif_stmt
+  : ELIF expr COLON suite
+  ;
 
 import_stmt
   : IMPORT import_alias_list
-  | FROM relative_module IMPORT import_alias_list
+  | FROM module IMPORT import_alias_list
   ;
 
 import_alias_list
@@ -202,17 +205,22 @@ import_alias
   | module AS IDENTIFIER 
   ;
 
-relative_module
-  : module
-  ;
-
 module
   : IDENTIFIER
   | IDENTIFIER DOT module
   ;
 
-assignment_stmt
-  : declaration assignment_operator expr
+suite
+  : stmt_list NEWLINE
+  | NEWLINE INDENT stmt_group DEDENT
+  ;
+
+expr_stmt
+  : expr_list
+  ;
+
+expr_list
+  : expr_list COMMA expr
   ;
 
 expr
@@ -244,19 +252,87 @@ expr
   | expr AND expr
   | expr OR expr
   | expr IF expr ELSE expr
-  | parameter_list LAMBDA_OP expr
+  | lambda_parameter_list LAMBDA_OP expr
   | declaration
+  | initializer
   ;
 
+initializer_list
+  : initializer_list COMMA initializer
+  ;
 
+initializer
+  : assignment_stmt
+  | LBRACKET initializer_list RBRACKET                            /* list */
+  | LBRACKET initializer_list COMMA RBRACKET                      /* list */
+  | LBRACE initializer_list RBRACE                                /* array */
+  | LBRACE initializer_list COMMA RBRACE                          /* array */
+  | LPAREN initializer_list RPAREN                                /* tuple */
+  | LPAREN initializer_list COMMA RPAREN                          /* tuple */
+  | LBRACE struct_initializer_list RBRACE                         /* struct */
+  | LBRACE struct_initializer_list COMMA RBRACE                   /* struct */
+  | LPAREN LBRACKET initializer_list  RBRACKET RPAREN             /* set */
+  | LPAREN LBRACKET initializer_list COMMA RBRACKET RPAREN        /* set */
+  | LBRACE map_initializer_list RBRACE                            /* map */
+  | LBRACE map_initializer_list COMMA RBRACE                      /* map */
+  | LBRACE multimap_initializer_list RBRACE                       /* multimap */
+  | LBRACE multimap_initializer_list COMMA RBRACE                 /* multimap */
+  ;
+
+multimap_initializer_list
+  : LITERAL COLON LPAREN RPAREN
+  | LITERAL COLON LPAREN map_initializer_list RPAREN
+  | IDENTIFIER COLON LPAREN RPAREN
+  | IDENTIFIER COLON LPAREN map_initializer_list RPAREN
+  | multimap_initializer_list COMMA LITERAL COLON LPAREN RPAREN
+  | multimap_initializer_list COMMA LITERAL COLON LPAREN map_initializer_list RPAREN
+  | multimap_initializer_list COMMA IDENTIFIER COLON LPAREN RPAREN
+  | multimap_initializer_list COMMA IDENTIFIER COLON initializer_list
+  ;
+
+map_initializer_list
+  : LITERAL COLON LITERAL
+  | LITERAL COLON initializer_list
+  | IDENTIFIER COLON LITERAL
+  | IDENTIFIER COLON initializer_list
+  | map_initializer_list COMMA LITERAL COLON LITERAL
+  | map_initializer_list COMMA LITERAL COLON initializer_list
+  | map_initializer_list COMMA IDENTIFIER COLON LITERAL
+  | map_initializer_list COMMA IDENTIFIER COLON initializer_list
+  ;
+
+struct_initializer_list
+  : IDENTIFIER ASSIGN_OP LITERAL
+  | IDENTIFIER ASSIGN_OP initializer
+  | struct_initializer_list COMMA IDENTIFIER ASSIGN_OP LITERAL
+  | struct_initializer_list COMMA IDENTIFIER ASSIGN_OP initializer
+  ;
+
+assignment_stmt
+  : declaration assignment_operator expr
+  ;
+
+lambda_parameter_list
+  : alias_parameter_list
+  | parameter_list
+  ;
+
+alias_parameter_list
+  : alias_parameter_list COMMA alias_parameter
+  ;
+
+alias_parameter
+  : typeless_parameter AS IDENTIFIER
+  | type_parameter AS IDENTIFIER
+  ;
 
 parameter_list
   : type_parameter_list
-  | type_parameter_list ELLIPSIS
+  | type_parameter_list COMMA ELLIPSIS
   | typeless_parameter_list
-  | typeless_parameter_list ELLIPSIS
-  | type_parameter_list typeless_parameter_list
-  | type_parameter_list typeless_parameter_list ELLIPSIS
+  | typeless_parameter_list COMMA ELLIPSIS
+  | type_parameter_list COMMA typeless_parameter_list
+  | type_parameter_list COMMA typeless_parameter_list COMMA ELLIPSIS
   ;
 
 type_parameter_list
@@ -278,7 +354,8 @@ typeless_parameter
   ;
 
 declaration
-  : declaration_specifiers declarators NEWLINE
+  : declarators
+  | declaration_specifiers declarators
   ;
 
 declarators
@@ -294,11 +371,11 @@ declarator
 
 declaration_specifiers
   : storage_class_specifier
-  | storage_class_specifier declaration_specifiers
+  | storage_class_specifier type_qualifier_list
+  | storage_class_specifier type_qualifier_list type_specifier
+  | type_qualifier_list
+  | type_qualifier_list type_specifier
   | type_specifier
-  | type_specifier declaration_specifiers
-  | type_qualifier
-  | type_qualifier declaration_specifiers
   ;
 
 type_specifier
