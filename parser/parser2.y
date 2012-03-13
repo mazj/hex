@@ -85,6 +85,136 @@ input
   | expr NEWLINE
   ;
 
+
+
+stmt_group
+  : stmt
+  | stmt_group stmt
+  ;
+
+stmt
+  : stmt_list NEWLINE
+  | compound_stmt
+  ;
+
+stmt_list
+  : simple_stmt
+  | stmt_list SEMICOLON simple_stmt
+  ;
+
+
+
+simple_stmt
+  : expr_stmt
+  | assignment_expr
+  | pass_stmt
+  | return_stmt
+  | break_stmt
+  | continue_stmt
+  | import_stmt
+  ;
+
+return_stmt
+  : RETURN expr_list
+  ;
+
+pass_stmt
+  : PASS NEWLINE
+  ;
+
+break_stmt
+  : BREAK NEWLINE
+  ;
+
+continue_stmt
+  : CONTINUE NEWLINE
+  ;
+
+return_stmt
+  : RETURN NEWLINE
+  | RETURN expr_list NEWLINE
+  ;
+
+compound_stmt
+  : if_stmt
+  | while_stmt
+  | dowhile_stmt
+  | try_stmt
+  | func_def
+  ;
+
+try_stmt
+  : TRY COLON suite catch_stmt_group
+  : TRY COLON suite catch_stmt_group 
+  | TRY COLON suite finally_stmt
+  ;
+
+finally_stmt
+  : FINALLY COLON suite
+  ;
+
+catch_stmt_group
+  : catch_stmt
+  | catch_stmt_group catch_stmt
+  ;
+
+catch_stmt
+  : CATCH expr COLON suite
+  ;
+
+dowhile_stmt
+  : DO suite WHILE expr
+  ;
+
+while_stmt
+  : WHILE expr COLON suite
+  ;
+
+for_stmt
+  : FOR IDENTIFIER IN expr_list suite
+  : FOR IDENTIFIER IN expr_list WHERE equality_expr suite
+  ;
+
+
+if_stmt
+  : IF expr COLON suite elif_group
+  | IF expr COLON suite elif_group ELSE COLON suite
+  ;
+
+elif_group
+  : ELIF expr COLON suite
+  | elif_group ELIF expr COLON suite
+  ;
+
+
+import_stmt
+  : IMPORT import_alias_list
+  | FROM relative_module IMPORT import_alias_list
+  ;
+
+import_alias_list
+  : import_alias
+  | import_alias_list COMMA import_alias
+  ;
+
+import_alias
+  : module
+  | module AS IDENTIFIER 
+  ;
+
+relative_module
+  : module
+  ;
+
+module
+  : IDENTIFIER
+  | IDENTIFIER DOT module
+  ;
+
+assignment_stmt
+  : declaration assignment_operator expr
+  ;
+
 expr
   : LITERAL
   | IDENTIFIER
@@ -107,14 +237,96 @@ expr
   | expr LEQ_OP expr
   | expr GEQ_OP expr
   | expr EQ_OP expr
-  | expr NEW_OP expr
+  | expr NEW expr
   | expr BITWISE_AND expr
   | expr BITWISE_XOR expr
-  | expr BIWISE_OR expr
+  | expr BITWISE_OR expr
   | expr AND expr
   | expr OR expr
   | expr IF expr ELSE expr
   | parameter_list LAMBDA_OP expr
+  | declaration
+  ;
+
+
+
+parameter_list
+  : type_parameter_list
+  | type_parameter_list ELLIPSIS
+  | typeless_parameter_list
+  | typeless_parameter_list ELLIPSIS
+  | type_parameter_list typeless_parameter_list
+  | type_parameter_list typeless_parameter_list ELLIPSIS
+  ;
+
+type_parameter_list
+  : type_parameter_list COMMA type_parameter
+  ;
+
+typeless_parameter_list
+  : typeless_parameter_list COMMA typeless_parameter
+  ; 
+
+type_parameter
+  : type_specifier IDENTIFIER
+  | type_qualifier type_specifier IDENTIFIER
+  ;
+
+typeless_parameter
+  : IDENTIFIER
+  | type_qualifier IDENTIFIER
+  ;
+
+declaration
+  : declaration_specifiers declarators NEWLINE
+  ;
+
+declarators
+  : declarator
+  | declarators COMMA declarator
+  ;
+
+declarator
+  : IDENTIFIER
+  | IDENTIFIER LBRACKET INTEGER RBRACKET
+  | IDENTIFIER LBRACKET RBRACKET
+  ;
+
+declaration_specifiers
+  : storage_class_specifier
+  | storage_class_specifier declaration_specifiers
+  | type_specifier
+  | type_specifier declaration_specifiers
+  | type_qualifier
+  | type_qualifier declaration_specifiers
+  ;
+
+type_specifier
+  : CHAR
+  | SHORT
+  | INT
+  | LONG
+  | FLOAT
+  | DOUBLE
+  | UCHAR
+  | USHORT
+  | UINT
+  | ULONG
+  | IDENTIFIER
+  ;
+
+type_qualifier_list
+  : type_qualifier
+  | type_qualifier_list type_qualifier
+  ;
+
+type_qualifier
+  : CONST
+  | VOLATILE
+  ;
+
+storage_class_specifier
+  : STATIC
   ;
 
 assignment_operator
