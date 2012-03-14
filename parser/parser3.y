@@ -103,6 +103,11 @@ stmt
   : assignment_stmt
   ;
 
+assignment_stmt_list
+  : assignment_stmt
+  | assignment_stmt_list COMMA assignment_stmt
+  ;
+
 assignment_stmt
   : declaration assignment_operator expr_list
   ;
@@ -143,6 +148,64 @@ expr
   | BITWISE_NOT expr
   | INC_OP expr
   | DEC_OP expr
+  | list_initializer
+  | tuple_initializer
+  | set_initializer
+  | array_initializer
+  | struct_initializer
+  | map_initializer
+  | multimap_initializer
+  ;
+
+multimap_initializer
+  : LBRACE multimap_initializer RBRACE
+  ;
+
+multimap_initializer_list
+  : multimap_initializer_single
+  | multimap_initializer_list COMMA multimap_initializer_single
+  ;
+
+multimap_initializer_single
+  : expr COLON tuple_initializer
+  ;
+
+map_initializer
+  : LBRACE map_initializer_list RBRACE
+  ;
+
+map_initializer_list
+  : map_initializer_single
+  | map_initializer COMMA map_initializer_single
+  ;
+
+map_initializer_single
+  : expr COLON expr_list
+  ;
+
+struct_initializer
+  : LBRACE assignment_stmt_list RBRACE
+  ;
+
+set_initializer
+  : LBRACKET LPAREN expr_list RPAREN RBRACKET
+  ;
+
+array_initializer
+  : LBRACE expr_list RBRACE
+  ;
+
+tuple_initializer
+  : LPAREN expr_list RPAREN
+  ;
+
+list_initializer
+  : LBRACKET expr_list RBRACKET
+  ;
+
+parameter_list
+  : declaration
+  | parameter_list COMMA declaration
   ;
 
 declaration
@@ -150,6 +213,7 @@ declaration
   | type_qualifier_list type_specifier expr_list
   | type_specifier expr_list
   | IDENTIFIER expr_list
+  | declaration AS IDENTIFIER
   ;
 
 type_specifier
