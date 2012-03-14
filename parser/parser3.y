@@ -288,7 +288,7 @@ expr
   ;
 
 multimap_initializer
-  : LBRACE multimap_initializer RBRACE
+  : LBRACE multimap_initializer_list RBRACE
   ;
 
 multimap_initializer_list
