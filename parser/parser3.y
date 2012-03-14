@@ -126,6 +126,7 @@ simple_stmt
   | break_stmt
   | continue_stmt
   | import_stmt
+  | func_declaration
   ;
 
 return_stmt
@@ -149,6 +150,8 @@ compound_stmt
   | while_stmt
   | dowhile_stmt
   | try_stmt
+  | for_stmt
+  | func_definition
   ;
 
 return_stmt
@@ -211,6 +214,14 @@ import_alias
 module
   : IDENTIFIER
   | IDENTIFIER DOT module
+  ;
+
+func_declaration
+  : DEF declaration IDENTIFIER LPAREN parameter_list RPAREN
+  ;
+
+func_definition
+  : DEF declaration IDENTIFIER LPAREN parameter_list RPAREN COLON suite
   ;
 
 assignment_stmt_list
@@ -375,8 +386,6 @@ assignment_operator
   | ASSIGN_OR
   | ASSIGN_XOR
   ;
-
-
 
 LITERAL
   : CHARACTER_LITERAL
