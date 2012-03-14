@@ -95,12 +95,122 @@
 
 input
   : NEWLINE /* empty line */
-  | stmt
-  | expr_list
+  | suite
+  ;
+
+suite
+  : stmt_list NEWLINE
+  | NEWLINE INDENT stmt_group DEDENT
+  ;
+
+stmt_group
+  : stmt
+  | stmt_group stmt
   ;
 
 stmt
-  : assignment_stmt
+  : stmt_list NEWLINE
+  | compound_stmt
+  ;
+
+stmt_list
+  : simple_stmt
+  | stmt_list SEMICOLON simple_stmt
+  ;
+
+simple_stmt
+  : expr_stmt
+  | assignment_stmt
+  | pass_stmt
+  | return_stmt
+  | break_stmt
+  | continue_stmt
+  | import_stmt
+  ;
+
+return_stmt
+  : RETURN expr_list
+  ;
+
+pass_stmt
+  : PASS NEWLINE
+  ;
+
+break_stmt
+  : BREAK NEWLINE
+  ;
+
+continue_stmt
+  : CONTINUE NEWLINE
+  ;
+
+compound_stmt
+  : if_stmt
+  | while_stmt
+  | dowhile_stmt
+  | try_stmt
+  ;
+
+return_stmt
+  : RETURN NEWLINE
+  | RETURN expr_list NEWLINE
+  ;
+
+try_stmt
+  : TRY COLON suite catch_stmt_group
+  | TRY COLON suite catch_stmt_group finally_stmt
+  | TRY COLON suite finally_stmt
+  ;
+
+finally_stmt
+  : FINALLY COLON suite
+  ;
+
+catch_stmt_group
+  : catch_stmt
+  | catch_stmt_group catch_stmt
+  ;
+
+catch_stmt
+  : CATCH expr COLON suite
+  ;
+
+dowhile_stmt
+  : DO suite WHILE expr
+  ;
+
+while_stmt
+  : WHILE expr COLON suite
+  ;
+
+for_stmt
+  : FOR expr IN expr_list suite
+  | FOR expr IN expr_list WHERE expr suite
+  ;
+
+if_stmt
+  : IF expr COLON suite elif_group
+  | IF expr COLON suite elif_group ELSE COLON suite
+  ;
+
+elif_group
+  : ELIF expr COLON suite
+  | elif_group ELIF expr COLON suite
+  ;
+
+import_stmt
+  : IMPORT import_alias
+  | FROM module IMPORT import_alias
+  ;
+
+import_alias
+  : module
+  | module AS IDENTIFIER 
+  ;
+
+module
+  : IDENTIFIER
+  | IDENTIFIER DOT module
   ;
 
 assignment_stmt_list
@@ -111,6 +221,15 @@ assignment_stmt_list
 assignment_stmt
   : declaration assignment_operator expr_list
   ;
+
+expr_stmt
+  : expr_group
+  ;
+
+expr_group
+  : expr
+  | expr_group SEMICOLON expr
+  ; 
 
 expr_list
   : expr
