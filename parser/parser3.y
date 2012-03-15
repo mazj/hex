@@ -99,12 +99,11 @@ input
   ;
 
 suite
-  : stmt_list NEWLINE
-  | NEWLINE INDENT stmt_group DEDENT
+  : NEWLINE INDENT stmt_group DEDENT
   ;
 
 stmt_group
-  : stmt
+  : stmt NEWLINE
   | stmt_group stmt
   ;
 
@@ -175,7 +174,7 @@ catch_stmt_group
   ;
 
 catch_stmt
-  : CATCH expr COLON suite
+  : CATCH declaration COLON suite
   ;
 
 dowhile_stmt
@@ -187,13 +186,17 @@ while_stmt
   ;
 
 for_stmt
-  : FOR expr IN expr_list suite
-  | FOR expr IN expr_list WHERE expr suite
+  : FOR target_list IN target_list suite
+  | FOR target_list IN target_list WHERE expr suite
+  ;
+
+target_list
+  : tuple_initializer
   ;
 
 if_stmt
-  : IF expr COLON suite elif_group
-  | IF expr COLON suite elif_group ELSE COLON suite
+  : IF expr COLON suite elif_group ELSE COLON suite
+  | IF expr COLON suite elif_group
   ;
 
 elif_group
@@ -203,25 +206,20 @@ elif_group
 
 import_stmt
   : IMPORT import_alias
-  | FROM module IMPORT import_alias
+  | FROM expr IMPORT import_alias
   ;
 
 import_alias
-  : module
-  | module AS IDENTIFIER 
-  ;
-
-module
-  : IDENTIFIER
-  | IDENTIFIER DOT module
-  ;
-
-func_declaration
-  : DEF declaration IDENTIFIER LPAREN parameter_list RPAREN
+  : expr
+  | expr AS IDENTIFIER 
   ;
 
 func_definition
   : DEF declaration IDENTIFIER LPAREN parameter_list RPAREN COLON suite
+  ;
+
+func_declaration
+  : DEF declaration IDENTIFIER LPAREN parameter_list RPAREN
   ;
 
 assignment_stmt_list
@@ -230,7 +228,16 @@ assignment_stmt_list
   ;
 
 assignment_stmt
-  : declaration assignment_operator expr_list
+  : declaration assignment_list
+  ;
+
+assignment_list
+  : assignment
+  | assignment_list assignment
+  ;
+
+assignment
+  : assignment_operator expr_list
   ;
 
 expr_stmt
@@ -250,8 +257,7 @@ expr_list
 expr
   : LITERAL
   | IDENTIFIER
-  | expr LBRACKET expr RBRACKET
-  | expr DOT IDENTIFIER
+  | expr DOT expr
   | expr INC_OP
   | expr DEC_OP
   | expr MUL_OP expr
@@ -284,6 +290,7 @@ expr
   | array_initializer
   | struct_initializer
   | map_multimap_initializer
+  | IDENTIFIER list_initializer
   ;
 
 map_multimap_initializer
@@ -320,8 +327,12 @@ list_initializer
   ;
 
 parameter_list
+  : LPAREN parameter_list_core RPAREN
+  ;
+
+parameter_list_core
   : declaration
-  | parameter_list COMMA declaration
+  | parameter_list_core COMMA declaration
   ;
 
 declaration
