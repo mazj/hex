@@ -64,10 +64,11 @@
 
 %left ASSIGN_BITWISE_NOT ASSIGN_BITWISE_AND ASSIGN_BITWISE_OR ASSIGN_BITWISE_XOR ASSIGN_SHIFTLEFT ASSIGN_SHIFTRIGHT ASSIGN_OP ASSIGN_PLUS ASSIGN_MINUS ASSIGN_MUL ASSIGN_DIV ASSIGN_MOD
 %left COMMA
+%left IDENTIFIER
 %left IF
 %left LESE
 %left OR
-%left AND 
+%left AND
 %left BITWISE_OR 
 %left BITWISE_XOR
 %left BITWISE_AND
@@ -79,6 +80,8 @@
 %left LBRACKET RBRACKET
 %right NOT BITWISE_NOT DEC_OP INC_OP
 %right NEW DOT
+%nonassoc conditional
+%nonassoc forstmt
 
 %type <integer> INTEGER
 
@@ -179,7 +182,7 @@ while_stmt
 
 for_stmt
   : FOR target_list IN target_list suite
-  | FOR target_list IN target_list WHERE expr suite
+  | FOR target_list IN target_list WHERE expr suite %prec forstmt
   ;
 
 target_list
@@ -271,7 +274,7 @@ expr
   | expr BITWISE_OR expr
   | expr AND expr
   | expr OR expr
-  | expr IF expr ELSE expr
+  | expr IF expr ELSE expr %prec conditional
   | NOT expr
   | BITWISE_NOT expr
   | INC_OP expr
@@ -282,7 +285,6 @@ expr
   | array_initializer
   | struct_initializer
   | map_multimap_initializer
-  | IDENTIFIER list_initializer
   ;
 
 map_multimap_initializer
