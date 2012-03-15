@@ -283,34 +283,20 @@ expr
   | set_initializer
   | array_initializer
   | struct_initializer
-  | map_initializer
-  | multimap_initializer
+  | map_multimap_initializer
   ;
 
-multimap_initializer
-  : LBRACE multimap_initializer_list RBRACE
+map_multimap_initializer
+  : LBRACE map_multimap_initializer_list RBRACE
   ;
 
-multimap_initializer_list
-  : multimap_initializer_single
-  | multimap_initializer_list COMMA multimap_initializer_single
+map_multimap_initializer_list
+  : map_multimap_initializer_single
+  | map_multimap_initializer_list COMMA map_multimap_initializer_single
   ;
 
-multimap_initializer_single
-  : expr COLON tuple_initializer
-  ;
-
-map_initializer
-  : LBRACE map_initializer_list RBRACE
-  ;
-
-map_initializer_list
-  : map_initializer_single
-  | map_initializer COMMA map_initializer_single
-  ;
-
-map_initializer_single
-  : expr COLON expr_list
+map_multimap_initializer_single
+  : expr COLON expr
   ;
 
 struct_initializer
@@ -341,6 +327,7 @@ parameter_list
 declaration
   : expr_list
   | type_qualifier_list type_specifier expr_list
+  | type_qualifier_list expr_list
   | type_specifier expr_list
   | IDENTIFIER expr_list
   | declaration AS IDENTIFIER
