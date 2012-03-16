@@ -97,6 +97,7 @@
 "struct"                RETURN("KEYWORD", yytext, STRUCT);
 "switch"                RETURN("KEYWORD", yytext, SWITCH);
 "task"                  RETURN("KEYWORD", yytext, TASK);
+"then"                  RETURN("KEYWORD", yytext, THEN);
 "this"                  RETURN("KEYWORD", yytext, THIS);
 "throw"                 RETURN("KEYWORD", yytext, THROW);
 "try"                   RETURN("KEYWORD", yytext, TRY);
