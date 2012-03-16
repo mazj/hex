@@ -82,10 +82,9 @@
 %right NOT BITWISE_NOT DEC_OP INC_OP
 %right NEW DOT
 
-%nonassoc conditional
+
+%nonassoc PRE_INC_AND_DEC 
 %nonassoc FOR_STMT_WITH_WHERE
-
-
 
 %type <integer> INTEGER
 
@@ -128,7 +127,8 @@ simple_stmt
   ;
 
 return_stmt
-  : RETURN expr_list
+  : RETURN NEWLINE
+  | RETURN expr_list NEWLINE
   ;
 
 pass_stmt
@@ -150,11 +150,6 @@ compound_stmt
   | try_stmt
   | for_stmt
   | func_definition
-  ;
-
-return_stmt
-  : RETURN NEWLINE
-  | RETURN expr_list NEWLINE
   ;
 
 try_stmt
@@ -252,6 +247,8 @@ expr
   : LITERAL
   | IDENTIFIER
   | expr DOT expr
+  | INC_OP expr
+  | DEC_OP expr
   | expr INC_OP
   | expr DEC_OP
   | expr MUL_OP expr
@@ -276,8 +273,6 @@ expr
   | IF expr THEN expr ELSE expr
   | NOT expr
   | BITWISE_NOT expr
-  | INC_OP expr
-  | DEC_OP expr
   | list_initializer
   | tuple_initializer
   | set_initializer
