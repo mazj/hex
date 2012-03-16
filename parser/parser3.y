@@ -27,7 +27,7 @@
 %token <string> PASS PRIVATE PROTECTED PUBLIC
 %token <string> RETURN
 %token <string> SHORT SIZEOF STACKALLOC STATIC STRING STRUCT SWITCH
-%token <string> TASK THIS THROW TRY TYPEOF UCHAR UINT ULONG USHORT
+%token <string> TASK THEN THIS THROW TRY TYPEOF UCHAR UINT ULONG USHORT
 %token <string> VIRTUAL VOLATILE
 %token <string> WHERE WHILE
 %token <string> FINALLY
@@ -66,7 +66,8 @@
 %left COMMA
 %left IDENTIFIER
 %left IF
-%left LESE
+%left THEN
+%left ELSE
 %left OR
 %left AND
 %left BITWISE_OR 
@@ -80,8 +81,11 @@
 %left LBRACKET RBRACKET
 %right NOT BITWISE_NOT DEC_OP INC_OP
 %right NEW DOT
+
 %nonassoc conditional
-%nonassoc forstmt
+%nonassoc FOR_STMT_WITH_WHERE
+
+
 
 %type <integer> INTEGER
 
@@ -113,7 +117,7 @@ stmt_list
   ;
 
 simple_stmt
-  : expr_stmt
+  : expr
   | assignment_stmt
   | pass_stmt
   | return_stmt
@@ -182,7 +186,7 @@ while_stmt
 
 for_stmt
   : FOR target_list IN target_list suite
-  | FOR target_list IN target_list WHERE expr suite %prec forstmt
+  | FOR target_list IN target_list WHERE expr suite %prec FOR_STMT_WITH_WHERE
   ;
 
 target_list
@@ -232,21 +236,16 @@ assignment_list
   ;
 
 assignment
-  : assignment_operator expr_list
+  : assignment_operator tuple_initializer
   ;
-
-expr_stmt
-  : expr_group
-  ;
-
-expr_group
-  : expr
-  | expr_group SEMICOLON expr
-  ; 
 
 expr_list
+  : expr_list_ COMMA
+  ;
+
+expr_list_
   : expr
-  | expr_list COMMA expr
+  | expr_list_ COMMA expr
   ;
 
 expr
@@ -274,7 +273,7 @@ expr
   | expr BITWISE_OR expr
   | expr AND expr
   | expr OR expr
-  | expr IF expr ELSE expr %prec conditional
+  | IF expr THEN expr ELSE expr
   | NOT expr
   | BITWISE_NOT expr
   | INC_OP expr
@@ -330,8 +329,7 @@ parameter_list_core
   ;
 
 declaration
-  : expr_list
-  | type_qualifier_list type_specifier expr_list
+  : type_qualifier_list type_specifier expr_list
   | type_qualifier_list expr_list
   | type_specifier expr_list
   | IDENTIFIER expr_list
