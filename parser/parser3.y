@@ -223,6 +223,7 @@ assignment_stmt_list
 
 assignment_stmt
   : declaration assignment_list
+  | expr_list assignment_list
   ;
 
 assignment_list
