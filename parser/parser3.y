@@ -79,11 +79,12 @@
 %left PLUS_OP MINUS_OP
 %left MUL_OP DIV_OP MOD_OP
 %left LBRACKET RBRACKET
-%right NOT BITWISE_NOT DEC_OP INC_OP
+%right NOT BITWISE_NOT
 %right NEW DOT
 
+%left DEC_OP INC_OP
+%left DEC_OP_POST INC_OP_POST
 
-%nonassoc PRE_INC_AND_DEC 
 %nonassoc FOR_STMT_WITH_WHERE
 
 %type <integer> INTEGER
@@ -249,8 +250,8 @@ expr
   | expr DOT expr
   | INC_OP expr
   | DEC_OP expr
-  | expr INC_OP
-  | expr DEC_OP
+  | expr INC_OP_POST
+  | expr DEC_OP_POST
   | expr MUL_OP expr
   | expr DIV_OP expr
   | expr MOD_OP expr
