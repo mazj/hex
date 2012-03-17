@@ -79,12 +79,16 @@
 %left PLUS_OP MINUS_OP
 %left MUL_OP DIV_OP MOD_OP
 %left LBRACKET RBRACKET
+%left LPAREN RPAREN
+%left LBRACE RBRACE
 %right NOT BITWISE_NOT
+%left DEC_OP INC_OP
 %right NEW DOT
 
-%left DEC_OP INC_OP
-%left DEC_OP_POST INC_OP_POST
 
+%nonassoc DEC_OP_POST
+%nonassoc INC_OP_POST
+%nonassoc UMINUS 
 %nonassoc FOR_STMT_WITH_WHERE
 
 %type <integer> INTEGER
@@ -147,7 +151,6 @@ continue_stmt
 compound_stmt
   : if_stmt
   | while_stmt
-  | dowhile_stmt
   | try_stmt
   | for_stmt
   | func_definition
@@ -170,10 +173,6 @@ catch_stmt_group
 
 catch_stmt
   : CATCH declaration COLON suite
-  ;
-
-dowhile_stmt
-  : DO suite WHILE expr
   ;
 
 while_stmt
@@ -232,7 +231,7 @@ assignment_list
   ;
 
 assignment
-  : assignment_operator tuple_initializer
+  : assignment_operator expr
   ;
 
 expr_list
@@ -250,13 +249,14 @@ expr
   | expr DOT expr
   | INC_OP expr
   | DEC_OP expr
-  | expr INC_OP_POST
-  | expr DEC_OP_POST
+  | expr INC_OP %prec INC_OP_POST
+  | expr DEC_OP %prec INC_OP_POST
   | expr MUL_OP expr
   | expr DIV_OP expr
   | expr MOD_OP expr
   | expr PLUS_OP expr
   | expr MINUS_OP expr
+  | MINUS_OP expr %prec UMINUS
   | expr BITWISE_SHIFTLEFT expr
   | expr BITWISE_SHIFTRIGHT expr
   | expr LESS_OP expr
