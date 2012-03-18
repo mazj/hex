@@ -1,6 +1,6 @@
 %{
 #include <stdio.h>
-#include "ast.h"
+#include "ast3.h"
 
 #define YYERROR_VERBOSE
 #define TRACE printf("reduce at line %d\n", __LINE__);
@@ -270,7 +270,7 @@ expr_list_
 expr
   : LITERAL
   | IDENTIFIER
-  | expr DOT expr
+  | IDENTIFIER DOT IDENTIFIER
   | INC_OP expr
   | DEC_OP expr
   | expr INC_OP %prec INC_OP_POST
@@ -299,7 +299,7 @@ expr
   | NOT expr
   | BITWISE_NOT expr
   | expr LBRACKET expr RBRACKET
-  | expr LPAREN RPAREN
+  | IDENTIFIER LPAREN RPAREN
   | expr tuple_initializer
   | list_initializer
   | tuple_initializer
