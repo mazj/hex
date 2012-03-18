@@ -830,8 +830,14 @@ typedef struct HexCompoundStmt CompoundStmt;
  * Module
  */
 typedef struct HexModule {
-    char *identifier;
+    char *module_identifier;
 } Module;
+
+
+//===========================================================================
+// createModule() - construct an AST node of type Module.
+//===========================================================================
+Module* createModule(char *module_identifier);
 
 
 /*
@@ -843,6 +849,12 @@ typedef struct HexModuleList {
 } ModuleList;
 
 
+//===========================================================================
+// createModuleList() - construct an AST node of type ModuleList.
+//===========================================================================
+ModuleList* createModuleList(Module *module, ModuleList *parent_list);
+
+
 /*
  * Direct import statement
  */
@@ -850,6 +862,12 @@ typedef struct HexDirectImportStmt {
     ModuleList *module_list;
     char *alias;
 } DirectImportStmt;
+
+
+//===========================================================================
+// createDirectImportStmt() - construct an AST node of type DirectImportStmt.
+//===========================================================================
+DirectImportStmt* createDirectImportStmt(ModuleList *module_list, char *alias);
 
 
 /*
@@ -860,6 +878,12 @@ typedef struct HexRelativeImportStmt {
     Module *module;
     char *alias;
 } RelativeImportStmt;
+
+
+//===========================================================================
+// createRelativeImportStmt() - construct an AST node of type RelativeImportStmt.
+//===========================================================================
+RelativeImportStmt* createRelativeImportStmt(ModuleList *module_list, Module *module char *alias);
 
 
 /*
@@ -875,6 +899,12 @@ typedef struct HexImportStmt {
         RelativeImportStmt *import_stmt_relative_import_stmt;
     };
 } ImportStmt;
+
+
+//===========================================================================
+// createImportStmt() - construct an AST node of type ImportStmt.
+//===========================================================================
+ImportStmt* createImportStmt(int type, void* value);
 
 
 /*
@@ -904,7 +934,7 @@ typedef struct HexElifGroup {
 //===========================================================================
 // createElifGroup() - construct an AST node of type ElifGroup.
 //===========================================================================
-ElifGroup* createElifGroup(ElifStmt* elif_stmt, ElifGroup *parent);
+ElifGroup* createElifGroup(ElifStmt* elif_stmt, ElifGroup *parent_list);
 
 
 /*
