@@ -111,13 +111,13 @@ stmt_group
   ;
 
 stmt
-  : stmt_list NEWLINE
+  : simple_stmt_list NEWLINE
   | compound_stmt
   ;
 
-stmt_list
+simple_stmt_list
   : simple_stmt
-  | stmt_list SEMICOLON simple_stmt
+  | simple_stmt_list SEMICOLON simple_stmt
   ;
 
 simple_stmt
@@ -172,7 +172,9 @@ catch_stmt_group
   ;
 
 catch_stmt
-  : CATCH declaration COLON suite
+  : CATCH COLON suite
+  | CATCH LPAREN declaration RPAREN COLON suite
+  | CATCH LPAREN IDENTIFIER IDENTIFIER RPAREN COLON suite
   ;
 
 while_stmt
@@ -194,26 +196,47 @@ if_stmt
   ;
 
 elif_group
+  : elif_stmt
+  | elif_group elif_stmt
+  ;
+
+elif_stmt
   : ELIF expr COLON suite
-  | elif_group ELIF expr COLON suite
   ;
 
 import_stmt
-  : IMPORT import_alias
-  | FROM expr IMPORT import_alias
+  : direct_import_stmt
+  | relative_import_stmt
   ;
 
-import_alias
-  : expr
-  | expr AS IDENTIFIER 
+relative_import_stmt
+  : FROM module_list IMPORT module
+  | FROM module_list IMPORT module AS IDENTIFIER
+  ;
+
+direct_import_stmt
+  : IMPORT module_list
+  | IMPORT module_list AS IDENTIFIER
+  ; 
+
+module_list
+  : module
+  | module_list DOT module;
+  ;
+
+module
+  : IDENTIFIER
   ;
 
 func_definition
-  : DEF declaration IDENTIFIER LPAREN parameter_list RPAREN COLON suite
+  : func_declaration COLON suite
   ;
 
 func_declaration
-  : DEF declaration IDENTIFIER LPAREN parameter_list RPAREN
+  : DEF IDENTIFIER LPAREN parameter_list RPAREN
+  | DEF type_specifier IDENTIFIER LPAREN parameter_list RPAREN
+  | DEF type_qualifier_list type_specifier IDENTIFIER LPAREN parameter_list RPAREN
+  | DEF type_qualifier_list IDENTIFIER IDENTIFIER LPAREN parameter_list RPAREN
   ;
 
 assignment_stmt_list
