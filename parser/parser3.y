@@ -275,12 +275,17 @@ expr
   | IF expr THEN expr ELSE expr
   | NOT expr
   | BITWISE_NOT expr
+  | expr LBRACKET expr RBRACKET
+  | expr LPAREN RPAREN
+  | expr tuple_initializer
   | list_initializer
   | tuple_initializer
   | set_initializer
   | array_initializer
   | struct_initializer
   | map_multimap_initializer
+  | LPAREN IDENTIFIER RPAREN expr
+  | LPAREN type_specifier RPAREN expr
   ;
 
 map_multimap_initializer
