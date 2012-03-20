@@ -447,6 +447,7 @@ struct HexExpr {
         expr_type_cast,
         expr_type_multilicative,
         expr_type_arithmetic,
+        expr_type_equality,
         expr_type_logic,
         expr_type_bitwise,
         expr_type_conditional,
@@ -476,7 +477,7 @@ Expr* createExpr(int type, void* value);
 /*
  * Expression list
  */
-struct ExprList {
+struct HexExprList {
     Expr *expr;
     struct HexExprList *next;
 };
@@ -546,7 +547,7 @@ Declaration* createDeclaration(TypeQualifierList *type_qualifier_list,
 /*
  * Parameter list
  */
-struct ParameterList {
+struct HexParameterList {
     Declaration *param_declaration;
     struct HexParameterList *next;
 };
@@ -772,7 +773,7 @@ AssignmentStmt* createAssignmentStmt(int type, void* value);
 /*
  * Assignment statement list
  */
-struct AssignmentStmtList {
+struct HexAssignmentStmtList {
     AssignmentStmt *assignment_stmt;
     AssignmentStmtList *next;
 };
@@ -788,19 +789,19 @@ AssignmentStmtList* createAssignmentStmtList(AssignmentStmt *assignment_stmt,
 /*
  * Function declaration
  */
-typedef struct HexFuncDeclaration {
+typedef struct HexFuncDec {
     TypeQualifierList *return_type_qualifier_list;
     int return_type_specifier;
     char *custom_return_type;
     char *func_name;
     ParameterList* parameter_list;
-} FuncDeclaration;
+} FuncDec;
 
 
 //===========================================================================
-// createFuncDeclaration() - construct an AST node of type FuncDeclaration.
+// createFuncDec() - construct an AST node of type FuncDec.
 //===========================================================================
-FuncDeclaration* createFuncDeclaration(TypeQualifierList *type_qualifier_list,
+FuncDec* createFuncDec(TypeQualifierList *type_qualifier_list,
     int type_specifier, char *custom_return_type, char *func_name,
     ParameterList *parameter_list);
 
@@ -808,10 +809,10 @@ FuncDeclaration* createFuncDeclaration(TypeQualifierList *type_qualifier_list,
 /*
  * Function definition
  */
-typedef struct HexFuncDefinition {
-    FuncDeclaration *func_declaration;
+typedef struct HexFuncDef {
+    FuncDec *func_declaration;
     Suite *func_suite;
-} FuncDefinition;
+} FuncDef;
 
 
 /*
@@ -821,9 +822,9 @@ typedef struct HexCompoundStmt CompoundStmt;
 
 
 //===========================================================================
-// createFuncDefinition() - construct an AST node of type FuncDefinition.
+// createFuncDef() - construct an AST node of type FuncDef.
 //===========================================================================
-FuncDefinition* createFuncDefinition(FuncDeclaration *func_declaration, Suite *func_suite);
+FuncDef* createFuncDef(FuncDec *func_declaration, Suite *func_suite);
 
 
 /*
@@ -883,7 +884,7 @@ typedef struct HexRelativeImportStmt {
 //===========================================================================
 // createRelativeImportStmt() - construct an AST node of type RelativeImportStmt.
 //===========================================================================
-RelativeImportStmt* createRelativeImportStmt(ModuleList *module_list, Module *module char *alias);
+RelativeImportStmt* createRelativeImportStmt(ModuleList *module_list, Module *module, char *alias);
 
 
 /*
@@ -1078,7 +1079,7 @@ struct HexCompoundStmt {
         WhileStmt *compound_stmt_while_stmt;        /* while statement */
         ForStmt *compound_stmt_for_stmt;            /* for statement */
         TryStmt *compound_stmt_try_stmt;            /* try statement */
-        FuncDefinition *compound_stmt_func_def;     /* function definition */
+        FuncDef *compound_stmt_func_def;     /* function definition */
     };
 };
 
@@ -1087,12 +1088,6 @@ struct HexCompoundStmt {
 // createCompoundStmt() - construct an AST node of type CompoundStmt.
 //===========================================================================
 CompoundStmt* createCompoundStmt(int type, void* value);
-
-
-//===========================================================================
-// createPassStmt() - construct an AST node of type PassStmt.
-//===========================================================================
-SimpleStmt* createPassStmt();
 
 
 /*
@@ -1133,7 +1128,7 @@ typedef struct HexPassStmt PassStmt;
 SimpleStmt* createSimpleStmt(int type, void* value);
 
 
-struct SimpleStmt {
+struct HexSimpleStmt {
     enum {
         simple_stmt_type_declaration,           /* declaration */
         simple_stmt_type_assignment_stmt_list,       /* assignment statement list */
@@ -1150,7 +1145,7 @@ struct SimpleStmt {
         BreakStmt *simple_stmt_break_stmt;              /* break statement */
         ContinueStmt *simple_stmt_continue_stmt;        /* continue statement */
         ImportStmt *simple_stmt_import_stmt;            /* import statement */
-        FuncDeclaration *simple_stmt_func_declaration;  /* function declaration */
+        FuncDec *simple_stmt_func_declaration;  /* function declaration */
     };
 };
 
@@ -1209,7 +1204,7 @@ StmtGroup* createStmtGroup(Stmt *stmt, StmtGroup *parent_group);
 /*
  * Suite
  */
-struct Suite {
+struct HexSuite {
     StmtGroup *stmt_group;
 };
 

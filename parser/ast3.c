@@ -70,8 +70,8 @@ Expr* createPostfixExpr(int type, void* value1, void* value2) {
 		case postfix_expr_type_index:
 			postfix_expr->postfix_expr_type = postfix_expr_type_index;
 			postfix_expr->postfix_expr_index_expr = MALLOC(PostfixIndexExpr);
-			postfix_expr->postfix_expr_index_expr->index_expr = (Expr*)value1;
-			postfix_expr->postfix_expr_index_expr->index = DEREF_VOID(int, value2);
+			postfix_expr->postfix_expr_index_expr->expr = (Expr*)value1;
+			postfix_expr->postfix_expr_index_expr->index_expr = DEREF_VOID(int, value2);
 			break;
 		case postfix_expr_type_postfix_inc:
 			postfix_expr->postfix_expr_type = postfix_expr_type_postfix_inc;
@@ -84,7 +84,7 @@ Expr* createPostfixExpr(int type, void* value1, void* value2) {
 		case postfix_expr_type_accessor:
 			postfix_expr->postfix_expr_type = postfix_expr_type_accessor;
 			postfix_expr->postfix_expr_accessor_expr = MALLOC(PostfixAccessorExpr);
-			postfix_expr->postfix_expr_accessor_expr->expr = (char*)value1;
+			postfix_expr->postfix_expr_accessor_expr->caller = (char*)value1;
 			postfix_expr->postfix_expr_accessor_expr->accessor = (char*)value2;
 			break;
 		case postfix_expr_type_invocation:
@@ -134,9 +134,9 @@ Expr* createUnaryExpr(int type, Expr *expr) {
 			break;
 	}
 
-	Expr* expr = createExpr(expr_type_unary, unary_expr);
+	Expr* _expr = createExpr(expr_type_unary, unary_expr);
 
-	return expr;
+	return _expr;
 }
 
 
@@ -169,7 +169,7 @@ Expr* createCastExpr(int type, void* value) {
 //===========================================================================
 // createMultiplcativeExpr() - construct an AST node of type MultiplcativeExpr.
 //===========================================================================
-Expr* createMultiplicativeExpr(int type, Expr *left_expr, Expr *right_expr); {
+Expr* createMultiplicativeExpr(int type, Expr *left_expr, Expr *right_expr) {
 	MultiplicativeExpr *multi_expr = MALLOC(MultiplicativeExpr);
 
 	switch(type) {
@@ -192,7 +192,7 @@ Expr* createMultiplicativeExpr(int type, Expr *left_expr, Expr *right_expr); {
 
 	ArithmeticExpr *arithmetic_expr = createArithmeticExpr(arithmetic_expr_type_multiplicative, multi_expr);
 
-	Expr *expr = createExpr(expr_type_arithmetic_expr, arithmetic_expr);
+	Expr *expr = createExpr(expr_type_arithmetic, arithmetic_expr);
 
 	return expr;
 }
@@ -221,7 +221,7 @@ Expr* createAdditiveExpr(int type, Expr *left_expr, Expr *right_expr) {
 
 	ArithmeticExpr *arithmetic_expr = createArithmeticExpr(arithmetic_expr_type_additive, additive_expr);
 
-	Expr *expr = createExpr(expr_type_arithmetic_expr, arithmetic_expr);
+	Expr *expr = createExpr(expr_type_arithmetic, arithmetic_expr);
 
 	return expr;
 }
@@ -247,9 +247,9 @@ Expr* createArithmeticExpr(int type, void *expr) {
 			break;
 	}
 
-	Expr* expr = createExpr(expr_type_arithmetic, arithmetic_expr);
+	Expr* _expr = createExpr(expr_type_arithmetic, arithmetic_expr);
 
-	return expr;
+	return _expr;
 }
 
 
@@ -608,8 +608,8 @@ ListInitializer *createListInitializer(ExprList *expr_list) {
 //===========================================================================
 // createArrayInitializer() - construct an AST node of type ArrayInitializer.
 //===========================================================================
-ArraytInitializer *createArrayInitializer(ExprList *expr_list) {
-	ArraytInitializer *array_initializer = MALLOC(ArraytInitializer);
+ArrayInitializer *createArrayInitializer(ExprList *expr_list) {
+	ArrayInitializer *array_initializer = MALLOC(ArrayInitializer);
 	array_initializer->expr_list = expr_list;
 	return array_initializer;
 }
@@ -619,7 +619,7 @@ ArraytInitializer *createArrayInitializer(ExprList *expr_list) {
 // createTupleInitializer() - construct an AST node of type TupleInitializer.
 //===========================================================================
 TupleInitializer *createTupleInitializer(ExprList *expr_list) {
-	TupletInitializer *tuple_initializer = MALLOC(TupleInitializer);
+	TupleInitializer *tuple_initializer = MALLOC(TupleInitializer);
 	tuple_initializer->expr_list = expr_list;
 	return tuple_initializer;
 }
@@ -628,7 +628,7 @@ TupleInitializer *createTupleInitializer(ExprList *expr_list) {
 //===========================================================================
 // createStructInitializer() - construct an AST node of type StructInitializer.
 //===========================================================================
-StructInitializer *createTupleInitializer(AssignmentStmtList *assignment_stmt_list) {
+StructInitializer *createStructInitializer(AssignmentStmtList *assignment_stmt_list) {
 	StructInitializer *struct_initializer = MALLOC(StructInitializer);
 	struct_initializer->assignment_stmt_list = assignment_stmt_list;
 	return struct_initializer;
@@ -649,7 +649,7 @@ SetInitializer *createSetInitializer(ExprList *expr_list) {
 // createMapMultimapInitializerSingle() - construct an AST node of type MapMultimapInitializerSingle.
 //===========================================================================
 MapMultimapInitializerSingle *createMapMultimapInitializerSingle(Expr *key, Expr *value) {
-	MapMultimapInitializerSingle map_initializer_single = MALLOC(MapMultimapInitializerSingle);
+	MapMultimapInitializerSingle *map_initializer_single = MALLOC(MapMultimapInitializerSingle);
 	map_initializer_single->key = key;
 	map_initializer_single->value = value;
 	return map_initializer_single;
@@ -681,7 +681,7 @@ MapMultimapInitializerList *createMapMultimapInitializerList(
 //===========================================================================
 MapMultimapInitializer *createMapMultimapInitializer(
     MapMultimapInitializerList *map_initializer_list) {
-	MapMultimapInitializer *map_initializer = MALLO(MapMultimapInitializer);
+	MapMultimapInitializer *map_initializer = MALLOC(MapMultimapInitializer);
 	map_initializer->map_initializer_list = map_initializer_list;
 	return map_initializer;
 }
@@ -716,7 +716,7 @@ Initializer* createInitializer(int type, void* value) {
 			break;
 		case initializer_type_mapmultimap:
 			initializer->initializer_type = initializer_type_mapmultimap;
-			initializer->map_multimap_initialize = (MapMultimapInitializerList*)value;
+			initializer->map_multimap_initializer = (MapMultimapInitializerList*)value;
 			break;
 		default:
 			AST_ERROR();
@@ -747,7 +747,7 @@ AssignmentList* createAssignmentList(Assignment *assignment, AssignmentList *par
 
 	if(parent_list) {
 		parent_list->next = assignment_list;
-		return parent_list
+		return parent_list;
 	} else {
 		return assignment_list;
 	}
@@ -760,7 +760,7 @@ AssignmentList* createAssignmentList(Assignment *assignment, AssignmentList *par
 AssignmentStmt* createAssignmentStmt(int type, void* value) {
 	AssignmentStmt *assignment_stmt = MALLOC(AssignmentStmt);
 
-	switch(assignment_stmt) {
+	switch(type) {
 		case assignment_stmt_type_declaration:
 			assignment_stmt->assignment_stmt_type = assignment_stmt_type_declaration;
 			assignment_stmt->assignment_stmt_declaration = (Declaration*)value;
@@ -797,13 +797,13 @@ AssignmentStmtList* createAssignmentStmtList(AssignmentStmt *assignment_stmt,
 
 
 //===========================================================================
-// createFuncDeclaration() - construct an AST node of type FuncDeclaration.
+// createFuncDec() - construct an AST node of type FuncDec.
 //===========================================================================
-FuncDeclaration* createFuncDeclaration(TypeQualifierList *type_qualifier_list,
+FuncDec* createFuncDec(TypeQualifierList *type_qualifier_list,
     int type_specifier, char *custom_return_type, char *func_name,
     ParameterList *parameter_list)
 {
-	FuncDeclaration *func_declaration = MALLOC(FuncDeclaration);
+	FuncDec *func_declaration = MALLOC(FuncDec);
 	func_declaration->return_type_qualifier_list = type_qualifier_list;
 	if(type_specifier)
 		func_declaration->return_type_specifier = type_specifier;
@@ -817,10 +817,10 @@ FuncDeclaration* createFuncDeclaration(TypeQualifierList *type_qualifier_list,
 
 
 //===========================================================================
-// createFuncDefinition() - construct an AST node of type FuncDefinition.
+// createFuncDef() - construct an AST node of type FuncDef.
 //===========================================================================
-FuncDefinition* createFuncDefinition(FuncDeclaration *func_declaration, Suite *func_suite) {
-	FuncDefinition *func_def = MALLOC(FuncDefinition);
+FuncDef* createFuncDef(FuncDec *func_declaration, Suite *func_suite) {
+	FuncDef *func_def = MALLOC(FuncDef);
 	func_def->func_declaration = func_declaration;
 	func_def->func_suite = func_suite;
 
@@ -869,7 +869,7 @@ DirectImportStmt* createDirectImportStmt(ModuleList *module_list, char *alias) {
 //===========================================================================
 // createRelativeImportStmt() - construct an AST node of type RelativeImportStmt.
 //===========================================================================
-RelativeImportStmt* createRelativeImportStmt(ModuleList *module_list, Module *module char *alias) {
+RelativeImportStmt* createRelativeImportStmt(ModuleList *module_list, Module *module, char *alias) {
 	RelativeImportStmt *relative_import_stmt = MALLOC(RelativeImportStmt);
 	relative_import_stmt->module_list = module_list;
 	relative_import_stmt->module = module;
@@ -934,7 +934,7 @@ ElifGroup* createElifGroup(ElifStmt* elif_stmt, ElifGroup *parent_list) {
 // createElseStmt() - construct an AST node of type ElseStmt.
 //===========================================================================
 ElseStmt* createElseStmt(Suite *else_suite) {
-	ElseStmt *else_stmt = MALLOC(else_stmt);
+	ElseStmt *else_stmt = MALLOC(ElseStmt);
 	else_stmt->else_suite = else_suite;
 	return else_stmt;
 }
@@ -979,7 +979,7 @@ ForStmt* createForStmt() {
 // createCatchStmt() - construct an AST node of type CatchStmt.
 //===========================================================================
 CatchStmt* createCatchStmt(Declaration *declaration, char *catch_type,
-    char *identifier, Suite *suite); {
+    char *identifier, Suite *suite) {
 	CatchStmt *catch_stmt = MALLOC(CatchStmt);
 
 	catch_stmt->catch_declaration = declaration;
@@ -1051,10 +1051,6 @@ CompoundStmt* createCompoundStmt(int type, void* value) {
 			compound_stmt->compound_stmt_type = compound_stmt_type_while_stmt;
 			compound_stmt->compound_stmt_while_stmt = (WhileStmt*)value;
 			break;
-		case compound_stmt_type_dowhile_stmt:
-			compound_stmt->compound_stmt_type = compound_stmt_type_dowhile_stmt;
-			compound_stmt->compount_stmt_dowhile_stmt = (DoWhileStmt*)value;
-			break;
 		case compound_stmt_type_try_stmt:
 			compound_stmt->compound_stmt_type = compound_stmt_type_try_stmt;
 			compound_stmt->compound_stmt_try_stmt = (TryStmt*)value;
@@ -1105,7 +1101,7 @@ SimpleStmt* createSimpleStmt(int type, void* value) {
 			break;
 		case simple_stmt_type_func_declaration:
 			simple_stmt->simple_stmt_type = simple_stmt_type_func_declaration;
-			simple_stmt->simple_stmt_type_func_declaration = (FuncDeclaration*)value;
+			simple_stmt->simple_stmt_func_declaration = (FuncDec*)value;
 			break;
 		default:
 			AST_ERROR();
