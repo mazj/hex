@@ -121,7 +121,7 @@ simple_stmt_list
   ;
 
 simple_stmt
-  : expr
+  : declaration
   | assignment_stmt
   | pass_stmt
   | return_stmt

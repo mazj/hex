@@ -814,16 +814,16 @@ typedef struct HexFuncDefinition {
 } FuncDefinition;
 
 
-//===========================================================================
-// createFuncDefinition() - construct an AST node of type FuncDefinition.
-//===========================================================================
-FuncDefinition* createFuncDefinition(FuncDeclaration *func_declaration, Suite *func_suite);
-
-
 /*
  * Compound statement
  */
 typedef struct HexCompoundStmt CompoundStmt;
+
+
+//===========================================================================
+// createFuncDefinition() - construct an AST node of type FuncDefinition.
+//===========================================================================
+FuncDefinition* createFuncDefinition(FuncDeclaration *func_declaration, Suite *func_suite);
 
 
 /*
@@ -965,7 +965,7 @@ typedef struct HexIfStmt {
 //===========================================================================
 // createIfStmt() - construct an AST node of type IfStmt.
 //===========================================================================
-CompoundStmt* createIfStmt(Expr *if_expr, Suite *if_suite, ElifGroup *elif_group, ElseStmt *else_stmt);
+IfStmt* createIfStmt(Expr *if_expr, Suite *if_suite, ElifGroup *elif_group, ElseStmt *else_stmt);
 
 
 /*
@@ -977,6 +977,12 @@ typedef struct HexWhileStmt {
 } WhileStmt;
 
 
+//===========================================================================
+// createWhileStmt() - construct an AST node of type WhileStmt.
+//===========================================================================
+WhileStmt* createWhileStmt(Expr *while_expr, Suite *while_suite);
+
+
 /*
  * For statement
  */
@@ -984,10 +990,11 @@ typedef struct HexForStmt {
 
 } ForStmt;
 
+
 //===========================================================================
-// createWhileStmt() - construct an AST node of type WhileStmt.
+// createForStmt() - construct an AST node of type ForStmt.
 //===========================================================================
-CompoundStmt* createWhileStmt(Expr *while_expr, Suite *while_suite);
+ForStmt* createForStmt();
 
 
 /*
@@ -1004,7 +1011,8 @@ typedef struct HexCatchStmt {
 //===========================================================================
 // createCatchStmt() - construct an AST node of type CatchStmt.
 //===========================================================================
-CatchStmt* createCatchStmt(Expr* catch_expr, Suite* catch_suite);
+CatchStmt* createCatchStmt(Declaration *declaration, char *catch_type,
+    char *identifier, Suite *suite);
 
 
 /*
@@ -1050,7 +1058,7 @@ typedef struct HexTryStmt {
 //===========================================================================
 // createTryStmt() - construct an AST node of type TryStmt.
 //===========================================================================
-CompoundStmt* createTryStmt(Suite* try_suite, CatchStmtGroup *catch_stmt_group,
+TryStmt* createTryStmt(Suite* try_suite, CatchStmtGroup *catch_stmt_group,
     FinallyStmt *finally_stmt);
 
 
@@ -1078,7 +1086,13 @@ struct HexCompoundStmt {
 //===========================================================================
 // createCompoundStmt() - construct an AST node of type CompoundStmt.
 //===========================================================================
-Stmt* createCompoundStmt(int type, void* value);
+CompoundStmt* createCompoundStmt(int type, void* value);
+
+
+//===========================================================================
+// createPassStmt() - construct an AST node of type PassStmt.
+//===========================================================================
+SimpleStmt* createPassStmt();
 
 
 /*
@@ -1089,10 +1103,10 @@ typedef struct HexReturnStmt {
 } ReturnStmt;
 
 
-//===========================================================================
-// createReturnStmt() - construct an AST node of type ReturnStmt.
-//===========================================================================
-Stmt* createReturnStmt(ExprList* value);
+/*
+ * Simple statement
+ */
+typedef struct HexSimpleStmt SimpleStmt;
 
 
 /*
@@ -1113,13 +1127,16 @@ typedef struct HexBreakStmt BreakStmt;
 typedef struct HexPassStmt PassStmt;
 
 
-/*
- * Simple statement
- */
-typedef struct HexSimpleStmt {
+//===========================================================================
+// createPassStmt() - construct an AST node of type PassStmt.
+//===========================================================================
+SimpleStmt* createSimpleStmt(int type, void* value);
+
+
+struct SimpleStmt {
     enum {
-        simple_stmt_type_expr,                  /* expression */
-        simple_stmt_type_assignment_stmt,       /* assignment statement */
+        simple_stmt_type_declaration,           /* declaration */
+        simple_stmt_type_assignment_stmt_list,       /* assignment statement list */
         simple_stmt_type_return_stmt,           /* return statement */
         simple_stmt_type_break_stmt,            /* break statement */
         simple_stmt_type_continue_stmt,         /* continue statement */
@@ -1127,15 +1144,15 @@ typedef struct HexSimpleStmt {
         simple_stmt_type_func_declaration       /* function declaration */
     } simple_stmt_type;
     union {
-        Expr *simple_stmt_expr;                         /* expression */
-        AssignmentStmt *simple_stmt_assignment_stmt;    /* assignment statement */
+        Declaration *simple_stmt_declaration;           /* declaration */
+        AssignmentStmtList *simple_stmt_assignment_stmt_list;    /* assignment statement list */
         ReturnStmt *simple_stmt_return_stmt;            /* return statement */
         BreakStmt *simple_stmt_break_stmt;              /* break statement */
         ContinueStmt *simple_stmt_continue_stmt;        /* continue statement */
         ImportStmt *simple_stmt_import_stmt;            /* import statement */
         FuncDeclaration *simple_stmt_func_declaration;  /* function declaration */
     };
-} SimpleStmt;
+};
 
 
 /*
@@ -1147,6 +1164,12 @@ typedef struct HexSimpleStmtList {
 } SimpleStmtList;
 
 
+//===========================================================================
+// createSimpleStmtList() - construct an AST node of type SimpleStmtList.
+//===========================================================================
+SimpleStmtList* createSimpleStmtList(SimpleStmt *simple_stmt, SimpleStmtList *parent_list);
+
+
 /*
  * Statement
  */
@@ -1156,8 +1179,8 @@ struct HexStmt {
         stmt_type_compound_stmt             /* compound statement */
     } stmt_type;
     union {
-        SimpleStmtList *simple_stmt_list;   /* simple statement list */
-        CompoundStmt* compound_stmt;        /* compound statement */
+        SimpleStmtList *stmt_simple_stmt_list;   /* simple statement list */
+        CompoundStmt* stmt_compound_stmt;        /* compound statement */
     };
 };
 
@@ -1177,12 +1200,24 @@ typedef struct HexStmtGroup {
 } StmtGroup;
 
 
+//===========================================================================
+// createStmtGroup() - construct an AST node of type StmtGroup.
+//===========================================================================
+StmtGroup* createStmtGroup(Stmt *stmt, StmtGroup *parent_group);
+
+
 /*
  * Suite
  */
 struct Suite {
     StmtGroup *stmt_group;
 };
+
+
+//===========================================================================
+// createSuite() - construct an AST node of type Suite.
+//===========================================================================
+Suite* createSuite(StmtGroup *stmt_group);
 
 
 #endif // _AST_H_

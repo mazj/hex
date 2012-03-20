@@ -820,10 +820,11 @@ FuncDeclaration* createFuncDeclaration(TypeQualifierList *type_qualifier_list,
 // createFuncDefinition() - construct an AST node of type FuncDefinition.
 //===========================================================================
 FuncDefinition* createFuncDefinition(FuncDeclaration *func_declaration, Suite *func_suite) {
-	FuncDefinition *func_definition = MALLOC(FuncDefinition);
-	func_definition->func_declaration = func_declaration;
-	func_definition->func_suite = func_suite;
-	return func_definition;
+	FuncDefinition *func_def = MALLOC(FuncDefinition);
+	func_def->func_declaration = func_declaration;
+	func_def->func_suite = func_suite;
+
+	return func_def;
 }
 
 
@@ -942,51 +943,49 @@ ElseStmt* createElseStmt(Suite *else_suite) {
 //===========================================================================
 // createIfStmt() - construct an AST node of type IfStmt.
 //===========================================================================
-CompoundStmt* createIfStmt(Expr *if_expr, Suite *if_suite, ElifGroup *elif_group, ElseStmt *else_stmt) {
+IfStmt* createIfStmt(Expr *if_expr, Suite *if_suite, ElifGroup *elif_group, ElseStmt *else_stmt) {
+	IfStmt *if_stmt = MALLOC(IfStmt);
+	if_stmt->if_expr = if_expr;
+	if_stmt->elif_group = elif_group;
+	if_stmt->else_stmt = else_stmt;
 
+	return if_stmt;
 }
 
 
 //===========================================================================
 // createWhileStmt() - construct an AST node of type WhileStmt.
 //===========================================================================
-CompoundStmt* createWhileStmt(Expr *while_expr, Suite *while_suite) {
+WhileStmt* createWhileStmt(Expr *while_expr, Suite *while_suite) {
 	WhileStmt *while_stmt = MALLOC(WhileStmt);
 
 	while_stmt->while_expr = while_expr;
 	while_stmt->while_suite = while_suite;
 
-	CompoundStmt *compound_stmt = createCompoundStmt(compound_stmt_type_while_stmt,
-		while_stmt);
-
-	return compound_stmt;
+	return while_stmt;
 }
 
 
 //===========================================================================
-// createDoWhileStmt() - construct an AST node of type DoWhileStmt.
+// createForStmt() - construct an AST node of type ForStmt.
 //===========================================================================
-CompoundStmt* createDoWhileStmt(Suite *dowhile_suite, Expr *dowhile_expr) {
-	DoWhileStmt *dowhile_stmt = MALLOC(DoWhileStmt);
-
-	dowhile_stmt->dowhile_suite = dowhile_suite;
-	dowhile_stmt->dowhile_expr = dowhile_expr;
-
-	CompoundStmt *compound_stmt = createCompoundStmt(compound_stmt_type_dowhile_stmt,
-		dowhile_stmt);
-
-	return compound_stmt;
+ForStmt* createForStmt() {
+	ForStmt *for_stmt = MALLOC(ForStmt);
+	return for_stmt; 
 }
 
 
 //===========================================================================
 // createCatchStmt() - construct an AST node of type CatchStmt.
 //===========================================================================
-CatchStmt* createCatchStmt(Expr* catch_expr, Suite* catch_suite) {
+CatchStmt* createCatchStmt(Declaration *declaration, char *catch_type,
+    char *identifier, Suite *suite); {
 	CatchStmt *catch_stmt = MALLOC(CatchStmt);
 
-	catch_stmt->catch_expr = catch_expr;
-	catch_stmt->catch_suite = catch_suite;
+	catch_stmt->catch_declaration = declaration;
+	catch_stmt->catch_type = catch_type;
+	catch_stmt->catch_identifier = identifier;
+	catch_stmt->catch_suite = suite;
 
 	return catch_stmt;
 }
@@ -1013,21 +1012,19 @@ CatchStmtGroup* createCatchStmtGroup(CatchStmt* catch_stmt, CatchStmtGroup* pare
 //===========================================================================
 // createFinallyStmt() - construct an AST node of type FinallyStmt.
 //===========================================================================
-Stmt* createFinallyStmt(Suite* suite) {
+FinallyStmt* createFinallyStmt(Suite* suite) {
 	FinallyStmt *finally_stmt = MALLOC(FinallyStmt);
 
 	finally_stmt->finally_suite = suite;
 
-	Stmt *stmt = createStmt(stmt_type_finally_stmt, finally_stmt);
-
-	return stmt;
+	return finally_stmt;
 }
 
 
 //===========================================================================
 // createTryStmt() - construct an AST node of type TryStmt.
 //===========================================================================
-CompoundStmt* createTryStmt(Suite* try_suite, CatchStmtGroup *catch_stmt_group,
+TryStmt* createTryStmt(Suite* try_suite, CatchStmtGroup *catch_stmt_group,
     FinallyStmt *finally_stmt) {
 	TryStmt *try_stmt = MALLOC(TryStmt);
 
@@ -1035,30 +1032,14 @@ CompoundStmt* createTryStmt(Suite* try_suite, CatchStmtGroup *catch_stmt_group,
 	try_stmt->catch_stmt_group = catch_stmt_group;
 	try_stmt->finally_stmt = finally_stmt;
 
-	CompoundStmt *compound_stmt = createCompoundStmt(compound_stmt_type_try_stmt, try_stmt);
-
-	return compound_stmt;
-}
-
-
-//===========================================================================
-// createReturnStmt() - construct an AST node of type ReturnStmt.
-//===========================================================================
-Stmt* createReturnStmt(ExprList* value) {
-	ReturnStmt *return_stmt = MALLOC(ReturnStmt);
-
-	return_stmt->return_expr_list = value;
-
-	Stmt *stmt = createStmt(stmt_type_return_stmt, return_stmt);
-
-	return stmt;
+	return try_stmt;
 }
 
 
 //===========================================================================
 // createCompoundStmt() - construct an AST node of type CompoundStmt.
 //===========================================================================
-Stmt* createCompoundStmt(int type, void* value) {
+CompoundStmt* createCompoundStmt(int type, void* value) {
 	CompoundStmt *compound_stmt = MALLOC(CompoundStmt);
 
 	switch(type) {
@@ -1077,8 +1058,8 @@ Stmt* createCompoundStmt(int type, void* value) {
 		case compound_stmt_type_try_stmt:
 			compound_stmt->compound_stmt_type = compound_stmt_type_try_stmt;
 			compound_stmt->compound_stmt_try_stmt = (TryStmt*)value;
-		case compound_stmt_type_func_def:
 			break;
+		case compound_stmt_type_func_def:
 			compound_stmt->compound_stmt_type = compound_stmt_type_func_def;
 			compound_stmt->compound_stmt_func_def = (FuncDef*)value;
 			break;
@@ -1087,10 +1068,68 @@ Stmt* createCompoundStmt(int type, void* value) {
 			break;
 	}
 
+	return compound_stmt;
+}
 
-	Stmt *stmt = createStmt(stmt_type_compound_stmt, compound_stmt);
 
-	return stmt;
+//===========================================================================
+// createPassStmt() - construct an AST node of type PassStmt.
+//===========================================================================
+SimpleStmt* createSimpleStmt(int type, void* value) {
+	SimpleStmt *simple_stmt = MALLOC(SimpleStmt);
+
+	switch(type) {
+		case simple_stmt_type_declaration:
+			simple_stmt->simple_stmt_type = simple_stmt_type_declaration;
+			simple_stmt->simple_stmt_declaration = (Declaration*)value;
+			break;
+		case simple_stmt_type_assignment_stmt_list:
+			simple_stmt->simple_stmt_type = simple_stmt_type_assignment_stmt_list;
+			simple_stmt->simple_stmt_assignment_stmt_list = (AssignmentList*)value;
+			break;
+		case simple_stmt_type_return_stmt:
+			simple_stmt->simple_stmt_type = simple_stmt_type_return_stmt;
+			simple_stmt->simple_stmt_return_stmt = (ReturnStmt*)value;
+			break;
+		case simple_stmt_type_break_stmt:
+			simple_stmt->simple_stmt_type = simple_stmt_type_break_stmt;
+			// simple_stmt->simple_stmt_break_stmt = (BreakStmt*)value;
+			break;
+		case simple_stmt_type_continue_stmt:
+			simple_stmt->simple_stmt_type = simple_stmt_type_continue_stmt;
+			simple_stmt->simple_stmt_continue_stmt = (ContinueStmt*)value;
+			break;
+		case simple_stmt_type_import_stmt:
+			simple_stmt->simple_stmt_type = simple_stmt_type_import_stmt;
+			simple_stmt->simple_stmt_import_stmt = (ImportStmt*)value;
+			break;
+		case simple_stmt_type_func_declaration:
+			simple_stmt->simple_stmt_type = simple_stmt_type_func_declaration;
+			simple_stmt->simple_stmt_type_func_declaration = (FuncDeclaration*)value;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+
+	return simple_stmt;
+}
+
+
+//===========================================================================
+// createSimpleStmtList() - construct an AST node of type SimpleStmtList.
+//===========================================================================
+SimpleStmtList* createSimpleStmtList(SimpleStmt *simple_stmt, SimpleStmtList *parent_list) {
+	SimpleStmtList *simple_stmt_list = MALLOC(SimpleStmtList);
+	simple_stmt_list->simple_stmt = simple_stmt;
+	simple_stmt_list->next = 0;
+
+	if(parent_list) {
+		parent_list->next = simple_stmt_list;
+		return parent_list;
+	} else {
+		return simple_stmt_list;
+	}
 }
 
 
@@ -1101,49 +1140,9 @@ Stmt* createStmt(int type, void* value) {
 	Stmt *stmt = MALLOC(Stmt);
 
 	switch(type) {
-		case stmt_type_stmt_list:
-			stmt->stmt_type = stmt_type_stmt_list;
-			stmt->stmt_stmt_list = (StmtList*)value;
-			break;
-		case stmt_type_import_stmt:
-			stmt->stmt_type = stmt_type_import_stmt;
-			stmt->stmt_import_stmt = (ImportStmt*)value;
-			break;
-		case stmt_type_expr_stmt:
-			stmt->stmt_type = stmt_type_expr_stmt;
-			stmt->stmt_expr_stmt = (ExprStmt*)value;
-			break;
-		case stmt_type_else_stmt:
-			stmt->stmt_type = stmt_type_else_stmt;
-			stmt->stmt_else_stmt = (ElseStmt*)value;
-			break;
-		case stmt_type_elif_stmt:
-			stmt->stmt_type = stmt_type_elif_stmt;
-			stmt->stmt_elif_stmt = (ElifStmt*)value;
-			break;
-		case stmt_type_catch_stmt:
-			stmt->stmt_type = stmt_type_catch_stmt;
-			stmt->stmt_catch_stmt = (CatchStmt*)value;
-			break;
-		case stmt_type_finally_stmt:
-			stmt->stmt_type = stmt_type_finally_stmt;
-			stmt->stmt_finally_stmt = (FinallyStmt*)value;
-			break;
-		case stmt_type_return_stmt:
-			stmt->stmt_type = stmt_type_return_stmt;
-			stmt->stmt_return_stmt = (ReturnStmt*)value;
-			break;
-		case stmt_type_continue_stmt:
-			stmt->stmt_type = stmt_type_continue_stmt;
-			stmt->stmt_continue_stmt = (ContinueStmt*)value;
-			break;
-		case stmt_type_break_stmt:
-			stmt->stmt_type = stmt_type_break_stmt;
-			stmt->stmt_continue_stmt = (BreakStmt*)value;
-			break;
-		case stmt_type_pass_stmt:
-			stmt->stmt_type = stmt_type_pass_stmt;
-			stmt->stmt_pass_stmt = (PassStmt*)value;
+		case stmt_type_simple_stmt_list:
+			stmt->stmt_type = stmt_type_simple_stmt_list;
+			stmt->stmt_simple_stmt_list = (SimpleStmtList*)value;
 			break;
 		case stmt_type_compound_stmt:
 			stmt->stmt_type = stmt_type_compound_stmt;
@@ -1155,4 +1154,31 @@ Stmt* createStmt(int type, void* value) {
 	}
 
 	return stmt;
+}
+
+
+//===========================================================================
+// createStmtGroup() - construct an AST node of type StmtGroup.
+//===========================================================================
+StmtGroup* createStmtGroup(Stmt *stmt, StmtGroup *parent_group) {
+	StmtGroup *stmt_group = MALLOC(StmtGroup);
+	stmt_group->stmt = stmt;
+	stmt_group->next = 0;
+
+	if(parent_group) {
+		parent_group->next = stmt_group;
+		return parent_group;
+	} else {
+		return stmt_group;
+	}
+}
+
+
+//===========================================================================
+// createSuite() - construct an AST node of type Suite.
+//===========================================================================
+Suite* createSuite(StmtGroup *stmt_group) {
+	Suite *suite = MALLOC(Suite);
+	suite->stmt_group = stmt_group;
+	return suite;
 }
