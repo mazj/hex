@@ -97,21 +97,21 @@
 %%
 
 input
-  : NEWLINE /* empty line */
+  : /* empty line */
   | suite
   ;
 
 suite
-  : NEWLINE INDENT stmt_group DEDENT
+  : stmt_group
   ;
 
 stmt_group
-  : stmt NEWLINE
+  : stmt
   | stmt_group stmt
   ;
 
 stmt
-  : simple_stmt_list NEWLINE
+  : simple_stmt_list
   | compound_stmt
   ;
 
@@ -132,20 +132,20 @@ simple_stmt
   ;
 
 return_stmt
-  : RETURN NEWLINE
-  | RETURN expr_list NEWLINE
+  : RETURN
+  | RETURN expr_list
   ;
 
 pass_stmt
-  : PASS NEWLINE
+  : PASS
   ;
 
 break_stmt
-  : BREAK NEWLINE
+  : BREAK
   ;
 
 continue_stmt
-  : CONTINUE NEWLINE
+  : CONTINUE
   ;
 
 compound_stmt

@@ -4,8 +4,8 @@ CFLAGS=-Wno-implicit
 a.out:
 	gcc sorted_string_list.h bst.h utils.h strnutils.h map.h unittest.h queue.h sorted_string_list_unittest.c
 
-parser: lex.yy.c parser2.tab.h
-	gcc lex.yy.c parser2.tab.h parser2.tab.c
+parser: lex.yy.c parser3.tab.h
+	gcc lex.yy.c parser3.tab.h parser3.tab.c
 
 lexer_test: lex.yy.c
 	gcc lex.yy.c -o lexer_test
@@ -15,6 +15,9 @@ lex.yy.c: lexer.l
 
 lexer.out:
 	make LDLIBS=-ll lexer strnutils.h
+
+parser3.tab.h: parser3.y
+	bison -d parser3.y
 
 parser2.tab.h: parser2.y
 	bison -d parser2.y
