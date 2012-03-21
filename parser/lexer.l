@@ -37,6 +37,10 @@
                 return token_type;                  \
                 break;                              \
         }
+
+int current_line_indent = 0;            /* indentation of current line */
+int indent_level = 0;                   /* indentation level passed to parser */
+
 %}
 
 /* Multi-line comment state */
@@ -45,7 +49,8 @@
 /* String literal state */
 %x IN_STRING
 
-
+/* Indent level */
+%x IN_INDENT
 
 %%
 
@@ -229,6 +234,37 @@ L?\"(\\.|[^\\"])*\"     RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 "*"                     // eat the lone star
 \n                      yylineno++;
  }
+
+<INITIAL>"\n"               {
+                                current_line_indent = 0;
+                                BEGIN INDENT;
+                            }
+
+#indentation
+<IN_INDENT>"  "             {
+                                current_line_indent++;
+                            }
+
+<IN_INDENT>"\t"             { }
+
+<IN_INDENT>"\n"             {
+                                current_line_indent = 0; /* ignore blank line*/
+                                return NEWLINE; 
+                            }
+
+<IN_INDENT>.                {
+                                /* puts the character back to input stream and scans next character */
+                                unput(*yytext);
+                                if(current_line_indent > indent_level) {
+                                    indent_level++;
+                                    return INDENT;
+                                } else if(current_line_indent < indent_level) {
+                                    indent_level--;
+                                    return DEDENT;
+                                } else {
+                                    BEGIN INITIAL;
+                                }
+                            }
 
 .                           { /* ignore bad characters */ }
 %%
