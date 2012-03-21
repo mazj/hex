@@ -226,18 +226,19 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 
 #multi-line_comment
 <INITIAL>{
-     "/*"                   BEGIN(IN_COMMENT);
+"/*"                            BEGIN(IN_COMMENT);
 }
-<IN_COMMENT>{
-"*/"                        BEGIN(INITIAL);
-[^*\n]+                     // eat comment in chunks
-"*"                         // eat the lone star
-\n                          yylineno++;
- }
 
-<INITIAL>"\n"               {
+<IN_COMMENT>{
+"*/"                            BEGIN(INITIAL);
+[^*\n]+                         // eat comment in chunks
+"*"                             // eat the lone star
+\n                              yylineno++;
+}
+
+<INITIAL>\n                 {
                                 current_line_indent = 0;
-                                BEGIN INDENT;
+                                BEGIN(INDENT);
                             }
 
 #indentation
@@ -245,10 +246,13 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
                                 current_line_indent++;
                             }
 
-<IN_INDENT>"\t"             { }
+<IN_INDENT>\t               {
+                                /* tab */
+                            }
 
-<IN_INDENT>"\n"             {
+<IN_INDENT>\n               {
                                 current_line_indent = 0; /* ignore blank line*/
+                                printf("NEWLINE\n");
                                 return NEWLINE; 
                             }
 
@@ -257,16 +261,22 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
                                 unput(*yytext);
                                 if(current_line_indent > indent_level) {
                                     indent_level++;
+                                    printf("INDENT\n");
                                     return INDENT;
                                 } else if(current_line_indent < indent_level) {
                                     indent_level--;
                                     return DEDENT;
+                                    printf("DEDENT\n");
                                 } else {
                                     BEGIN(INITIAL);
                                 }
                             }
 
-.                           { /* ignore bad characters */ }
+.                           {
+                                /* ignore bad characters */
+                            }
+
+
 %%
 
 int main(int argc, char** argv) {
