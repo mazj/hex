@@ -113,7 +113,7 @@ stmt_group
   ;
 
 stmt
-  : simple_stmt_list
+  : simple_stmt_list NEWLINE
   | compound_stmt
   ;
 
