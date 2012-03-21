@@ -57,9 +57,11 @@
 %token <string>     RBRACE
 %token <string>     ELLIPSIS
 %token <string>     POND
-%token <string>     NEWLINE
-%token <string>     INDENT
-%token <string>     DEDENT
+
+%token NEWLINE
+
+%token INDENT
+%token DEDENT
 
 
 %left ASSIGN_BITWISE_NOT ASSIGN_BITWISE_AND ASSIGN_BITWISE_OR ASSIGN_BITWISE_XOR ASSIGN_SHIFTLEFT ASSIGN_SHIFTRIGHT ASSIGN_OP ASSIGN_PLUS ASSIGN_MINUS ASSIGN_MUL ASSIGN_DIV ASSIGN_MOD
