@@ -38,4 +38,4 @@ stack_unittest: unittest.h
 	gcc stack.h stack_unittest.c
 
 clean:
-	rm *.gch *.out *.o *.swp .lexer.l.swp lexer lex.yy.c parser.tab.c parser.tab.h parser2.tab.c parser2.tab.h
+	rm *.gch *.out *.o *.swp .lexer.l.swp lexer lex.yy.c parser.tab.c parser.tab.h parser2.tab.c parser2.tab.h parser3.tab.h parser3.tab.c
