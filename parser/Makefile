@@ -13,6 +13,9 @@ lexer_test: lex.yy.c
 lex.yy.c: lexer.l
 	lex lexer.l
 
+lexer2.out:
+	make LDLIBS=-ll lexer2
+
 lexer.out:
 	make LDLIBS=-ll lexer
 

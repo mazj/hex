@@ -202,13 +202,12 @@ L?\"(\\.|[^\\"])*\"         printf("STRING [%s]\n", yytext);
 
 <INITIAL>\n                 {
                                 current_line_indent = 0;
-                                BEGIN(INDENT);
+                                BEGIN(IN_INDENT);
                             }
 
 #indentation
-<IN_INDENT>"  "             {
+<IN_INDENT>"  "              {
                                 current_line_indent++;
-                                printf("INDENT\n");
                             }
 
 <IN_INDENT>\t               {
@@ -222,12 +221,12 @@ L?\"(\\.|[^\\"])*\"         printf("STRING [%s]\n", yytext);
                             }
 
 <IN_INDENT>.                {
-                                /* puts the character back to input stream and scans next character */
                                 unput(*yytext);
-                                if(current_line_indent > indent_level) {
+                                /* puts the character back to input stream and scans next character */
+                                if(current_line_indent  > indent_level) {
                                     indent_level++;
                                     printf("INDENT\n");
-                                } else if(current_line_indent < indent_level) {
+                                } else if(current_line_indent  < indent_level) {
                                     indent_level--;
                                     printf("DEDENT\n");
                                 } else {
@@ -247,6 +246,5 @@ int main(int argc, char** argv) {
         exit(1);
     }
     yylex();
-    yyparse();
     return 0;
 }
