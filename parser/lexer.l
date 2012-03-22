@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "parser3.tab.h"
 
-#define RETURN(type, yytext, token_type)			\
+#define RETURN(our_type, yytext, token_type)        \
         switch(token_type) {                        \
             case DECIMALINTEGER:                    \
                 yylval.integer = atoi(yytext);      \

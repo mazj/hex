@@ -14,10 +14,10 @@ lex.yy.c: lexer.l
 	lex lexer.l
 
 lexer.out:
-	make LDLIBS=-ll lexer strnutils.h
+	make LDLIBS=-ll lexer
 
 parser3.tab.h: parser3.y
-	bison -d parser3.y
+	bison -d -t -v parser3.y
 
 parser2.tab.h: parser2.y
 	bison -d parser2.y

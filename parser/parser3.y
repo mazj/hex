@@ -98,9 +98,10 @@
 %error-verbose
 %%
 
-input
-  : NEWLINE/* empty line */
+input/* empty line */
+  : NEWLINE
   | suite
+  | stmt_group
   ;
 
 suite
@@ -108,13 +109,15 @@ suite
   ;
 
 stmt_group
-  : stmt NEWLINE
+  : stmt
+  | NEWLINE stmt
   | stmt_group stmt
   ;
 
 stmt
-  : simple_stmt_list NEWLINE
+  : NEWLINE simple_stmt_list
   | compound_stmt
+  | control_simple_stmt
   ;
 
 simple_stmt_list
@@ -123,23 +126,22 @@ simple_stmt_list
   ;
 
 simple_stmt
-  : declaration
+  : expr_list_
+  | declaration
   | assignment_stmt
-  | pass_stmt
-  | return_stmt
-  | break_stmt
-  | continue_stmt
   | import_stmt
   | func_declaration
+  ;
+
+control_simple_stmt
+  : return_stmt
+  | break_stmt
+  | continue_stmt
   ;
 
 return_stmt
   : RETURN NEWLINE
   | RETURN expr_list NEWLINE
-  ;
-
-pass_stmt
-  : PASS NEWLINE
   ;
 
 break_stmt
@@ -235,10 +237,16 @@ func_definition
   ;
 
 func_declaration
-  : DEF IDENTIFIER LPAREN parameter_list RPAREN
-  | DEF type_specifier IDENTIFIER LPAREN parameter_list RPAREN
-  | DEF type_qualifier_list type_specifier IDENTIFIER LPAREN parameter_list RPAREN
-  | DEF type_qualifier_list IDENTIFIER IDENTIFIER LPAREN parameter_list RPAREN
+  : DEF IDENTIFIER parameter_list
+  | DEF IDENTIFIER LPAREN RPAREN
+  | DEF type_specifier IDENTIFIER parameter_list
+  | DEF type_specifier IDENTIFIER LPAREN RPAREN
+  | DEF type_qualifier_list IDENTIFIER parameter_list
+  | DEF type_qualifier_list IDENTIFIER LPAREN RPAREN
+  | DEF type_qualifier_list type_specifier IDENTIFIER parameter_list
+  | DEF type_qualifier_list type_specifier IDENTIFIER LPAREN RPAREN
+  | DEF type_qualifier_list IDENTIFIER IDENTIFIER parameter_list
+  | DEF type_qualifier_list IDENTIFIER IDENTIFIER LPAREN RPAREN
   ;
 
 assignment_stmt_list
@@ -331,7 +339,7 @@ struct_initializer
   ;
 
 set_initializer
-  : LBRACKET LPAREN expr_list RPAREN RBRACKET
+  : LBRACKET LPAREN expr_list_ RPAREN RBRACKET
   ;
 
 array_initializer
