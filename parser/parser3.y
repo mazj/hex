@@ -127,7 +127,7 @@ stmt_group
   ;
 
 stmt
-  : NEWLINE simple_stmt_list
+  : simple_stmt_list NEWLINE
   | compound_stmt
   | control_simple_stmt
   ;
@@ -141,7 +141,7 @@ simple_stmt
   : expr_list_
   | declaration
   | assignment_stmt
-  | import_stmt
+  | import_stmt NEWLINE
   | func_declaration
   ;
 
@@ -442,7 +442,6 @@ INTEGER
 
 static void
 print_token_value(FILE *f, int type, YYSTYPE value) {
-  printf(")(*&*()_\n");
   switch(type) {
     case IDENTIFIER:
       fprintf(f, "IDENTIFIER: %s", value.string);

@@ -1,5 +1,4 @@
-import hex from
-from hex import hex.math
+import hex
 
 def static int add(int a, int b):
   s = "string"
@@ -7,14 +6,3 @@ def static int add(int a, int b):
   if a < 2:
     1+1
   return a+b
-
-def mul(int a, b):
-  return a*b
-
-def static const MyType whatever(MyType a, MyClass b, c, ...):
-  int a = b = c = add(a,b)
-  m = [a, b, c]
-  return m
-
-def main():
-  pass

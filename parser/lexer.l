@@ -2,33 +2,56 @@
 #include <stdio.h>
 #include "parser3.tab.h"
 
+#define DEBUG
+
 #define RETURN(our_type, yytext, token_type)        \
         switch(token_type) {                        \
             case DECIMALINTEGER:                    \
+            #ifdef DEBUG                            \
+                printf("INTEGER [%s]\n", yytext);   \
+            #endif                                  \
                 yylval.integer = atoi(yytext);      \
                 return DECIMALINTEGER;              \
                 break;                              \
             case BININTEGER:                        \
+            #ifdef DEBUG                            \
+                printf("INTEGER [%s]\n", yytext);   \
+            #endif                                  \
                 yylval.integer = atoi(yytext);      \
                 return BININTEGER;                  \
                 break;                              \
             case OCTINTEGER:                        \
+            #ifdef DEBUG                            \
+                printf("INTEGER [%s]\n", yytext);   \
+            #endif                                  \
                 yylval.integer = atoi(yytext);      \
                 return OCTINTEGER;                  \
                 break;                              \
             case HEXINTEGER:                        \
+            #ifdef DEBUG                            \
+                printf("INTEGER [%s]\n", yytext);   \
+            #endif                                  \
                 yylval.integer = atoi(yytext);      \
                 return HEXINTEGER;                  \
                 break;                              \
             case FLOATINGNUM:                       \
+            #ifdef DEBUG                            \
+                printf("FLOATINGNUM [%s]\n", yytext);   \
+            #endif                                  \
                 yylval.floating = atof(yytext);     \
                 return FLOATINGNUM;                 \
                 break;                              \
             case CHARACTER_LITERAL:                 \
+            #ifdef DEBUG                            \
+                printf("CHARACTER [%s]\n", yytext); \
+            #endif                                  \
                 yylval.character = yytext[1];       \
                 return CHARACTER_LITERAL;           \
                 break;                              \
             case STRING_LITERAL:                    \
+            #ifdef DEBUG                            \
+                printf("STRING LITERAL [%s]\n", yytext); \
+            #endif                                  \
                 yylval.string = yytext;             \
                 return STRING_LITERAL;              \
                 break;                              \
