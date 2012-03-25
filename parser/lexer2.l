@@ -1,6 +1,6 @@
 %{
 #include <stdio.h>
-
+#include "parser3.tab.h"
 
 int current_line_indent = 0;            /* indentation of current line */
 int indent_level = 0;                   /* indentation level passed to parser */
@@ -246,5 +246,6 @@ int main(int argc, char** argv) {
         exit(1);
     }
     yylex();
+    yyparse();
     return 0;
 }

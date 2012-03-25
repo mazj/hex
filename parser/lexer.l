@@ -238,34 +238,32 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 
 <INITIAL>\n                 {
                                 current_line_indent = 0;
-                                BEGIN(INDENT);
+                                BEGIN(IN_INDENT);
                             }
 
 #indentation
-<IN_INDENT>"  "             {
+<IN_INDENT>"  "              {
                                 current_line_indent++;
                             }
 
 <IN_INDENT>\t               {
                                 /* tab */
+                                printf("TAB\n");
                             }
 
 <IN_INDENT>\n               {
                                 current_line_indent = 0; /* ignore blank line*/
                                 printf("NEWLINE\n");
-                                return NEWLINE; 
                             }
 
 <IN_INDENT>.                {
-                                /* puts the character back to input stream and scans next character */
                                 unput(*yytext);
-                                if(current_line_indent > indent_level) {
+                                /* puts the character back to input stream and scans next character */
+                                if(current_line_indent  > indent_level) {
                                     indent_level++;
                                     printf("INDENT\n");
-                                    return INDENT;
-                                } else if(current_line_indent < indent_level) {
+                                } else if(current_line_indent  < indent_level) {
                                     indent_level--;
-                                    return DEDENT;
                                     printf("DEDENT\n");
                                 } else {
                                     BEGIN(INITIAL);

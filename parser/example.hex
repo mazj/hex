@@ -1,7 +1,9 @@
 import hex from
-  from hex import hex.math
+from hex import hex.math
 
 def static int add(int a, int b):
+  s = "string"
+  c = 'character'
   if a < 2:
     1+1
   return a+b

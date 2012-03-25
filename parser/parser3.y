@@ -1,9 +1,13 @@
 %{
+
 #include <stdio.h>
 #include "ast3.h"
 
+#define YYDEBUG 1
 #define YYERROR_VERBOSE
-#define TRACE printf("reduce at line %d\n", __LINE__);
+
+yydebug = 1;
+
 %}
 
 %union {
@@ -59,7 +63,6 @@
 %token <string>     POND
 
 %token NEWLINE
-
 %token INDENT
 %token DEDENT
 
@@ -96,6 +99,15 @@
 %type <integer> INTEGER
 
 %error-verbose
+%debug
+
+%{
+
+static void print_token_value (FILE *, int, YYSTYPE);
+#define YYPRINT(file, type, value) print_token_value (file, type, value)
+
+%}
+
 %%
 
 input/* empty line */
@@ -428,8 +440,18 @@ INTEGER
 
 %%
 
+static void
+print_token_value(FILE *f, int type, YYSTYPE value) {
+  printf(")(*&*()_\n");
+  switch(type) {
+    case IDENTIFIER:
+      fprintf(f, "IDENTIFIER: %s", value.string);
+      break;
+  }
+}
+
 int yyerror(char* s) {
-  printf("%s\n", s);
+  printf("[%d] %s\n", __LINE__, s);
 }
 
 /* Return 1 stops at EOF,
