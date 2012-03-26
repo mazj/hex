@@ -117,7 +117,7 @@ input/* empty line */
   ;
 
 suite
-  : NEWLINE INDENT stmt_group DEDENT
+  : INDENT stmt_group DEDENT
   ;
 
 stmt_group
@@ -153,7 +153,7 @@ control_simple_stmt
 
 return_stmt
   : RETURN NEWLINE
-  | RETURN expr_list NEWLINE
+  | RETURN expr_list_ NEWLINE
   ;
 
 break_stmt
@@ -292,11 +292,13 @@ expr_list_
 expr
   : LITERAL
   | IDENTIFIER
-  | IDENTIFIER DOT IDENTIFIER
+  | expr tuple_initializer
+  | expr LPAREN RPAREN
   | INC_OP expr
   | DEC_OP expr
   | expr INC_OP %prec INC_OP_POST
   | expr DEC_OP %prec INC_OP_POST
+  | IDENTIFIER LPAREN RPAREN
   | expr MUL_OP expr
   | expr DIV_OP expr
   | expr MOD_OP expr
@@ -321,8 +323,7 @@ expr
   | NOT expr
   | BITWISE_NOT expr
   | expr LBRACKET expr RBRACKET
-  | IDENTIFIER LPAREN RPAREN
-  | expr tuple_initializer
+  | expr DOT expr
   | list_initializer
   | tuple_initializer
   | set_initializer
@@ -359,7 +360,7 @@ array_initializer
   ;
 
 tuple_initializer
-  : LPAREN expr_list RPAREN
+  : LPAREN expr_list_ RPAREN
   ;
 
 list_initializer
@@ -384,11 +385,10 @@ single_declaration
   ;
 
 declaration
-  : type_qualifier_list type_specifier expr_list
-  | type_qualifier_list expr_list
-  | type_specifier expr_list
-  | type_specifier IDENTIFIER
-  | IDENTIFIER expr_list
+  : type_qualifier_list type_specifier expr_list_
+  | type_qualifier_list expr_list_
+  | type_specifier expr_list_
+  | IDENTIFIER expr_list_
   | declaration AS IDENTIFIER
   ;
 
