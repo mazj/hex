@@ -236,7 +236,7 @@ L?\"(\\.|[^\\"])*\"         printf("STRING [%s]\n", yytext);
 
 .                           {
                                 /* ignore bad characters */
-                                printf("***BAD CHARACTERS***")
+                                printf("***BAD CHARACTERS***");
                             }
 
 

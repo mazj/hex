@@ -279,7 +279,6 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 
 .                           {
                                 /* ignore bad characters */
-                                printf("***BAD CHARACTERS***");
                             }
 
 
