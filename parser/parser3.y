@@ -371,8 +371,16 @@ parameter_list
   ;
 
 parameter_list_core
-  : declaration
-  | parameter_list_core COMMA declaration
+  : single_declaration
+  | parameter_list_core COMMA single_declaration
+  ;
+
+single_declaration
+  : type_qualifier_list type_specifier IDENTIFIER
+  | type_qualifier_list IDENTIFIER
+  | type_specifier IDENTIFIER
+  | IDENTIFIER IDENTIFIER
+  | single_declaration AS IDENTIFIER
   ;
 
 declaration
