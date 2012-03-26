@@ -104,7 +104,7 @@ yydebug = 1;
 %{
 
 static void print_token_value (FILE *, int, YYSTYPE);
-#define YYPRINT(file, type, value) print_token_value (file, type, value)
+//#define YYPRINT(file, type, value) print_token_value (file, type, value)
 
 %}
 
@@ -379,6 +379,7 @@ declaration
   : type_qualifier_list type_specifier expr_list
   | type_qualifier_list expr_list
   | type_specifier expr_list
+  | type_specifier IDENTIFIER
   | IDENTIFIER expr_list
   | declaration AS IDENTIFIER
   ;

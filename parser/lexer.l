@@ -5,53 +5,34 @@
 #define DEBUG
 
 #define RETURN(our_type, yytext, token_type)        \
+        printf("\n");                               \
+        printf("[%s]: %s\n", our_type, yytext);     \
         switch(token_type) {                        \
             case DECIMALINTEGER:                    \
-            #ifdef DEBUG                            \
-                printf("INTEGER [%s]\n", yytext);   \
-            #endif                                  \
                 yylval.integer = atoi(yytext);      \
                 return DECIMALINTEGER;              \
                 break;                              \
             case BININTEGER:                        \
-            #ifdef DEBUG                            \
-                printf("INTEGER [%s]\n", yytext);   \
-            #endif                                  \
                 yylval.integer = atoi(yytext);      \
                 return BININTEGER;                  \
                 break;                              \
             case OCTINTEGER:                        \
-            #ifdef DEBUG                            \
-                printf("INTEGER [%s]\n", yytext);   \
-            #endif                                  \
                 yylval.integer = atoi(yytext);      \
                 return OCTINTEGER;                  \
                 break;                              \
             case HEXINTEGER:                        \
-            #ifdef DEBUG                            \
-                printf("INTEGER [%s]\n", yytext);   \
-            #endif                                  \
                 yylval.integer = atoi(yytext);      \
                 return HEXINTEGER;                  \
                 break;                              \
             case FLOATINGNUM:                       \
-            #ifdef DEBUG                            \
-                printf("FLOATINGNUM [%s]\n", yytext);   \
-            #endif                                  \
                 yylval.floating = atof(yytext);     \
                 return FLOATINGNUM;                 \
                 break;                              \
             case CHARACTER_LITERAL:                 \
-            #ifdef DEBUG                            \
-                printf("CHARACTER [%s]\n", yytext); \
-            #endif                                  \
                 yylval.character = yytext[1];       \
                 return CHARACTER_LITERAL;           \
                 break;                              \
             case STRING_LITERAL:                    \
-            #ifdef DEBUG                            \
-                printf("STRING LITERAL [%s]\n", yytext); \
-            #endif                                  \
                 yylval.string = yytext;             \
                 return STRING_LITERAL;              \
                 break;                              \
@@ -277,6 +258,7 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 <IN_INDENT>\n               {
                                 current_line_indent = 0; /* ignore blank line*/
                                 printf("NEWLINE\n");
+                                return NEWLINE;
                             }
 
 <IN_INDENT>.                {
@@ -285,9 +267,11 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
                                 if(current_line_indent  > indent_level) {
                                     indent_level++;
                                     printf("INDENT\n");
+                                    return INDENT;
                                 } else if(current_line_indent  < indent_level) {
                                     indent_level--;
                                     printf("DEDENT\n");
+                                    return DEDENT;
                                 } else {
                                     BEGIN(INITIAL);
                                 }
@@ -295,6 +279,7 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 
 .                           {
                                 /* ignore bad characters */
+                                printf("***BAD CHARACTERS***");
                             }
 
 
