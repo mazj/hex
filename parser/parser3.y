@@ -7,7 +7,6 @@
 #define YYERROR_VERBOSE
 
 yydebug = 1;
-
 %}
 
 %union {
@@ -90,11 +89,11 @@ yydebug = 1;
 %left DEC_OP INC_OP
 %right NEW DOT
 
-
 %nonassoc DEC_OP_POST
 %nonassoc INC_OP_POST
 %nonassoc UMINUS 
 %nonassoc FOR_STMT_WITH_WHERE
+%nonassoc EXPR_CHAIN
 
 %type <integer> INTEGER
 
@@ -117,7 +116,7 @@ input/* empty line */
   ;
 
 suite
-  : NEWLINE INDENT stmt_group DEDENT
+  : INDENT stmt_group DEDENT
   ;
 
 stmt_group
@@ -153,7 +152,7 @@ control_simple_stmt
 
 return_stmt
   : RETURN NEWLINE
-  | RETURN expr_list NEWLINE
+  | RETURN expr_list_ NEWLINE
   ;
 
 break_stmt
@@ -278,21 +277,20 @@ assignment_list
 
 assignment
   : assignment_operator expr
-  ;
-
-expr_list
-  : expr_list_ COMMA
-  ;
-
-expr_list_
-  : expr
-  | expr_list_ COMMA expr
+  | assignment_operator initializer
   ;
 
 expr
   : LITERAL
   | IDENTIFIER
-  | IDENTIFIER DOT IDENTIFIER
+  | expr tuple_initializer
+  | IDENTIFIER tuple_initializer
+  | expr list_initializer
+  | IDENTIFIER list_initializer
+  | expr LPAREN RPAREN
+  | IDENTIFIER LPAREN RPAREN
+  | expr LBRACKET RBRACKET
+  | IDENTIFIER LBRACKET RBRACKET
   | INC_OP expr
   | DEC_OP expr
   | expr INC_OP %prec INC_OP_POST
@@ -318,20 +316,29 @@ expr
   | expr AND expr
   | expr OR expr
   | IF expr THEN expr ELSE expr
-  | NOT expr
+  | expr DOT IDENTIFIER
   | BITWISE_NOT expr
-  | expr LBRACKET expr RBRACKET
-  | IDENTIFIER LPAREN RPAREN
-  | expr tuple_initializer
-  | list_initializer
-  | tuple_initializer
-  | set_initializer
-  | array_initializer
-  | struct_initializer
-  | map_multimap_initializer
   | LPAREN IDENTIFIER RPAREN expr
   | LPAREN type_specifier RPAREN expr
   ;
+
+expr_list
+  : expr_list_ COMMA
+  ;
+
+expr_list_
+  : expr
+  | expr_list_ COMMA expr
+  ;
+
+initializer
+ : list_initializer
+ | array_initializer
+ | struct_initializer
+ | tuple_initializer
+ | set_initializer
+ | map_multimap_initializer
+ ;
 
 map_multimap_initializer
   : LBRACE map_multimap_initializer_list RBRACE
@@ -359,7 +366,7 @@ array_initializer
   ;
 
 tuple_initializer
-  : LPAREN expr_list RPAREN
+  : LPAREN expr_list_ RPAREN
   ;
 
 list_initializer
@@ -384,11 +391,10 @@ single_declaration
   ;
 
 declaration
-  : type_qualifier_list type_specifier expr_list
-  | type_qualifier_list expr_list
-  | type_specifier expr_list
-  | type_specifier IDENTIFIER
-  | IDENTIFIER expr_list
+  : type_qualifier_list type_specifier expr_list_
+  | type_qualifier_list expr_list_
+  | type_specifier expr_list_
+  | IDENTIFIER expr_list_
   | declaration AS IDENTIFIER
   ;
 
