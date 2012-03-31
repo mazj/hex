@@ -4,7 +4,7 @@
 
 int current_line_indent = 0;            /* indentation of current line */
 int indent_level = 0;                   /* indentation level passed to parser */
-
+int this_line_already_returned = 0;
 %}
 
 /* Multi-line comment state */
@@ -16,6 +16,8 @@ int indent_level = 0;                   /* indentation level passed to parser */
 /* Indent level */
 %x IN_INDENT
 
+%x IN_INDENT_RETURN
+%option stack
 %%
 
 #keywords
@@ -187,7 +189,6 @@ L?\"(\\.|[^\\"])*\"         printf("STRING [%s]\n", yytext);
 #pond
 "#"              			printf("POND\n");
 
-
 #multi-line_comment
 <INITIAL>{
 "/*"                            BEGIN(IN_COMMENT);
@@ -202,11 +203,18 @@ L?\"(\\.|[^\\"])*\"         printf("STRING [%s]\n", yytext);
 
 <INITIAL>\n                 {
                                 current_line_indent = 0;
-                                BEGIN(IN_INDENT);
+                                yy_push_state(IN_INDENT); //this solves the "return NEWLINE before BEGIN(IN_INDENT)" issue
+                                printf("NEWLINE\n");
+                                //BEGIN(IN_INDENT);
+                            }
+
+<IN_INDENT_RETURN>          {
+                                printf("IN_INDENT_RETURN\n");
+                                
                             }
 
 #indentation
-<IN_INDENT>"  "              {
+<IN_INDENT>"  "             {
                                 current_line_indent++;
                             }
 
@@ -221,12 +229,12 @@ L?\"(\\.|[^\\"])*\"         printf("STRING [%s]\n", yytext);
                             }
 
 <IN_INDENT>.                {
-                                unput(*yytext);
                                 /* puts the character back to input stream and scans next character */
-                                if(current_line_indent  > indent_level) {
+                                unput(*yytext);
+                                if(current_line_indent > indent_level) {
                                     indent_level++;
                                     printf("INDENT\n");
-                                } else if(current_line_indent  < indent_level) {
+                                } else if(current_line_indent < indent_level) {
                                     indent_level--;
                                     printf("DEDENT\n");
                                 } else {
@@ -236,7 +244,6 @@ L?\"(\\.|[^\\"])*\"         printf("STRING [%s]\n", yytext);
 
 .                           {
                                 /* ignore bad characters */
-                                printf("***BAD CHARACTERS***");
                             }
 
 
@@ -247,6 +254,5 @@ int main(int argc, char** argv) {
         exit(1);
     }
     yylex();
-    yyparse();
     return 0;
 }

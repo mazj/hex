@@ -243,10 +243,15 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 <INITIAL>\n                 {
                                 current_line_indent = 0;
                                 BEGIN(IN_INDENT);
+
                             }
 
 #indentation
-<IN_INDENT>"  "              {
+<IN_INDENT>""               {
+                                return NEWLINE;
+                            }
+
+<IN_INDENT>"  "             {
                                 current_line_indent++;
                             }
 

@@ -208,6 +208,7 @@ target_list
 if_stmt
   : IF expr COLON suite elif_group ELSE COLON suite
   | IF expr COLON suite elif_group
+  | IF expr COLON suite
   ;
 
 elif_group
@@ -267,7 +268,7 @@ assignment_stmt_list
 
 assignment_stmt
   : declaration assignment_list
-  | expr_list assignment_list
+  | expr_list_ assignment_list
   ;
 
 assignment_list
