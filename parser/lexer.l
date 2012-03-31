@@ -56,6 +56,7 @@ int indent_level = 0;                   /* indentation level passed to parser */
 /* Indent level */
 %x IN_INDENT
 
+%option stack
 %%
 
 #keywords
@@ -242,15 +243,13 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 
 <INITIAL>\n                 {
                                 current_line_indent = 0;
-                                BEGIN(IN_INDENT);
-
+                                yy_push_state(IN_INDENT); //this solves the "return NEWLINE before BEGIN(IN_INDENT)" issue
+                                printf("NEWLINE\n");
+                                return NEWLINE;
+                                // BEGIN(IN_INDENT);
                             }
 
 #indentation
-<IN_INDENT>""               {
-                                return NEWLINE;
-                            }
-
 <IN_INDENT>"  "             {
                                 current_line_indent++;
                             }

@@ -16,7 +16,6 @@ int this_line_already_returned = 0;
 /* Indent level */
 %x IN_INDENT
 
-%x IN_INDENT_RETURN
 %option stack
 %%
 
