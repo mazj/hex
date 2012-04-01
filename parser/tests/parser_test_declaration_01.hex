@@ -1,0 +1,7 @@
+
+const int c = 1        /* const => CONST => type_qualifier => type_qualifier_list
+                        * int => INT => type_specifier
+                        * c => expr => expr_list_
+                        * const int c => type_qualifier_list type_specifier expr_list_ => declaration
+                        * = 1 => assignment_op expr => assignment => assignment_list
+                        * const int c = 1 => declaration assignment_list => assignment_stmt => simple_stmt */
