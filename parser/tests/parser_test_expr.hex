@@ -1,0 +1,38 @@
+
+1            			/* LITERAL */
+122
+333l
+444L
+0x45
+0Xa9
+0o00
+0o77
+0O667
+0b101 /*0BOO1*/
+0.5
+7.88
+'c'
+"string"
+c			 			/* IDENTIFIER */
+variableName
+_funcName
+_323
+_c
+(myPair+1)(1,2)         /* expr tuple_initializer */
+a(c,d,e)                /* IDENTIFIER tuple_initializer */
+(myList & 3)[1]			/* expr list_initializer */
+_yum[9,10,11]			/* IDENTIFIER list_initializer */
+(_yum+2)()				/* expr LPAREN RPAREN */
+_yum3()					/* IDENTIFIER LPAREN RPAREN */
+(_yum4+1)[]				/* expr LBRACKET RBRACKET */
+_yum5[]					/* IDENTIFIER LBRACKET RBRACKET */
+++a						/* INC_OP expr */
+--b                     /* DEC_OP expr */					/* c++ expr INC_OP */  /* d-- expr DEC_OP */
+c*d                     /* expr MUL_OP expr */
+e/1.0                   /* expr DIV_OP expr */
+10%2                    /* expr MOD_OP expr */
+1+1                     /* expr PLUS_OP expr */
+0xa-0b10                /* expr MINUS_OP expr */
+-a                      /* MINUS_OP expr */
+a << b                  /* expr SHIFT_LEFT expr */
+c >> d                  /* expr SHIFT_RIGHT expr */
