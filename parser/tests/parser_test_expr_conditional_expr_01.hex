@@ -1,0 +1,8 @@
+
+c = if a > b then a else b++        		/* c => LITERAL => expr => expr_list_
+		                                     * a > b => expr GREATER_OP expr => expr
+		                                     * a => LITERAL => expr
+		                                     * b++ => expr INC_OP => expr
+		                                     * IF expr THEN expr ELSE expr => expr
+		                                     * assignment_operator expr = assignment => assignment_list
+		                                     * expr_list_ assignment_list => assignment_stmt => simple_stmt */
