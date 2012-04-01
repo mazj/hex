@@ -85,7 +85,8 @@ yydebug = 1;
 %left LBRACKET RBRACKET
 %left LPAREN RPAREN
 %left LBRACE RBRACE
-%right NOT BITWISE_NOT
+%left NOT 
+%right BITWISE_NOT
 %left DEC_OP INC_OP
 %right NEW DOT
 
@@ -116,17 +117,16 @@ input/* empty line */
   ;
 
 suite
-  : INDENT stmt_group DEDENT
+  : NEWLINE INDENT stmt_group DEDENT
   ;
 
 stmt_group
   : stmt
-  | NEWLINE stmt
-  | stmt_group stmt
+  | stmt_group NEWLINE stmt
   ;
 
 stmt
-  : simple_stmt_list NEWLINE
+  : simple_stmt_list
   | compound_stmt
   | control_simple_stmt
   ;
@@ -292,10 +292,10 @@ expr
   | IDENTIFIER LPAREN RPAREN
   | expr LBRACKET RBRACKET
   | IDENTIFIER LBRACKET RBRACKET
-  | INC_OP expr
-  | DEC_OP expr
   | expr INC_OP %prec INC_OP_POST
   | expr DEC_OP %prec INC_OP_POST
+  | INC_OP expr
+  | DEC_OP expr
   | expr MUL_OP expr
   | expr DIV_OP expr
   | expr MOD_OP expr
@@ -318,9 +318,11 @@ expr
   | expr OR expr
   | IF expr THEN expr ELSE expr
   | expr DOT IDENTIFIER
+  | NOT expr
   | BITWISE_NOT expr
   | LPAREN IDENTIFIER RPAREN expr
   | LPAREN type_specifier RPAREN expr
+  | LPAREN expr RPAREN
   ;
 
 expr_list
@@ -363,7 +365,7 @@ set_initializer
   ;
 
 array_initializer
-  : LBRACE expr_list RBRACE
+  : LBRACE expr_list_ RBRACE
   ;
 
 tuple_initializer
@@ -371,7 +373,7 @@ tuple_initializer
   ;
 
 list_initializer
-  : LBRACKET expr_list RBRACKET
+  : LBRACKET expr_list_ RBRACKET
   ;
 
 parameter_list

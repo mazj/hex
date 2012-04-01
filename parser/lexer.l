@@ -135,7 +135,7 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 \/\/.*                      RETURN("COMMENT", yytext, COMMENT);
 
 #integer
-([0]|[1-9]*)[lL]?	        RETURN("INTEGER", yytext, DECIMALINTEGER);
+([0]|[0-9]*)[lL]?	        RETURN("INTEGER", yytext, DECIMALINTEGER);
 
 
 #binary_integer
@@ -209,8 +209,8 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 ":"              			RETURN("COLON", yytext, COLON);
 
 #bracket
-"("                         RETURN("BRACKET", yytext, LPAREN);
-")"               	        RETURN("BRACKET", yytext, RPAREN);
+"("                         RETURN("PARENTHESIS", yytext, LPAREN);
+")"               	        RETURN("PARENTHESIS", yytext, RPAREN);
 
 
 #sqaure_bracket
@@ -246,7 +246,6 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
                                 yy_push_state(IN_INDENT); //this solves the "return NEWLINE before BEGIN(IN_INDENT)" issue
                                 printf("NEWLINE\n");
                                 return NEWLINE;
-                                // BEGIN(IN_INDENT);
                             }
 
 #indentation

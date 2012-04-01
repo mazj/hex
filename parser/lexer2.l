@@ -95,20 +95,20 @@ L?\"(\\.|[^\\"])*\"         printf("STRING [%s]\n", yytext);
 \/\/.*                      printf("INLINE COMMENT [%s]\n", yytext);
 
 #integer
-([0]|[1-9]*)[lL]?	        printf("INTEGER [%s]\n", yytext);
+([0]|[0-9]*)[lL]?	        printf("INTEGER [%s]\n", yytext);
 
 
 #binary_integer
-0[bB][0-1]+                 printf("INTEGER [%s]\n", yytext);
+0[bB][0-1]+                 printf("BININTEGER [%s]\n", yytext);
 
 #oct_integer
-0[oO][0-7]+		            printf("INTEGER [%s]\n", yytext);
+0[oO][0-7]+		            printf("OCTINTEGER [%s]\n", yytext);
 
 #hexidecimal_integer
-0[xX][0-9a-fA-F]+           printf("INTEGER [%s]\n", yytext);
+0[xX][0-9a-fA-F]+           printf("HEXINTEGER [%s]\n", yytext);
 
 #floating_number
-[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?  printf("INTEGER [%s]\n", yytext);
+[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?  printf("FLOATINGNUM [%s]\n", yytext);
 
 
 #arithmetic_operator
@@ -204,12 +204,6 @@ L?\"(\\.|[^\\"])*\"         printf("STRING [%s]\n", yytext);
                                 current_line_indent = 0;
                                 yy_push_state(IN_INDENT); //this solves the "return NEWLINE before BEGIN(IN_INDENT)" issue
                                 printf("NEWLINE\n");
-                                //BEGIN(IN_INDENT);
-                            }
-
-<IN_INDENT_RETURN>          {
-                                printf("IN_INDENT_RETURN\n");
-                                
                             }
 
 #indentation
