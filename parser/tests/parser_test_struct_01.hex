@@ -1,0 +1,10 @@
+
+s = { a =3, b = 4, c = 5 }      /* s => IDENTIFIER => expr => expr_list_
+                                 * a = 3 => assignment
+                                 * b = 4 => assignment
+                                 * c = 5 => assignment
+                                 * a = 3, b = 4, c = 5 => assignment_stmt_list
+                                 * { a =3, b = 4, c = 5 } = > LBRACE assignment_stmt_list RPAREN => struct_initializer => initializer
+                                 * = { a =3, b = 4, c = 5 } => assignment_op initializer => assignment => assignment_list
+                                 * s = { a =3, b = 4, c = 5 } expr_list_ assignment_list => assignment_stmt => simple_stmt
+                                 */

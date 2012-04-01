@@ -1,0 +1,7 @@
+
+l = [a, 2, 1 << 3]        /* l => IDENTIFIER => expr => expr_list_
+                           * a, 2, 1 << 3 => expr_list_
+                           * [a, 2, 1 << 3] => list_initializer => initializer
+                           * = [a,2,1<<3] => assignment_operator initializer => assignment => assignment_list
+                           * expr_list_ assignment_list => assignment_stmt => simple_stmt
+                           */
