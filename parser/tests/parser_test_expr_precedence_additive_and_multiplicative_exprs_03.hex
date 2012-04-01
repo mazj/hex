@@ -1,0 +1,10 @@
+
+--1 * (2 + -3) - (c >> d)    /* --1 => DEC_OP expr => expr
+                              * -3 => MINUS_OP expr => expr
+                              * 2 + -3 => expr PLUS_OP expr => expr
+                              * (2 + -3) => LPAREN expr RPAREN => expr
+                              * -1 * (2 + -3) => expr MUL_OP expr => expr
+                              * c >> d => expr BITWISE_SHIFTRIGHT expr => expr
+                              * (c >> d) => LPAREN expr RPAREN => expr
+                              * -1 * (2 + -3) - (c >> d) => expr MINUS_OP expr => expr => expr_list_ => simple_stmt
+                              */

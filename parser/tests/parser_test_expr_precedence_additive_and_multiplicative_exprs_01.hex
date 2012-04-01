@@ -1,0 +1,7 @@
+
+1 + 2 * c       /* 1 => expr
+                 * 2 => expr
+                 * c => expr
+                 * 2 * c => expr MUL_OP expr => expr
+                 * 1 + 2 * c => expr PLUS_OP expr => expr => expr_list_ => simple_stmt
+                 */
