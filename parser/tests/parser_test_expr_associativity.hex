@@ -1,0 +1,36 @@
+
+a+b+c			/* PLUS_OP */
+a-b-c           /* MINUS_OP */
+a*b*c           /* MUL_OP */
+a/b/c           /* DIV_OP */
+a%b%c           /* MOD_OP */
+--++a           /* INC_OP expr => expr
+                 * DEC_OP expr => expr */
+++--b           /* DEC_OP expr => expr
+                 * INC_OP expr => expr */
+a << b << c     /* expr SHIFT_LEFT expr => expr
+                 * expr SHIFT_LEFT expr => expr */
+a >> b >> c     /* expr SHIFT_RIGHT expr => expr
+                   expr SHIFT_RIGHT expr => expr */
+a < b < c       /* expr LESS_OP expr => expr
+                 * expr LESS_OP expr => expr */
+a > b > c       /* expr GREATER_OP expr => expr
+                 * expr GREATER_OP expr => expr */
+a <= b <= c     /* expr LEQ_OP expr => expr
+                 * expr LEQ_OP expr => expr */
+a >= b >= c     /* expr GEQ_OP expr => expr
+                 * expr GEQ_OP expr => expr */
+a == b == c     /* expr EQ_OP expr => expr
+                 * expr EQ_OP expr => expr */
+a != b != c     /* expr NEQ_OP expr => expr
+                 * expr NEQ_OP expr => expr */
+a & b & c       /* expr BITWISE_AND expr => expr
+                 * expr BITWISE_AND expr => expr */
+a ^ b ^ c       /* expr BITWISE_XOR expr => expr
+                 * expr BITWISE_XOR expr => expr */
+a | b | c       /* expr BITWISE_OR expr => expr
+                 * expr BITWISE_OR expr => expr */
+a and b and c   /* expr AND expr => expr
+                 * expr AND expr => expr */
+a or b or c     /* expr OR expr => expr
+                 * expr OR expr => expr */

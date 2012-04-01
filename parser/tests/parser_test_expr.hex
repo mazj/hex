@@ -28,7 +28,6 @@ _yum3()					/* IDENTIFIER LPAREN RPAREN */
 _yum5[]					/* IDENTIFIER LBRACKET RBRACKET */
 ++a						/* INC_OP expr */
 --b                     /* DEC_OP expr */					/* c++ expr INC_OP */  /* d-- expr DEC_OP */
-c++
 c*d                     /* expr MUL_OP expr */
 e/1.0                   /* expr DIV_OP expr */
 10%2                    /* expr MOD_OP expr */
