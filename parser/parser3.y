@@ -87,7 +87,7 @@ yydebug = 1;
 %left LBRACE RBRACE
 %left NOT 
 %right BITWISE_NOT
-%left DEC_OP INC_OP
+%nonassoc DEC_OP INC_OP
 %right NEW DOT
 
 %nonassoc DEC_OP_POST
@@ -292,8 +292,8 @@ expr
   | IDENTIFIER LPAREN RPAREN
   | expr LBRACKET RBRACKET
   | IDENTIFIER LBRACKET RBRACKET
-  | expr INC_OP %prec INC_OP_POST
-  | expr DEC_OP %prec INC_OP_POST
+  | expr INC_OP
+  | expr DEC_OP
   | INC_OP expr
   | DEC_OP expr
   | expr MUL_OP expr
@@ -310,7 +310,6 @@ expr
   | expr GEQ_OP expr
   | expr EQ_OP expr
   | expr NEQ_OP expr
-  | expr NEW expr
   | expr BITWISE_AND expr
   | expr BITWISE_XOR expr
   | expr BITWISE_OR expr
@@ -323,10 +322,6 @@ expr
   | LPAREN IDENTIFIER RPAREN expr
   | LPAREN type_specifier RPAREN expr
   | LPAREN expr RPAREN
-  ;
-
-expr_list
-  : expr_list_ COMMA
   ;
 
 expr_list_

@@ -189,8 +189,8 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 "<="                    	RETURN("EQUALITY OPERATOR", yytext, LEQ_OP);
 
 #increment_&_decrement
-"++"						RETURN("INCREMENT & DECREMENT", yytext, INC_OP);
-"--"						RETURN("INCREMENT & DECREMENT", yytext, DEC_OP);
+"++"						RETURN("INCREMENT", yytext, INC_OP);
+"--"						RETURN("DECREMENT", yytext, DEC_OP);
 
 #lambda_operator
 "=>"						RETURN("LAMBDA OPERATOR", yytext, LAMBDA_OP);
