@@ -1,0 +1,9 @@
+
+def doSomething(const int a, b)     /* const => CONST => type_qualifier => type_qualifier_list
+                                     * int => INT => type_specifier
+                                     * a => IDENTIFIER
+                                     * const int a => tyle_qualifier_list type_specifier IDENTIFIER => parameter => parameter_list_core
+                                     * b => IDENTIFIER => parameter
+                                     * const int a, b => parameter_list_core COMMA parameter => parameter_list_core
+                                     * (const int a, b) => LPAREN parameter_list_core RPAREN => parameter_list
+                                     * def doSomething(const int a, b) => DEF IDENTIFIER parameter_list => func_declaration

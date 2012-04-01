@@ -1,0 +1,9 @@
+
+def int sum(a,b)     /* def => DEF
+                      * int => type_specifier
+                      * sum => IDENTIFIER
+                      * a => IDENTIFIER => parameter
+                      * b => IDENTIFIER => parameter
+                      * (a,b) => parameter_list
+                      * def int sum(a,b) => DEF type_specifier IDENTIFIER parameter_list => func_declaration => simple_stmt
+                      */
