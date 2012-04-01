@@ -250,6 +250,8 @@ func_definition
 func_declaration
   : DEF IDENTIFIER parameter_list
   | DEF IDENTIFIER LPAREN RPAREN
+  | DEF IDENTIFIER IDENTIFIER parameter_list
+  | DEF IDENTIFIER IDENTIFIER LPAREN RPAREN
   | DEF type_specifier IDENTIFIER parameter_list
   | DEF type_specifier IDENTIFIER LPAREN RPAREN
   | DEF type_qualifier_list IDENTIFIER parameter_list
@@ -375,16 +377,17 @@ parameter_list
   ;
 
 parameter_list_core
-  : single_declaration
-  | parameter_list_core COMMA single_declaration
+  : parameter
+  | parameter_list_core COMMA parameter
   ;
 
-single_declaration
+parameter
   : type_qualifier_list type_specifier IDENTIFIER
   | type_qualifier_list IDENTIFIER
   | type_specifier IDENTIFIER
   | IDENTIFIER IDENTIFIER
-  | single_declaration AS IDENTIFIER
+  | parameter AS IDENTIFIER
+  | IDENTIFIER
   ;
 
 declaration
