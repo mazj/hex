@@ -1,0 +1,11 @@
+
+if 1 < 3 and 3 < 4:
+  doSomething()
+  doSomethingAgain()
+elif a > b:
+  doAnotherThing()
+elif a < c:
+  rest()
+  lalala()
+else:
+  sleep()
