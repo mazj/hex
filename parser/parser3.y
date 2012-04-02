@@ -139,7 +139,7 @@ simple_stmt
   : expr_list_
   | declaration
   | assignment_stmt
-  | import_stmt NEWLINE
+  | import_stmt
   | func_declaration
   ;
 
