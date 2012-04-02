@@ -102,9 +102,6 @@ yydebug = 1;
 
 %{
 
-static void print_token_value (FILE *, int, YYSTYPE);
-//#define YYPRINT(file, type, value) print_token_value (file, type, value)
-
 %}
 
 %%
@@ -116,7 +113,8 @@ input/* empty line */
   ;
 
 suite
-  : NEWLINE INDENT stmt_group DEDENT
+  : NEWLINE INDENT stmt_group NEWLINE DEDENT
+  | NEWLINE INDENT stmt_group NEWLINE
   ;
 
 stmt_group
@@ -206,6 +204,7 @@ target_list
 
 if_stmt
   : IF expr COLON suite elif_group ELSE COLON suite
+  | IF expr COLON suite ELSE COLON suite
   | IF expr COLON suite elif_group
   | IF expr COLON suite
   ;
@@ -455,14 +454,6 @@ INTEGER
 
 %%
 
-static void
-print_token_value(FILE *f, int type, YYSTYPE value) {
-  switch(type) {
-    case IDENTIFIER:
-      fprintf(f, "IDENTIFIER: %s", value.string);
-      break;
-  }
-}
 
 int yyerror(char* s) {
   printf("[%d] %s\n", __LINE__, s);
