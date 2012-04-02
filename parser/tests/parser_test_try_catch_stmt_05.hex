@@ -1,0 +1,5 @@
+
+try:
+  doSomethingThatMightBreak()
+finally:
+  cleanUpData()
