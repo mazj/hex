@@ -1,0 +1,12 @@
+
+from hex.sys import xml_serializer as serializer      /* from => FROM
+                                                       * hex.sys => module_list
+                                                       * import => IMPORT
+                                                       * xml_serialzer => IDENTIFIER => module
+                                                       * as => AS
+                                                       * serializer => IDENTIFIER
+                                                       * FROM module_list IMPORT module as IDENTIFIER
+                                                       		=> relative_import_stmt
+                                                       		=> import_stmt
+                                                       		=> simple_stmt
+                                                       */

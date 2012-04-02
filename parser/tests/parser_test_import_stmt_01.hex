@@ -1,0 +1,11 @@
+
+import hex.sys.math.trig.sin    /* import => IMPORT
+                                 * hex => IDENTIFIER => module => module_list
+                                 * ...
+                                 * hex.sys.math.trig.sin => module_list
+                                 * import hex.sys.math.trig.sin
+                                   		=> IMPORT module_list
+                                       	=> direct_import_stmt
+                                       	=>import_stmt
+                                       	=> simple_stmt
+                                 */

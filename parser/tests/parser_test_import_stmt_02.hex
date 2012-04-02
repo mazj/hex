@@ -1,0 +1,10 @@
+
+from hex.math import trig     /* from => FROM
+                               * hex.math => module_list
+                               * import => IMPORT
+                               * trig => module
+                               * FROM module_list IMPORT module
+                               		=> relative_import_stmt
+                               		=> import_stmt
+                               		=> simple_stmt
+                               */
