@@ -186,7 +186,7 @@ catch_stmt_group
 catch_stmt
   : CATCH COLON suite
   | CATCH LPAREN declaration RPAREN COLON suite
-  | CATCH LPAREN IDENTIFIER IDENTIFIER RPAREN COLON suite
+  | CATCH LPAREN IDENTIFIER RPAREN COLON suite
   ;
 
 while_stmt
