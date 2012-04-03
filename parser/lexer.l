@@ -90,6 +90,7 @@ int indent_level = 0;                   /* indentation level passed to parser */
 "int"                       RETURN("KEYWORD", yytext, INT);
 "interface"                 RETURN("KEYWORD", yytext, INTERFACE);
 "lazy"                      RETURN("KEYWORD", yytext, LAZY);
+"lock"                      RETURN("KEYWORD", yytext, LOCK);
 "long"                      RETURN("KEYWORD", yytext, LONG);
 "new"                       RETURN("KEYWORD", yytext, NEW);
 "not"				        RETURN("KEYWORD", yytext, NOT);
@@ -116,6 +117,7 @@ int indent_level = 0;                   /* indentation level passed to parser */
 "uchar"                     RETURN("KEYWORD", yytext, UCHAR);
 "uint"                      RETURN("KEYWORD", yytext, UINT);
 "ulong"                     RETURN("KEYWORD", yytext, ULONG);
+"unlock"                    RETURN("KEYWORD", yytext, UNLOCK);
 "ushort"                    RETURN("KEYWORD", yytext, USHORT);
 "virtual"                   RETURN("KEYWORD", yytext, VIRTUAL);
 "volatile"                  RETURN("KEYWORD", yytext, VOLATILE);

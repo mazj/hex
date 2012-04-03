@@ -24,13 +24,14 @@ yydebug = 1;
 %token <string> FLOAT FOR FROM
 %token <string> IF IMPORT
 %token <string> IN INT INTERFACE
-%token <string> LAZY LONG
+%token <string> LAZY LOCK LONG
 %token <string> NEW NOT
 %token <string> OR
 %token <string> PASS PRIVATE PROTECTED PUBLIC
 %token <string> REF RETURN
 %token <string> SHORT SIZEOF STACKALLOC STATIC STRING STRUCT SWITCH
-%token <string> TASK THEN THIS THROW TRY TYPEOF UCHAR UINT ULONG USHORT
+%token <string> TASK THEN THIS THROW TRY TYPEOF
+%token <string> UCHAR UINT ULONG UNLOCK USHORT
 %token <string> VIRTUAL VOLATILE
 %token <string> WHERE WHILE
 %token <string> FINALLY
@@ -67,6 +68,7 @@ yydebug = 1;
 
 %left IDENTIFIER
 
+%left LOCK UNLOCK
 %left ASSIGN_OP ASSIGN_PLUS ASSIGN_MINUS ASSIGN_MUL ASSIGN_DIV ASSIGN_MOD ASSIGN_BITWISE_NOT ASSIGN_BITWISE_AND ASSIGN_BITWISE_OR ASSIGN_BITWISE_XOR ASSIGN_SHIFTLEFT ASSIGN_SHIFTRIGHT
 %left IF
 %left THEN
@@ -318,6 +320,8 @@ expr
   | IF expr THEN expr ELSE expr
   | expr DOT IDENTIFIER
   | NOT expr
+  | LOCK expr
+  | UNLOCK expr
   | BITWISE_NOT expr
   | LPAREN IDENTIFIER RPAREN expr
   | LPAREN type_specifier RPAREN expr
