@@ -98,6 +98,7 @@ int indent_level = 0;                   /* indentation level passed to parser */
 "private"                   RETURN("KEYWORD", yytext, PRIVATE);
 "protected"                 RETURN("KEYWORD", yytext, PROTECTED);
 "public"                    RETURN("KEYWORD", yytext, PUBLIC);
+"ref"                       RETURN("KEYWORD", yytext, REF);
 "return"                    RETURN("KEYWORD", yytext, RETURN);
 "short"                     RETURN("KEYWORD", yytext, SHORT);
 "sizeof"                    RETURN("KEYWORD", yytext, SIZEOF);

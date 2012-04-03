@@ -58,6 +58,7 @@ int this_line_already_returned = 0;
 "private"                   printf("%s\n", yytext);
 "protected"                 printf("%s\n", yytext);
 "public"                    printf("%s\n", yytext);
+"ref"                       printf("%s\n", yytext);
 "return"                    printf("%s\n", yytext);
 "short"                     printf("%s\n", yytext);
 "sizeof"                    printf("%s\n", yytext);

@@ -28,7 +28,7 @@ yydebug = 1;
 %token <string> NEW NOT
 %token <string> OR
 %token <string> PASS PRIVATE PROTECTED PUBLIC
-%token <string> RETURN
+%token <string> REF RETURN
 %token <string> SHORT SIZEOF STACKALLOC STATIC STRING STRUCT SWITCH
 %token <string> TASK THEN THIS THROW TRY TYPEOF UCHAR UINT ULONG USHORT
 %token <string> VIRTUAL VOLATILE
@@ -382,11 +382,16 @@ parameter_list_core
 
 parameter
   : type_qualifier_list type_specifier IDENTIFIER
+  | type_qualifier_list type_specifier IDENTIFIER AS IDENTIFIER
   | type_qualifier_list IDENTIFIER
+  | type_qualifier_list IDENTIFIER AS IDENTIFIER
   | type_specifier IDENTIFIER
+  | type_specifier IDENTIFIER AS IDENTIFIER
   | IDENTIFIER IDENTIFIER
-  | parameter AS IDENTIFIER
+  | IDENTIFIER IDENTIFIER AS IDENTIFIER
   | IDENTIFIER
+  | IDENTIFIER AS IDENTIFIER
+  | REF parameter
   ;
 
 declaration
