@@ -434,6 +434,7 @@ type_qualifier
 
 assignment_operator
   : ASSIGN_OP
+  | ASSIGN_OP DEFER
   | ASSIGN_OP NEW
   | ASSIGN_OP LAZY NEW
   | ASSIGN_OP STACKALLOC NEW
