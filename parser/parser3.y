@@ -376,6 +376,7 @@ list_initializer
 
 parameter_list
   : LPAREN parameter_list_core RPAREN
+  | LPAREN parameter_list_core COMMA ELLIPSIS RPAREN
   ;
 
 parameter_list_core
