@@ -140,6 +140,7 @@ simple_stmt
   | assignment_stmt
   | import_stmt
   | func_declaration
+  | if_stmt_simple
   ;
 
 control_simple_stmt
@@ -202,6 +203,11 @@ for_stmt
 target_list
   : tuple_initializer
   ;
+
+if_stmt_simple
+  : IF expr COLON expr_list_
+  | IF expr RETURN expr_list_
+  ; 
 
 if_stmt
   : IF expr COLON suite elif_group ELSE COLON suite
