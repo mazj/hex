@@ -123,6 +123,7 @@ int indent_level = 0;                   /* indentation level passed to parser */
 "ushort"                    RETURN("KEYWORD", yytext, USHORT);
 "virtual"                   RETURN("KEYWORD", yytext, VIRTUAL);
 "volatile"                  RETURN("KEYWORD", yytext, VOLATILE);
+"_weakref"                  RETURN("KEYWORD", yytext, WEAKREF);
 "where"                     RETURN("KEYWORD", yytext, WHERE);
 "while"                     RETURN("KEYWORD", yytext, WHILE);
 "finally"                   RETURN("KEYWORD", yytext, FINALLY);

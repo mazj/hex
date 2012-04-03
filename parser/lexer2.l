@@ -83,6 +83,7 @@ int this_line_already_returned = 0;
 "ushort"                    printf("%s\n", yytext);
 "virtual"                   printf("%s\n", yytext);
 "volatile"                  printf("%s\n", yytext);
+"_weakref"                  printf("%s\n", yytext);
 "where"                     printf("%s\n", yytext);
 "while"                     printf("%s\n", yytext);
 "finally"                   printf("%s\n", yytext);

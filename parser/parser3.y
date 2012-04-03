@@ -33,7 +33,7 @@ yydebug = 1;
 %token <string> TASK THEN THIS THROW TRY TYPEOF
 %token <string> UCHAR UINT ULONG UNLOCK USHORT
 %token <string> VIRTUAL VOLATILE
-%token <string> WHERE WHILE
+%token <string> WEAKREF WHERE WHILE
 %token <string> FINALLY
 
 %token <string>     IDENTIFIER
@@ -71,6 +71,7 @@ yydebug = 1;
 %left LOCK UNLOCK
 %left ELLIPSIS
 %left ASSIGN_OP ASSIGN_PLUS ASSIGN_MINUS ASSIGN_MUL ASSIGN_DIV ASSIGN_MOD ASSIGN_BITWISE_NOT ASSIGN_BITWISE_AND ASSIGN_BITWISE_OR ASSIGN_BITWISE_XOR ASSIGN_SHIFTLEFT ASSIGN_SHIFTRIGHT
+%left WEAKREF
 %left IF
 %left THEN
 %left ELSE
@@ -320,6 +321,7 @@ expr
   | expr ELLIPSIS expr
   | IF expr THEN expr ELSE expr
   | expr DOT IDENTIFIER
+  | WEAKREF expr
   | NOT expr
   | LOCK expr
   | UNLOCK expr
