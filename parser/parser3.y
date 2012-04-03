@@ -91,11 +91,8 @@ yydebug = 1;
 %right NEW DOT
 %left COMMA
 
-%nonassoc DEC_OP_POST
-%nonassoc INC_OP_POST
 %nonassoc UMINUS 
 %nonassoc FOR_STMT_WITH_WHERE
-%nonassoc EXPR_CHAIN
 
 %type <integer> INTEGER
 
