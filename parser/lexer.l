@@ -83,12 +83,14 @@ int indent_level = 0;                   /* indentation level passed to parser */
 "ext"                       RETURN("KEYWORD", yytext, EXT);
 "float"                     RETURN("KEYWORD", yytext, FLOAT);
 "for"                       RETURN("KEYWORD", yytext, FOR);
-"from"                      RETURN("KEYWORD", yytext, FROM)
+"from"                      RETURN("KEYWORD", yytext, FROM);
 "if"                        RETURN("KEYWORD", yytext, IF);
 "import"                    RETURN("KEYWORD", yytext, IMPORT);
 "in"                        RETURN("KEYWORD", yytext, IN);
 "int"                       RETURN("KEYWORD", yytext, INT);
 "interface"                 RETURN("KEYWORD", yytext, INTERFACE);
+"is"                        RETURN("KEYWORD", yytext, IS);
+"is not"                    RETURN("KEYWORD", yytext, IS_NOT);
 "lazy"                      RETURN("KEYWORD", yytext, LAZY);
 "lock"                      RETURN("KEYWORD", yytext, LOCK);
 "long"                      RETURN("KEYWORD", yytext, LONG);

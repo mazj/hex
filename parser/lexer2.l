@@ -49,6 +49,8 @@ int this_line_already_returned = 0;
 "in"                        printf("%s\n", yytext);
 "int"                       printf("%s\n", yytext);
 "interface"                 printf("%s\n", yytext);
+"is"                        printf("%s\n", yytext);
+"is not"                    printf("%s\n", yytext);                    
 "lazy"                      printf("%s\n", yytext);
 "lock"                      printf("%s\n", yytext);
 "long"                      printf("%s\n", yytext);

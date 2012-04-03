@@ -23,7 +23,7 @@ yydebug = 1;
 %token <string> ELIF ELSE ENUM EXT
 %token <string> FLOAT FOR FROM
 %token <string> IF IMPORT
-%token <string> IN INT INTERFACE
+%token <string> IN INT INTERFACE IS IS_NOT
 %token <string> LAZY LOCK LONG
 %token <string> NEW NOT
 %token <string> OR
@@ -78,12 +78,12 @@ yydebug = 1;
 %left BITWISE_OR
 %left BITWISE_XOR
 %left BITWISE_AND
-%left EQ_OP NEQ_OP
+%left EQ_OP NEQ_OP NOT IS IS_NOT
 %left GREATER_OP LESS_OP GEQ_OP LEQ_OP
 %left BITWISE_SHIFTLEFT BITWISE_SHIFTRIGHT
 %left PLUS_OP MINUS_OP
 %left MUL_OP DIV_OP MOD_OP
-%left NOT BITWISE_NOT
+%left BITWISE_NOT
 %nonassoc DEC_OP INC_OP
 %left LBRACKET RBRACKET
 %left LPAREN RPAREN
@@ -310,6 +310,8 @@ expr
   | expr GREATER_OP expr
   | expr LEQ_OP expr
   | expr GEQ_OP expr
+  | expr IS expr
+  | expr IS_NOT expr
   | expr EQ_OP expr
   | expr NEQ_OP expr
   | expr BITWISE_AND expr
