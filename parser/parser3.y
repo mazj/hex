@@ -20,7 +20,7 @@ yydebug = 1;
 %token <string> BASE BOOL BREAK
 %token <string> CASE CATCH CHAR CLASS CONST CONTINUE COROUTINE
 %token <string> DEF DEFER DEFAULT DO DOUBLE
-%token <string> ELIF ELSE ENUM EXT
+%token <string> ELIF ELSE EXT
 %token <string> FLOAT FOR FROM
 %token <string> IF IMPORT
 %token <string> IN INT INTERFACE IS IS_NOT

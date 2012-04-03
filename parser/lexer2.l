@@ -39,7 +39,6 @@ int this_line_already_returned = 0;
 "double"                    printf("%s\n", yytext);
 "elif"                      printf("%s\n", yytext);
 "else"                      printf("%s\n", yytext);
-"enum"                      printf("%s\n", yytext);
 "ext"                       printf("%s\n", yytext);
 "float"                     printf("%s\n", yytext);
 "for"                       printf("%s\n", yytext);

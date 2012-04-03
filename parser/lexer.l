@@ -79,7 +79,6 @@ int indent_level = 0;                   /* indentation level passed to parser */
 "double"                    RETURN("KEYWORD", yytext, DOUBLE);
 "elif"                      RETURN("KEYWORD", yytext, ELIF);
 "else"                      RETURN("KEYWORD", yytext, ELSE);
-"enum"                      RETURN("KEYWORD", yytext, ENUM);
 "ext"                       RETURN("KEYWORD", yytext, EXT);
 "float"                     RETURN("KEYWORD", yytext, FLOAT);
 "for"                       RETURN("KEYWORD", yytext, FOR);
