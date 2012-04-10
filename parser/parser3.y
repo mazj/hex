@@ -195,8 +195,8 @@ while_stmt
   ;
 
 for_stmt
-  : FOR iterable IN expr suite
-  | FOR iterable IN expr WHERE expr suite
+  : FOR iterable IN expr COLON suite
+  | FOR iterable IN expr WHERE expr COLON suite
   ;
 
 iterable
