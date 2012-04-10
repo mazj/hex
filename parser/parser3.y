@@ -92,8 +92,11 @@ yydebug = 1;
 %left LBRACE RBRACE
 %right NEW DOT
 %left COMMA
+%right LAMBDA_OP
 
-%nonassoc UMINUS 
+%nonassoc UMINUS
+
+%right SUITE_PREC
 
 %type <integer> INTEGER
 
@@ -113,7 +116,7 @@ input/* empty line */
   ;
 
 suite
-  : NEWLINE INDENT stmt_group NEWLINE DEDENT
+  : NEWLINE INDENT stmt_group NEWLINE DEDENT %prec SUITE_PREC
   | NEWLINE INDENT stmt_group NEWLINE
   ;
 
@@ -250,7 +253,8 @@ module
   ;
 
 lambda_expr
-  : parameter_list LAMBDA_OP 
+  : parameter_list LAMBDA_OP LBRACKET simple_stmt_list RBRACKET
+  | parameter_list LAMBDA_OP suite
   ;
 
 func_definition
@@ -290,6 +294,7 @@ assignment_list
 assignment
   : assignment_operator expr
   | assignment_operator initializer
+  | assignment_operator lambda_expr
   ;
 
 expr
