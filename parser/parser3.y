@@ -94,7 +94,6 @@ yydebug = 1;
 %left COMMA
 
 %nonassoc UMINUS 
-%nonassoc FOR_STMT_WITH_WHERE
 
 %type <integer> INTEGER
 
@@ -196,12 +195,13 @@ while_stmt
   ;
 
 for_stmt
-  : FOR target_list IN target_list suite
-  | FOR target_list IN target_list WHERE expr suite %prec FOR_STMT_WITH_WHERE
+  : FOR iterable IN expr suite
+  | FOR iterable IN expr WHERE expr suite
   ;
 
-target_list
-  : tuple_initializer
+iterable
+  : expr
+  | tuple_initializer
   ;
 
 if_stmt_simple
@@ -247,6 +247,10 @@ module_list
 
 module
   : IDENTIFIER
+  ;
+
+lambda_expr
+  : parameter_list LAMBDA_OP 
   ;
 
 func_definition
