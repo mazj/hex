@@ -1,0 +1,3 @@
+
+for (k,v) in dictionary:
+  printf("[%s]: %s\n", key, value)
