@@ -19,6 +19,12 @@ lexer2.out:
 lexer.out:
 	make LDLIBS=-ll lexer
 
+preprocessor:
+	gcc preprocessor.c -o preprocessor
+
+esb.o: esb.h esb.c
+	$(CC) $(CFLAGS) -c esb.h esb.c
+
 parser3.tab.h: parser3.y
 	bison -d -t -v parser3.y
 
@@ -41,4 +47,4 @@ stack_unittest: unittest.h
 	gcc stack.h stack_unittest.c
 
 clean:
-	rm *.gch *.out *.o *.swp .lexer.l.swp lexer lex.yy.c parser.tab.c parser.tab.h parser2.tab.c parser2.tab.h parser3.tab.h parser3.tab.c
+	rm *.gch *.out *.o *.swp .lexer.l.swp lexer lex.yy.c parser.tab.c parser.tab.h parser2.tab.c parser2.tab.h parser3.tab.h parser3.tab.c preprocessor
