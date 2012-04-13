@@ -19,8 +19,8 @@ lexer2.out:
 lexer.out:
 	make LDLIBS=-ll lexer
 
-preprocessor:
-	gcc preprocessor.c -o preprocessor
+preprocessor: esb.o utils.h preprocessor.c
+	$(CC) $(CFLAGS) esb.o preprocessor.c -o preprocessor
 
 esb.o: esb.h esb.c
 	$(CC) $(CFLAGS) -c esb.h esb.c

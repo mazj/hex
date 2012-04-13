@@ -11,10 +11,10 @@
 // Singly linked list node.
 //===========================================================================
 #ifndef _NODE_H_
-typedef struct {
+typedef struct hex_node_s {
 	void* value;
-	struct Node* next;
-} Node;
+	struct hex_node_s* next;
+} node_s;
 #endif // _NODE_H_
 
 
