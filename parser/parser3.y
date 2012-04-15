@@ -243,11 +243,11 @@ relative_import_stmt
 direct_import_stmt
   : IMPORT module_list
   | IMPORT module_list AS IDENTIFIER
-  ; 
+  ;
 
 module_list
   : module
-  | module_list DOT module;
+  | module_list DOT module
   ;
 
 module
@@ -365,6 +365,8 @@ expr
   | LPAREN IDENTIFIER RPAREN expr
   | LPAREN type_specifier RPAREN expr
   | LPAREN expr RPAREN
+  | THIS
+  | BASE
   ;
 
 expr_list_
