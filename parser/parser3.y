@@ -255,7 +255,7 @@ module
   ;
 
 decorator
-  : LPAREN decorator_list RPAREN
+  : LBRACKET decorator_list RBRACKET
   ;
 
 decorator_list
@@ -270,7 +270,7 @@ compiler_property
   ;
 
 attribute
-  : AT expr tuple_initializer
+  : AT expr
   ;
 
 lambda_expr
