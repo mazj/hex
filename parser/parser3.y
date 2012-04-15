@@ -61,6 +61,7 @@ yydebug = 1;
 %token <string>     RBRACE
 %token <string>     ELLIPSIS
 %token <string>     POND
+%token <string>     AT
 
 %token NEWLINE
 %token INDENT
@@ -143,6 +144,7 @@ simple_stmt
   | import_stmt
   | func_declaration
   | if_stmt_simple
+  | decorator
   ;
 
 control_simple_stmt
@@ -250,6 +252,25 @@ module_list
 
 module
   : IDENTIFIER
+  ;
+
+decorator
+  : LPAREN decorator_list RPAREN
+  ;
+
+decorator_list
+  : compiler_property
+  | attribute
+  | decorator_list COMMA compiler_property
+  | decorator_list COMMA attribute
+  ;
+
+compiler_property
+  : POND IDENTIFIER ASSIGN_OP IDENTIFIER
+  ;
+
+attribute
+  : AT expr tuple_initializer
   ;
 
 lambda_expr

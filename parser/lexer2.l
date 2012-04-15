@@ -193,6 +193,9 @@ L?\"(\\.|[^\\"])*\"         printf("STRING [%s]\n", yytext);
 #pond
 "#"              			printf("POND\n");
 
+#at
+"@"                         printf("AT\n");
+
 #multi-line_comment
 <INITIAL>{
 "/*"                            BEGIN(IN_COMMENT);

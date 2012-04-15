@@ -233,6 +233,8 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 #pond
 "#"              			RETURN("POND", yytext, POND);
 
+#at
+"@"                         RETURN("AT", yytext, AT);
 
 #multi-line_comment
 <INITIAL>{
