@@ -39,6 +39,19 @@ typedef struct HexSuite Suite;
 // global typedefs
 //===========================================================================
 
+/*
+ * Integer
+ */
+typedef struct HexInteger {
+    enum {
+        integer_type_decimal,       /* decimal integer */
+        integer_type_binary,        /* binary integer */
+        integer_type_octal,         /* octal decimal integer */
+        integer_type_hexadecimal    /* hexa decimal integer */
+    } integer_type;
+    int signed;                     /* integer signness */
+    int integer;                    /* underlying integer number */
+} Integer;
 
 /*
  * Literal
@@ -131,18 +144,6 @@ Expr* createPostfixExpr(int type, void* value1, void* value2);
 
 
 /*
- * Unary operator
- */
-// typedef enum HexUnaryOp {
-//     unary_op_minus,
-//     unary_op_inc,
-//     unary_op_dec,
-//     unary_op_not,
-//     unary_op_bitwise_not,
-// } UnaryOp;
-
-
-/*
  * Unary expression
  */
 typedef struct HexUnaryExpr {
@@ -182,10 +183,8 @@ typedef enum HexTypeSpecifier {
     type_specifier_uchar,           /* type uchar */
     type_specifier_ushort,          /* type ushort */
     type_specifier_uint,            /* type uint */
-    type_specifier_ulong,           /* type ulong */
-    type_specifier_identifier       /* custom type */
+    type_specifier_ulong            /* type ulong */
 } TypeSpecifier;
-
 
 
 /*
@@ -256,11 +255,11 @@ Expr* createAdditiveExpr(int type, Expr *left_expr, Expr *right_expr);
  * Arithmetic expression
  *
  * Types:
- *  multiplicative: multiplication and division '*' or '/'
- *  additive: addition and subtraction          '+' or '-'
+ *  multiplicative: multiplication, division and modulus:   '*' and '/' and '%'
+ *  additive: addition and subtraction:                     '+' and '-'
  *
  * Syntax:
- *  target_expr = left_expr [ * | - | * | / ] right_expr
+ *  target_expr = left_expr [ * | / | % | + | - ] right_expr
  */
 typedef struct HexArithmeticExpr {
     enum {
