@@ -4,6 +4,23 @@
 
 
 //===========================================================================
+// createInteger() - construct an AST node of type Integer.
+//===========================================================================
+Integer* createInteger(int type, int is_signed, void* value) {
+	Integer *integer = MALLOC(Integer);
+
+	integer.integer_type = type;
+	integer.is_signed = is_signed;
+	if(is_signed)
+		integer.signed_integer = DEREF_VOID(int, value);
+	else
+		integer.unsigned_integer = DEREF_VOID(unsigned int, value);
+
+	return integer;
+}
+
+
+//===========================================================================
 // createLiteral() - construct an AST node of type Literal.
 //===========================================================================
 Literal* createLiteral(int type, void* value) {
@@ -20,7 +37,7 @@ Literal* createLiteral(int type, void* value) {
 			break;
 		case literal_type_integer:
 			literal->literal_type = literal_type_integer;
-			literal->literal_integer = DEREF_VOID(int, value);
+			literal->literal_integer = (Integer*)value;
 			break;
 		case literal_type_float:
 			literal->literal_type = literal_type_float;
@@ -61,40 +78,86 @@ Expr* createPrimaryExpr(int type, void* value) {
 
 
 //===========================================================================
+// createPostfixIndexExpr() - construct an AST node of type PostfixIndexExpr.
+//===========================================================================
+PostfixIndexExpr* createPostfixIndexExpr(Expr *expr, Expr* index_expr) {
+	PostfixIndexExpr *postfix_index_expr = MALLOC(PostfixIndexExpr);
+
+	postfix_index_expr.expr = expr;
+	postfix_index_expr.index_expr = index_expr;
+
+	return postfix_index_expr;
+}
+
+
+//===========================================================================
+// createPostfixAccessorExpr() - construct an AST node of type PostfixAccessorExpr.
+//===========================================================================
+PostfixAccessorExpr* createPostfixAccessorExpr(Expr *caller, Expr* accessor) {
+	PostfixAccessorExpr *postfix_accessor_expr = MALLOC(PostfixAccessorExpr);
+
+	postfix_accessor_expr.caller = caller;
+	postfix_accessor_expr.accessor = accessor;
+
+	return postfix_accessor_expr;
+}
+
+
+//===========================================================================
+// createPostfixInvocationWithArgsExpr() - construct an AST node of type PostfixInvocationWithArgsExpr.
+//===========================================================================
+PostfixInvocationWithArgsExpr* createPostfixInvocationWithArgsExpr(Expr *expr, ExprList* arg_list) {
+	PostfixInvocationWithArgsExpr *postfix_invocation_with_args_expr = MALLOC(PostfixInvocationWithArgsExpr);
+
+	postfix_invocation_with_args_expr.expr = expr;
+	postfix_invocation_with_args_expr.arg_list = arg_list;
+
+	return postfix_invocation_with_args_expr;
+}
+
+
+//===========================================================================
+// createPostfixInvocationExpr() - construct an AST node of type PostfixInvocationExpr.
+//===========================================================================
+PostfixInvocationExpr* createPostfixInvocationExpr(char *invocation_name) {
+	PostfixInvocationExpr postfix_invocation_expr = MALLOC(PostfixInvocationExpr);
+
+	postfix_invocation_expr.invocation_name = invocation_name;
+
+	return postfix_invocation_expr;
+}
+
+
+
+//===========================================================================
 // createPostfixExpr() - construct an AST node of type PostfixExpr.
 //===========================================================================
-Expr* createPostfixExpr(int type, void* value1, void* value2) {
+Expr* createPostfixExpr(int type, void* value) {
 	PostfixExpr *postfix_expr = MALLOC(PostfixExpr);
 
 	switch(type) {
 		case postfix_expr_type_index:
 			postfix_expr->postfix_expr_type = postfix_expr_type_index;
-			postfix_expr->postfix_expr_index_expr = MALLOC(PostfixIndexExpr);
-			postfix_expr->postfix_expr_index_expr->expr = (Expr*)value1;
-			postfix_expr->postfix_expr_index_expr->index_expr = DEREF_VOID(int, value2);
+			postfix_expr->postfix_expr_index_expr = (PostfixIndexExpr*)value;
 			break;
 		case postfix_expr_type_postfix_inc:
 			postfix_expr->postfix_expr_type = postfix_expr_type_postfix_inc;
-			postfix_expr->postfix_expr_postfix_inc_expr = (Expr*)value1;
+			postfix_expr->postfix_expr_postfix_inc_expr = (Expr*)value;
 			break;
 		case postfix_expr_type_postfix_dec:
 			postfix_expr->postfix_expr_type = postfix_expr_type_postfix_dec;
-			postfix_expr->postfix_expr_postfix_dec_expr = (Expr*)value2;
+			postfix_expr->postfix_expr_postfix_dec_expr = (Expr*)value;
 			break;
 		case postfix_expr_type_accessor:
 			postfix_expr->postfix_expr_type = postfix_expr_type_accessor;
-			postfix_expr->postfix_expr_accessor_expr = MALLOC(PostfixAccessorExpr);
-			postfix_expr->postfix_expr_accessor_expr->caller = (char*)value1;
-			postfix_expr->postfix_expr_accessor_expr->accessor = (char*)value2;
+			postfix_expr->postfix_expr_accessor_expr = (PostfixAccessorExpr*)value;
 			break;
 		case postfix_expr_type_invocation:
 			postfix_expr->postfix_expr_type = postfix_expr_type_invocation;
-			postfix_expr->postfix_expr_invocation_expr = (char*)value1;
+			postfix_expr->postfix_expr_invocation_expr = (PostfixInvocationExpr*)value;
 		case postfix_expr_type_invocation_with_args:
 			postfix_expr->postfix_expr_type = postfix_expr_type_invocation_with_args;
-			postfix_expr->postfix_expr_invocation_with_args_expr = MALLOC(PostfixInvocationWithArgsExpr);
-			postfix_expr->postfix_expr_invocation_with_args_expr->expr = (Expr*)value1;
-			postfix_expr->postfix_expr_invocation_with_args_expr->arg_list = (ExprList*)value2;
+			postfix_expr->postfix_expr_invocation_with_args_expr = (PostfixInvocationWithArgsExpr*)value;
 		default:
 			AST_ERROR();
 			break;
@@ -278,6 +341,12 @@ Expr* createEqualityExpr(int type, Expr *left_expr, Expr *right_expr) {
 		case equality_expr_type_ge:
 			equality_expr->equality_expr_type = equality_expr_type_ge;
 			break;
+		case equality_expr_type_is:
+			equality_expr->equality_expr_type = equality_expr_type_is;
+			break;
+		case equality_expr_type_is_not:
+			equality_expr->equality_expr_type = equality_expr_type_is_not;
+			break;
 		default:
 			AST_ERROR();
 			break;
@@ -372,6 +441,50 @@ Expr* createConditionalExpr(Expr *predicate_expr, Expr *consequent_expr, Expr *a
 
 
 //===========================================================================
+// createRangeExpr() - construct an AST node of type RangeExpr.
+//===========================================================================
+Expr* createRangeExpr(Expr *left_expr, Expr *right_expr) {
+	RangeExpr *range_expr = MALLOC(RangeExpr);
+
+	range_expr->left_expr = left_expr;
+	range_expr->right_expr = right_expr;
+
+	Expr *expr = createExpr(expr_type_range, range_expr);
+
+	return expr;
+}
+
+
+//===========================================================================
+// createLockExpr() - construct an AST node of type LockExpr.
+//===========================================================================
+Expr* createLockExpr(int is_lock, Expr *expr) {
+	LockExpr *lock_expr = MALLOC(LockExpr);
+
+	lock_expr->is_lock = is_lock;
+	lock_expr->expr = expr;
+
+	Expr *expr = createExpr(expr_type_lock, lock_expr);
+
+	return expr;
+}
+
+
+//===========================================================================
+// createWeakref() - construct an AST node of type WeakrefExpr.
+//===========================================================================
+Expr* createWeakref(Expr *expr) {
+	WeakrefExpr *weakref_expr = MALLOC(WeakrefExpr);
+
+	weakref_expr->expr = expr;
+
+	Expr *_expr = createExpr(expr_type_weakref, weakref_expr);
+
+	return _expr;
+}
+
+
+//===========================================================================
 // createAssignmentExpr() - construct an AST node of type AssignmentExpr.
 //===========================================================================
 // Expr* createAssignmentExpr(int type, void* value1, void* value2) {
@@ -458,64 +571,51 @@ Expr* createExpr(int type, void* value) {
 	switch(type) {
 		case expr_type_primary:
 			expr->expr_type = expr_type_primary;
-			PrimaryExpr* primary_expr = (PrimaryExpr*)value;
-			expr->primary_expr = primary_expr;
+			expr->primary_expr = (PrimaryExpr*)value;
 			break;
 		case expr_type_postfix:
 			expr->expr_type = expr_type_postfix;
-			PostfixExpr* postfix_expr = (PostfixExpr*)value;
-			expr->postfix_expr = postfix_expr;
+			expr->postfix_expr = (PostfixExpr*)value;
 			break;
 		case expr_type_unary:
 			expr->expr_type = expr_type_unary;
-			UnaryExpr* unary_expr = (UnaryExpr*)value;
-			expr->unary_expr = unary_expr;
+			expr->unary_expr = (UnaryExpr*)value;
 			break;
 		case expr_type_cast:
 			expr->expr_type = expr_type_cast;
-			CastExpr* cast_expr = (CastExpr*)value;
-			expr->cast_expr = cast_expr;
+			expr->cast_expr = (CastExpr*)value;
 			break;
 		case expr_type_arithmetic:
 			expr->expr_type = expr_type_arithmetic;
-			ArithmeticExpr* arithmetic_expr = (ArithmeticExpr*)value;
-			expr->arithmetic_expr = arithmetic_expr;
+			expr->arithmetic_expr = (ArithmeticExpr*)value;
 			break;
 		case expr_type_equality:
 			expr->expr_type = expr_type_equality;
-			EqualityExpr* equality_expr = (EqualityExpr*)value;
-			expr->equality_expr = equality_expr;
+			expr->equality_expr = (EqualityExpr*)value;
 			break;
 		case expr_type_logic:
 			expr->expr_type = expr_type_logic;
-			LogicExpr* logic_expr = (LogicExpr*)value;
-			expr->logic_expr = logic_expr;
+			expr->logic_expr = (LogicExpr*)value;
 			break;
 		case expr_type_bitwise:
 			expr->expr_type = expr_type_bitwise;
-			BitwiseExpr* bitwise_expr = (BitwiseExpr*)value;
-			expr->bitwise_expr = bitwise_expr;
+			expr->bitwise_expr = (BitwiseExpr*)value;
 			break;
 		case expr_type_conditional:
 			expr->expr_type = expr_type_conditional;
-			ConditionalExpr* conditional_expr = (ConditionalExpr*)value;
-			expr->conditional_expr = conditional_expr;
+			expr->conditional_expr = (ConditionalExpr*)value;
 			break;
-		// case expr_type_assignment:
-		// 	expr->expr_type = expr_type_assignment;
-		// 	AssignmentExpr* assignment_expr = (AssignmentExpr*)value;
-		// 	expr->assignment_expr = assignment_expr;
-		// 	break;
-		// case expr_type_const:
-		// 	expr->expr_type = expr_type_const;
-		// 	ConstExpr* const_expr = (ConstExpr*)value;
-		// 	expr->const_expr = const_expr;
-		// 	break;
-		case expr_type_lambda:
-			expr->expr_type = expr_type_lambda;
-			LambdaExpr* lambda_expr = (LambdaExpr*)value;
-			expr->lambda_expr = lambda_expr;
+		case expr_type_range:
+			expr->expr_type = expr_type_range;
+			expr->range_expr = (RangeExpr*)value;
 			break;
+		case expr_type_lock:
+			expr->expr_type = expr_type_lock;
+			expr->lock_expr = (LockExpr*)value;
+			break;
+		case expr_type_weakref:
+			expr->expr_type = expr_type_weakref;
+			expr->weakref_type = (WeakrefExpr*)value;
 		default:
 			AST_ERROR();
 			break;
