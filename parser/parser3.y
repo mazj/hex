@@ -259,10 +259,13 @@ decorator
   ;
 
 decorator_list
+  : decorator_list_single
+  | decorator_list COMMA decorator_list_single
+  ;
+
+decorator_list_single
   : compiler_property
   | attribute
-  | decorator_list COMMA compiler_property
-  | decorator_list COMMA attribute
   ;
 
 compiler_property
