@@ -3,6 +3,7 @@
 #ifndef _AST_H_
 #define _AST_H_
 
+#include <stdlib.h>
 #include <string.h>
 #include "utils.h"
 
@@ -95,7 +96,7 @@ typedef struct HexLiteral {
     union {
         char literal_char;          /* character literal */
         char* literal_string;       /* string literal */
-        int literal_integer;        /* integer literal */
+        Integer* literal_integer;        /* integer literal */
         double literal_float;       /* floating number literal */
     };
 } Literal;
@@ -361,7 +362,7 @@ typedef struct HexArithmeticExpr {
 //===========================================================================
 // createArithmeticExpr() - construct an AST node of type ArithmeticExpr.
 //===========================================================================
-Expr* createArithmeticExpr(int type, void *expr);
+ArithmeticExpr* createArithmeticExpr(int type, void *expr);
 
 
 /*
@@ -662,18 +663,25 @@ Declaration* createDeclaration(TypeQualifierList *type_qualifier_list,
 typedef struct HexParameter {
     TypeQualifierList *type_qualifier_list;
     TypeSpecifier *type_specifier;
-    char *parameter_name;
     char *custom_type;
+    char *parameter_name;
     char *alias;
     int is_ref;
 } Parameter;
+
+
+//===========================================================================
+// createParameter() - construct an AST node of type Parameter.
+//===========================================================================
+Parameter* createParameter(TypeQualifierList *type_qualifier_list, TypeSpecifier *type_specifier,
+    char *custom_type, char *parameter_name, char *alias, int is_ref);
 
 
 /*
  * Parameter list
  */
 typedef struct HexParameterList {
-    Declaration *param_declaration;
+    Parameter *parameter;
     struct HexParameterList *next;
 } ParameterList;
 
@@ -849,16 +857,23 @@ Initializer* createInitializer(int type, void* value);
  * Assignment
  */
 typedef struct HexAssignment {
-    Expr *assignment_expr;                      /* target assignment expression */
-    Initializer *assignment_initializer;        /* target assignment initializer */
-    LambdaExpr *assignment_lambda;              /* target assignment lambda */
+    enum {
+        assignment_type_expr,
+        assignment_type_initializer,
+        assignment_type_lambda
+    } assignment_type;
+    union {
+        Expr *assignment_expr;                      /* target assignment expression */
+        Initializer *assignment_initializer;        /* target assignment initializer */
+        LambdaExpr *assignment_lambda;              /* target assignment lambda */
+    };
 } Assignment;
 
 
 //===========================================================================
 // createAssignment() - construct an AST node of type Assignment.
 //===========================================================================
-Assignment* createAssignment(void* assignment_target);
+Assignment* createAssignment(int type, void* target);
 
 
 /*
@@ -955,15 +970,22 @@ FuncDef* createFuncDef(FuncDec *func_declaration, Suite *func_suite);
  *  target_expr = (arg_init_list) => expr
  */
 struct HexLambdaExpr {
-    SimpleStmtList* lambda_simple_stmt_list;
-    Suite* lambda_suite;
+    ParameterList* lambda_param_list;
+    enum {
+        lambda_type_simple,     /* simple stmt list */
+        lambda_type_suite       /* suite */
+    } lambda_type;
+    union {
+        SimpleStmtList* lambda_simple_stmt_list;
+        Suite* lambda_suite;
+    };
 };
 
 
 //===========================================================================
 // createLambdaExpr() - construct an AST node of type LambdaExpr.
 //===========================================================================
-LambdaExpr* createLambdaExpr(SimpleStmtList *simple_stmt_list, Suite* lambda_suite);
+LambdaExpr* createLambdaExpr(int type, ParameterList* param_list, void* body);
 
 
 /*
@@ -1157,20 +1179,6 @@ ElifGroup* createElifGroup(ElifStmt* elif_stmt, ElifGroup *parent_list);
 
 
 /*
- * Else statement
- */
-// typedef struct HexElseStmt {
-//     Suite *else_suite;
-// } ElseStmt;
-
-
-//===========================================================================
-// createElseStmt() - construct an AST node of type ElseStmt.
-//===========================================================================
-// ElseStmt* createElseStmt(Suite *else_suite);
-
-
-/*
  * If statement
  */
 typedef struct HexIfStmt {
@@ -1202,7 +1210,7 @@ typedef struct HexIfStmtSimple {
 //===========================================================================
 // createIfStmtSimple() - construct an AST node of type IfStmtSimple.
 //===========================================================================
-IfStmtSimple* createIfStmtSimple(ExprList *if_stmt_simple_expr_list);
+IfStmtSimple* createIfStmtSimple(int type, Expr *expr);
 
 
 /*
@@ -1226,11 +1234,11 @@ WhileStmt* createWhileStmt(Expr *while_expr, Suite *while_suite);
 typedef struct HexIterable {
     enum {
         iterable_type_expr,
-        iterable_type_tuple
+        iterable_type_initializer
     } iterable_type;
     union {
         Expr *iterable_expr;
-        TupleInitializer *iterable_tuple;
+        Initializer *iterable_initializer;
     };
 } Iterable;
 
@@ -1245,7 +1253,7 @@ Iterable* createIterable(int type, void* value);
  * For statement
  */
 typedef struct HexForStmt {
-    Iterable *iterble;
+    Iterable *iterable;
     Expr *expr;
     Expr *where_expr;
     Suite *suite;
@@ -1263,12 +1271,13 @@ ForStmt* createForStmt(Iterable *iterable, Expr *expr, Expr *where_expr, Suite *
  */
 typedef struct HexCatchStmt {
     enum {
-        catch_stmt_type_single_declaration,
-        cast_expr_type_multi_declaration
+        catch_stmt_type_none,
+        catch_stmt_type_identifier,
+        cast_expr_type_declaration
     } catch_stmt_type;
     union {
-        Declaration *catch_declaration;
         char *catch_identifier;
+        Declaration *catch_declaration;
     };
     Suite *catch_suite;
 } CatchStmt;
@@ -1277,7 +1286,7 @@ typedef struct HexCatchStmt {
 //===========================================================================
 // createCatchStmt() - construct an AST node of type CatchStmt.
 //===========================================================================
-CatchStmt* createCatchStmt(int type, void* declaration, Suite *suite);
+CatchStmt* createCatchStmt(int type, void* value, Suite *suite);
 
 
 /*
@@ -1335,15 +1344,15 @@ struct HexCompoundStmt {
         compound_stmt_type_if_stmt,             /* if statement */
         compound_stmt_type_while_stmt,          /* while statement */
         compound_stmt_type_try_stmt,            /* try statement */
-        compound_stmt_for_stmt,                 /* for statement */
+        compound_stmt_type_for_stmt,            /* for statement */
         compound_stmt_type_func_def             /* function definition */
     } compound_stmt_type;
     union {
-        IfStmt *compound_stmt_if_stmt;              /* if statement */
-        WhileStmt *compound_stmt_while_stmt;        /* while statement */
-        ForStmt *compound_stmt_for_stmt;            /* for statement */
-        TryStmt *compound_stmt_try_stmt;            /* try statement */
-        FuncDef *compound_stmt_func_def;     /* function definition */
+        IfStmt *compound_stmt_if_stmt;          /* if statement */
+        WhileStmt *compound_stmt_while_stmt;    /* while statement */
+        ForStmt *compound_stmt_for_stmt;        /* for statement */
+        TryStmt *compound_stmt_try_stmt;        /* try statement */
+        FuncDef *compound_stmt_func_def;        /* function definition */
     };
 };
 
@@ -1358,26 +1367,42 @@ CompoundStmt* createCompoundStmt(int type, void* value);
  * Return statement
  */
 typedef struct HexReturnStmt {
+    enum {
+        return_stmt_type_none,
+        return_stmt_type_expr_list
+    } return_stmt_type;
     ExprList *return_expr_list;
 } ReturnStmt;
 
 
-/*
- * Simple statement
- */
-typedef struct HexSimpleStmt SimpleStmt;
+//===========================================================================
+// createReturnStmt() - construct an AST node of type ReturnStmt.
+//===========================================================================
+ReturnStmt* createReturnStmt(int type, ExprList *expr_list);
 
 
 /*
  * Continue statement
  */
-typedef struct HexContinueStmt ContinueStmt;
+// typedef struct HexContinueStmt ContinueStmt;
+
+
+//===========================================================================
+// createContinueStmt() - construct an AST node of type ContinueStmt.
+//===========================================================================
+// ContinueStmt* createContinueStmt();
 
 
 /*
  * Break statement
  */
-typedef struct HexBreakStmt BreakStmt;
+// typedef struct HexBreakStmt BreakStmt;
+
+
+//===========================================================================
+// createBreakStmt() - construct an AST node of type BreakStmt.
+//===========================================================================
+// BreakStmt* createBreakStmt();
 
 
 /*
@@ -1391,8 +1416,8 @@ typedef struct HexControlSimpleStmt {
     } control_simple_stmt_type;
     union {
         ReturnStmt *control_simple_stmt_return_stmt;
-        ContinueStmt *control_simple_stmt_continue_stmt;
-        BreakStmt *control_simple_stmt_break_stmt;
+        // ContinueStmt *control_simple_stmt_continue_stmt;
+        // BreakStmt *control_simple_stmt_break_stmt;
     };
 } ControlSimpleStmt;
 
@@ -1403,7 +1428,10 @@ typedef struct HexControlSimpleStmt {
 ControlSimpleStmt* createControlSimpleStmt(int type, void* value);
 
 
-struct HexSimpleStmt {
+/*
+ * Simple statement
+ */
+typedef struct HexSimpleStmt {
     enum {
         simple_stmt_type_expr_list,             /* expression list */
         simple_stmt_type_declaration,           /* declaration */
@@ -1422,7 +1450,7 @@ struct HexSimpleStmt {
         FuncDec *simple_stmt_func_declaration;          /* function declaration */
         Decorator *simple_stmt_decorator;               /* decorator */   
     };
-};
+} SimpleStmt;
 
 
 //===========================================================================

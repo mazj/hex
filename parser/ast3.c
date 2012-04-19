@@ -9,12 +9,13 @@
 Integer* createInteger(int type, int is_signed, void* value) {
 	Integer *integer = MALLOC(Integer);
 
-	integer.integer_type = type;
-	integer.is_signed = is_signed;
-	if(is_signed)
-		integer.signed_integer = DEREF_VOID(int, value);
-	else
-		integer.unsigned_integer = DEREF_VOID(unsigned int, value);
+	integer->integer_type = type;
+	integer->is_signed = is_signed;
+
+	// if(is_signed)
+	// 	integer->signed_integer = DEREF_VOID(int, value);
+	// else
+	// 	integer->unsigned_integer = DEREF_VOID(unsigned int, value);
 
 	return integer;
 }
@@ -83,8 +84,8 @@ Expr* createPrimaryExpr(int type, void* value) {
 PostfixIndexExpr* createPostfixIndexExpr(Expr *expr, Expr* index_expr) {
 	PostfixIndexExpr *postfix_index_expr = MALLOC(PostfixIndexExpr);
 
-	postfix_index_expr.expr = expr;
-	postfix_index_expr.index_expr = index_expr;
+	postfix_index_expr->expr = expr;
+	postfix_index_expr->index_expr = index_expr;
 
 	return postfix_index_expr;
 }
@@ -96,8 +97,8 @@ PostfixIndexExpr* createPostfixIndexExpr(Expr *expr, Expr* index_expr) {
 PostfixAccessorExpr* createPostfixAccessorExpr(Expr *caller, Expr* accessor) {
 	PostfixAccessorExpr *postfix_accessor_expr = MALLOC(PostfixAccessorExpr);
 
-	postfix_accessor_expr.caller = caller;
-	postfix_accessor_expr.accessor = accessor;
+	postfix_accessor_expr->caller = caller;
+	postfix_accessor_expr->accessor = accessor;
 
 	return postfix_accessor_expr;
 }
@@ -109,8 +110,8 @@ PostfixAccessorExpr* createPostfixAccessorExpr(Expr *caller, Expr* accessor) {
 PostfixInvocationWithArgsExpr* createPostfixInvocationWithArgsExpr(Expr *expr, ExprList* arg_list) {
 	PostfixInvocationWithArgsExpr *postfix_invocation_with_args_expr = MALLOC(PostfixInvocationWithArgsExpr);
 
-	postfix_invocation_with_args_expr.expr = expr;
-	postfix_invocation_with_args_expr.arg_list = arg_list;
+	postfix_invocation_with_args_expr->expr = expr;
+	postfix_invocation_with_args_expr->arg_list = arg_list;
 
 	return postfix_invocation_with_args_expr;
 }
@@ -120,9 +121,9 @@ PostfixInvocationWithArgsExpr* createPostfixInvocationWithArgsExpr(Expr *expr, E
 // createPostfixInvocationExpr() - construct an AST node of type PostfixInvocationExpr.
 //===========================================================================
 PostfixInvocationExpr* createPostfixInvocationExpr(char *invocation_name) {
-	PostfixInvocationExpr postfix_invocation_expr = MALLOC(PostfixInvocationExpr);
+	PostfixInvocationExpr *postfix_invocation_expr = MALLOC(PostfixInvocationExpr);
 
-	postfix_invocation_expr.invocation_name = invocation_name;
+	postfix_invocation_expr->invocation_name = invocation_name;
 
 	return postfix_invocation_expr;
 }
@@ -293,7 +294,7 @@ Expr* createAdditiveExpr(int type, Expr *left_expr, Expr *right_expr) {
 //===========================================================================
 // createArithmeticExpr() - construct an AST node of type ArithmeticExpr.
 //===========================================================================
-Expr* createArithmeticExpr(int type, void *expr) {
+ArithmeticExpr* createArithmeticExpr(int type, void *expr) {
 	ArithmeticExpr *arithmetic_expr = MALLOC(ArithmeticExpr);
 
 	switch(type) {
@@ -310,9 +311,7 @@ Expr* createArithmeticExpr(int type, void *expr) {
 			break;
 	}
 
-	Expr* _expr = createExpr(expr_type_arithmetic, arithmetic_expr);
-
-	return _expr;
+	return arithmetic_expr;
 }
 
 
@@ -464,9 +463,9 @@ Expr* createLockExpr(int is_lock, Expr *expr) {
 	lock_expr->is_lock = is_lock;
 	lock_expr->expr = expr;
 
-	Expr *expr = createExpr(expr_type_lock, lock_expr);
+	Expr *_expr = createExpr(expr_type_lock, lock_expr);
 
-	return expr;
+	return _expr;
 }
 
 
@@ -548,21 +547,6 @@ Expr* createWeakref(Expr *expr) {
 
 
 //===========================================================================
-// createLambdaExpr() - construct an AST node of type LambdaExpr.
-//===========================================================================
-Expr* createLambdaExpr(ParameterList *param_list, Suite* lambda_suite) {
-	LambdaExpr* lambda_expr = MALLOC(LambdaExpr);
-
-	lambda_expr->lambda_param_list = param_list;
-	lambda_expr->lambda_suite = lambda_suite;
-
-	Expr *expr = createExpr(expr_type_lambda, lambda_expr);
-
-	return expr;
-}
-
-
-//===========================================================================
 // createExpr() - construct an AST node of type Expr.
 //===========================================================================
 Expr* createExpr(int type, void* value) {
@@ -615,7 +599,8 @@ Expr* createExpr(int type, void* value) {
 			break;
 		case expr_type_weakref:
 			expr->expr_type = expr_type_weakref;
-			expr->weakref_type = (WeakrefExpr*)value;
+			expr->weakref_expr = (WeakrefExpr*)value;
+			break;
 		default:
 			AST_ERROR();
 			break;
@@ -666,11 +651,8 @@ Declaration* createDeclaration(TypeQualifierList *type_qualifier_list,
 	Declaration *declaration = MALLOC(Declaration);
 
 	declaration->type_qualifier_list = type_qualifier_list;
-	if(type_specifier)
-		declaration->type_specifier = type_specifier;
-	else
-		declaration->custom_type = custom_type;
-
+	declaration->type_specifier = type_specifier;
+	declaration->custom_type = custom_type;
 	declaration->expr_list = expr_list;
 	declaration->alias = alias;
 
@@ -679,11 +661,28 @@ Declaration* createDeclaration(TypeQualifierList *type_qualifier_list,
 
 
 //===========================================================================
+// createParameter() - construct an AST node of type Parameter.
+//===========================================================================
+Parameter* createParameter(TypeQualifierList *type_qualifier_list, TypeSpecifier *type_specifier,
+    char *custom_type, char *parameter_name, char *alias, int is_ref) {
+	Parameter *parameter = MALLOC(Parameter);
+
+	parameter->type_qualifier_list = type_qualifier_list;
+	parameter->type_specifier = type_specifier;
+	parameter->custom_type = custom_type;
+	parameter->parameter_name = parameter_name;
+	parameter->is_ref = is_ref;
+
+	return parameter;
+}
+
+
+//===========================================================================
 // createParameterList() - construct an AST node of type ParameterList.
 //===========================================================================
-ParameterList *createParameterList(Declaration *declaration, ParameterList* parent_list) {
+ParameterList *createParameterList(Parameter *parameter, ParameterList* parent_list) {
 	ParameterList *param_list = MALLOC(ParameterList);
-	param_list->param_declaration = declaration;
+	param_list->parameter = parameter;
 	param_list->next = 0;
 
 	if(parent_list) {
@@ -830,9 +829,27 @@ Initializer* createInitializer(int type, void* value) {
 //===========================================================================
 // createAssignment() - construct an AST node of type Assignment.
 //===========================================================================
-Assignment* createAssignment(Expr *expr) {
+Assignment* createAssignment(int type, void* target) {
 	Assignment *assignment = MALLOC(Assignment);
-	assignment->expr = expr;
+
+	switch(type) {
+		case assignment_type_expr:
+			assignment->assignment_type = assignment_type_expr;
+			assignment->assignment_expr = (Expr*)target;
+			break;
+		case assignment_type_initializer:
+			assignment->assignment_type = assignment_type_initializer;
+			assignment->assignment_initializer = (Initializer*)target;
+			break;
+		case assignment_type_lambda:
+			assignment->assignment_type = assignment_type_lambda;
+			assignment->assignment_lambda = (LambdaExpr*)target;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+
 	return assignment;
 }
 
@@ -905,10 +922,8 @@ FuncDec* createFuncDec(TypeQualifierList *type_qualifier_list,
 {
 	FuncDec *func_declaration = MALLOC(FuncDec);
 	func_declaration->return_type_qualifier_list = type_qualifier_list;
-	if(type_specifier)
-		func_declaration->return_type_specifier = type_specifier;
-	else if(custom_return_type)
-		func_declaration->custom_return_type = custom_return_type;
+	func_declaration->return_type_specifier = type_specifier;
+	func_declaration->custom_return_type = custom_return_type;
 	func_declaration->func_name = func_name;
 	func_declaration->parameter_list = parameter_list;
 
@@ -921,10 +936,111 @@ FuncDec* createFuncDec(TypeQualifierList *type_qualifier_list,
 //===========================================================================
 FuncDef* createFuncDef(FuncDec *func_declaration, Suite *func_suite) {
 	FuncDef *func_def = MALLOC(FuncDef);
+
 	func_def->func_declaration = func_declaration;
 	func_def->func_suite = func_suite;
 
 	return func_def;
+}
+
+
+//===========================================================================
+// createLambdaExpr() - construct an AST node of type LambdaExpr.
+//===========================================================================
+LambdaExpr* createLambdaExpr(int type, ParameterList* param_list, void* body) {
+	LambdaExpr* lambda_expr = MALLOC(LambdaExpr);
+
+	switch(lambda_expr->lambda_type) {
+		case lambda_type_simple:
+			lambda_expr->lambda_type = lambda_type_simple;
+			lambda_expr->lambda_simple_stmt_list = (SimpleStmtList*)body;
+			break;
+		case lambda_type_suite:
+			lambda_expr->lambda_type = lambda_type_suite;
+			lambda_expr->lambda_suite = (Suite*)body;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+
+	return lambda_expr;
+}
+
+
+//===========================================================================
+// createAttribute() - construct an AST node of type Attribute.
+//===========================================================================
+Attribute* createAttribute(Expr *expr) {
+	Attribute *attribute = MALLOC(Attribute);
+
+	attribute->expr = expr;
+
+	return attribute;
+}
+
+
+//===========================================================================
+// createCompilerProperty() - construct an AST node of type CompilerProperty.
+//===========================================================================
+CompilerProperty* createCompilerProperty(char *compiler_property_name, char *compiler_property_value) {
+	CompilerProperty *compiler_property = MALLOC(CompilerProperty);
+
+	compiler_property->compiler_property_name = compiler_property_name;
+	compiler_property->compiler_property_value = compiler_property_value;
+
+	return compiler_property;
+}
+
+
+//===========================================================================
+// createDecoratorListSingle() - construct an AST node of type DecoratorListSingle.
+//===========================================================================
+DecoratorListSingle* createDecoratorListSingle(int type, void* value) {
+	DecoratorListSingle *decorator_list_single = MALLOC(DecoratorListSingle);
+
+	switch(type) {
+		case decorator_list_single_type_attribute:
+			decorator_list_single->decorator_list_single_type = decorator_list_single_type_attribute;
+			decorator_list_single->decorator_list_single_attribute = (Attribute*)value;
+			break;
+		case decorator_list_single_type_compiler_property:
+			decorator_list_single->decorator_list_single_type = decorator_list_single_type_compiler_property;
+			decorator_list_single->decorator_list_single_compiler_property = (CompilerProperty*)value;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+
+	return decorator_list_single;
+}
+
+
+//===========================================================================
+// createDecoratorList() - construct an AST node of type DecoratorList.
+//===========================================================================
+DecoratorList* createDecoratorList(DecoratorListSingle *decorator_list_single, DecoratorList* parent_list) {
+	DecoratorList *decorator_list = MALLOC(DecoratorList);
+	decorator_list->decorator_list_single = decorator_list_single;
+	decorator_list->next = 0;
+
+	if(parent_list) {
+		parent_list->next = decorator_list;
+		return parent_list;
+	} else {
+		return decorator_list;
+	}
+}
+
+
+//===========================================================================
+// createDecorator() - construct an AST node of type Decorator.
+//===========================================================================
+Decorator* createDecorator(DecoratorList* decorator_list) {
+	Decorator *decorator = MALLOC(Decorator);
+	decorator->decorator_list = decorator_list;
+	return decorator;
 }
 
 
@@ -1031,25 +1147,39 @@ ElifGroup* createElifGroup(ElifStmt* elif_stmt, ElifGroup *parent_list) {
 
 
 //===========================================================================
-// createElseStmt() - construct an AST node of type ElseStmt.
-//===========================================================================
-ElseStmt* createElseStmt(Suite *else_suite) {
-	ElseStmt *else_stmt = MALLOC(ElseStmt);
-	else_stmt->else_suite = else_suite;
-	return else_stmt;
-}
-
-
-//===========================================================================
 // createIfStmt() - construct an AST node of type IfStmt.
 //===========================================================================
-IfStmt* createIfStmt(Expr *if_expr, Suite *if_suite, ElifGroup *elif_group, ElseStmt *else_stmt) {
+IfStmt* createIfStmt(Expr *if_expr, Suite *if_suite, ElifGroup *elif_group, Suite *else_stmt) {
 	IfStmt *if_stmt = MALLOC(IfStmt);
 	if_stmt->if_expr = if_expr;
 	if_stmt->elif_group = elif_group;
 	if_stmt->else_stmt = else_stmt;
 
 	return if_stmt;
+}
+
+
+//===========================================================================
+// createIfStmtSimple() - construct an AST node of type IfStmtSimple.
+//===========================================================================
+IfStmtSimple* createIfStmtSimple(int type, Expr *expr) {
+	IfStmtSimple *if_stmt_simple = MALLOC(IfStmtSimple);
+
+	switch(type) {
+		case if_stmt_simple_type_expr:
+			if_stmt_simple->if_stmt_simple_type = if_stmt_simple_type_expr;
+			if_stmt_simple->expr = expr;
+			break;
+		case if_stmt_simple_type_return:
+			if_stmt_simple->if_stmt_simple_type = if_stmt_simple_type_return;
+			if_stmt_simple->expr = expr;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+
+	return if_stmt_simple;
 }
 
 
@@ -1067,10 +1197,40 @@ WhileStmt* createWhileStmt(Expr *while_expr, Suite *while_suite) {
 
 
 //===========================================================================
+// createIterable() - construct an AST node of type Iterable.
+//===========================================================================
+Iterable* createIterable(int type, void* value) {
+	Iterable *iterable = MALLOC(Iterable);
+
+	switch(type) {
+		case iterable_type_expr:
+			iterable->iterable_type = iterable_type_expr;
+			iterable->iterable_expr = (Expr*)value;
+			break;
+		case iterable_type_initializer:
+			iterable->iterable_type = iterable_type_initializer;
+			iterable->iterable_initializer = (Initializer*)value;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+
+	return iterable;
+}
+
+
+//===========================================================================
 // createForStmt() - construct an AST node of type ForStmt.
 //===========================================================================
-ForStmt* createForStmt() {
+ForStmt* createForStmt(Iterable *iterable, Expr *expr, Expr *where_expr, Suite *suite) {
 	ForStmt *for_stmt = MALLOC(ForStmt);
+
+	for_stmt->iterable = iterable;
+	for_stmt->expr = expr;
+	for_stmt->where_expr = expr;
+	for_stmt->suite = suite;
+
 	return for_stmt; 
 }
 
@@ -1078,14 +1238,25 @@ ForStmt* createForStmt() {
 //===========================================================================
 // createCatchStmt() - construct an AST node of type CatchStmt.
 //===========================================================================
-CatchStmt* createCatchStmt(Declaration *declaration, char *catch_type,
-    char *identifier, Suite *suite) {
+CatchStmt* createCatchStmt(int type, void* value, Suite *suite) {
 	CatchStmt *catch_stmt = MALLOC(CatchStmt);
 
-	catch_stmt->catch_declaration = declaration;
-	catch_stmt->catch_type = catch_type;
-	catch_stmt->catch_identifier = identifier;
-	catch_stmt->catch_suite = suite;
+	switch(type) {
+		case catch_stmt_type_none:
+			catch_stmt->catch_stmt_type = catch_stmt_type_none;
+			break;
+		case catch_stmt_type_identifier:
+			catch_stmt->catch_stmt_type = catch_stmt_type_identifier;
+			catch_stmt->catch_identifier = (char*)value;
+			break;
+		case cast_expr_type_declaration:
+			catch_stmt->catch_stmt_type = cast_expr_type_declaration;
+			catch_stmt->catch_declaration = (Declaration*)value;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
 
 	return catch_stmt;
 }
@@ -1114,9 +1285,7 @@ CatchStmtGroup* createCatchStmtGroup(CatchStmt* catch_stmt, CatchStmtGroup* pare
 //===========================================================================
 FinallyStmt* createFinallyStmt(Suite* suite) {
 	FinallyStmt *finally_stmt = MALLOC(FinallyStmt);
-
 	finally_stmt->finally_suite = suite;
-
 	return finally_stmt;
 }
 
@@ -1127,11 +1296,9 @@ FinallyStmt* createFinallyStmt(Suite* suite) {
 TryStmt* createTryStmt(Suite* try_suite, CatchStmtGroup *catch_stmt_group,
     FinallyStmt *finally_stmt) {
 	TryStmt *try_stmt = MALLOC(TryStmt);
-
 	try_stmt->try_suite = try_suite;
 	try_stmt->catch_stmt_group = catch_stmt_group;
 	try_stmt->finally_stmt = finally_stmt;
-
 	return try_stmt;
 }
 
@@ -1151,6 +1318,10 @@ CompoundStmt* createCompoundStmt(int type, void* value) {
 			compound_stmt->compound_stmt_type = compound_stmt_type_while_stmt;
 			compound_stmt->compound_stmt_while_stmt = (WhileStmt*)value;
 			break;
+		case compound_stmt_type_for_stmt:
+			compound_stmt->compound_stmt_type = compound_stmt_type_for_stmt;
+			compound_stmt->compound_stmt_for_stmt = (ForStmt*)value;
+			break;
 		case compound_stmt_type_try_stmt:
 			compound_stmt->compound_stmt_type = compound_stmt_type_try_stmt;
 			compound_stmt->compound_stmt_try_stmt = (TryStmt*)value;
@@ -1169,39 +1340,108 @@ CompoundStmt* createCompoundStmt(int type, void* value) {
 
 
 //===========================================================================
+// createReturnStmt() - construct an AST node of type ReturnStmt.
+//===========================================================================
+ReturnStmt* createReturnStmt(int type, ExprList *expr_list) {
+	ReturnStmt *return_stmt = MALLOC(ReturnStmt);
+
+	switch(type) {
+		case return_stmt_type_none:
+			return_stmt->return_stmt_type = return_stmt_type_none;
+			break;
+		case return_stmt_type_expr_list:
+			return_stmt->return_stmt_type = return_stmt_type_expr_list;
+			return_stmt->return_expr_list = (ExprList*)expr_list;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+
+	return return_stmt;
+}
+
+
+//===========================================================================
+// createContinueStmt() - construct an AST node of type ContinueStmt.
+//===========================================================================
+// ContinueStmt* createContinueStmt() {
+// 	ContinueStmt *continue_stmt = MALLOC(ContinueStmt);
+// 	return continue_stmt;
+// }
+
+
+//===========================================================================
+// createBreakStmt() - construct an AST node of type BreakStmt.
+//===========================================================================
+// BreakStmt* createBreakStmt() {
+// 	BreakStmt *break_stmt = MALLOC(BreakStmt);
+// 	return break_stmt;
+// }
+
+
+//===========================================================================
+// createControlSimpleStmt() - construct an AST node of type ControlSimpleStmt.
+//===========================================================================
+ControlSimpleStmt* createControlSimpleStmt(int type, void* value) {
+	ControlSimpleStmt *control_simple_stmt = MALLOC(ControlSimpleStmt);
+
+	switch(type) {
+		case control_simple_stmt_return:
+			control_simple_stmt->control_simple_stmt_type = control_simple_stmt_return;
+			control_simple_stmt->control_simple_stmt_return_stmt = (ReturnStmt*)value;
+			break;
+		case control_simple_stmt_continue:
+			control_simple_stmt->control_simple_stmt_type = control_simple_stmt_continue;
+			// control_simple_stmt->control_simple_stmt_continue_stmt = (ContinueStmt*)value;
+			break;
+		case control_simple_stmt_break:
+			control_simple_stmt->control_simple_stmt_type = control_simple_stmt_break;
+			// control_simple_stmt->control_simple_stmt_break_stmt = (BreakStmt*)value;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
+
+	return control_simple_stmt;
+}
+
+
+//===========================================================================
 // createPassStmt() - construct an AST node of type PassStmt.
 //===========================================================================
 SimpleStmt* createSimpleStmt(int type, void* value) {
 	SimpleStmt *simple_stmt = MALLOC(SimpleStmt);
 
 	switch(type) {
+		case simple_stmt_type_expr_list:
+			simple_stmt->simple_stmt_type = simple_stmt_type_expr_list;
+			simple_stmt->simple_stmt_expr_list = (ExprList*)value;
+			break;
 		case simple_stmt_type_declaration:
 			simple_stmt->simple_stmt_type = simple_stmt_type_declaration;
 			simple_stmt->simple_stmt_declaration = (Declaration*)value;
 			break;
-		case simple_stmt_type_assignment_stmt_list:
-			simple_stmt->simple_stmt_type = simple_stmt_type_assignment_stmt_list;
-			simple_stmt->simple_stmt_assignment_stmt_list = (AssignmentList*)value;
-			break;
-		case simple_stmt_type_return_stmt:
-			simple_stmt->simple_stmt_type = simple_stmt_type_return_stmt;
-			simple_stmt->simple_stmt_return_stmt = (ReturnStmt*)value;
-			break;
-		case simple_stmt_type_break_stmt:
-			simple_stmt->simple_stmt_type = simple_stmt_type_break_stmt;
-			// simple_stmt->simple_stmt_break_stmt = (BreakStmt*)value;
-			break;
-		case simple_stmt_type_continue_stmt:
-			simple_stmt->simple_stmt_type = simple_stmt_type_continue_stmt;
-			simple_stmt->simple_stmt_continue_stmt = (ContinueStmt*)value;
+		case simple_stmt_type_assignment_stmt:
+			simple_stmt->simple_stmt_type = simple_stmt_type_assignment_stmt;
+			simple_stmt->simple_stmt_assignment_stmt = (AssignmentStmt*)value;
 			break;
 		case simple_stmt_type_import_stmt:
 			simple_stmt->simple_stmt_type = simple_stmt_type_import_stmt;
 			simple_stmt->simple_stmt_import_stmt = (ImportStmt*)value;
 			break;
+		case simple_stmt_type_if_stmt_simple:
+			simple_stmt->simple_stmt_type = simple_stmt_type_if_stmt_simple;
+			simple_stmt->simple_stmt_if_stmt_simple = (IfStmtSimple*)value;
+			break;
 		case simple_stmt_type_func_declaration:
 			simple_stmt->simple_stmt_type = simple_stmt_type_func_declaration;
 			simple_stmt->simple_stmt_func_declaration = (FuncDec*)value;
+			break;
+		case simple_stmt_type_decorator:
+			simple_stmt->simple_stmt_type = simple_stmt_type_decorator;
+			simple_stmt->simple_stmt_decorator = (Decorator*)value;
 			break;
 		default:
 			AST_ERROR();
@@ -1244,6 +1484,9 @@ Stmt* createStmt(int type, void* value) {
 			stmt->stmt_type = stmt_type_compound_stmt;
 			stmt->stmt_compound_stmt = (CompoundStmt*)value;
 			break;
+		case stmt_type_control_simple_stmt:
+			stmt->stmt_type = stmt_type_control_simple_stmt;
+			stmt->stmt_control_simple_stmt = (ControlSimpleStmt*)value;
 		default:
 			AST_ERROR();
 			break;
