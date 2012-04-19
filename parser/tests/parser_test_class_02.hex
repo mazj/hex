@@ -1,0 +1,5 @@
+
+  public:
+    def __init__():
+      this.sandwich = (int a, b) => [printf("a+b=%d", a+b); int a+b]
+
