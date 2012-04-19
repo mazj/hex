@@ -34,6 +34,9 @@ parser2.tab.h: parser2.y
 parser.tab.h:
 	bison -d parser.y
 
+ast3: ast3.c ast3.h
+	$(CC) $(CFLAGS) -c ast3.h ast3.c
+
 ast: ast.h ast.c utils.h
 	$(CC) $(CFLAGS) -c ast.h ast.c utils.h
 
