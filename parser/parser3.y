@@ -68,7 +68,6 @@ yydebug = 1;
 %token DEDENT
 
 %left IDENTIFIER
-
 %left LOCK UNLOCK
 %left ELLIPSIS
 %left ASSIGN_OP ASSIGN_PLUS ASSIGN_MINUS ASSIGN_MUL ASSIGN_DIV ASSIGN_MOD ASSIGN_BITWISE_NOT ASSIGN_BITWISE_AND ASSIGN_BITWISE_OR ASSIGN_BITWISE_XOR ASSIGN_SHIFTLEFT ASSIGN_SHIFTRIGHT
@@ -112,8 +111,9 @@ yydebug = 1;
 
 input/* empty line */
   : NEWLINE
-  | suite
   | stmt_group
+  | class
+  | class_section
   ;
 
 suite
@@ -252,6 +252,25 @@ module_list
 
 module
   : IDENTIFIER
+  ;
+
+class
+  : class_declaration NEWLINE class_section
+  ;
+
+class_section
+  : INDENT class_access_specifier COLON suite
+  ;
+
+class_access_specifier
+  : PRIVATE
+  | PUBLIC
+  | PROTECTED
+  ;
+
+class_declaration
+  : CLASS IDENTIFIER COLON
+  | CLASS IDENTIFIER COLON expr_list_ COLON
   ;
 
 decorator
