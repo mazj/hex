@@ -200,13 +200,13 @@ while_stmt
   ;
 
 for_stmt
-  : FOR iterable IN expr COLON suite
-  | FOR iterable IN expr WHERE expr COLON suite
+  : FOR expr IN iterable COLON suite
+  | FOR expr IN iterable WHERE expr COLON suite
   ;
 
 iterable
   : expr
-  | tuple_initializer
+  | initializer
   ;
 
 if_stmt_simple
