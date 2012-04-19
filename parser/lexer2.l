@@ -125,6 +125,7 @@ L?\"(\\.|[^\\"])*\"         printf("STRING [%s]\n", yytext);
 
 #assignment_operator
 "="		                    printf("ASSIGNMENT OPERATOR [%s]\n", yytext);
+"~="                        printf("ASSIGNMENT OPERATOR [%s]\n", yytext);  
 "+="						printf("ASSIGNMENT OPERATOR [%s]\n", yytext);
 "-="						printf("ASSIGNMENT OPERATOR [%s]\n", yytext);
 "*="						printf("ASSIGNMENT OPERATOR [%s]\n", yytext);
@@ -137,8 +138,7 @@ L?\"(\\.|[^\\"])*\"         printf("STRING [%s]\n", yytext);
 "|"							printf("BITWISE OPERATOR [%s]\n", yytext);
 "^"							printf("BITWISE OPERATOR [%s]\n", yytext);
 "<<"                        printf("BITWISE OPERATOR [%s]\n", yytext);
-">>"                        printf("BITWISE OPERATOR [%s]\n", yytext);
-"~="						printf("BITWISE OPERATOR [%s]\n", yytext);   
+">>"                        printf("BITWISE OPERATOR [%s]\n", yytext); 
 "&="						printf("BITWISE OPERATOR [%s]\n", yytext);
 "|="						printf("BITWISE OPERATOR [%s]\n", yytext);
 "^="						printf("BITWISE OPERATOR [%s]\n", yytext);

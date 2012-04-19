@@ -165,6 +165,7 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 
 #assignment_operator
 "="		                    RETURN("ASSIGNMENT OPERATOR", yytext, ASSIGN_OP);
+"~="                        RETURN("ASSIGNMENT OPERATOR", yytext, ASSIGN_OP_WEAKREF);  
 "+="						RETURN("ASSIGNMENT OPERATOR", yytext, ASSIGN_PLUS);
 "-="						RETURN("ASSIGNMENT OPERATOR", yytext, ASSIGN_MINUS);
 "*="						RETURN("ASSIGNMENT OPERATOR", yytext, ASSIGN_MUL);
@@ -177,8 +178,7 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 "|"							RETURN("BITWISE OPERATOR", yytext, BITWISE_OR);
 "^"							RETURN("BITWISE OPERATOR", yytext, BITWISE_XOR);
 "<<"                        RETURN("BITWISE OPERATOR", yytext, BITWISE_SHIFTLEFT);
-">>"                        RETURN("BITWISE OPERATOR", yytext, BITWISE_SHIFTRIGHT);
-"~="						RETURN("BITWISE OPERATOR", yytext, ASSIGN_BITWISE_NOT);   
+">>"                        RETURN("BITWISE OPERATOR", yytext, BITWISE_SHIFTRIGHT); 
 "&="						RETURN("BITWISE OPERATOR", yytext, ASSIGN_BITWISE_AND);
 "|="						RETURN("BITWISE OPERATOR", yytext, ASSIGN_BITWISE_OR);
 "^="						RETURN("BITWISE OPERATOR", yytext, ASSIGN_BITWISE_XOR);
