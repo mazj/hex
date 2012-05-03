@@ -14,10 +14,12 @@ yydebug = 1;
   char* string;
   int integer;
   double floating;
+  struct HexExprList *hex_expr_list;
   struct HexInteger* hex_integer;
   struct HexLiteral* hex_literal;
   struct HexAssignmentOp* hex_assign_op;
   struct HexTypeQualifierList* hex_type_qualifier_list;
+  struct HexDeclaration* hex_declaration;
 };
 
 %token <string> AND AS
@@ -108,6 +110,8 @@ yydebug = 1;
 %type <integer> type_qualifier
 %type <hex_type_qualifier_list> type_qualifier_list
 %type <integer> type_specifier
+%type <hex_declaration> declaration
+%type <hex_expr_list> expr_list_
 
 %error-verbose
 %debug
@@ -481,11 +485,14 @@ parameter
   ;
 
 declaration
-  : type_qualifier_list type_specifier expr_list_
-  | type_qualifier_list expr_list_
-  | type_specifier expr_list_
-  | IDENTIFIER expr_list_
-  | declaration AS IDENTIFIER
+  : type_qualifier_list type_specifier expr_list_                { $$ = createDeclaration($1, $2, 0, $3, 0); }
+  | type_qualifier_list expr_list_                               { $$ = createDeclaration($1, 0, 0, $2, 0); }
+  | type_specifier expr_list_                                    { $$ = createDeclaration(0, $1, 0, $2, 0); }
+  | IDENTIFIER expr_list_                                        { $$ = createDeclaration(0, 0, $1, $2, 0); }
+  | type_qualifier_list type_specifier expr_list_ AS IDENTIFIER  { $$ = createDeclaration($1, $2, 0, $3, $5); }
+  | type_qualifier_list expr_list_ AS IDENTIFIER                 { $$ = createDeclaration($1, 0, 0, $2, $4); }
+  | type_specifier expr_list_ AS IDENTIFIER                      { $$ = createDeclaration(0, $1, 0, $2, $4); }
+  | IDENTIFIER expr_list_ AS IDENTIFIER                          { $$ = createDeclaration(0, 0, $1, $2, $4); }
   ;
 
 type_specifier
