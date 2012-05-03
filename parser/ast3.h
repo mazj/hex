@@ -648,7 +648,7 @@ TypeQualifierList* createTypeQualifierList(TypeQualifier qualifier, TypeQualifie
  */
 typedef struct HexDeclaration {
     TypeQualifierList *type_qualifier_list;
-    TypeSpecifier *type_specifier;
+    int type_specifier;
     char *custom_type;
     ExprList *expr_list;
     char *alias;
@@ -659,7 +659,7 @@ typedef struct HexDeclaration {
 // createDeclaration() - construct an AST node of type Declaration.
 //===========================================================================
 Declaration* createDeclaration(TypeQualifierList *type_qualifier_list,
-    TypeSpecifier *type_specifier, char *custom_type, ExprList *expr_list, char *alias);
+    int type_specifier, char *custom_type, ExprList *expr_list, char *alias);
 
 
 /***********************************************************************

@@ -647,7 +647,7 @@ TypeQualifierList* createTypeQualifierList(TypeQualifier qualifier, TypeQualifie
 // createDeclaration() - construct an AST node of type Declaration.
 //===========================================================================
 Declaration* createDeclaration(TypeQualifierList *type_qualifier_list,
-    TypeSpecifier *type_specifier, char *custom_type, ExprList *expr_list, char *alias) {
+    int type_specifier, char *custom_type, ExprList *expr_list, char *alias) {
 	Declaration *declaration = MALLOC(Declaration);
 
 	declaration->type_qualifier_list = type_qualifier_list;
