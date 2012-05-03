@@ -14,6 +14,10 @@ yydebug = 1;
   char* string;
   int integer;
   double floating;
+  struct HexInteger* hex_integer;
+  struct HexLiteral* hex_literal;
+  struct HexAssignmentOp* hex_assign_op;
+  struct HexTypeQualifierList* hex_type_qualifier_list;
 };
 
 %token <string> AND AS
@@ -98,7 +102,12 @@ yydebug = 1;
 
 %right SUITE_PREC
 
-%type <integer> INTEGER
+%type <hex_integer> INTEGER
+%type <hex_literal> LITERAL
+%type <hex_assign_op> assignment_operator
+%type <integer> type_qualifier
+%type <hex_type_qualifier_list> type_qualifier_list
+%type <integer> type_specifier
 
 %error-verbose
 %debug
@@ -480,61 +489,60 @@ declaration
   ;
 
 type_specifier
-  : CHAR
-  | SHORT
-  | INT
-  | LONG
-  | FLOAT
-  | DOUBLE
-  | UCHAR
-  | USHORT
-  | UINT
-  | ULONG
+  : CHAR                          { $$ = type_specifier_char; }
+  | SHORT                         { $$ = type_specifier_short; }
+  | INT                           { $$ = type_specifier_int; }
+  | LONG                          { $$ = type_specifier_long; }
+  | FLOAT                         { $$ = type_specifier_float; }
+  | DOUBLE                        { $$ = type_specifier_double; }
+  | UCHAR                         { $$ = type_specifier_uchar; }
+  | USHORT                        { $$ = type_specifier_ushort; }
+  | UINT                          { $$ = type_specifier_uint; }
+  | ULONG                         { $$ = type_specifier_ulong; }
   ;
 
 type_qualifier_list
-  : type_qualifier
-  | type_qualifier_list type_qualifier
+  : type_qualifier                      { $$ = createTypeQualifierList($1, 0); }
+  | type_qualifier_list type_qualifier  { $$ = createTypeQualifierList($2, $1); }
   ;
 
 type_qualifier
-  : CONST
-  | VOLATILE
-  | STATIC
+  : CONST                          { $$ = type_qualifier_const; }
+  | VOLATILE                       { $$ = type_qualifier_volatile; }
+  | STATIC                         { $$ = type_qualifier_static; }
   ;
 
 assignment_operator
-  : ASSIGN_OP
-  | ASSIGN_OP_WEAKREF
-  | ASSIGN_OP DEFER
-  | ASSIGN_OP NEW
-  | ASSIGN_OP LAZY NEW
-  | ASSIGN_OP STACKALLOC NEW
-  | ASSIGN_OP STACKALLOC LAZY NEW
-  | ASSIGN_MUL
-  | ASSIGN_DIV
-  | ASSIGN_MOD
-  | ASSIGN_PLUS
-  | ASSIGN_MINUS
-  | ASSIGN_SHIFTLEFT
-  | ASSIGN_SHIFTRIGHT
-  | ASSIGN_BITWISE_AND
-  | ASSIGN_BITWISE_OR
-  | ASSIGN_BITWISE_XOR
+  : ASSIGN_OP                      { $$ = createAssignmentOp(assign_op, 0); }
+  | ASSIGN_OP_WEAKREF              { $$ = createAssignmentOp(assign_op_weakref, 0); }
+  | ASSIGN_OP NEW                  { $$ = createAssignmentOp(assign_op_new, 0); }
+  | ASSIGN_OP LAZY NEW             { $$ = createAssignmentOp(assign_op_lazy_new, 0); }
+  | ASSIGN_OP STACKALLOC NEW       { $$ = createAssignmentOp(assign_op_new, 1); }
+  | ASSIGN_OP STACKALLOC LAZY NEW  { $$ = createAssignmentOp(assign_op_lazy_new, 1); }
+  | ASSIGN_MUL                     { $$ = createAssignmentOp(assign_op_mul, 0); }
+  | ASSIGN_DIV                     { $$ = createAssignmentOp(assign_op_div, 0); }
+  | ASSIGN_MOD                     { $$ = createAssignmentOp(assign_op_mod, 0); }
+  | ASSIGN_PLUS                    { $$ = createAssignmentOp(assign_op_plus, 0); }
+  | ASSIGN_MINUS                   { $$ = createAssignmentOp(assign_op_minus, 0); }
+  | ASSIGN_SHIFTLEFT               { $$ = createAssignmentOp(assign_op_shift_left, 0); }
+  | ASSIGN_SHIFTRIGHT              { $$ = createAssignmentOp(assign_op_shift_right, 0); }
+  | ASSIGN_BITWISE_AND             { $$ = createAssignmentOp(assign_op_bitwise_and, 0); }
+  | ASSIGN_BITWISE_OR              { $$ = createAssignmentOp(assign_op_bitwise_or, 0); }
+  | ASSIGN_BITWISE_XOR             { $$ = createAssignmentOp(assign_op_bitwise_xor, 0); }
   ;
 
 LITERAL
-  : CHARACTER_LITERAL
-  | STRING_LITERAL
-  | INTEGER
-  | FLOATINGNUM
+  : CHARACTER_LITERAL   { $$ = createLiteral(literal_type_char, &$1); }
+  | STRING_LITERAL      { $$ = createLiteral(literal_type_string, $1); }
+  | INTEGER             { $$ = createLiteral(literal_type_integer, $1); }
+  | FLOATINGNUM         { $$ = createLiteral(literal_type_float, &$1); }
   ;
 
 INTEGER
-  : DECIMALINTEGER
-  | BININTEGER
-  | OCTINTEGER
-  | HEXINTEGER
+  : DECIMALINTEGER  { $$ = createInteger(integer_type_decimal, 0, $1); }
+  | BININTEGER      { $$ = createIntefer(integer_type_binary, 0, $1); }
+  | OCTINTEGER      { $$ = createInteger(integer_type_octal, 0, $1); }
+  | HEXINTEGER      { $$ = createInteger(integer_type_hexadecimal, 0, $1); }
   ;
 
 %%
