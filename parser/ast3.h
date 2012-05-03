@@ -570,22 +570,32 @@ Expr* createExpr(int type, void* value);
 /*
  * Assignment operator
  */
-typedef enum HexAssignmentOp {
-    assign_op,                  /* = */
-    assign_op_new,              /* = new */
-    assign_op_lazy_new,         /* = lazy new */
-    assign_op_mul,              /* *= */
-    assign_op_div,              /* /= */
-    assign_op_mod,              /* %= */
-    assign_op_plus,             /* += */
-    assign_op_minus,            /* -= */
-    assign_op_shift_left,       /* <<= */
-    assign_op_shift_right,      /* >>= */
-    assign_op_bitwise_not,      /* != */
-    assign_op_bitwise_and,      /* &= */
-    assign_op_bitwise_or,       /* |= */
-    assign_op_bitwise_xor       /* ^= */
+typedef struct HexAssignmentOp {
+    enum  {
+        assign_op,                  /* = */
+        assign_op_weakref,          /* ~= */
+        assign_op_new,              /* = new */
+        assign_op_lazy_new,         /* = lazy new */
+        assign_op_mul,              /* *= */
+        assign_op_div,              /* /= */
+        assign_op_mod,              /* %= */
+        assign_op_plus,             /* += */
+        assign_op_minus,            /* -= */
+        assign_op_shift_left,       /* <<= */
+        assign_op_shift_right,      /* >>= */
+        assign_op_bitwise_not,      /* != */
+        assign_op_bitwise_and,      /* &= */
+        assign_op_bitwise_or,       /* |= */
+        assign_op_bitwise_xor       /* ^= */
+    };
+    int is_stackalloc;
 } AssignmentOp;
+
+
+//===========================================================================
+// createAssignmentOp() - construct an AST node of type AssignmentOp.
+//===========================================================================
+AssignmentOp* createAssignmentOp(int type, int is_stackalloc);
 
 
 /*
