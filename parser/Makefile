@@ -4,8 +4,8 @@ CFLAGS=-Wno-implicit
 a.out:
 	gcc sorted_string_list.h bst.h utils.h strnutils.h map.h unittest.h queue.h sorted_string_list_unittest.c
 
-parser: lex.yy.c parser3.tab.h
-	gcc lex.yy.c parser3.tab.h parser3.tab.c
+parser: lex.yy.c parser3.tab.h ast3.o ast3.h
+	gcc lex.yy.c parser3.tab.h parser3.tab.c ast3.o
 
 lexer_test: lex.yy.c
 	gcc lex.yy.c -o lexer_test
@@ -33,6 +33,9 @@ parser2.tab.h: parser2.y
 
 parser.tab.h:
 	bison -d parser.y
+
+ast.o: ast3.c ast3.h
+	$(CC) $(CFLAGS) ast3.h ast3.c
 
 ast3: ast3.c ast3.h
 	$(CC) $(CFLAGS) -c ast3.h ast3.c
