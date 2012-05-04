@@ -17,7 +17,7 @@ yydebug = 1;
   struct HexExprList *hex_expr_list;
   struct HexInteger* hex_integer;
   struct HexLiteral* hex_literal;
-  struct HexAssignmentOp* hex_assign_op;
+  int hex_assign_op;
   struct HexTypeQualifierList* hex_type_qualifier_list;
   struct HexDeclaration* hex_declaration;
 };
@@ -520,22 +520,22 @@ type_qualifier
   ;
 
 assignment_operator
-  : ASSIGN_OP                      { $$ = createAssignmentOp(assign_op, 0); }
-  | ASSIGN_OP_WEAKREF              { $$ = createAssignmentOp(assign_op_weakref, 0); }
-  | ASSIGN_OP NEW                  { $$ = createAssignmentOp(assign_op_new, 0); }
-  | ASSIGN_OP LAZY NEW             { $$ = createAssignmentOp(assign_op_lazy_new, 0); }
-  | ASSIGN_OP STACKALLOC NEW       { $$ = createAssignmentOp(assign_op_new, 1); }
-  | ASSIGN_OP STACKALLOC LAZY NEW  { $$ = createAssignmentOp(assign_op_lazy_new, 1); }
-  | ASSIGN_MUL                     { $$ = createAssignmentOp(assign_op_mul, 0); }
-  | ASSIGN_DIV                     { $$ = createAssignmentOp(assign_op_div, 0); }
-  | ASSIGN_MOD                     { $$ = createAssignmentOp(assign_op_mod, 0); }
-  | ASSIGN_PLUS                    { $$ = createAssignmentOp(assign_op_plus, 0); }
-  | ASSIGN_MINUS                   { $$ = createAssignmentOp(assign_op_minus, 0); }
-  | ASSIGN_SHIFTLEFT               { $$ = createAssignmentOp(assign_op_shift_left, 0); }
-  | ASSIGN_SHIFTRIGHT              { $$ = createAssignmentOp(assign_op_shift_right, 0); }
-  | ASSIGN_BITWISE_AND             { $$ = createAssignmentOp(assign_op_bitwise_and, 0); }
-  | ASSIGN_BITWISE_OR              { $$ = createAssignmentOp(assign_op_bitwise_or, 0); }
-  | ASSIGN_BITWISE_XOR             { $$ = createAssignmentOp(assign_op_bitwise_xor, 0); }
+  : ASSIGN_OP                      { $$ = assign_op; }
+  | ASSIGN_OP_WEAKREF              { $$ = assign_op_weakref; }
+  | ASSIGN_OP NEW                  { $$ = assign_op_new; }
+  | ASSIGN_OP LAZY NEW             { $$ = assign_op_lazy_new; }
+  | ASSIGN_OP STACKALLOC NEW       { $$ = assign_op_new; }
+  | ASSIGN_OP STACKALLOC LAZY NEW  { $$ = assign_op_lazy_new; }
+  | ASSIGN_MUL                     { $$ = assign_op_mul; }
+  | ASSIGN_DIV                     { $$ = assign_op_div; }
+  | ASSIGN_MOD                     { $$ = assign_op_mod; }
+  | ASSIGN_PLUS                    { $$ = assign_op_plus; }
+  | ASSIGN_MINUS                   { $$ = assign_op_minus; }
+  | ASSIGN_SHIFTLEFT               { $$ = assign_op_shift_left; }
+  | ASSIGN_SHIFTRIGHT              { $$ = assign_op_shift_right; }
+  | ASSIGN_BITWISE_AND             { $$ = assign_op_bitwise_and; }
+  | ASSIGN_BITWISE_OR              { $$ = assign_op_bitwise_or; }
+  | ASSIGN_BITWISE_XOR             { $$ = assign_op_bitwise_xor; }
   ;
 
 LITERAL
@@ -547,7 +547,7 @@ LITERAL
 
 INTEGER
   : DECIMALINTEGER  { $$ = createInteger(integer_type_decimal, 0, $1); }
-  | BININTEGER      { $$ = createIntefer(integer_type_binary, 0, $1); }
+  | BININTEGER      { $$ = createInteger(integer_type_binary, 0, $1); }
   | OCTINTEGER      { $$ = createInteger(integer_type_octal, 0, $1); }
   | HEXINTEGER      { $$ = createInteger(integer_type_hexadecimal, 0, $1); }
   ;
