@@ -6,16 +6,16 @@
 //===========================================================================
 // createInteger() - construct an AST node of type Integer.
 //===========================================================================
-Integer* createInteger(int type, int is_signed, void* value) {
+Integer* createInteger(int type, int is_signed, int value) {
 	Integer *integer = MALLOC(Integer);
 
 	integer->integer_type = type;
 	integer->is_signed = is_signed;
 
-	// if(is_signed)
-	// 	integer->signed_integer = DEREF_VOID(int, value);
-	// else
-	// 	integer->unsigned_integer = DEREF_VOID(unsigned int, value);
+	if(is_signed)
+		integer->signed_integer = value;
+	else
+		integer->unsigned_integer = (unsigned int)value;
 
 	return integer;
 }
@@ -663,7 +663,7 @@ Declaration* createDeclaration(TypeQualifierList *type_qualifier_list,
 //===========================================================================
 // createParameter() - construct an AST node of type Parameter.
 //===========================================================================
-Parameter* createParameter(TypeQualifierList *type_qualifier_list, TypeSpecifier *type_specifier,
+Parameter* createParameter(TypeQualifierList *type_qualifier_list, int type_specifier,
     char *custom_type, char *parameter_name, char *alias, int is_ref) {
 	Parameter *parameter = MALLOC(Parameter);
 

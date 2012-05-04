@@ -20,6 +20,7 @@ yydebug = 1;
   int hex_assign_op;
   struct HexTypeQualifierList* hex_type_qualifier_list;
   struct HexDeclaration* hex_declaration;
+  struct HexParameter* hex_parameter;
 };
 
 %token <string> AND AS
@@ -112,6 +113,7 @@ yydebug = 1;
 %type <integer> type_specifier
 %type <hex_declaration> declaration
 %type <hex_expr_list> expr_list_
+%type <hex_parameter> parameter
 
 %error-verbose
 %debug
@@ -462,26 +464,26 @@ parameter_list_core
   ;
 
 parameter
-  : type_qualifier_list type_specifier IDENTIFIER
-  | type_qualifier_list type_specifier IDENTIFIER AS IDENTIFIER
-  | type_qualifier_list IDENTIFIER
-  | type_qualifier_list IDENTIFIER AS IDENTIFIER
-  | type_specifier IDENTIFIER
-  | type_specifier IDENTIFIER AS IDENTIFIER
-  | IDENTIFIER
-  | IDENTIFIER IDENTIFIER
-  | IDENTIFIER AS IDENTIFIER
-  | IDENTIFIER IDENTIFIER AS IDENTIFIER
-  | REF type_qualifier_list type_specifier IDENTIFIER
-  | REF type_qualifier_list type_specifier IDENTIFIER AS IDENTIFIER
-  | REF type_qualifier_list IDENTIFIER
-  | REF type_qualifier_list IDENTIFIER AS IDENTIFIER
-  | REF type_specifier IDENTIFIER
-  | REF type_specifier IDENTIFIER AS IDENTIFIER
-  | REF IDENTIFIER
-  | REF IDENTIFIER IDENTIFIER
-  | REF IDENTIFIER AS IDENTIFIER
-  | REF IDENTIFIER IDENTIFIER AS IDENTIFIER
+  : type_qualifier_list type_specifier IDENTIFIER                      { $$ = createParameter($1, $2, 0, $3, 0, 0); }
+  | type_qualifier_list type_specifier IDENTIFIER AS IDENTIFIER        { $$ = createParameter($1, $2, 0, $3, $5, 0); }
+  | type_qualifier_list IDENTIFIER                                     { $$ = createParameter($1, 0, 0, $2, 0, 0); }
+  | type_qualifier_list IDENTIFIER AS IDENTIFIER                       { $$ = createParameter($1, 0, 0, $3, $4, 0); }
+  | type_specifier IDENTIFIER                                          { $$ = createParameter(0, $1, 0, $2, 0, 0); }
+  | type_specifier IDENTIFIER AS IDENTIFIER                            { $$ = createParameter(0, $1, 0, $2, $4, 0); }
+  | IDENTIFIER                                                         { $$ = createParameter(0, 0, $1, 0, 0, 0); }
+  | IDENTIFIER IDENTIFIER                                              { $$ = createParameter(0, 0, $1, $2, 0, 0); }
+  | IDENTIFIER AS IDENTIFIER                                           { $$ = createParameter(0, 0, 0, $1, $2, 0); }
+  | IDENTIFIER IDENTIFIER AS IDENTIFIER                                { $$ = createParameter(0, 0, $1, $2, $4, 0); }
+  | REF type_qualifier_list type_specifier IDENTIFIER                  { $$ = createParameter($2, $3, 0, $4, 0, 1); }
+  | REF type_qualifier_list type_specifier IDENTIFIER AS IDENTIFIER    { $$ = createParameter($2, $3, 0, $4, $6, 1); }
+  | REF type_qualifier_list IDENTIFIER                                 { $$ = createParameter($2, 0, 0, $3, 0, 1); }
+  | REF type_qualifier_list IDENTIFIER AS IDENTIFIER                   { $$ = createParameter($2, 0, 0, $3, $5, 1); }
+  | REF type_specifier IDENTIFIER                                      { $$ = createParameter(0, $2, 0, $3, 0, 1); }
+  | REF type_specifier IDENTIFIER AS IDENTIFIER                        { $$ = createParameter(0, $2, 0, $3, $5, 1); }
+  | REF IDENTIFIER                                                     { $$ = createParameter(0, 0, $2, 0, 0, 1); }
+  | REF IDENTIFIER IDENTIFIER                                          { $$ = createParameter(0, 0, $2, $3, 0, 1); }
+  | REF IDENTIFIER AS IDENTIFIER                                       { $$ = createParameter(0, 0, 0, $2, $3, 1); }
+  | REF IDENTIFIER IDENTIFIER AS IDENTIFIER                            { $$ = createParameter(0, 0, $2, $3, $5, 1); }
   ;
 
 declaration

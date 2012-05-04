@@ -80,7 +80,7 @@ typedef struct HexInteger {
 //===========================================================================
 // createInteger() - construct an AST node of type Integer.
 //===========================================================================
-Integer* createInteger(int type, int is_signed, void* value);
+Integer* createInteger(int type, int is_signed, int value);
 
 
 /*
@@ -663,7 +663,7 @@ Declaration* createDeclaration(TypeQualifierList *type_qualifier_list,
  */
 typedef struct HexParameter {
     TypeQualifierList *type_qualifier_list;
-    TypeSpecifier *type_specifier;
+    int type_specifier;
     char *custom_type;
     char *parameter_name;
     char *alias;
@@ -674,7 +674,7 @@ typedef struct HexParameter {
 //===========================================================================
 // createParameter() - construct an AST node of type Parameter.
 //===========================================================================
-Parameter* createParameter(TypeQualifierList *type_qualifier_list, TypeSpecifier *type_specifier,
+Parameter* createParameter(TypeQualifierList *type_qualifier_list, int type_specifier,
     char *custom_type, char *parameter_name, char *alias, int is_ref);
 
 
