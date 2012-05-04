@@ -133,13 +133,14 @@ PostfixInvocationExpr* createPostfixInvocationExpr(char *invocation_name) {
 //===========================================================================
 // createPostfixExpr() - construct an AST node of type PostfixExpr.
 //===========================================================================
-Expr* createPostfixExpr(int type, void* value) {
+Expr* createPostfixExpr(int type, void* value, void* value1) {
 	PostfixExpr *postfix_expr = MALLOC(PostfixExpr);
 
 	switch(type) {
 		case postfix_expr_type_index:
 			postfix_expr->postfix_expr_type = postfix_expr_type_index;
-			postfix_expr->postfix_expr_index_expr = (PostfixIndexExpr*)value;
+			PostfixIndexExpr* postfix_index_expr = createPostfixIndexExpr((Expr*)value, (Expr*)value1);
+			postfix_expr->postfix_expr_index_expr = postfix_index_expr;
 			break;
 		case postfix_expr_type_postfix_inc:
 			postfix_expr->postfix_expr_type = postfix_expr_type_postfix_inc;
@@ -151,11 +152,13 @@ Expr* createPostfixExpr(int type, void* value) {
 			break;
 		case postfix_expr_type_accessor:
 			postfix_expr->postfix_expr_type = postfix_expr_type_accessor;
-			postfix_expr->postfix_expr_accessor_expr = (PostfixAccessorExpr*)value;
+			PostfixAccessorExpr* postfix_accessor_expr = createPostfixAccessorExpr((Expr*)value, (Expr*)value1);
+			postfix_expr->postfix_expr_accessor_expr = postfix_accessor_expr;
 			break;
 		case postfix_expr_type_invocation:
 			postfix_expr->postfix_expr_type = postfix_expr_type_invocation;
-			postfix_expr->postfix_expr_invocation_expr = (PostfixInvocationExpr*)value;
+			PostfixInvocationExpr* postfix_invocation_expr = createPostfixInvocationExpr((char*)value);
+			postfix_expr->postfix_expr_invocation_expr = postfix_invocation_expr;
 		case postfix_expr_type_invocation_with_args:
 			postfix_expr->postfix_expr_type = postfix_expr_type_invocation_with_args;
 			postfix_expr->postfix_expr_invocation_with_args_expr = (PostfixInvocationWithArgsExpr*)value;
@@ -207,26 +210,28 @@ Expr* createUnaryExpr(int type, Expr *expr) {
 //===========================================================================
 // createCastExpr() - construct an AST node of type CastExpr.
 //===========================================================================
-Expr* createCastExpr(int type, void* value) {
+Expr* createCastExpr(int type, void* value, Expr *expr) {
 	CastExpr *cast_expr = MALLOC(CastExpr);
 
 	switch(type) {
 		case cast_expr_type_type_specifier:
 			cast_expr->cast_expr_type = cast_expr_type_type_specifier;
-			cast_expr->type_specifier = DEREF_VOID(int, value);
+			cast_expr->type_specifier = DEREF_VOID(int, value);\
+			cast_expr->expr = expr;
 			break;
 		case cast_expr_type_custom_type:
 			cast_expr->cast_expr_type = cast_expr_type_custom_type;
 			cast_expr->identifier = (char*)value;
+			cast_expr->expr = expr;
 			break;
 		default:
 			AST_ERROR();
 			break;
 	}
 
-	Expr* expr = createExpr(expr_type_cast, cast_expr);
+	Expr* _expr = createExpr(expr_type_cast, cast_expr);
 
-	return expr;
+	return _expr;
 }
 
 
