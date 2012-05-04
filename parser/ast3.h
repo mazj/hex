@@ -226,7 +226,7 @@ typedef struct HexPostfixExpr {
 //===========================================================================
 // createPostfixExpr() - construct an AST node of type PostfixExpr.
 //===========================================================================
-Expr* createPostfixExpr(int type, void* value);
+Expr* createPostfixExpr(int type, void* value, void* value1);
 
 
 /*
@@ -280,7 +280,7 @@ typedef enum HexTypeSpecifier {
  *  target_expr = (cast_type)expr
  */
 typedef struct HexCastExpr {
-    Expr* cast_expr;
+    Expr* expr;
     enum {
         cast_expr_type_type_specifier,
         cast_expr_type_custom_type
@@ -295,7 +295,7 @@ typedef struct HexCastExpr {
 //===========================================================================
 // createCastExpr() - construct an AST node of type CastExpr.
 //===========================================================================
-Expr* createCastExpr(int type, void* value);
+Expr* createCastExpr(int type, void* value, Expr *expr);
 
 
 /*
@@ -534,7 +534,6 @@ struct HexExpr {
         expr_type_postfix,
         expr_type_unary,
         expr_type_cast,
-        expr_type_multilicative,
         expr_type_arithmetic,
         expr_type_equality,
         expr_type_logic,
@@ -542,7 +541,9 @@ struct HexExpr {
         expr_type_conditional,
         expr_type_range,
         expr_type_lock,
-        expr_type_weakref
+        expr_type_weakref,
+        expr_type_this,
+        expr_type_base
     } expr_type;
     union {
         PrimaryExpr *primary_expr;
@@ -904,13 +905,14 @@ typedef struct HexAssignmentStmt {
         Declaration *assignment_stmt_declaration;
         ExprList *assignment_stmt_expr_list;
     };
+    AssignmentList *assignment_list;
 } AssignmentStmt;
 
 
 //===========================================================================
 // createAssignmentStmt() - construct an AST node of type AssignmentStmt.
 //===========================================================================
-AssignmentStmt* createAssignmentStmt(int type, void* value);
+AssignmentStmt* createAssignmentStmt(int type, void* value, AssignmentList* assignment_list);
 
 
 /*

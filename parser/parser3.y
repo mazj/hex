@@ -14,6 +14,7 @@ yydebug = 1;
   char* string;
   int integer;
   double floating;
+  struct HexExpr *hex_expr;
   struct HexExprList *hex_expr_list;
   struct HexInteger* hex_integer;
   struct HexLiteral* hex_literal;
@@ -21,6 +22,14 @@ yydebug = 1;
   struct HexTypeQualifierList* hex_type_qualifier_list;
   struct HexDeclaration* hex_declaration;
   struct HexParameter* hex_parameter;
+  struct HexParameterList* hex_parameter_list;
+  struct HexInitializer* hex_initializer;
+  struct HexLambdaExpr* hex_lambda_expr;
+  struct HexAssignment* hex_assignment;
+  struct HexAssginmentList* hex_assignment_list;
+  struct HexAssignmentStmt* hex_assignment_stmt;
+  struct HexAssignmentStmtList *hex_assignment_stmt_list;
+  struct HexFuncDec *hex_func_dec;
 };
 
 %token <string> AND AS
@@ -112,8 +121,18 @@ yydebug = 1;
 %type <hex_type_qualifier_list> type_qualifier_list
 %type <integer> type_specifier
 %type <hex_declaration> declaration
+%type <hex_expr> expr
 %type <hex_expr_list> expr_list_
 %type <hex_parameter> parameter
+%type <hex_parameter_list> parameter_list_core
+%type <hex_parameter_list> parameter_list
+%type <hex_initializer> initializer
+%type <hex_lamnbda_expr> lambda_expr
+%type <hex_assignment> assignment
+%type <hex_assignment_list> assignment_list
+%type <hex_assignment_stmt> assignment_stmt
+%type <hex_assignment_stmt_list> assignment_stmt_list
+%type <hex_func_dec> func_declaration
 
 %error-verbose
 %debug
@@ -320,95 +339,95 @@ func_definition
   ;
 
 func_declaration
-  : DEF IDENTIFIER parameter_list
-  | DEF IDENTIFIER LPAREN RPAREN
-  | DEF IDENTIFIER IDENTIFIER parameter_list
-  | DEF IDENTIFIER IDENTIFIER LPAREN RPAREN
-  | DEF type_specifier IDENTIFIER parameter_list
-  | DEF type_specifier IDENTIFIER LPAREN RPAREN
-  | DEF type_qualifier_list IDENTIFIER parameter_list
-  | DEF type_qualifier_list IDENTIFIER LPAREN RPAREN
-  | DEF type_qualifier_list type_specifier IDENTIFIER parameter_list
-  | DEF type_qualifier_list type_specifier IDENTIFIER LPAREN RPAREN
-  | DEF type_qualifier_list IDENTIFIER IDENTIFIER parameter_list
-  | DEF type_qualifier_list IDENTIFIER IDENTIFIER LPAREN RPAREN
+  : DEF IDENTIFIER parameter_list                                       { $$ = createFuncDec(0, 0, 0, $2, $3); }
+  | DEF IDENTIFIER LPAREN RPAREN                                        { $$ = createFuncDec(0, 0, 0, $2, 0); }
+  | DEF IDENTIFIER IDENTIFIER parameter_list                            { $$ = createFuncDec(0, 0, $2, $3, $4); }
+  | DEF IDENTIFIER IDENTIFIER LPAREN RPAREN                             { $$ = createFuncDec(0, 0, $2, $3, 0); }
+  | DEF type_specifier IDENTIFIER parameter_list                        { $$ = createFuncDec(0, $2, 0, $3, $4); }
+  | DEF type_specifier IDENTIFIER LPAREN RPAREN                         { $$ = createFuncDec(0, $2, 0, $3, 0); }
+  | DEF type_qualifier_list IDENTIFIER parameter_list                   { $$ = createFuncDec($2, 0, 0, $3, $4); }
+  | DEF type_qualifier_list IDENTIFIER LPAREN RPAREN                    { $$ = createFuncDec($2, 0, 0, $3, 0); }
+  | DEF type_qualifier_list type_specifier IDENTIFIER parameter_list    { $$ = createFuncDec($2, $3, 0, $4, $5); }
+  | DEF type_qualifier_list type_specifier IDENTIFIER LPAREN RPAREN     { $$ = createFuncDec($2, $3, 0, $4, 0); }
+  | DEF type_qualifier_list IDENTIFIER IDENTIFIER parameter_list        { $$ = createFuncDec($2, 0, $3, $4, $5); }
+  | DEF type_qualifier_list IDENTIFIER IDENTIFIER LPAREN RPAREN         { $$ = createFuncDec($2, 0, $3, $4, 0); }
   ;
 
 assignment_stmt_list
-  : assignment_stmt
-  | assignment_stmt_list COMMA assignment_stmt
+  : assignment_stmt                              { $$ = createAssignmentStmtList($1,0); }
+  | assignment_stmt_list COMMA assignment_stmt   { $$ = createAssignmentStmtList($3, $1); }
   ;
 
 assignment_stmt
-  : declaration assignment_list
-  | expr_list_ assignment_list
+  : declaration assignment_list         { $$ = createAssignmentStmt(assignment_stmt_type_declaration, $1, $2); }
+  | expr_list_ assignment_list          { $$ = createAssignmentStmt(assignment_stmt_type_expr_list, $1, $2); }
   ;
 
 assignment_list
-  : assignment
-  | assignment_list assignment
+  : assignment                          { $$ = createAssignmentList($1, 0); }
+  | assignment_list assignment          { $$ = createAssignmentList($2, $1); }
   ;
 
 assignment
-  : assignment_operator expr
-  | assignment_operator initializer
-  | assignment_operator lambda_expr
+  : assignment_operator expr            { $$ = createAssignment($1, $2); }
+  | assignment_operator initializer     { $$ = createAssignment($1, $2); }
+  | assignment_operator lambda_expr     { $$ = createAssignment($1, $2); }
   ;
 
 expr
-  : LITERAL
-  | IDENTIFIER
+  : LITERAL                             { $$ = createPrimaryExpr(primary_expr_type_literal, $1); }
+  | IDENTIFIER                          { $$ = createPrimaryExpr(primary_expr_type_identifier, $1); }
   | expr tuple_initializer
   | IDENTIFIER tuple_initializer
   | expr list_initializer
   | IDENTIFIER list_initializer
-  | expr LPAREN RPAREN
-  | IDENTIFIER LPAREN RPAREN
+  | expr LPAREN RPAREN                  
+  | IDENTIFIER LPAREN RPAREN            { $$ = createPostfixInvocationExpr(postfix_expr_type_invocation, $1, 0); }
   | expr LBRACKET RBRACKET
   | IDENTIFIER LBRACKET RBRACKET
-  | expr INC_OP
-  | expr DEC_OP
-  | INC_OP expr
-  | DEC_OP expr
-  | expr MUL_OP expr
-  | expr DIV_OP expr
-  | expr MOD_OP expr
-  | expr PLUS_OP expr
-  | expr MINUS_OP expr
-  | MINUS_OP expr %prec UMINUS
-  | expr BITWISE_SHIFTLEFT expr
-  | expr BITWISE_SHIFTRIGHT expr
-  | expr LESS_OP expr
-  | expr GREATER_OP expr
-  | expr LEQ_OP expr
-  | expr GEQ_OP expr
-  | expr IS expr
-  | expr IS_NOT expr
-  | expr EQ_OP expr
-  | expr NEQ_OP expr
-  | expr BITWISE_AND expr
-  | expr BITWISE_XOR expr
-  | expr BITWISE_OR expr
-  | expr AND expr
-  | expr OR expr
-  | expr ELLIPSIS expr
-  | IF expr THEN expr ELSE expr
-  | expr DOT IDENTIFIER
-  | WEAKREF expr
-  | NOT expr
-  | LOCK expr
-  | UNLOCK expr
-  | BITWISE_NOT expr
-  | LPAREN IDENTIFIER RPAREN expr
-  | LPAREN type_specifier RPAREN expr
+  | expr INC_OP                         { $$ = createPostfixExpr(postfix_expr_type_postfix_inc, $1, 0); }
+  | expr DEC_OP                         { $$ = createPostfixExpr(postfix_expr_type_postfix_dec, $1, 0); }
+  | INC_OP expr                         { $$ = createUnaryExpr(unary_expr_type_prefix_inc, $2); }
+  | DEC_OP expr                         { $$ = createUnaryExpr(unary_expr_type_prefix_dec, $2); }
+  | expr MUL_OP expr                    { $$ = createMultiplicativeExpr(multiplicative_expr_type_mul, $1, $3); }
+  | expr DIV_OP expr                    { $$ = createMultiplicativeExpr(multiplicative_expr_type_div, $1, $3); }
+  | expr MOD_OP expr                    { $$ = createMultiplicativeExpr(multiplicative_expr_type_mod, $1, $3); }
+  | expr PLUS_OP expr                   { $$ = createAdditiveExpr(additive_expr_type_plus, $1, $3); }
+  | expr MINUS_OP expr                  { $$ = createAdditiveExpr(additive_expr_type_minus, $1, $3); }
+  | MINUS_OP expr %prec UMINUS          { $$ = createUnaryExpr(unary_expr_type_unary_minus, $2); }
+  | expr BITWISE_SHIFTLEFT expr         { $$ = createBitwiseExpr(bitwise_expr_type_shift_left, $1, $3); }
+  | expr BITWISE_SHIFTRIGHT expr        { $$ = createBitwiseExpr(bitwise_expr_type_shift_right, $1, $3); }
+  | expr LESS_OP expr                   { $$ = createEqualityExpr(equality_expr_type_less, $1, $3); }
+  | expr GREATER_OP expr                { $$ = createEqualityExpr(equality_expr_type_greater, $1, $3); }
+  | expr LEQ_OP expr                    { $$ = createEqualityExpr(equality_expr_type_le, $1, $3); }
+  | expr GEQ_OP expr                    { $$ = createEqualityExpr(equality_expr_type_is, $1, $3); }
+  | expr IS expr                        { $$ = createEqualityExpr(equality_expr_type_le, $1, $3); }
+  | expr IS_NOT expr                    { $$ = createEqualityExpr(equality_expr_type_is_not, $1, $3); }
+  | expr EQ_OP expr                     { $$ = createEqualityExpr(equality_expr_type_eq, $1, $3); }    
+  | expr NEQ_OP expr                    { $$ = createEqualityExpr(equality_expr_type_neq, $1, $3); }
+  | expr BITWISE_AND expr               { $$ = createBitwiseExpr(bitwise_expr_type_bitwise_and, $1, $3); }
+  | expr BITWISE_XOR expr               { $$ = createBitwiseExpr(bitwise_expr_type_bitwise_xor, $1, $3); }
+  | expr BITWISE_OR expr                { $$ = createBitwiseExpr(bitwise_expr_type_bitwise_or, $1, $3); }
+  | expr AND expr                       { $$ = createLogicExpr(logic_expr_type_logic_and, $1, $3); }
+  | expr OR expr                        { $$ = createLogicExpr(logic_expr_type_logic_or, $1, $3); }
+  | expr ELLIPSIS expr                  { $$ = createRangeExpr($1, $3); }
+  | IF expr THEN expr ELSE expr         
+  | expr DOT IDENTIFIER                 { $$ = createPostfixExpr(postfix_expr_type_accessor, $1, $3); }
+  | WEAKREF expr                        { $$ = createWeakref($2); }
+  | NOT expr                            { $$ = createUnaryExpr(unary_expr_type_not, $2); }
+  | LOCK expr                           { $$ = createLockExpr(1, $2); }
+  | UNLOCK expr                         { $$ = createLockExpr(0, $2); }
+  | BITWISE_NOT expr                    { $$ = createUnaryExpr(unary_expr_type_bitwise_not, $2); }
+  | LPAREN IDENTIFIER RPAREN expr       { $$ = createCastExpr(cast_expr_type_custom_type, $2, $4); }
+  | LPAREN type_specifier RPAREN expr   { $$ = createCastExpr(cast_expr_type_type_specifier, &$2, $4); }
   | LPAREN expr RPAREN
-  | THIS
-  | BASE
+  | THIS                                { $$ = createExpr(expr_type_this, 0); }
+  | BASE                                { $$ = createExpr(expr_type_base, 0); }
   ;
 
 expr_list_
-  : expr
-  | expr_list_ COMMA expr
+  : expr                           { $$ = createExprList($1, 0); }
+  | expr_list_ COMMA expr          { $$ = createExprList($3, $1); }
   ;
 
 initializer
@@ -454,13 +473,13 @@ list_initializer
   ;
 
 parameter_list
-  : LPAREN parameter_list_core RPAREN
-  | LPAREN parameter_list_core COMMA ELLIPSIS RPAREN
+  : LPAREN parameter_list_core RPAREN                      { $$ = $2; }   
+  | LPAREN parameter_list_core COMMA ELLIPSIS RPAREN       { $$ = $2; } 
   ;
 
 parameter_list_core
-  : parameter
-  | parameter_list_core COMMA parameter
+  : parameter                                              { $$ = createParameterList($1, 0); }           
+  | parameter_list_core COMMA parameter                    { $$ = createParameterList($3, $1); }  
   ;
 
 parameter
