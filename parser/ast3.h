@@ -1023,7 +1023,7 @@ CompilerProperty* createCompilerProperty(char *compiler_property_name, char *com
 /*
  * Decorator list single
  */
-typedef struct DecoratorListSingle {
+typedef struct HexDecoratorListSingle {
     enum {
         decorator_list_single_type_attribute,                           /* attribute */
         decorator_list_single_type_compiler_property                    /* compiler property */

@@ -33,7 +33,9 @@ yydebug = 1;
   struct HexFuncDef *hex_func_def;
   struct HexAttribute *hex_attribute;
   struct HexCompilerProperty *hex_compiler_property;
-  struct DecoratorListSingle *hex_decorator_list_single;
+  struct HexDecoratorListSingle *hex_decorator_list_single;
+  struct HexDecoratorList *hex_decorator_list;
+  struct HexDecorator *hex_decorator;
   struct HexModule *hex_module;
   struct HexSuite *hex_suite;
 };
@@ -141,6 +143,8 @@ yydebug = 1;
 %type <hex_attribute> attribute
 %type <hex_compiler_property> compiler_property;
 %type <hex_decorator_list_single> decorator_list_single
+%type <hex_decorator_list> decorator_list
+%type <hex_decorator> decorator
 %type <hex_func_dec> func_declaration
 %type <hex_func_def> func_definition
 %type <hex_module> module;
@@ -319,13 +323,13 @@ class_declaration
   | CLASS IDENTIFIER COLON expr_list_ COLON
   ;
 
-decorator
-  : LBRACKET decorator_list RBRACKET
+decorator               
+  : LBRACKET decorator_list RBRACKET              { $$ = createDecorator($2); }
   ;
 
 decorator_list
-  : decorator_list_single
-  | decorator_list COMMA decorator_list_single
+  : decorator_list_single                         { $$ = createDecoratorList($1, 0); }
+  | decorator_list COMMA decorator_list_single    { $$ = createDecoratorList($3, $1); }
   ;
 
 decorator_list_single                                                   
