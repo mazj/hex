@@ -37,6 +37,10 @@ yydebug = 1;
   struct HexDecoratorList *hex_decorator_list;
   struct HexDecorator *hex_decorator;
   struct HexModule *hex_module;
+  struct HexModuleList *hex_module_list;
+  struct HexDirectImportStmt *hex_direct_import_stmt;
+  struct HexRelativeImportStmt *hex_relative_import_stmt;
+  struct HexImportStmt *hex_import_stmt;
   struct HexSuite *hex_suite;
 };
 
@@ -148,6 +152,10 @@ yydebug = 1;
 %type <hex_func_dec> func_declaration
 %type <hex_func_def> func_definition
 %type <hex_module> module;
+%type <hex_module_list> module_list;
+%type <hex_direct_import_stmt> direct_import_stmt
+%type <hex_relative_import_stmt> relative_import_stmt
+%type <hex_import_stmt> import_stmt
 %type <hex_suite> suite
 
 %error-verbose
@@ -262,7 +270,7 @@ iterable
 if_stmt_simple
   : IF expr COLON expr_list_
   | IF expr RETURN expr_list_
-  ; 
+  ;
 
 if_stmt
   : IF expr COLON suite elif_group ELSE COLON suite
@@ -281,23 +289,23 @@ elif_stmt
   ;
 
 import_stmt
-  : direct_import_stmt
-  | relative_import_stmt
+  : direct_import_stmt                             { $$ = createImportStmt(import_stmt_type_direct, $1); }
+  | relative_import_stmt                           { $$ = createImportStmt(import_stmt_type_relative, $1); }
   ;
 
 relative_import_stmt
-  : FROM module_list IMPORT module
-  | FROM module_list IMPORT module AS IDENTIFIER
+  : FROM module_list IMPORT module                 { $$ = createRelativeImportStmt($2, $4, 0); }
+  | FROM module_list IMPORT module AS IDENTIFIER   { $$ = createRelativeImportStmt($2, $4, $6); }
   ;
 
 direct_import_stmt
-  : IMPORT module_list
-  | IMPORT module_list AS IDENTIFIER
+  : IMPORT module_list                             { $$ = createDirectImportStmt($2, 0); }
+  | IMPORT module_list AS IDENTIFIER               { $$ = createDirectImportStmt($2, $4); }
   ;
 
 module_list
-  : module
-  | module_list DOT module
+  : module                                         { $$ = createModuleList($1, 0); }
+  | module_list DOT module                         { $$ = createModuleList($3, $1); }
   ;
 
 module
