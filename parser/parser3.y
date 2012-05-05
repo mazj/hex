@@ -30,6 +30,11 @@ yydebug = 1;
   struct HexAssignmentStmt* hex_assignment_stmt;
   struct HexAssignmentStmtList *hex_assignment_stmt_list;
   struct HexFuncDec *hex_func_dec;
+  struct HexFuncDef *hex_func_def;
+  struct HexAttribute *hex_attribute;
+  struct HexCompilerProperty *hex_compiler_property;
+  struct HexModule *hex_module;
+  struct HexSuite *hex_suite;
 };
 
 %token <string> AND AS
@@ -132,7 +137,12 @@ yydebug = 1;
 %type <hex_assignment_list> assignment_list
 %type <hex_assignment_stmt> assignment_stmt
 %type <hex_assignment_stmt_list> assignment_stmt_list
+%type <hex_attribute> attribute
+%type <hex_compiler_property> compiler_property;
 %type <hex_func_dec> func_declaration
+%type <hex_func_def> func_definition
+%type <hex_module> module;
+%type <hex_suite> suite
 
 %error-verbose
 %debug
@@ -285,7 +295,7 @@ module_list
   ;
 
 module
-  : IDENTIFIER
+  : IDENTIFIER                                     { $$ = createModule($1); }
   ;
 
 class
@@ -322,11 +332,11 @@ decorator_list_single
   ;
 
 compiler_property
-  : POND IDENTIFIER ASSIGN_OP IDENTIFIER
+  : POND IDENTIFIER ASSIGN_OP IDENTIFIER                                { $$ = createCompilerProperty($2, $4); }
   ;
 
 attribute
-  : AT expr
+  : AT expr                                                             { $$ = createAttribute($2); }
   ;
 
 lambda_expr
@@ -335,7 +345,7 @@ lambda_expr
   ;
 
 func_definition
-  : func_declaration COLON suite
+  : func_declaration COLON suite                                        { $$ = createFuncDef($1, $3); }
   ;
 
 func_declaration
