@@ -1207,13 +1207,14 @@ typedef struct HexIfStmtSimple {
         if_stmt_simple_type_return
     } if_stmt_simple_type;
     Expr *expr;
+    ExprList *expr_list;
 } IfStmtSimple;
 
 
 //===========================================================================
 // createIfStmtSimple() - construct an AST node of type IfStmtSimple.
 //===========================================================================
-IfStmtSimple* createIfStmtSimple(int type, Expr *expr);
+IfStmtSimple* createIfStmtSimple(int type, Expr *expr, ExprList *expr_list);
 
 
 /*

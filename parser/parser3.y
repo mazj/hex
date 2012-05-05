@@ -41,6 +41,13 @@ yydebug = 1;
   struct HexDirectImportStmt *hex_direct_import_stmt;
   struct HexRelativeImportStmt *hex_relative_import_stmt;
   struct HexImportStmt *hex_import_stmt;
+  struct HexElifStmt *hex_elif_stmt;
+  struct HexElifGroup *hex_elif_group;
+  struct HexIfStmt *hex_if_stmt;
+  struct HexIfStmtSimple *hex_if_stmt_simple;
+  struct HexIterable *hex_iterable;
+  struct HexWhileStmt *hex_while_stmt;
+  struct HexForStmt *hex_for_stmt;
   struct HexSuite *hex_suite;
 };
 
@@ -156,6 +163,13 @@ yydebug = 1;
 %type <hex_direct_import_stmt> direct_import_stmt
 %type <hex_relative_import_stmt> relative_import_stmt
 %type <hex_import_stmt> import_stmt
+%type <hex_elif_stmt> elif_stmt
+%type <hex_elif_group> elif_group
+%type <hex_if_stmt> if_stmt
+%type <hex_if_stmt_simple> if_stmt_simple
+%type <hex_iterable> iterable
+%type <hex_while_stmt> while_stmt
+%type <hex_for_stmt> for_stmt
 %type <hex_suite> suite
 
 %error-verbose
@@ -254,38 +268,38 @@ catch_stmt
   ;
 
 while_stmt
-  : WHILE expr COLON suite
+  : WHILE expr COLON suite                         { $$ = createWhileStmt($2, $4); }
   ;
 
 for_stmt
-  : FOR expr IN iterable COLON suite
-  | FOR expr IN iterable WHERE expr COLON suite
+  : FOR expr IN iterable COLON suite               { $$ = createForStmt($4, $2, 0, $6); }
+  | FOR expr IN iterable WHERE expr COLON suite    { $$ = createForStmt($4, $2, $6, $8); }
   ;
 
 iterable
-  : expr
-  | initializer
+  : expr                                           { $$ = createIterable(iterable_type_expr, $1); }
+  | initializer                                    { $$ = createIterable(iterable_type_initializer, $1); }
   ;
 
 if_stmt_simple
-  : IF expr COLON expr_list_
-  | IF expr RETURN expr_list_
+  : IF expr COLON expr_list_                       { $$ = createIfStmtSimple(if_stmt_simple_type_expr, $2, $4); }
+  | IF expr RETURN expr_list_                      { $$ = createIfStmtSimple(if_stmt_simple_type_return, $2, $4); }
   ;
 
 if_stmt
-  : IF expr COLON suite elif_group ELSE COLON suite
-  | IF expr COLON suite ELSE COLON suite
-  | IF expr COLON suite elif_group
-  | IF expr COLON suite
+  : IF expr COLON suite elif_group ELSE COLON suite     { $$ = createIfStmt($2, $4, $5, $8); }
+  | IF expr COLON suite ELSE COLON suite                { $$ = createIfStmt($2, $4, 0, $7); }
+  | IF expr COLON suite elif_group                      { $$ = createIfStmt($2, $4, $5, 0); }
+  | IF expr COLON suite                                 { $$ = createIfStmt($2, $4, 0, 0); }
   ;
 
 elif_group
-  : elif_stmt
-  | elif_group elif_stmt
+  : elif_stmt                                      { $$ = createElifGroup($1, 0); }
+  | elif_group elif_stmt                           { $$ = createElifGroup($2, $1); }
   ;
 
-elif_stmt
-  : ELIF expr COLON suite
+elif_stmt                              
+  : ELIF expr COLON suite                          { $$ = createElifStmt($2, $4); }
   ;
 
 import_stmt

@@ -1169,17 +1169,19 @@ IfStmt* createIfStmt(Expr *if_expr, Suite *if_suite, ElifGroup *elif_group, Suit
 //===========================================================================
 // createIfStmtSimple() - construct an AST node of type IfStmtSimple.
 //===========================================================================
-IfStmtSimple* createIfStmtSimple(int type, Expr *expr) {
+IfStmtSimple* createIfStmtSimple(int type, Expr *expr, ExprList *expr_list) {
 	IfStmtSimple *if_stmt_simple = MALLOC(IfStmtSimple);
 
 	switch(type) {
 		case if_stmt_simple_type_expr:
 			if_stmt_simple->if_stmt_simple_type = if_stmt_simple_type_expr;
 			if_stmt_simple->expr = expr;
+			if_stmt_simple->expr_list = expr_list;
 			break;
 		case if_stmt_simple_type_return:
 			if_stmt_simple->if_stmt_simple_type = if_stmt_simple_type_return;
 			if_stmt_simple->expr = expr;
+			if_stmt_simple->expr_list = expr_list;
 			break;
 		default:
 			AST_ERROR();
