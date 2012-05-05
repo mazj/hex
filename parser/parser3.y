@@ -33,6 +33,7 @@ yydebug = 1;
   struct HexFuncDef *hex_func_def;
   struct HexAttribute *hex_attribute;
   struct HexCompilerProperty *hex_compiler_property;
+  struct DecoratorListSingle *hex_decorator_list_single;
   struct HexModule *hex_module;
   struct HexSuite *hex_suite;
 };
@@ -139,6 +140,7 @@ yydebug = 1;
 %type <hex_assignment_stmt_list> assignment_stmt_list
 %type <hex_attribute> attribute
 %type <hex_compiler_property> compiler_property;
+%type <hex_decorator_list_single> decorator_list_single
 %type <hex_func_dec> func_declaration
 %type <hex_func_def> func_definition
 %type <hex_module> module;
@@ -326,9 +328,9 @@ decorator_list
   | decorator_list COMMA decorator_list_single
   ;
 
-decorator_list_single
-  : compiler_property
-  | attribute
+decorator_list_single                                                   
+  : compiler_property         { $$ = createDecoratorListSingle(decorator_list_single_type_compiler_property, $1); }
+  | attribute                 { $$ = createDecoratorListSingle(decorator_list_single_type_attribute, $1); }
   ;
 
 compiler_property
