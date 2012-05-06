@@ -1317,7 +1317,7 @@ typedef struct HexCatchStmt {
     enum {
         catch_stmt_type_none,
         catch_stmt_type_identifier,
-        cast_expr_type_declaration
+        catch_stmt_type_declaration
     } catch_stmt_type;
     union {
         char *catch_identifier;

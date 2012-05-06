@@ -34,7 +34,7 @@ yydebug = 1;
   struct HexInitializer* hex_initializer;
   struct HexLambdaExpr* hex_lambda_expr;
   struct HexAssignment* hex_assignment;
-  struct HexAssginmentList* hex_assignment_list;
+  struct HexAssignmentList* hex_assignment_list;
   struct HexAssignmentStmt* hex_assignment_stmt;
   struct HexAssignmentStmtList *hex_assignment_stmt_list;
   struct HexFuncDec *hex_func_dec;
@@ -298,8 +298,8 @@ catch_stmt_group
 
 catch_stmt
   : CATCH COLON suite                              { $$ = createCatchStmt(catch_stmt_type_none, 0, $3); }
-  | CATCH LPAREN declaration RPAREN COLON suite    { $$ = createCatchStmt(cast_expr_type_declaration, $3, $6); }
-  | CATCH LPAREN IDENTIFIER RPAREN COLON suite     { $$ = createCatchStmt(cast_expr_type_identifier, $3, $6); }
+  | CATCH LPAREN declaration RPAREN COLON suite    { $$ = createCatchStmt(catch_stmt_type_declaration, $3, $6); }
+  | CATCH LPAREN IDENTIFIER RPAREN COLON suite     { $$ = createCatchStmt(catch_stmt_type_identifier, $3, $6); }
   ;
 
 while_stmt
