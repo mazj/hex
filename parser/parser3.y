@@ -23,6 +23,14 @@ yydebug = 1;
   struct HexDeclaration* hex_declaration;
   struct HexParameter* hex_parameter;
   struct HexParameterList* hex_parameter_list;
+  struct HexListInitializer *hex_list_initializer;
+  struct HexArrayInitializer *hex_array_initializer;
+  struct HexTupleInitializer *hex_tuple_initializer;
+  struct HexStructInitializer *hex_struct_initializer;
+  struct HexSetInitializer *hex_set_initializer;
+  struct HexMapMultimapInitializerSingle *hex_map_multimap_initializer_single;
+  struct HexMapMultimapInitializerList *hex_map_multimap_initializer_list;
+  struct HexMapMultimapInitializer *hex_map_multimap_initializer;
   struct HexInitializer* hex_initializer;
   struct HexLambdaExpr* hex_lambda_expr;
   struct HexAssignment* hex_assignment;
@@ -36,6 +44,8 @@ yydebug = 1;
   struct HexDecoratorListSingle *hex_decorator_list_single;
   struct HexDecoratorList *hex_decorator_list;
   struct HexDecorator *hex_decorator;
+  struct HexClassDeclaration *hex_class_declaration;
+  struct HexClassSection *hex_class_section;
   struct HexModule *hex_module;
   struct HexModuleList *hex_module_list;
   struct HexDirectImportStmt *hex_direct_import_stmt;
@@ -156,8 +166,16 @@ yydebug = 1;
 %type <hex_parameter> parameter
 %type <hex_parameter_list> parameter_list_core
 %type <hex_parameter_list> parameter_list
+%type <hex_list_initializer> list_initializer
+%type <hex_array_initializer> array_initializer
+%type <hex_tuple_initializer> tuple_initializer
+%type <hex_struct_initializer> struct_initializer
+%type <hex_set_initializer> set_initializer
+%type <hex_map_multimap_initializer_single> map_multimap_initializer_single
+%type <hex_map_multimap_initializer_list> map_multimap_initializer_list 
+%type <hex_map_multimap_initializer> map_multimap_initializer
 %type <hex_initializer> initializer
-%type <hex_lamnbda_expr> lambda_expr
+%type <hex_lambda_expr> lambda_expr
 %type <hex_assignment> assignment
 %type <hex_assignment_list> assignment_list
 %type <hex_assignment_stmt> assignment_stmt
@@ -167,6 +185,9 @@ yydebug = 1;
 %type <hex_decorator_list_single> decorator_list_single
 %type <hex_decorator_list> decorator_list
 %type <hex_decorator> decorator
+%type <hex_class_declaration> class_declaration
+%type <hex_class_section> class_section
+%type <integer> class_access_specifier
 %type <hex_func_dec> func_declaration
 %type <hex_func_def> func_definition
 %type <hex_module> module;
@@ -345,18 +366,18 @@ class
   ;
 
 class_section
-  : INDENT class_access_specifier COLON suite
+  : INDENT class_access_specifier COLON suite     { $$ = createClassSection($2, $4); }
   ;
 
 class_access_specifier
-  : PRIVATE
-  | PUBLIC
-  | PROTECTED
+  : PRIVATE                                       { $$ = class_access_specifier_private; }
+  | PUBLIC                                        { $$ = class_access_specifier_public; }
+  | PROTECTED                                     { $$ = class_access_specifier_protected; }
   ;
 
 class_declaration
-  : CLASS IDENTIFIER COLON
-  | CLASS IDENTIFIER COLON expr_list_ COLON
+  : CLASS IDENTIFIER COLON                        { $$ = createClassDeclaration($2, 0); }
+  | CLASS IDENTIFIER COLON expr_list_ COLON       { $$ = createClassDeclaration($2, $4); }
   ;
 
 decorator               
@@ -382,8 +403,8 @@ attribute
   ;
 
 lambda_expr
-  : parameter_list LAMBDA_OP LBRACKET simple_stmt_list RBRACKET
-  | parameter_list LAMBDA_OP suite
+  : parameter_list LAMBDA_OP LBRACKET simple_stmt_list RBRACKET         { $$ = createLambdaExpr(lambda_type_simple, $1, $4); }
+  | parameter_list LAMBDA_OP suite                                      { $$ = createLambdaExpr(lambda_type_suite, $1, $3); }
   ;
 
 func_definition
@@ -483,45 +504,45 @@ expr_list_
   ;
 
 initializer
- : list_initializer
- | array_initializer
- | struct_initializer
- | tuple_initializer
- | set_initializer
- | map_multimap_initializer
+ : list_initializer                           { $$ = createInitializer(initializer_type_list, $1); }
+ | array_initializer                          { $$ = createInitializer(initializer_type_array, $1); }
+ | struct_initializer                         { $$ = createInitializer(initializer_type_struct, $1); }
+ | tuple_initializer                          { $$ = createInitializer(initializer_type_tuple, $1); }
+ | set_initializer                            { $$ = createInitializer(initializer_type_set, $1); }
+ | map_multimap_initializer                   { $$ = createInitializer(initializer_type_mapmultimap, $1); }
  ;
 
 map_multimap_initializer
-  : LBRACE map_multimap_initializer_list RBRACE
+  : LBRACE map_multimap_initializer_list RBRACE            { $$ = createMapMultimapInitializer($2); }
   ;
 
 map_multimap_initializer_list
-  : map_multimap_initializer_single
-  | map_multimap_initializer_list COMMA map_multimap_initializer_single
+  : map_multimap_initializer_single                                      { $$ = createMapMultimapInitializerList($1, 0); }
+  | map_multimap_initializer_list COMMA map_multimap_initializer_single  { $$ = createMapMultimapInitializerList($3, $1); }
   ;
 
 map_multimap_initializer_single
-  : expr COLON expr
+  : expr COLON expr                                        { $$ = createMapMultimapInitializerSingle($1, $3); }
   ;
 
 struct_initializer
-  : LBRACE assignment_stmt_list RBRACE
+  : LBRACE assignment_stmt_list RBRACE                     { $$ = createStructInitializer($2); }
   ;
 
 set_initializer
-  : LBRACKET LPAREN expr_list_ RPAREN RBRACKET
+  : LBRACKET LPAREN expr_list_ RPAREN RBRACKET             { $$ = createSetInitializer($3); }
   ;
 
 array_initializer
-  : LBRACE expr_list_ RBRACE
+  : LBRACE expr_list_ RBRACE                               { $$ = createArrayInitializer($2); }
   ;
 
 tuple_initializer
-  : LPAREN expr_list_ RPAREN
+  : LPAREN expr_list_ RPAREN                               { $$ = createTupleInitializer($2); }
   ;
 
 list_initializer
-  : LBRACKET expr_list_ RBRACKET
+  : LBRACKET expr_list_ RBRACKET                           { $$ = createListInitializer($2); }
   ;
 
 parameter_list

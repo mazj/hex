@@ -820,7 +820,7 @@ Initializer* createInitializer(int type, void* value) {
 			break;
 		case initializer_type_mapmultimap:
 			initializer->initializer_type = initializer_type_mapmultimap;
-			initializer->map_multimap_initializer = (MapMultimapInitializerList*)value;
+			initializer->map_multimap_initializer = (MapMultimapInitializer*)value;
 			break;
 		default:
 			AST_ERROR();

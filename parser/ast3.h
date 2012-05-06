@@ -835,12 +835,12 @@ typedef struct HexInitializer {
         initializer_type_mapmultimap                        /* map & multimap initializer */
     } initializer_type;
     union {
-        ListInitializer *list_initializer;                      /* list initializer */
-        ArrayInitializer *array_initializer;                    /* array initializer */
-        TupleInitializer *tuple_initializer;                    /* tuple initializer */
-        StructInitializer *struct_initializer;                  /* struct initializer */
-        SetInitializer *set_initialier;                         /* set initializer */
-        MapMultimapInitializerList *map_multimap_initializer;   /* map & multimap initializer */
+        ListInitializer *list_initializer;                  /* list initializer */
+        ArrayInitializer *array_initializer;                /* array initializer */
+        TupleInitializer *tuple_initializer;                /* tuple initializer */
+        StructInitializer *struct_initializer;              /* struct initializer */
+        SetInitializer *set_initialier;                     /* set initializer */
+        MapMultimapInitializer *map_multimap_initializer;   /* map & multimap initializer */
     };
 } Initializer;
 
@@ -1068,6 +1068,46 @@ typedef struct HexDecorator {
 // createDecorator() - construct an AST node of type Decorator.
 //===========================================================================
 Decorator* createDecorator(DecoratorList* decorator_list);
+
+
+/*
+ * Class declaration
+ */
+typedef struct HexClassDeclaration {
+    char *name;
+    ExprList* expr_list;
+} ClassDeclaration;
+
+
+//===========================================================================
+// createClassDeclaration() - construct an AST node of type ClassDeclaration.
+//===========================================================================
+ClassDeclaration *createClassDeclaration(char *name, ExprList* expr_list);
+
+
+/*
+ * Class access specifier
+ */
+typedef enum HexClassAccessSpecifier {
+    class_access_specifier_private,         /* private */
+    class_access_specifier_protected,       /* protected */
+    class_access_specifier_public           /* public */
+} ClassAccessSpecifier;
+
+
+/*
+ * Class section
+ */
+typedef struct HexClassSection {
+    int class_access_specifier;
+    Suite *suite;
+} ClassSection;
+
+
+//===========================================================================
+// createClassSection() - construct an AST node of type ClassSection.
+//===========================================================================
+ClassSection *createClassSection(int class_access_specifier, Suite *suite);
 
 
 /*
