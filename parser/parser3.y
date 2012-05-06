@@ -450,16 +450,28 @@ assignment
 expr
   : LITERAL                             { $$ = createPrimaryExpr(primary_expr_type_literal, $1); }
   | IDENTIFIER                          { $$ = createPrimaryExpr(primary_expr_type_identifier, $1); }
-  | expr tuple_initializer
-  | IDENTIFIER tuple_initializer
+  | expr tuple_initializer              {
+                                            int type = postfix_invocation_expr_with_args_type_expr;
+                                            $$ = createPostfixExpr(postfix_expr_type_invocation_with_args, type, $1, $2);
+                                        }
+  | IDENTIFIER tuple_initializer        {
+                                            int type = postfix_invocation_expr_with_args_type_identifier;
+                                            $$ = createPostfixExpr(postfix_expr_type_invocation_with_args, type, $1, $2);
+                                        }
   | expr list_initializer
   | IDENTIFIER list_initializer
-  | expr LPAREN RPAREN                  
-  | IDENTIFIER LPAREN RPAREN            { $$ = createPostfixInvocationExpr(postfix_expr_type_invocation, $1, 0); }
+  | expr LPAREN RPAREN                  {
+                                            int invocation_type = postfix_invocation_expr_type_expr;
+                                            $$ = createPostfixExpr(postfix_expr_type_invocation, invocation_type, $1, 0);
+                                        }
+  | IDENTIFIER LPAREN RPAREN            {
+                                            int invocation_type = postfix_invocation_expr_type_identifier;
+                                            $$ = createPostfixExpr(postfix_expr_type_invocation, invocation_type, $1, 0);
+                                        }
   | expr LBRACKET RBRACKET
   | IDENTIFIER LBRACKET RBRACKET
-  | expr INC_OP                         { $$ = createPostfixExpr(postfix_expr_type_postfix_inc, $1, 0); }
-  | expr DEC_OP                         { $$ = createPostfixExpr(postfix_expr_type_postfix_dec, $1, 0); }
+  | expr INC_OP                         { $$ = createPostfixExpr(postfix_expr_type_postfix_inc, -1, $1, 0); }
+  | expr DEC_OP                         { $$ = createPostfixExpr(postfix_expr_type_postfix_dec, -1, $1, 0); }
   | INC_OP expr                         { $$ = createUnaryExpr(unary_expr_type_prefix_inc, $2); }
   | DEC_OP expr                         { $$ = createUnaryExpr(unary_expr_type_prefix_dec, $2); }
   | expr MUL_OP expr                    { $$ = createMultiplicativeExpr(multiplicative_expr_type_mul, $1, $3); }
@@ -485,7 +497,7 @@ expr
   | expr OR expr                        { $$ = createLogicExpr(logic_expr_type_logic_or, $1, $3); }
   | expr ELLIPSIS expr                  { $$ = createRangeExpr($1, $3); }
   | IF expr THEN expr ELSE expr         
-  | expr DOT IDENTIFIER                 { $$ = createPostfixExpr(postfix_expr_type_accessor, $1, $3); }
+  | expr DOT IDENTIFIER                 { $$ = createPostfixExpr(postfix_expr_type_accessor, -1, $1, $3); }
   | WEAKREF expr                        { $$ = createWeakref($2); }
   | NOT expr                            { $$ = createUnaryExpr(unary_expr_type_not, $2); }
   | LOCK expr                           { $$ = createLockExpr(1, $2); }

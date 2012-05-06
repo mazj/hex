@@ -163,21 +163,35 @@ PostfixAccessorExpr* createPostfixAccessorExpr(Expr *caller, Expr* accessor);
  * Postfix invocation with args expression
  */
 typedef struct HexPostfixInvocationExpr {
-    char *invocation_name;
+    enum {
+        postfix_invocation_expr_type_identifier,
+        postfix_invocation_expr_type_expr
+    } postfix_invocation_expr_type;
+    union {
+        char *invocation_name;
+        Expr *invocation_expr;
+    };
 } PostfixInvocationExpr;
 
 
 //===========================================================================
 // createPostfixInvocationExpr() - construct an AST node of type PostfixInvocationExpr.
 //===========================================================================
-PostfixInvocationExpr* createPostfixInvocationExpr(char *invocation_name);
+PostfixInvocationExpr* createPostfixInvocationExpr(int type, void *invocation_src);
 
 
 /*
  * Postfix invocation with args expression
  */
 typedef struct HexPostfixInvocationWithArgsExpr {
-    Expr *expr;
+    enum {
+        postfix_invocation_expr_with_args_type_identifier,
+        postfix_invocation_expr_with_args_type_expr  
+    } postfix_invocation_expr_with_args_type;
+    union {
+        char *invocation_name;
+        Expr *invocation_expr;
+    };
     ExprList *arg_list;
 } PostfixInvocationWithArgsExpr;
 
@@ -185,7 +199,7 @@ typedef struct HexPostfixInvocationWithArgsExpr {
 //===========================================================================
 // createPostfixInvocationWithArgsExpr() - construct an AST node of type PostfixInvocationWithArgsExpr.
 //===========================================================================
-PostfixInvocationWithArgsExpr* createPostfixInvocationWithArgsExpr(Expr *expr, ExprList* arg_list);
+PostfixInvocationWithArgsExpr* createPostfixInvocationWithArgsExpr(int type, void *value, ExprList* arg_list);
 
 
 /*
@@ -226,7 +240,7 @@ typedef struct HexPostfixExpr {
 //===========================================================================
 // createPostfixExpr() - construct an AST node of type PostfixExpr.
 //===========================================================================
-Expr* createPostfixExpr(int type, void* value, void* value1);
+Expr* createPostfixExpr(int type, int type2, void* value, void* value1);
 
 
 /*
