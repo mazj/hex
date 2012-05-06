@@ -496,7 +496,7 @@ expr
   | expr AND expr                       { $$ = createLogicExpr(logic_expr_type_logic_and, $1, $3); }
   | expr OR expr                        { $$ = createLogicExpr(logic_expr_type_logic_or, $1, $3); }
   | expr ELLIPSIS expr                  { $$ = createRangeExpr($1, $3); }
-  | IF expr THEN expr ELSE expr         
+  | IF expr THEN expr ELSE expr         { $$ = createConditionalExpr($2, $4, $6); }
   | expr DOT IDENTIFIER                 { $$ = createPostfixExpr(postfix_expr_type_accessor, -1, $1, $3); }
   | WEAKREF expr                        { $$ = createWeakref($2); }
   | NOT expr                            { $$ = createUnaryExpr(unary_expr_type_not, $2); }

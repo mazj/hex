@@ -1078,6 +1078,28 @@ Decorator* createDecorator(DecoratorList* decorator_list) {
 
 
 //===========================================================================
+// createClassDeclaration() - construct an AST node of type ClassDeclaration.
+//===========================================================================
+ClassDeclaration *createClassDeclaration(char *name, ExprList* expr_list) {
+	ClassDeclaration *class_declaration = MALLOC(ClassDeclaration);
+	class_declaration->name = name;
+	class_declaration->expr_list = expr_list;
+	return class_declaration;
+}
+
+
+//===========================================================================
+// createClassSection() - construct an AST node of type ClassSection.
+//===========================================================================
+ClassSection *createClassSection(int class_access_specifier, Suite *suite) {
+	ClassSection *class_section = MALLOC(ClassSection);
+	class_section->class_access_specifier = class_access_specifier;
+	class_section->suite = suite;
+	return class_section;
+}
+
+
+//===========================================================================
 // createModule() - construct an AST node of type Module.
 //===========================================================================
 Module* createModule(char *module_identifier) {
