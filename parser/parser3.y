@@ -48,6 +48,17 @@ yydebug = 1;
   struct HexIterable *hex_iterable;
   struct HexWhileStmt *hex_while_stmt;
   struct HexForStmt *hex_for_stmt;
+  struct HexCatchStmt *hex_catch_stmt;
+  struct HexCatchStmtGroup *hex_catch_stmt_group;
+  struct HexFinallyStmt *hex_finally_stmt;
+  struct HexTryStmt *hex_try_stmt;
+  struct HexCompoundStmt* hex_compound_stmt;
+  struct HexReturnStmt *hex_return_stmt;
+  struct HexControlSimpleStmt *hex_control_simple_stmt;
+  struct HexSimpleStmt *hex_simple_stmt;
+  struct HexSimpleStmtList *hex_simple_stmt_list;
+  struct HexStmt *hex_stmt;
+  struct HexStmtGroup *hex_stmt_group;
   struct HexSuite *hex_suite;
 };
 
@@ -170,6 +181,17 @@ yydebug = 1;
 %type <hex_iterable> iterable
 %type <hex_while_stmt> while_stmt
 %type <hex_for_stmt> for_stmt
+%type <hex_catch_stmt> catch_stmt
+%type <hex_catch_stmt_group> catch_stmt_group
+%type <hex_finally_stmt> finally_stmt
+%type <hex_try_stmt> try_stmt
+%type <hex_compound_stmt> compound_stmt
+%type <hex_return_stmt> return_stmt
+%type <hex_control_simple_stmt> control_simple_stmt
+%type <hex_simple_stmt> simple_stmt
+%type <hex_simple_stmt_list> simple_stmt_list
+%type <hex_stmt> stmt
+%type <hex_stmt_group> stmt_group
 %type <hex_suite> suite
 
 %error-verbose
@@ -189,82 +211,74 @@ input/* empty line */
   ;
 
 suite
-  : NEWLINE INDENT stmt_group NEWLINE DEDENT %prec SUITE_PREC
-  | NEWLINE INDENT stmt_group NEWLINE
+  : NEWLINE INDENT stmt_group NEWLINE DEDENT %prec SUITE_PREC      { $$ =  createSuite($3); }
+  | NEWLINE INDENT stmt_group NEWLINE                              { $$ =  createSuite($3); }
   ;
 
 stmt_group
-  : stmt
-  | stmt_group NEWLINE stmt
+  : stmt                                           { $$ = createStmtGroup($1, 0); }
+  | stmt_group NEWLINE stmt                        { $$ = createStmtGroup($3, $1); }
   ;
 
 stmt
-  : simple_stmt_list
-  | compound_stmt
-  | control_simple_stmt
+  : simple_stmt_list                               { $$ = createStmt(stmt_type_simple_stmt_list, $1); }
+  | compound_stmt                                  { $$ = createStmt(stmt_type_compound_stmt, $1); }
+  | control_simple_stmt                            { $$ = createStmt(stmt_type_control_simple_stmt, $1); }
   ;
 
 simple_stmt_list
-  : simple_stmt
-  | simple_stmt_list SEMICOLON simple_stmt
+  : simple_stmt                                    { $$ = createSimpleStmtList($1, 0); }
+  | simple_stmt_list SEMICOLON simple_stmt         { $$ = createSimpleStmtList($3, $1); }
   ;
 
 simple_stmt
-  : expr_list_
-  | declaration
-  | assignment_stmt
-  | import_stmt
-  | func_declaration
-  | if_stmt_simple
-  | decorator
+  : expr_list_                                     { $$ = createSimpleStmt(simple_stmt_type_expr_list, $1); }
+  | declaration                                    { $$ = createSimpleStmt(simple_stmt_type_declaration, $1); }
+  | assignment_stmt                                { $$ = createSimpleStmt(simple_stmt_type_assignment_stmt, $1); }
+  | import_stmt                                    { $$ = createSimpleStmt(simple_stmt_type_import_stmt, $1); }
+  | func_declaration                               { $$ = createSimpleStmt(simple_stmt_type_func_declaration, $1); }
+  | if_stmt_simple                                 { $$ = createSimpleStmt(simple_stmt_type_if_stmt_simple, $1); }
+  | decorator                                      { $$ = createSimpleStmt(simple_stmt_type_decorator, $1); }
   ;
 
 control_simple_stmt
-  : return_stmt
-  | break_stmt
-  | continue_stmt
+  : return_stmt                                    { $$ = createControlSimpleStmt(control_simple_stmt_return, $1); }
+  | BREAK NEWLINE                                  { $$ = createControlSimpleStmt(control_simple_stmt_break, 0); }
+  | CONTINUE NEWLINE                               { $$ = createControlSimpleStmt(control_simple_stmt_continue, 0); }
   ;
 
 return_stmt
-  : RETURN NEWLINE
-  | RETURN expr_list_ NEWLINE
-  ;
-
-break_stmt
-  : BREAK NEWLINE
-  ;
-
-continue_stmt
-  : CONTINUE NEWLINE
+  : RETURN NEWLINE                                 { $$ = createReturnStmt(return_stmt_type_none, 0); }
+  | RETURN expr_list_ NEWLINE                      { $$ = createReturnStmt(return_stmt_type_none, $2); }
   ;
 
 compound_stmt
-  : if_stmt
-  | while_stmt
-  | try_stmt
-  | for_stmt
-  | func_definition
+  : if_stmt                                        { $$ = createCompoundStmt(compound_stmt_type_if_stmt, $1); }
+  | while_stmt                                     { $$ = createCompoundStmt(compound_stmt_type_while_stmt, $1); }
+  | try_stmt                                       { $$ = createCompoundStmt(compound_stmt_type_try_stmt, $1); }
+  | for_stmt                                       { $$ = createCompoundStmt(compound_stmt_type_for_stmt, $1); }
+  | func_definition                                { $$ = createCompoundStmt(compound_stmt_type_func_def, $1); }
   ;
 
 try_stmt
-  : TRY COLON suite catch_stmt_group
-  | TRY COLON suite catch_stmt_group finally_stmt
-  | TRY COLON suite finally_stmt
+  : TRY COLON suite catch_stmt_group               { $$ = createTryStmt($3, $4, 0); }
+  | TRY COLON suite catch_stmt_group finally_stmt  { $$ = createTryStmt($3, $4, $5); }
+  | TRY COLON suite finally_stmt                   { $$ = createTryStmt($3, 0, $4); }
   ;
 
 finally_stmt
-  : FINALLY COLON suite
+  : FINALLY COLON suite                            { $$ = createFinallyStmt($3); }
   ;
 
 catch_stmt_group
-  : catch_stmt
-  | catch_stmt_group catch_stmt
+  : catch_stmt                                     { $$ = createCatchStmtGroup($1, 0); }
+  | catch_stmt_group catch_stmt                    { $$ = createCatchStmtGroup($2, $1); }
   ;
 
 catch_stmt
-  : CATCH COLON suite
-  | CATCH LPAREN declaration RPAREN COLON suite
-  | CATCH LPAREN IDENTIFIER RPAREN COLON suite
+  : CATCH COLON suite                              { $$ = createCatchStmt(catch_stmt_type_none, 0, $3); }
+  | CATCH LPAREN declaration RPAREN COLON suite    { $$ = createCatchStmt(cast_expr_type_declaration, $3, $6); }
+  | CATCH LPAREN IDENTIFIER RPAREN COLON suite     { $$ = createCatchStmt(cast_expr_type_identifier, $3, $6); }
   ;
 
 while_stmt
