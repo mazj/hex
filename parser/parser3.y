@@ -458,8 +458,14 @@ expr
                                             int type = postfix_invocation_expr_with_args_type_identifier;
                                             $$ = createPostfixExpr(postfix_expr_type_invocation_with_args, type, $1, $2);
                                         }
-  | expr list_initializer
-  | IDENTIFIER list_initializer
+  | expr list_initializer               {
+                                             int type = postfix_index_expr_type_expr;
+                                             $$ = createPostfixExpr(postfix_expr_type_index, type, $1, $2);
+                                        }
+  | IDENTIFIER list_initializer         {
+                                             int type = postfix_index_expr_type_identifier;
+                                             $$ = createPostfixExpr(postfix_expr_type_index, type, $1, $2);
+                                        }
   | expr LPAREN RPAREN                  {
                                             int invocation_type = postfix_invocation_expr_type_expr;
                                             $$ = createPostfixExpr(postfix_expr_type_invocation, invocation_type, $1, 0);
@@ -468,8 +474,14 @@ expr
                                             int invocation_type = postfix_invocation_expr_type_identifier;
                                             $$ = createPostfixExpr(postfix_expr_type_invocation, invocation_type, $1, 0);
                                         }
-  | expr LBRACKET RBRACKET
-  | IDENTIFIER LBRACKET RBRACKET
+  | expr LBRACKET RBRACKET              {
+                                             int type = postfix_index_expr_type_expr;
+                                             $$ = createPostfixExpr(postfix_expr_type_index, type, $1, 0);
+                                        }
+  | IDENTIFIER LBRACKET RBRACKET        {
+                                             int type = postfix_index_expr_type_identifier;
+                                             $$ = createPostfixExpr(postfix_expr_type_index, type, $1, 0);
+                                        }
   | expr INC_OP                         { $$ = createPostfixExpr(postfix_expr_type_postfix_inc, -1, $1, 0); }
   | expr DEC_OP                         { $$ = createPostfixExpr(postfix_expr_type_postfix_dec, -1, $1, 0); }
   | INC_OP expr                         { $$ = createUnaryExpr(unary_expr_type_prefix_inc, $2); }
@@ -504,8 +516,7 @@ expr
   | UNLOCK expr                         { $$ = createLockExpr(0, $2); }
   | BITWISE_NOT expr                    { $$ = createUnaryExpr(unary_expr_type_bitwise_not, $2); }
   | LPAREN IDENTIFIER RPAREN expr       { $$ = createCastExpr(cast_expr_type_custom_type, $2, $4); }
-  | LPAREN type_specifier RPAREN expr   { $$ = createCastExpr(cast_expr_type_type_specifier, &$2, $4); }
-  | LPAREN expr RPAREN
+  | LPAREN type_specifier RPAREN expr   { $$ = createCastExpr(cast_expr_type_type_specifier, &$2, $4); }                  
   | THIS                                { $$ = createExpr(expr_type_this, 0); }
   | BASE                                { $$ = createExpr(expr_type_base, 0); }
   ;

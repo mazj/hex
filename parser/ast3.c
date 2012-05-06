@@ -81,11 +81,24 @@ Expr* createPrimaryExpr(int type, void* value) {
 //===========================================================================
 // createPostfixIndexExpr() - construct an AST node of type PostfixIndexExpr.
 //===========================================================================
-PostfixIndexExpr* createPostfixIndexExpr(Expr *expr, Expr* index_expr) {
+PostfixIndexExpr* createPostfixIndexExpr(int type, void *value, ListInitializer* indeces) {
 	PostfixIndexExpr *postfix_index_expr = MALLOC(PostfixIndexExpr);
 
-	postfix_index_expr->expr = expr;
-	postfix_index_expr->index_expr = index_expr;
+	switch(type) {
+		case postfix_index_expr_type_identifier:
+			postfix_index_expr->postfix_index_expr_type = postfix_index_expr_type_identifier;
+			postfix_index_expr->identifier = (char*)value;
+			postfix_index_expr->indeces = indeces;
+			break;
+		case postfix_index_expr_type_expr:
+			postfix_index_expr->postfix_index_expr_type = postfix_index_expr_type_expr;
+			postfix_index_expr->index_expr = (Expr*)value;
+			postfix_index_expr->indeces = indeces;
+			break;
+		default:
+			AST_ERROR();
+			break;
+	}
 
 	return postfix_index_expr;
 }
@@ -163,7 +176,7 @@ Expr* createPostfixExpr(int type, int type2, void* value, void* value1) {
 	switch(type) {
 		case postfix_expr_type_index:
 			postfix_expr->postfix_expr_type = postfix_expr_type_index;
-			PostfixIndexExpr* postfix_index_expr = createPostfixIndexExpr((Expr*)value, (Expr*)value1);
+			PostfixIndexExpr* postfix_index_expr = createPostfixIndexExpr(type2, value, (ListInitializer*)value1);
 			postfix_expr->postfix_expr_index_expr = postfix_index_expr;
 			break;
 		case postfix_expr_type_postfix_inc:
@@ -181,13 +194,13 @@ Expr* createPostfixExpr(int type, int type2, void* value, void* value1) {
 			break;
 		case postfix_expr_type_invocation:
 			postfix_expr->postfix_expr_type = postfix_expr_type_invocation;
-			//PostfixInvocationExpr* postfix_invocation_expr = createPostfixInvocationExpr((char*)value);
-			// postfix_expr->postfix_expr_invocation_expr = postfix_invocation_expr;
+			PostfixInvocationExpr* postfix_invocation_expr = createPostfixInvocationExpr(type2, value);
+			postfix_expr->postfix_expr_invocation_expr = postfix_invocation_expr;
 		case postfix_expr_type_invocation_with_args:
 			postfix_expr->postfix_expr_type = postfix_expr_type_invocation_with_args;
-			// PostfixInvocationWithArgsExpr *postfix_invocation_with_args_expr;
-			// postfix_invocation_with_args_expr = createPostfixInvocationWithArgsExpr((Expr*)value, (ExprList*)value1);
-			// postfix_expr->postfix_expr_invocation_with_args_expr = postfix_invocation_with_args_expr;
+			PostfixInvocationWithArgsExpr *postfix_invocation_with_args_expr;
+			postfix_invocation_with_args_expr = createPostfixInvocationWithArgsExpr(type2, value, (ExprList*)value1);
+			postfix_expr->postfix_expr_invocation_with_args_expr = postfix_invocation_with_args_expr;
 		default:
 			AST_ERROR();
 			break;

@@ -27,6 +27,12 @@ typedef struct HexExprList ExprList;
 
 
 /*
+ * List initializer
+ */
+typedef struct HexListInitializer ListInitializer;
+
+
+/*
  * Lambda expression
  */
 typedef struct HexLambdaExpr LambdaExpr;
@@ -133,15 +139,22 @@ Expr* createPrimaryExpr(int type, void* value);
  * Postfix index expression
  */
 typedef struct HexPostfixIndexExpr {
-    Expr *expr;
-    Expr *index_expr;
+    enum {
+        postfix_index_expr_type_identifier,
+        postfix_index_expr_type_expr
+    } postfix_index_expr_type;
+    union {
+        char *identifier;
+        Expr *index_expr;
+    };
+    ListInitializer *indeces;
 } PostfixIndexExpr;
 
 
 //===========================================================================
 // createPostfixIndexExpr() - construct an AST node of type PostfixIndexExpr.
 //===========================================================================
-PostfixIndexExpr* createPostfixIndexExpr(Expr *expr, Expr* index_expr);
+PostfixIndexExpr* createPostfixIndexExpr(int type, void *value, ListInitializer* indeces);
 
 
 /*
@@ -716,9 +729,9 @@ ParameterList* createParameterList(Parameter *parameter, ParameterList* parent_l
 /*
  * List initializer
  */
-typedef struct HexListInitializer {
+struct HexListInitializer {
     ExprList *expr_list;
-} ListInitializer;
+};
 
 
 //===========================================================================
