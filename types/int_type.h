@@ -5,9 +5,7 @@
 #ifndef HEX_INT_OBJ_H
 #define HEX_INT_OBJ_H
 
-#include <limits.h>  /* ULONG_MAX, LONG_MAX, LONG_MIN */
-#include <string.h>  /* size_t */
-
+#include "hex.h"
 #include "object.h"
 
 #ifdef __cplusplus
