@@ -62,7 +62,7 @@ HexObject* HexIntObj_FromLong(long);
 /*
  * Get a HexObject from size_t.
  */
-HexObject* HexIntObj_FromSize_t(size_t);
+HexObject* HexIntObj_FromSize_t(Hex_size_t);
 
 
 /*
