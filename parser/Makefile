@@ -1,6 +1,12 @@
 CC=gcc
 CFLAGS=-Wno-implicit
 
+tmp_unittest: tmp_unittest.c tmp.o esb.o
+	$(CC) $(CFLAGS) tmp_unittest.c tmp.o esb.o -o tmp_unittest
+
+tmp.o: esb.o tmp.c
+	$(CC) $(CFLAGS) -c esb.o tmp.c
+
 a.out:
 	gcc sorted_string_list.h bst.h utils.h strnutils.h map.h unittest.h queue.h sorted_string_list_unittest.c
 

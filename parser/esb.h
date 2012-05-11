@@ -49,6 +49,8 @@ void esb_constructor(esb_s *esb);
 /*  The string is freed, contents of *data set to zeroes. */
 void esb_destructor(esb_s *esb);
 
+/* reverse the string. */
+void esb_reverse(esb_s *esb);
 
 /* To get all paths in the code tested, this sets the
    allocation/reallocation to the given value, which can be quite small

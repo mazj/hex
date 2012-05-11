@@ -155,6 +155,27 @@ esb_destructor(esb_s *esb)
 }
 
 void
+esb_reverse(esb_s *esb)
+{
+    if(!esb) return;
+
+    char *str = esb_get_string(esb);
+
+    if(!str) return;
+
+    int i = 0;
+    int j = strlen(str) - 1;
+
+    while(i < j) {
+        char tmp = str[i];
+        str[i] = str[j];
+        str[j] = tmp;
+        i++;
+        j--;
+    }
+}
+
+void
 esb_set_alloc_size(size_t size)
 {
     esb_alloc_size = size;
