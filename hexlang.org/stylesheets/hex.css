@@ -2,16 +2,18 @@ body {
 
     background: #ffffff;
     margin: 0px;
+    padding: 0px;
 }
 
 div#main_container {
 
     width: 1024px;
+    height: 800px;
     padding: 0px 0px 0px 0px;
     margin: 0px auto;
     border-width: 1px;
-    border-background: red;
     border-style:solid;
+    border-color: red;
 }
 
 div#title_sec {
@@ -38,119 +40,38 @@ div#subtitle {
 
     position: relative;
     top: -55px;
-    left: 360px;
+    left: -40px;
+    width: 220px;
     padding: 0px 0px 0px 0px;
     margin: 0px auto;
 }
 
 div#strip {
 
-    height: 5px;
+    height: 2px;
     background: black;
 }
 
-div.decoration {
+div#left_panel {
 
-    width: 150px;
-    height: 150px;
-    background: #F76541;
-    opacity: 0.5;
+    float: left;
+    width: 180px;
+    margin-left: -1024px;
+    padding: 0px;
+    border-width: 1px;
+    border-style:solid;
+    border-color: blue;
+    background: black;
 }
 
-div.decoration a {
+div#content-wrapper{
 
-    position: relative;
-    top: 25px;
-    left: 50px;
-    font-family: Courier;
-    font-size: 100px;
-    color: #fff;
+    float: left;
+    width: 100%;
 }
 
-div#left_decoration {
+div#right_panel {
 
-    position: fixed;
-    top: 300px;
-    left: 0px;
-    border-top-right-radius: 20%;
-    border-bottom-right-radius: 20%;
+    margin-left: 200px;
 }
 
-div#right_decoration {
-
-    position: fixed;
-    top: 300px;
-    right: 0px;
-    border-top-left-radius: 20%;
-    border-bottom-left-radius: 20%;
-}
-
-div.paragraph {
-
-    width: 500px;
-    margin: 50px 0px 50px 0px;
-    font-family: Times New Roman;
-    font-size: 18px;
-    color: #25587E;
-    line-height: 150%;
-}
-
-div.paragraph a {
-
-    font-size: 18px;
-    color: #25587E;
-}
-
-div.paragraph_header {
-
-    font-family: Monospace;
-    font-size: 60px;
-    color: #666;
-    margin-top: 20px;
-    margin-bottom: -20px;
-}
-
-div.code_paragraph {
-
-    width: 800px;
-    font-family: Monospace;
-    font-size: 14px;
-    font-style: italic;
-    color: #666;
-    line-height: 120%;
-}
-
-span.code_keyword {
-
-    color: #CA226B;
-    font-weight: bold;
-}
-
-span.code_string {
-
-    color: #C34A2C;
-    font-style: italic;
-}
-
-span.first_letter {
-
-    font-size: 50px;
-    color: #817679;
-}
-
-div#slider-wrapper {
-
-    position: relative;
-    top: 80px;
-    left: 10px;
-}
-
-div#footer {
-
-    position: absolute;
-    bottom: 10px;
-    left: 0px;
-    font-family: monospace;
-    font-size: 14px;
-    color: #413839;
-}
