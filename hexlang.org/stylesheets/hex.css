@@ -23,7 +23,7 @@ div#title_sec {
     height: 200px;
     top: 0px;
     left: 0px;
-    font-family: "Courier New";
+    font-family: Arial;
     font-size: 18px;
 }
 
@@ -40,10 +40,23 @@ div#subtitle {
 
     position: relative;
     top: -55px;
-    left: -40px;
+    left: -20px;
     width: 220px;
     padding: 0px 0px 0px 0px;
     margin: 0px auto;
+}
+
+div#experimental {
+
+    position: relative;
+    top: -55px;
+    left: -20px;
+    width: 220px;
+    padding: 0px 0px 0px 0px;
+    margin: 0px auto;
+    font-family: "Courier New";
+    font-size: 18px;
+    color: #800000;
 }
 
 div#strip {
@@ -55,13 +68,14 @@ div#strip {
 div#left_panel {
 
     float: left;
-    width: 180px;
+    width: 260px;
     margin-left: -1024px;
+    margin-right: 20px;
     padding: 0px;
     border-width: 1px;
     border-style:solid;
     border-color: blue;
-    background: black;
+    border-color: orange;
 }
 
 div#content-wrapper{
@@ -72,6 +86,49 @@ div#content-wrapper{
 
 div#right_panel {
 
-    margin-left: 200px;
+    margin-left: 280px;
+}
+
+ul#ul_nav {
+
+    list-style-type: none;
+    margin: 20px;
+    padding: 0px;
+    border-right: 1px solid #827B60;
+}
+
+ul#ul_nav li {
+
+    display: block;
+    margin: 10px;
+    font-family: "Courier New";
+    font-size: 14px;
+}
+
+ul#ul_nav li a {
+
+    color: #827B60;
+    text-decoration: none;
+}
+
+ul#url_nav li a:hover {
+
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+div.paragraph {
+
+    margin: 20px 10px 20px 10px;
+    font-family: Times New Roman;
+    font-size: 18px;
+    color: #616D7E;
+    line-height: 150%;
+}
+
+div#intro_para {
+
+    font-family: "Courier New";
+    font-size: 14px;
 }
 
