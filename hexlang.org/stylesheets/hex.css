@@ -87,6 +87,7 @@ div#content-wrapper{
 div#right_panel {
 
     margin-left: 280px;
+    border: 1px solid #827B60;
 }
 
 ul#ul_nav {
@@ -132,3 +133,26 @@ div#intro_para {
     font-size: 14px;
 }
 
+div.section_paragraph {
+
+    margin: 20px 10px 0px 10px;
+    border: 1px solid #827B60;
+}
+
+div.section_title {
+
+    margin: 20px 10px 20px 10px;
+    font-family: Arial;
+    font-size: 20px;
+    color: #616D7E;
+    line-height: 150%;
+}
+
+div.section_content {
+
+    margin: 0px 10px 10px 10px;
+    font-family: Arial;
+    font-size: 14px;
+    color: #616D7E;
+    line-height: 180%;
+}
