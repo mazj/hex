@@ -202,6 +202,32 @@
                 </div>
             </div>
 
+             <div class="section_paragraph">
+                <div class="section_title">
+                    Deferred Evaluation
+                </div>
+                <div class="section_content">
+                    <span class="section_first_letter">T</span>he idea of deferred evaluation is similar to that of lazy initialization. Sometime when an object is assigned a value that is the return type of a function or method, it might be not ideal to process that invocation right away because it might be computationally expensive, thus, the invocation can be delayed when that object is ever used.
+                    Use the defer keyword right before a function invocation to defer its execution.
+                    <br/><br/>
+                    <div class="section_code">
+                        <span class="comment">
+                            // An object declared and assigned to null
+                        </span><br/>
+                        obj = <span class="keyword">null</span>
+                        <br/><br/>
+                        <span class="comment">
+                            // Defer some very expensive operation<br/>
+                            // The function is not invoked yet
+                        </span><br/>
+                        obj = <span class="keyword">defer</span> someVeryExpensiveOperation()
+                    </div>
+                </div>
+                <div class="section_back_to_top">
+                    <a>back to top</a>
+                </div>
+            </div>
+
         </div> <!--right_panel-->
     </div> <!--content-wrapper-->
 
