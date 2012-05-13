@@ -421,6 +421,69 @@
                 </div>
             </div> <!-- Strong vs. Weak References -->
 
+            <div class="section_paragraph">
+                <div class="section_title">
+                    Compiler Property
+                </div>
+                <div class="section_content">
+                    <span class="section_first_letter">A</span> compiler property is an annotation in the 
+                    code that instructs the HEX compiler to perform certain actions on the code 
+                    declared right below the annotation itself.
+                    <br/><br/>
+                    Compiler properties can be used to enforce clean and concise code by reducing 
+                    the amount of boilerplate code that developers have to write.
+                    <br/><br/>
+                    A compiler property has the form of <span class="italic">#property_name=property_value</span>, 
+                    and a compiler property annotation can have multiple compiler properties listed together, 
+                    each separated by a comma.
+                    <br/><br/>
+                    The example below illustrates the use of compiler property to generate a pair of 
+                    getters and setters for a class member.
+                    <br/><br/>
+                    <div class="section_code">
+                        [#getter=yes, #setter=yes]
+                        <br/>
+                        <span class="keyword">string</span> name
+                    </div>
+                </div>
+                <div class="section_back_to_top">
+                    <a>back to top</a>
+                </div>
+            </div> <!-- Compiler Property -->
+
+            <div class="section_paragraph">
+                <div class="section_title">
+                    Attribute
+                </div>
+                <div class="section_content">
+                    <span class="section_first_letter">A</span>ttributes are also annotation in the code that 
+                    specify certain behaviours of the code that are declared right below the annotation itself. 
+                    However, unlike compiler properties that happen at compile time, 
+                    attributes annotate behaviours that happen at runtime.
+                    <br/><br/>
+                    Attributes are useful when additional specific features are desired in the code 
+                    without modifications on existing code.
+                    <br/><br/>
+                    An attribute has the form of <span class="italic">@expression</span>, 
+                    and an attribute annotation can have 
+                    multiple attributes listed together, each separated by a comma.
+                    <br/><br/>
+                    The example below illustrates the use of attribute to specify a for loop to run with 
+                    parallelism enabled, and validation code on each element in the list.
+                    <br/><br/>
+                    <div class="section_code">
+                        [@for_parallel=yes, @ValidateElement(element)]
+                        <br/>
+                        &nbsp;&nbsp;<span class="keyword">for</span> element <span class="keyword">in</span> elements:
+                        <br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;doCrazyComputation(element)
+                    </div>
+                </div>
+                <div class="section_back_to_top">
+                    <a>back to top</a>
+                </div>
+            </div> <!-- Attribute -->
+
         </div> <!--right_panel-->
     </div> <!--content-wrapper-->
 
@@ -441,7 +504,8 @@
             <li><a href="">Interface</a></li>
             <li><a href="">Task</a></li>
             <li><a href="">Strong vs. Weak References</a></li>
-            <li><a href="">Compiler Properties and Attributes</a></li> 
+            <li><a href="">Compiler Property</a></li>
+            <li><a href="">Attribute</a><li>
         </ul>
     </div>
 

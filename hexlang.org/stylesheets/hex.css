@@ -166,6 +166,11 @@ div.section_code {
     color: black;
 }
 
+span.italic {
+
+    font-style: italic;
+}
+
 span.code {
 
     font-family: "Courier New";
