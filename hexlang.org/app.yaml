@@ -13,6 +13,9 @@ handlers:
 - url: /images
   static_dir: images
 
+- url: /docs
+  static_dir: docs
+
 - url: /.*
   static_files: index.html
   upload: index.html
