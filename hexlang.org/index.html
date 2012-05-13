@@ -19,11 +19,16 @@
 
     <div id="content-wrapper">
         <div id="right_panel">
-            <div class="paragraph" id="intro_para">
-                  HEX is a multi-paradigm programming language that supports both static types and dynamic types,
-                  designed with the core principles of simplicity, readability, versatility and scalability
-                  to allow developers to create a diversity of types of computer programs with modern features and
-                  succinct syntax and semantics that are built into the core of the language construct.
+            <div class="section_paragraph">
+                <div class="section_title">
+                    Language Overview
+                </div>
+                <div class="section_content">
+                    <span class="section_first_letter">H</span>EX is a multi-paradigm programming language that supports both static and dynamic types, and was designed with the core principles of simplicity, readability, versatility and scalability to allow developers to create a diversity of types of computer programs with modern language features, succinct syntax and semantics that are built into the core of the language construct.
+                </div>
+                <div class="section_back_to_top">
+                    <a>back to top</a>
+                </div>
             </div>
 
             <div class="section_paragraph">
@@ -31,9 +36,108 @@
                     Design Philosophies
                 </div>
                 <div class="section_content">
-                    HEX's syntax and semantics resembles a lot of the modern programming languages that you’ve probably heard or even used. For example, HEX has a indented syntax very much like Python. It supports objected-oriented programming with class and struct definitions very much like C++ and Java. It utilizes basic control statements such as if, else if, switch, and loop types such as for, while and do while just like pretty much every other languages out there. However, HEX does have its own syntax and semantics for aspects of the language that might not seen familiar to you, which you will discover as you read along this document.
+                    <span class="section_first_letter">H</span>EX syntax and semantics resembles a lot of the modern programming languages that you've probably heard or even used. For example, HEX has a indented syntax very much like Python. It supports objected-oriented programming with class and struct definitions very much like C++ and Java. It utilizes basic control statements such as if, , and loop types such as for, while and do while just like pretty much every other languages out there. However, HEX does have its own syntax and semantics for aspects of the language that might not seen familiar to you, which you will discover as you read along this document.
+                </div>
+                <div class="section_back_to_top">
+                    <a>back to top</a>
                 </div>
             </div>
+
+            <div class="section_paragraph">
+                <div class="section_title">
+                    Optional Typing
+                </div>
+                <div class="section_content">
+                    <span class="section_first_letter">H</span>EX supports both static and dynamics typed objects, and the two can be mixed together in the same code. While dynamic types offer the simplicity of code and efficiency, static types allows applications to be safer, modular and complex, and supports high-level features such as generics and interfaces. The use of either one or both types of typing mode depends on the personal preference and the nature of the application.
+                </div>
+                <div class="section_back_to_top">
+                    <a>back to top</a>
+                </div>
+            </div>
+
+            <div class="section_paragraph">
+                <div class="section_title">
+                    Data Structures
+                </div>
+                <div class="section_content">
+                    <span class="section_first_letter">D</span>ata structures supported by HEX.
+                    <br/><br/>
+                    <div class="section_code">
+                        <span class="keyword">string</span> name = <span class="string">"wiasf"</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="comment">// immutable string</span><br/>
+                    </div>
+                    <div class="section_code">
+                        <span class="keyword">int</span> numbers[] = {1, 2, 3, 4, 5}
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="comment">// immutable array</span><br/>
+                    </div>
+                    <div class="section_code">
+                        fruits = {<span class="string">"apple"</span>,
+                        <span class="string">"orange"</span>,
+                        <span class="string">"banana"</span>}
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="comment">// mutable list</span><br/>
+                    </div>
+                    <div class="section_code">
+                        languages = (<span class="string">"HEX"</span>,
+                        <span class="string">"Python"</span>,
+                        <span class="string">"Java"</span>)
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="comment">// tuple</span><br/>
+                    </div>
+                    <div class="section_code">
+                        languages = {name =
+                        <span class="string">"John Smith"</span>,
+                        email =
+                        <span class="string">"johns@gmail.com"</span>}
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="comment">// mutable struct</span><br/>
+                    </div>
+                    <div class="section_code">
+                        primes = ([1, 2, 3, 5, 7, 11, 13, 17])
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="comment">// set</span><br/>
+                    </div>
+                    <div class="section_code">
+                        contacts = {<span class="string">"David"</span> : 5197834212,
+                        <span class="string">"John"</span> : 4167349383}
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="comment">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// map
+                        </span><br/>
+                    </div>
+                    <div class="section_code">
+                        fruits = {<span class="string">"apple"</span> : (
+                        <span class="string">"sweet"</span>, <span class="string">"red"</span>),
+                        <span class="string">"orange"</span> : (
+                        <span class="string">"sour"</span>, <span class="string">"orange"</span>)}
+                        <span class="comment">// multimap</span><br/>
+                    </div>
+                </div>
+                <div class="section_back_to_top">
+                    <a>back to top</a>
+                </div>
+            </div>
+
         </div> <!--right_panel-->
     </div> <!--content-wrapper-->
 
@@ -43,7 +147,7 @@
             <li><a href="#tutorial">HEX specificiation</a></li>
             <li><a href="">Language Overview</a></li>
             <li><a href="">Design Philosophies</a></li>
-            <li><a href="">Static vs. Dynamic Typing</a></li>
+            <li><a href="">Optional Typing</a></li>
             <li><a href="">Data Structures</a></li>
             <li><a href="">Variables</a></li>
             <li><a href="">Functions</a></li>
