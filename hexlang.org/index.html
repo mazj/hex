@@ -237,8 +237,8 @@
                     <br/><br/>
                     All lambda expressions use the lambda operator =>. The left operands are the input parameters that are passed to the lambda expression. At the right side of the operator are blocks of expressions and statements that are to be evaluated and executed when the lambda expression is invoked.
                     <br/><br/>
-                    The <span class="keyword">=></span> operator has the same precedence as the assignment operator
-                    <span class="keyword">=</span> and is right-associative.
+                    The <span class="code">=></span> operator has the same precedence as the assignment operator
+                    <span class="code">=</span> and is right-associative.
                     <br/><br/>
                     <div class="section_code">
                         <span class="comment">
@@ -256,6 +256,145 @@
                 </div>
             </div>
 
+            <div class="section_paragraph">
+                <div class="section_title">
+                    Class
+                </div>
+                <div class="section_content">
+                    <span class="section_first_letter">A</span> class abstractly defines and encapsulates a set of data members and their collective behaviours.
+                    <br/><br/>
+                    Class in HEX is very similar to those in C++, C# and Java. Classes have contructors and destructors,
+                    member functions and variables and static members with different access specifiers.
+                    Classes can inherit from other classes and implement other interfaces.
+                    <br/><br/>
+                    In HEX, class constructors have the <span class="code">__init__</span> name and destructors
+                    have the name <span class="code">__del__</span>.
+                    <br/><br/>
+                    <div class="section_code">
+                        <span class="keyword">class</span> Person<br/>
+                        &nbsp;&nbsp;<span class="keyword">public</span>:<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">def</span>
+                        __init__(name, age):<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="keyword">this</span>.name = name<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="keyword">this</span>.age = age<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="keyword">base</span>.name = name
+                        <br/><br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        [#getter=yes, #setter=no]
+                        <span class="comment">// compiler property, generates getters and setters></span>
+                        <br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="keyword">string</span> name
+                        <br/><br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="keyword">def virtual</span> IsSenior() =
+                        (x <span class="keyword">as this</span>.age) => x > 65
+                    </div>
+                </div>
+                <div class="section_back_to_top">
+                    <a>back to top</a>
+                </div>
+            </div>
+
+            <div class="section_paragraph">
+                <div class="section_title">
+                    Interface
+                </div>
+                <div class="section_content">
+                    <span class="section_first_letter">A</span>n interface defines a set of methods that must be implemented by all classes that implements it. An interface can have any number of methods, getters, setters, and instance variables under any access specifiers.
+                    <br/><br/>
+                    <div class="section_code">
+                        <span class="keyword">interface</span> IComparable<br/>
+                        &nbsp;&nbsp;<span class="keyword">public</span>:<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">def bool</span>
+                        compare(IComparable c):<br/>
+                    </div>
+                </div>
+                <div class="section_back_to_top">
+                    <a>back to top</a>
+                </div>
+            </div>
+
+            <div class="section_paragraph">
+                <div class="section_title">
+                    Task
+                </div>
+                <div class="section_content">
+                    <span class="section_first_letter">A</span> task encapsulates a set of actions that is to be performed on its own thread and execution state, with its public members provide its state to the outside world. A task follows all the attributes of a class, except it is defined with the keyword <span class="keyword">task</span>.
+                    <br/><br/>
+                    <div class="section_code">
+                        <span class="keyword">task</span> DownloadTask<br/>
+                        &nbsp;&nbsp;<span class="keyword">public</span>:<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">def</span>
+                        __init__(name, id, url):<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="keyword">this</span>.taskName = name<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="keyword">this</span>.taskID = id<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="keyword">this</span>.url = url<br/>
+                        <br/>
+                        &nbsp;&nbsp;<span class="keyword">private</span>:<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        State state<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        Downloader downloader<br/><br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">def</span>
+                        main():<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        printf(<span class="string">"start downloading"</span>)
+                        <br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="keyword">this</span>.downloader.downloadAsync(
+                        <span class="keyword">this</span>.url)<br/>
+                    </div>
+                </div>
+                <div class="section_back_to_top">
+                    <a>back to top</a>
+                </div>
+            </div>
+
+            <div class="section_paragraph">
+                <div class="section_title">
+                    Strong vs. Weak References
+                </div>
+                <div class="section_content">
+                    <span class="section_first_letter">A</span> task encapsulates a set of actions that is to be performed on its own thread and execution state, with its public members provide its state to the outside world. A task follows all the attributes of a class, except it is defined with the keyword <span class="keyword">task</span>.
+                    <br/><br/>
+                    <div class="section_code">
+                        <span class="keyword">task</span> DownloadTask<br/>
+                        &nbsp;&nbsp;<span class="keyword">public</span>:<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">def</span>
+                        __init__(name, id, url):<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="keyword">this</span>.taskName = name<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="keyword">this</span>.taskID = id<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="keyword">this</span>.url = url<br/>
+                        <br/>
+                        &nbsp;&nbsp;<span class="keyword">private</span>:<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        State state<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        Downloader downloader<br/><br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">def</span>
+                        main():<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        printf(<span class="string">"start downloading"</span>)
+                        <br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="keyword">this</span>.downloader.downloadAsync(
+                        <span class="keyword">this</span>.url)<br/>
+                    </div>
+                </div>
+                <div class="section_back_to_top">
+                    <a>back to top</a>
+                </div>
+            </div>
 
         </div> <!--right_panel-->
     </div> <!--content-wrapper-->
@@ -271,9 +410,11 @@
             <li><a href="">Variables</a></li>
             <li><a href="">Lazy Initialization</a></li>
             <li><a href="">Deferred Evaluation</a></li>
-            <li><a href="">Functions</a></li>
+            <!--<li><a href="">Functions</a></li>-->
             <li><a href="">Lambda Expression</a></li>
-            <li><a href="">Classes and Tasks</a></li>
+            <li><a href="">Class</a></li>
+            <li><a href="">Interface</a></li>
+            <li><a href="">Task</a></li>
             <li><a href="">Strong vs. Weak References</a></li>
             <li><a href="">Compiler Properties and Attributes</a></li> 
         </ul>
