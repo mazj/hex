@@ -104,10 +104,11 @@ ul#ul_nav li a {
     text-decoration: none;
 }
 
-ul#url_nav li a:hover {
+ul#ul_nav li a:hover {
 
-    color: #ffffff;
-    text-decoration: underline;
+    font-size: 14px;
+    color: #6698FF;
+    text-decoration: none;
 }
 
 div.paragraph {
@@ -145,18 +146,24 @@ div.section_content {
     margin: 0px 10px 10px 10px;
     font-family: Arial;
     font-size: 14px;
-    color: #616D7E;
+    color: #413839;
     line-height: 180%;
 }
 
-div.section_back_to_top {
+div.section_back_to_top a {
 
     float: right;
-    margin-top: -20px;
+    margin-top: 0px;
     font-family: Arial;
     font-size: 14px;
-    color: #616D7E;
+    color: #736F6E;
     line-height: 180%;
+    text-decoration: none;
+}
+
+div.section_back_to_top a:hover {
+
+    color: #800517;
 }
 
 div.section_code {
