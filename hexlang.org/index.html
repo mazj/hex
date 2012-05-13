@@ -362,33 +362,15 @@
                     Strong vs. Weak References
                 </div>
                 <div class="section_content">
-                    <span class="section_first_letter">A</span> task encapsulates a set of actions that is to be performed on its own thread and execution state, with its public members provide its state to the outside world. A task follows all the attributes of a class, except it is defined with the keyword <span class="keyword">task</span>.
+                    <span class="section_first_letter">A</span> strong reference is a variable that references an object in memory at runtime, which cannot be freed up by the garbage collector when it can be reached during execution. All objects initiated or instantiated are strong references by default.
                     <br/><br/>
+                    A weak reference is a variable that references an object in memory at runtime, which can be freed up by the garbage collector when no strong references are associated with it at runtime, even when it still can be reached by code during execution. A weak reference of an object can be obtained by the <span class="code">~=</span> assignment operator.
+                    <br/><br/>
+                    Example:
+                    <br/>
                     <div class="section_code">
-                        <span class="keyword">task</span> DownloadTask<br/>
-                        &nbsp;&nbsp;<span class="keyword">public</span>:<br/>
-                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">def</span>
-                        __init__(name, id, url):<br/>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span class="keyword">this</span>.taskName = name<br/>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span class="keyword">this</span>.taskID = id<br/>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span class="keyword">this</span>.url = url<br/>
-                        <br/>
-                        &nbsp;&nbsp;<span class="keyword">private</span>:<br/>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                        State state<br/>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                        Downloader downloader<br/><br/>
-                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">def</span>
-                        main():<br/>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                        print(<span class="string">"start downloading"</span>)
-                        <br/>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                        <span class="keyword">this</span>.downloader.downloadAsync(
-                        <span class="keyword">this</span>.url)<br/>
+                        MyObject weakObj ~= obj
+                        
                     </div>
                 </div>
                 <div class="section_back_to_top">
