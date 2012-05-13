@@ -11,8 +11,6 @@ div#main_container {
     padding: 0px 0px 0px 0px;
     margin: 0px auto;
     border-width: 1px;
-    border-style:solid;
-    border-color: red;
 }
 
 div#title_sec {
@@ -71,10 +69,6 @@ div#left_panel {
     margin-left: -1024px;
     margin-right: 20px;
     padding: 0px;
-    border-width: 1px;
-    border-style:solid;
-    border-color: blue;
-    border-color: orange;
 }
 
 div#content-wrapper{
@@ -86,7 +80,6 @@ div#content-wrapper{
 div#right_panel {
 
     margin-left: 280px;
-    border: 1px solid #827B60;
 }
 
 ul#ul_nav {
@@ -126,16 +119,9 @@ div.paragraph {
     line-height: 150%;
 }
 
-div#intro_para {
-
-    font-family: "Courier New";
-    font-size: 14px;
-}
-
 div.section_paragraph {
 
-    margin: 20px 10px 0px 10px;
-    border: 1px solid #827B60;
+    margin: 20px 10px 50px 10px;
 }
 
 div.section_title {
@@ -166,7 +152,7 @@ div.section_content {
 div.section_back_to_top {
 
     float: right;
-    margin-top: -15px;
+    margin-top: -20px;
     font-family: Arial;
     font-size: 14px;
     color: #616D7E;

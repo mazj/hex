@@ -162,10 +162,39 @@
                         <span class="keyword">string</span> name
                         <br/><br/>
                         <span class="comment">
-                            // Typed variable declared and assigned string literal 123.
+                            // Typed variable declared and assigned string literal HEX.
                         </span><br/>
-                        <span class="keyword">string</span> name = <span class="string">"William"</span>
+                        <span class="keyword">string</span> name = <span class="string">"HEX"</span>
                         <br/>
+                    </div>
+                </div>
+                <div class="section_back_to_top">
+                    <a>back to top</a>
+                </div>
+            </div>
+
+            <div class="section_paragraph">
+                <div class="section_title">
+                    Lazy Initialization
+                </div>
+                <div class="section_content">
+                    <span class="section_first_letter">W</span>hen a object type is large, initialization takes a lot of time and consumes a lot of computing power and resources, but it may not be right away used. Thus, we want a mechanism to delay the actual initialization of the object until it is ever used. This is called lazy initialization, and can be used to improve performance.
+                    <br/><br/>
+                    To instruct an object to be lazily initialized, use the <span class="keyword">lazy</span> keyword before the new keyword during initialization. Until the lazily initialized object is used, its constructor will not be invoked.
+                    <br/><br/>
+                    <div class="section_code">
+                        <span class="comment">
+                            // Lazily initializes an object.<br/>
+                            // At this time, the object is seem to be initialized to the program,<br/>
+                            // but its constructor has not been invoked yet.<br/>
+                        </span><br/>
+                        obj = <span class="keyword">lazy new</span> VeryLazyObject()
+                        <br/><br/>
+                        <span class="comment">
+                            /* The first time the object is used,
+                            its constructor is invoked now. */
+                        </span><br/>
+                        obj.doSomething()
                     </div>
                 </div>
                 <div class="section_back_to_top">
@@ -185,6 +214,8 @@
             <li><a href="">Optional Typing</a></li>
             <li><a href="">Data Structures</a></li>
             <li><a href="">Variables</a></li>
+            <li><a href="">Lazy Initialization</a></li>
+            <li><a href="">Deferred Evaluation</a></li>
             <li><a href="">Functions</a></li>
             <li><a href="">Lambda Expression</a></li>
             <li><a href="">Classes and Tasks</a></li>
