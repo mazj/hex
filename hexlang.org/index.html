@@ -24,7 +24,11 @@
                     Language Overview
                 </div>
                 <div class="section_content">
-                    <span class="section_first_letter">H</span>EX is a multi-paradigm programming language that supports both static and dynamic types, and was designed with the core principles of simplicity, readability, versatility and scalability to allow developers to create a diversity of types of computer programs with modern language features, succinct syntax and semantics that are built into the core of the language construct.
+                    <span class="section_first_letter">H</span>EX is a multi-paradigm programming language that 
+                    supports both static and dynamic types, and was designed with the core principles of simplicity, 
+                    readability, versatility and scalability to allow developers to create a diversity of types of 
+                    computer programs with modern language features, succinct syntax and semantics that are built 
+                    into the core of the language construct.
                 </div>
                 <div class="section_back_to_top">
                     <a>back to top</a>
@@ -36,7 +40,12 @@
                     Design Philosophies
                 </div>
                 <div class="section_content">
-                    <span class="section_first_letter">H</span>EX syntax and semantics resembles a lot of the modern programming languages that you've probably heard or even used. For example, HEX has a indented syntax very much like Python. It supports objected-oriented programming with class and struct definitions very much like C++ and Java. It utilizes basic control statements such as if, , and loop types such as for, while and do while just like pretty much every other languages out there. However, HEX does have its own syntax and semantics for aspects of the language that might not seen familiar to you, which you will discover as you read along this document.
+                    <span class="section_first_letter">H</span>EX syntax and semantics resembles a lot of the modern 
+                    programming languages that you've probably heard or even used. For example, HEX has a indented 
+                    syntax very much like Python. It supports objected-oriented programming with class and struct 
+                    definitions very much like C++ and Java. It utilizes basic control statements such as if, for, and while 
+                    just like pretty much every other languages out there. However, HEX does have its own syntax and 
+                    semantics for aspects of the language that might not seen familiar to you.
                 </div>
                 <div class="section_back_to_top">
                     <a>back to top</a>
@@ -48,7 +57,11 @@
                     Optional Typing
                 </div>
                 <div class="section_content">
-                    <span class="section_first_letter">H</span>EX supports both static and dynamics typed objects, and the two can be mixed together in the same code. While dynamic types offer the simplicity of code and efficiency, static types allows applications to be safer, modular and complex, and supports high-level features such as generics and interfaces. The use of either one or both types of typing mode depends on the personal preference and the nature of the application.
+                    <span class="section_first_letter">H</span>EX supports both static and dynamics typed objects, 
+                    and the two can be mixed together in the same code. While dynamic types offer the simplicity 
+                    of code and efficiency, static types allows applications to be safer, modular and complex, 
+                    and supports high-level features such as generics and interfaces. The use of either one or 
+                    both types of typing mode depends on the personal preference and the nature of the application.
                 </div>
                 <div class="section_back_to_top">
                     <a>back to top</a>
@@ -143,7 +156,11 @@
                     Variables
                 </div>
                 <div class="section_content">
-                    <span class="section_first_letter">V</span>ariables of both statically and dynamically types can be declared at both the module level and local level. Statically typed variables require static type annotation before the variable name, whereas dynamically typed variables do not. However, dynamically typed variable declarations must follow either an assignment to a literal value, a reference to another object or its own initialization.
+                    <span class="section_first_letter">V</span>ariables of both statically and dynamically 
+                    types can be declared at both the module level and local level. Statically typed variables 
+                    require static type annotation before the variable name, whereas dynamically typed variables 
+                    do not. However, dynamically typed variable declarations must follow either an assignment to 
+                    a literal value, a reference to another object or its own initialization.
                     <br/><br/>
                     <div class="section_code">
                         <span class="comment">
@@ -178,9 +195,14 @@
                     Lazy Initialization
                 </div>
                 <div class="section_content">
-                    <span class="section_first_letter">W</span>hen a object type is large, initialization takes a lot of time and consumes a lot of computing power and resources, but it may not be right away used. Thus, we want a mechanism to delay the actual initialization of the object until it is ever used. This is called lazy initialization, and can be used to improve performance.
+                    <span class="section_first_letter">W</span>hen a object type is large, initialization takes 
+                    a lot of time and consumes a lot of computing power and resources, but it may not be right 
+                    away used. Thus, we want a mechanism to delay the actual initialization of the object until 
+                    it is ever used. This is called lazy initialization, and can be used to improve performance.
                     <br/><br/>
-                    To instruct an object to be lazily initialized, use the <span class="keyword">lazy</span> keyword before the new keyword during initialization. Until the lazily initialized object is used, its constructor will not be invoked.
+                    To instruct an object to be lazily initialized, use the <span class="keyword">lazy</span> 
+                    keyword before the new keyword during initialization. Until the lazily initialized object 
+                    is used, its constructor will not be invoked.
                     <br/><br/>
                     <div class="section_code">
                         <span class="comment">
@@ -207,8 +229,11 @@
                     Deferred Evaluation
                 </div>
                 <div class="section_content">
-                    <span class="section_first_letter">T</span>he idea of deferred evaluation is similar to that of lazy initialization. Sometime when an object is assigned a value that is the return type of a function or method, it might be not ideal to process that invocation right away because it might be computationally expensive, thus, the invocation can be delayed when that object is ever used.
-                    Use the defer keyword right before a function invocation to defer its execution.
+                    <span class="section_first_letter">T</span>he idea of deferred evaluation is similar to 
+                    that of lazy initialization. Sometime when an object is assigned a value that is the return 
+                    type of a function or method, it might be not ideal to process that invocation right away 
+                    because it might be computationally expensive, thus, the invocation can be delayed when that 
+                    object is ever used. Use the defer keyword right before a function invocation to defer its execution.
                     <br/><br/>
                     <div class="section_code">
                         <span class="comment">
@@ -233,9 +258,15 @@
                     Lambda Expression
                 </div>
                 <div class="section_content">
-                    <span class="section_first_letter">L</span>ambda expression represents an anonymous function that contains both expressions and statements, and can be defined at both module level and function level scope, and can be assigned to a variable to be used for invocation, passed to functions and methods, and attached to events.
+                    <span class="section_first_letter">L</span>ambda expression represents an anonymous 
+                    function that contains both expressions and statements, and can be defined at both 
+                    module level and function level scope, and can be assigned to a variable to be used 
+                    for invocation, passed to functions and methods, and attached to events.
                     <br/><br/>
-                    All lambda expressions use the lambda operator =>. The left operands are the input parameters that are passed to the lambda expression. At the right side of the operator are blocks of expressions and statements that are to be evaluated and executed when the lambda expression is invoked.
+                    All lambda expressions use the lambda operator =>. The left operands are the input 
+                    parameters that are passed to the lambda expression. At the right side of the operator 
+                    are blocks of expressions and statements that are to be evaluated and executed when the 
+                    lambda expression is invoked.
                     <br/><br/>
                     The <span class="code">=></span> operator has the same precedence as the assignment operator
                     <span class="code">=</span> and is right-associative.
@@ -261,7 +292,8 @@
                     Class
                 </div>
                 <div class="section_content">
-                    <span class="section_first_letter">A</span> class abstractly defines and encapsulates a set of data members and their collective behaviours.
+                    <span class="section_first_letter">A</span> class abstractly defines and encapsulates 
+                    a set of data members and their collective behaviours.
                     <br/><br/>
                     Class in HEX is very similar to those in C++, C# and Java. Classes have contructors and destructors,
                     member functions and variables and static members with different access specifiers.
@@ -304,7 +336,9 @@
                     Interface
                 </div>
                 <div class="section_content">
-                    <span class="section_first_letter">A</span>n interface defines a set of methods that must be implemented by all classes that implements it. An interface can have any number of methods, getters, setters, and instance variables under any access specifiers.
+                    <span class="section_first_letter">A</span>n interface defines a set of methods that 
+                    must be implemented by all classes that implements it. An interface can have any number 
+                    of methods, getters, setters, and instance variables under any access specifiers.
                     <br/><br/>
                     <div class="section_code">
                         <span class="keyword">interface</span> IComparable<br/>
@@ -323,7 +357,10 @@
                     Task
                 </div>
                 <div class="section_content">
-                    <span class="section_first_letter">A</span> task encapsulates a set of actions that is to be performed on its own thread and execution state, with its public members provide its state to the outside world. A task follows all the attributes of a class, except it is defined with the keyword <span class="keyword">task</span>.
+                    <span class="section_first_letter">A</span> task encapsulates a set of actions that is to 
+                    be performed on its own thread and execution state, with its public members provide its 
+                    state to the outside world. A task follows all the attributes of a class, except it is 
+                    defined with the keyword <span class="keyword">task</span>.
                     <br/><br/>
                     <div class="section_code">
                         <span class="keyword">task</span> DownloadTask<br/>
@@ -362,9 +399,15 @@
                     Strong vs. Weak References
                 </div>
                 <div class="section_content">
-                    <span class="section_first_letter">A</span> strong reference is a variable that references an object in memory at runtime, which cannot be freed up by the garbage collector when it can be reached during execution. All objects initiated or instantiated are strong references by default.
+                    <span class="section_first_letter">A</span> strong reference is a variable that 
+                    references an object in memory at runtime, which cannot be freed up by the garbage 
+                    collector when it can be reached during execution. All objects initiated or instantiated 
+                    are strong references by default.
                     <br/><br/>
-                    A weak reference is a variable that references an object in memory at runtime, which can be freed up by the garbage collector when no strong references are associated with it at runtime, even when it still can be reached by code during execution. A weak reference of an object can be obtained by the <span class="code">~=</span> assignment operator.
+                    A weak reference is a variable that references an object in memory at runtime, which can 
+                    be freed up by the garbage collector when no strong references are associated with it at 
+                    runtime, even when it still can be reached by code during execution. A weak reference of 
+                    an object can be obtained by the <span class="code">~=</span> assignment operator.
                     <br/><br/>
                     Example:
                     <br/>
