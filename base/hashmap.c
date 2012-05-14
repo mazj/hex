@@ -1,29 +1,19 @@
-typedef struct HexHashMapEntry_s {
-	void *key;
-	int hash;
-	void *value;
-	struct HexHashMapEntry_s *next;
-} Entry;
-
-typedef int (*hash)(void *key) HashFunc;
-typedef int (*equal)(void *keyA, void *keyB) EqualFunc;
-
-typedef struct HexHashmap_s {
-	Entry** buckets;
-	size_t bucketCount;
-	HashFunc hash;
-	EqualFunc equal;
-	mutex_t lock;
-	size_t size;
-} Hashmap;
+#include <assert.h>
+#include <errno.h>
+#include <threads.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include "hashmap.h"
 
 #define LOAD_FACTOR 0.75f
 
 Hashmap*
-hashmapCreate(size_t initialCapacity, HashFunc hashfunc, EqualFunc equalfunc)
+hashmapCreate(size_t initialCapacity,
+	HashFunc hashfunc, KeyCmpFunc keycmpfunc)
 {
 	assert(hashfunc);
-	assert(equalfunc);
+	assert(keycmpfunc);
 
 	Hashmap *map = MALLOC(Hashmap);
 	if(!map) {
@@ -45,13 +35,16 @@ hashmapCreate(size_t initialCapacity, HashFunc hashfunc, EqualFunc equalfunc)
 
 	map->size = 0;
 	map->hash = hashfunc;
-	map->equal = equalfunc;
+	map->equal = keycmpfunc;
 
 	mutex_init(&map->lock);
 
 	return map;
 }
 
+/*
+ * Secondary hashing against bad hashses.
+ */
 static inline int
 hashKey(Hashmap *map, void *key)
 {
@@ -81,6 +74,7 @@ static void
 _expand(Hashmap *map)
 {
 	if(map->size > (map->bucketCount * LOAD_FACTOR)) {
+		// Start off with a 0.33 load factor.
 		size_t newBucketCount = map->bucketCount << 1;
 		Entry **newBuckets = calloc(newBucketCount, sizeof(Entry*));
 		if(!newBuckets) {
@@ -163,7 +157,7 @@ _createEntry(void *key, int hash, void *value)
 }
 
 static inline int
-equalsKey(void *keyA, int hashA, void *keyB, int hashB, EqualFunc equal)
+equalsKey(void *keyA, int hashA, void *keyB, int hashB, KeyCmpFunc keycmp)
 {
 	if(keyA == keyB) {
 		return 1;
@@ -171,7 +165,7 @@ equalsKey(void *keyA, int hashA, void *keyB, int hashB, EqualFunc equal)
 	if(hashA != hashB) {
 		return 0;
 	}
-	return equal(keyA, keyB);
+	return keycmp(keyA, keyB);
 }
 
 void*
@@ -187,6 +181,7 @@ hashmapPut(Hashmap *map, void *key, void *value)
 		if(!current) {
 			*p = createEntry(key, hash, value);
 			if(*p == NULL) {
+				errno = ENOMEM;
 				return NULL;
 			}
 			map->size++;
@@ -195,7 +190,7 @@ hashmapPut(Hashmap *map, void *key, void *value)
 		}
 
 		if(equalKeys(current->key, current->hash,
-			key, hash, map->equal)) {
+			key, hash, map->keycmp)) {
 			void *oldValue = current->value;
 			current->value = value;
 			return oldValue;
@@ -213,7 +208,7 @@ hashmapGet(Hashmap *map, void *key)
 
 	Entry *entry = map->buckets[index];
 	while(entry) {
-		if(equalsKey(entry->key, entry->hash, key, hash, map->equal)) {
+		if(equalsKey(entry->key, entry->hash, key, hash, map->keycmp)) {
 			return entry->value;
 		}
 		entry = entry->next;
@@ -230,7 +225,7 @@ hashmapContainsKey(Hashmap *map, void *key)
 
 	Entry *entry = map->buckets[index];
 	while(entry) {
-		if(equalsKey(entry->key, entry->hash, key, hash, map->equal)) {
+		if(equalsKey(entry->key, entry->hash, key, hash, map->keycmp)) {
 			return 1;
 		}
 		entry = entry->next;
@@ -248,8 +243,8 @@ hashmapRemove(Hashmap *map, void *key)
 	Entry **p = &(map->buckets[index]);
 	Entry *current;
 	while((current = *p)) {
-		if(equalsKey(current->key, current->hash, key, hash, map->equal))
-		{
+		if(equalsKey(current->key, current->hash, key,
+			hash, map->keycmp)) {
 			void *value = current->value;
 			*p = current->next;
 			free(current);
@@ -261,6 +256,22 @@ hashmapRemove(Hashmap *map, void *key)
 	}
 
 	return NULL;
+}
+
+void
+hashmapIterate(Hashmap *map, int(*callback)(void *key, void *value))
+{
+	size_t i;
+    for (i = 0; i < map->bucketCount; i++) {
+        Entry* entry = map->buckets[i];
+        while (entry != NULL) {
+            Entry *next = entry->next;
+            if (!callback(entry->key, entry->value)) {
+                return;
+            }
+            entry = next;
+        }
+    }
 }
 
 size_t
