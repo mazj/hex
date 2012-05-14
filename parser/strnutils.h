@@ -34,4 +34,36 @@ char* trim_hard(char * s) {
 	return s;
 }
 
+/*
+ * Copy src to string dst of size size.  At most size-1 characters
+ * will be copied.  Always NUL terminates (unless size == 0).
+ * Returns strlen(src); if retval >= size, truncation occurred.
+ */
+size_t
+strlcpy(char *dst, const char *src, size_t size)
+{
+	char *d = dst;
+	const char *s = src;
+	size_t n = size;
+
+	if(n > 0) {
+		while(--n != 0) {
+			if((*d++ = *s++) == '\0') {
+				break;
+			}
+		}
+	}
+
+	if(n == 0) {
+		if(size != 0) {
+			*d = '\0';
+		}
+		while(*s++) {
+			// do nothing
+		}
+	}
+
+	return s - src - 1;
+}
+
 #endif // _STRNUTILS_H_
