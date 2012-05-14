@@ -1,24 +1,24 @@
+/* Array abstraction */
+
+#ifndef _ARRAY_H_
+#define _ARRAY_H_
+
 #include <assert.h>
-#include <string.h>
+#include <stdlib.h>
 #include <limits.h>
+
+#include "array.h"
 
 #define INITIAL_CAPACITY 4
 #define MAX_CAPACITY ((int)UINT_MAX/sizeof(void*))
 
-typedef struct HexArray_s {
-	void** content;
-	size_t size;
-	size_t capacity;
-} Array;
-
-
 Array*
-array_create() {
+arrayCreate() {
 	return MALLOC(Array);
 }
 
 void
-array_free(Array *array) {
+arrayFree(Array *array) {
 	assert(array);
 	free(array->content);
 	free(array);
@@ -60,7 +60,7 @@ _ensure_capacity(Array* array, size_t capacity) {
 }
 
 int
-array_append(Array *array, void* ptr) {
+arrayAppend(Array *array, void* ptr) {
 	assert(array);
 	size_t size = array->size;
 	int res = _ensure_capacity(array, size+1);
@@ -80,7 +80,7 @@ _check_bound(Array* array, int index) {
 }
 
 void*
-array_remove(Array *array, int index) {
+arrayRemove(Array *array, int index) {
 	_check_bound(array, index);
 
 	void *ptr = array->content[index];
@@ -98,7 +98,7 @@ array_remove(Array *array, int index) {
 }
 
 void*
-array_set(Array *array, int index, void* ptr) {
+arraySet(Array *array, int index, void* ptr) {
 	_check_bound(array, index);
 	void* old = array->content[index];
 	array->content[index] = ptr;
@@ -106,7 +106,7 @@ array_set(Array *array, int index, void* ptr) {
 }
 
 int
-array_set_size(Array *array, int newSize) {
+arraySetSize(Array *array, int newSize) {
 	assert(array);
 	assert(newSize >= 0);
 
@@ -118,7 +118,8 @@ array_set_size(Array *array, int newSize) {
 			return res;
 		}
 
-		memset(array->content+sizeof(void*)*oldSize,0, sizeof(void*)*(newSize - oldSize));
+		memset(array->content + sizeof(void*) * oldSize, 0,
+			sizeof(void*) * (newSize - oldSize));
 
 		array->size = newSize;
 
@@ -127,12 +128,12 @@ array_set_size(Array *array, int newSize) {
 }
 
 int
-array_size(Array *array) {
+arraySize(Array *array) {
 	assert(array);
 	return array->size;
 }
 
 const void**
-array_content(Array *array) {
+arrayContent(Array *array) {
 	return (const void**)array->content;
 }
