@@ -78,7 +78,7 @@ _calculateIndex(size_t bucketCount, int hash)
 }
 
 static void
-expand(Hashmap *map)
+_expand(Hashmap *map)
 {
 	if(map->size > (map->bucketCount * LOAD_FACTOR)) {
 		size_t newBucketCount = map->bucketCount << 1;
@@ -174,3 +174,130 @@ equalsKey(void *keyA, int hashA, void *keyB, int hashB, EqualFunc equal)
 	return equal(keyA, keyB);
 }
 
+void*
+hashmapPut(Hashmap *map, void *key, void *value)
+{
+	int hash = hashkey(map, key);
+	size_t index = _calculateIndex(map->bucketCount, hash);
+
+	Entry **p = &(map->buckets[index]);
+	while(1) {
+		Entry *current = *p;
+
+		if(!current) {
+			*p = createEntry(key, hash, value);
+			if(*p == NULL) {
+				return NULL;
+			}
+			map->size++;
+			_expand(map);
+			return NULL:
+		}
+
+		if(equalKeys(current->key, current->hash,
+			key, hash, map->equal)) {
+			void *oldValue = current->value;
+			current->value = value;
+			return oldValue;
+		}
+
+		p = &current->next;
+	}
+}
+
+void*
+hashmapGet(Hashmap *map, void *key)
+{
+	int hash = hashKey(map, key);
+	int index = _calculateIndex(map->bucketCount, hash);
+
+	Entry *entry = map->buckets[index];
+	while(entry) {
+		if(equalsKey(entry->key, entry->hash, key, hash, map->equal)) {
+			return entry->value;
+		}
+		entry = entry->next;
+	}
+
+	return NULL;
+}
+
+int
+hashmapContainsKey(Hashmap *map, void *key)
+{
+	int hash = hashKey(map, key);
+	int index = _calculateIndex(map->bucketCount, hash);
+
+	Entry *entry = map->buckets[index];
+	while(entry) {
+		if(equalsKey(entry->key, entry->hash, key, hash, map->equal)) {
+			return 1;
+		}
+		entry = entry->next;
+	}
+
+	return 0;
+}
+
+void*
+hashmapRemove(Hashmap *map, void *key)
+{
+	int hash = hashKey(map, key);
+	int index = _calculateIndex(map->bucketCount, hash);
+
+	Entry **p = &(map->buckets[index]);
+	Entry *current;
+	while((current = *p)) {
+		if(equalsKey(current->key, current->hash, key, hash, map->equal))
+		{
+			void *value = current->value;
+			*p = current->next;
+			free(current);
+			map->size--;
+			return value;
+		}
+
+		p = &current->next;
+	}
+
+	return NULL;
+}
+
+size_t
+hashmapCurrentCapacity(Hashmap *map)
+{
+	size_t bucketCount = map->bucketCount;
+	return bucketCount * LOAD_FACTOR;
+}
+
+size_t
+hashmapCountCollisions(Hashmap *map)
+{
+	size_t collisions = 0;
+	size_t i;
+	for(i = 0; i < map->bucketCount; ++i) {
+		Entry *entry = map->buckets[i];
+		while(entry) {
+			if(entry->next) {
+				collisions++;
+			}
+			entry = entry->next;
+		}
+	}
+
+	return collisions;
+}
+
+int
+hashmapIntHash(void *key)
+{
+	return DEREF_VOID(key, int);
+}
+
+int
+hashmapIntEquals(void *keyA, void *keyB)
+{
+	int a = DEREF_VOID(keyA, int);
+	int b = DEREF_VOID(keyB, int);
+	return a == b;
+}
