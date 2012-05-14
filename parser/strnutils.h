@@ -4,6 +4,7 @@
 #define _STRNUTILS_H_
 
 #include <stddef.h>
+#include <string.h>
 #include "ctype.h"
 
 char* strtoupper(char* c) {
@@ -64,6 +65,20 @@ strlcpy(char *dst, const char *src, size_t size)
 	}
 
 	return s - src - 1;
+}
+
+/*
+ * A strcpy which ensures NULL terminated string and never overruns the output.
+ */
+void
+safe_strcpy(char *out, long outlen, const char *in, long inlen)
+{
+    if(inlen >= (outlen - 1)) {
+        strncpy(out, in, outlen - 1);
+        out[outlen - 1] = 0;
+    } else {
+        strcpy(out, in);
+    }
 }
 
 #endif // _STRNUTILS_H_
