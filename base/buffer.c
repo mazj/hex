@@ -13,7 +13,7 @@ bufferCreate(size_t capacity)
 	}
 	buffer->capacity = capacity;
 	buffer->expected = 0;
-	buffer->data = malloc(capacity*sizeof(char));
+	buffer->data = malloc(capacity * sizeof(char));
 	if(!buffer->data) {
 		free(buffer);
 		return 0;
