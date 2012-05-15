@@ -3,6 +3,8 @@
 #ifndef _ARRAY_H_
 #define _ARRAY_H_
 
+#include <string.h>
+
 typedef struct HexArray_s {
 	void** content;
 	size_t size;

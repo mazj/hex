@@ -1,6 +1,8 @@
 #ifndef _MEMORY_H_
 #define _MEMORY_H_
 
+#include <stdint.h>
+#include <string.h>
 #include <errno.h>
 
 void
@@ -55,4 +57,4 @@ memset32(uint32_t *dst, uint32_t value, size_t size);
 	*( (T*)( (v) ) );
 
 
-#ifndef /* _MEMORY_H_ */
+#endif /* _MEMORY_H_ */

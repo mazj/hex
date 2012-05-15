@@ -1,31 +1,31 @@
 /* Array abstraction */
 
-#ifndef _ARRAY_H_
-#define _ARRAY_H_
-
 #include <assert.h>
 #include <stdlib.h>
 #include <limits.h>
-
+#include "memory.h"
 #include "array.h"
 
 #define INITIAL_CAPACITY 4
 #define MAX_CAPACITY ((int)UINT_MAX/sizeof(void*))
 
 Array*
-arrayCreate() {
+arrayCreate()
+{
 	return MALLOC(Array);
 }
 
 void
-arrayFree(Array *array) {
+arrayFree(Array *array)
+{
 	assert(array);
 	free(array->content);
 	free(array);
 }
 
 static int
-_ensure_capacity(Array* array, size_t capacity) {
+_ensure_capacity(Array* array, size_t capacity)
+{
 	int oldCapacity = array->capacity;
 	if(capacity > oldCapacity) {
 		size_t newCapcity = (oldCapacity == 0) ?
@@ -60,7 +60,8 @@ _ensure_capacity(Array* array, size_t capacity) {
 }
 
 int
-arrayAppend(Array *array, void* ptr) {
+arrayAppend(Array *array, void* ptr)
+{
 	assert(array);
 	size_t size = array->size;
 	int res = _ensure_capacity(array, size+1);
@@ -73,14 +74,16 @@ arrayAppend(Array *array, void* ptr) {
 }
 
 static void
-_check_bound(Array* array, int index) {
+_check_bound(Array* array, int index)
+{
 	assert(array);
 	assert(index < array->size);
 	assert(index >= 0);
 }
 
 void*
-arrayRemove(Array *array, int index) {
+arrayRemove(Array *array, int index)
+{
 	_check_bound(array, index);
 
 	void *ptr = array->content[index];
@@ -98,7 +101,8 @@ arrayRemove(Array *array, int index) {
 }
 
 void*
-arraySet(Array *array, int index, void* ptr) {
+arraySet(Array *array, int index, void* ptr)
+{
 	_check_bound(array, index);
 	void* old = array->content[index];
 	array->content[index] = ptr;
@@ -106,7 +110,8 @@ arraySet(Array *array, int index, void* ptr) {
 }
 
 int
-arraySetSize(Array *array, int newSize) {
+arraySetSize(Array *array, int newSize)
+{
 	assert(array);
 	assert(newSize >= 0);
 
@@ -128,12 +133,14 @@ arraySetSize(Array *array, int newSize) {
 }
 
 int
-arraySize(Array *array) {
+arraySize(Array *array)
+{
 	assert(array);
 	return array->size;
 }
 
 const void**
-arrayContent(Array *array) {
+arrayContent(Array *array)
+{
 	return (const void**)array->content;
 }
