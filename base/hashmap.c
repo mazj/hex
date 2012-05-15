@@ -1,9 +1,10 @@
 #include <assert.h>
 #include <errno.h>
-#include <threads.h>
+#include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include "memory.h"
 #include "hashmap.h"
 
 #define LOAD_FACTOR 0.75f
@@ -35,9 +36,9 @@ hashmapCreate(size_t initialCapacity,
 
 	map->size = 0;
 	map->hash = hashfunc;
-	map->equal = keycmpfunc;
+	map->keycmp = keycmpfunc;
 
-	mutex_init(&map->lock);
+	pthread_mutex_init(&map->lock, 0);
 
 	return map;
 }
@@ -103,13 +104,13 @@ void
 hashmapLock(Hashmap *map)
 {
 	assert(map);
-	mutex_lock(&map->lock);
+	pthread_mutex_lock(&map->lock);
 }
 
 void
 hashmapUnlock(Hashmap *map)
 {
-	mutex_unlock(&map->lock);
+	pthread_mutex_unlock(&map->lock);
 }
 
 void
@@ -125,7 +126,7 @@ hashmapFree(Hashmap *map)
 		}
 	}
 	free(map->buckets);
-	mutex_destroy(&map->lock);
+	pthread_mutex_destroy(&map->lock);
 	free(map);
 }
 
@@ -145,7 +146,7 @@ hashmapHash(void *key, size_t keySize)
 static Entry*
 _createEntry(void *key, int hash, void *value)
 {
-	Entry *entry = MALLOC(sizeof(Entry));
+	Entry *entry = MALLOC(Entry);
 	if(!entry) {
 		return 0;
 	}
@@ -171,7 +172,7 @@ equalsKey(void *keyA, int hashA, void *keyB, int hashB, KeyCmpFunc keycmp)
 void*
 hashmapPut(Hashmap *map, void *key, void *value)
 {
-	int hash = hashkey(map, key);
+	int hash = hashKey(map, key);
 	size_t index = _calculateIndex(map->bucketCount, hash);
 
 	Entry **p = &(map->buckets[index]);
@@ -179,17 +180,17 @@ hashmapPut(Hashmap *map, void *key, void *value)
 		Entry *current = *p;
 
 		if(!current) {
-			*p = createEntry(key, hash, value);
+			*p = _createEntry(key, hash, value);
 			if(*p == NULL) {
 				errno = ENOMEM;
 				return NULL;
 			}
 			map->size++;
 			_expand(map);
-			return NULL:
+			return NULL;
 		}
 
-		if(equalKeys(current->key, current->hash,
+		if(equalsKey(current->key, current->hash,
 			key, hash, map->keycmp)) {
 			void *oldValue = current->value;
 			current->value = value;
@@ -302,13 +303,13 @@ hashmapCountCollisions(Hashmap *map)
 int
 hashmapIntHash(void *key)
 {
-	return DEREF_VOID(key, int);
+	return DEREF_VOID(int, key);
 }
 
 int
 hashmapIntEquals(void *keyA, void *keyB)
 {
-	int a = DEREF_VOID(keyA, int);
-	int b = DEREF_VOID(keyB, int);
+	int a = DEREF_VOID(int, keyA);
+	int b = DEREF_VOID(int, keyB);
 	return a == b;
 }

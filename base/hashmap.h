@@ -3,6 +3,9 @@
 #ifndef _HASHMAP_H_
 #define _HASHMAP_H_
 
+#include <string.h>
+#include <pthread.h>
+
 /*
  * Hashmap entry(bucket).
  */
@@ -14,10 +17,10 @@ typedef struct HexHashMapEntry_s {
 } Entry;
 
 /* hash function */
-typedef int (*hash)(void *key) HashFunc;
+typedef int(*HashFunc)(void *key);
 
 /* key comparison function */
-typedef int (*keycmp)(void *keyA, void *keyB) KeyCmpFunc;
+typedef int(*KeyCmpFunc)(void *keyA, void *keyB);
 
 /* hashmap */
 typedef struct HexHashmap_s {
@@ -25,7 +28,7 @@ typedef struct HexHashmap_s {
 	size_t bucketCount;
 	HashFunc hash;
 	KeyCmpFunc keycmp;
-	mutex_t lock;
+	pthread_mutex_t lock;
 	size_t size;
 } Hashmap;
 
