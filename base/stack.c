@@ -1,4 +1,6 @@
 #include <assert.h>
+#include <errno.h>
+#include "memory.h"
 #include "stack.h"
 
 size_t
@@ -24,6 +26,10 @@ stack_push(Stack *s, void* value)
 {
 	assert(s != NULL);
 	Node* node = MALLOC(Node);
+	if(!node) {
+		errno = ENOMEM;
+		return;
+	}
 	node->value = value;
 	if(s->top) node->next = s->top;
 	s->top = node;
