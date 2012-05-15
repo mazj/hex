@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <errno.h>
+#include "memory.h"
 #include "bst.h"
 
 Bst*
@@ -32,7 +33,7 @@ BinaryNode* bst_right(BinaryNode* node)
 static BinaryNode*
 bstCreateNode()
 {
-	BinaryNode *node = MALLOC(sizeof(BinaryNode));
+	BinaryNode *node = MALLOC(BinaryNode);
 	if(!node) {
 		errno = ENOMEM;
 		return 0;
@@ -74,7 +75,7 @@ _bst_size(BinaryNode* node)
 	return (node == 0) ? 0 : 1 + _bst_size(node->left) + _bst_size(node->right);
 }
 
-int
+size_t
 bst_size(Bst *bst)
 {
 	assert(bst != NULL);
@@ -160,6 +161,6 @@ bst_to_list(Bst *bst)
 {
 	assert(bst != NULL);
     Node* list = 0;
-    _bst_append_to_list(node, &list);
+    _bst_append_to_list(bst->root, &list);
     return list;
 }

@@ -10,24 +10,26 @@
 //===========================================================================
 // Singly linked list node.
 //===========================================================================
-#ifndef _NODE_H_
-typedef struct hex_node_s {
+typedef struct HexNode_s {
 	void* value;
-	struct hex_node_s* next;
-} node_s;
-#endif // _NODE_H_
+	struct HexNode_s* next;
+} Node;
 
 
 //===========================================================================
 // Doubly linked list node.
 //===========================================================================
-#ifndef _DOUBLE_NODE_H_
-typedef struct {
+typedef struct HexDoubleNode_s {
 	void* value;
-	struct DoubleNode* next;
-	struct DoubleNode* previous;
+	struct HexDoubleNode_s* next;
+	struct HexDoubleNode_s* previous;
 } DoubleNode;
-#endif // _DOUBLE_NODE_H_
 
 
-#endif // _UTILS_H_
+typedef struct HexBinaryNode_s {
+	struct HexBinaryNode_s* left;
+	struct HexBinaryNode_s* right;
+	void* value;
+} BinaryNode;
+
+#endif /* _UTILS_H_ */

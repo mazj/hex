@@ -6,12 +6,6 @@
 #include <stdlib.h>
 #include "utils.h"
 
-typedef struct {
-	struct BinaryNode* left;
-	struct BinaryNode* right;
-	void* value;
-} BinaryNode;
-
 typedef struct HexBst_s {
 	BinaryNode *root;
 	size_t height;
@@ -44,7 +38,7 @@ bst_node_empty(BinaryNode* node);
 size_t
 bst_size(Bst *bst);
 
-int
+size_t
 bst_height(Bst *bst);
 
 void*
