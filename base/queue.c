@@ -1,5 +1,6 @@
 #include <errno.h>
 #include <assert.h>
+#include "memory.h"
 #include "queue.h"
 
 Queue*

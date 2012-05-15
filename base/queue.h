@@ -3,6 +3,7 @@
 #ifndef _QUEUE_H_
 #define _QUEUE_H_
 
+#include <string.h>
 #include "utils.h"
 
 typedef struct {
