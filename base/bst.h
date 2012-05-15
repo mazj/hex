@@ -53,6 +53,12 @@ bst_front(Bst *bst);
 void*
 bst_back(Bst *bst);
 
+void*
+bst_node_front(BinaryNode *node);
+
+void*
+bst_node_back(BinaryNode *node);
+
 /* Generates a list of all the values in ascending order. */
 Node*
 bst_to_list(Bst *bst);

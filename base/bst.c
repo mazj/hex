@@ -115,6 +115,12 @@ bst_front(Bst *bst)
 	return _bst_front(bst->root);
 }
 
+void*
+bst_node_front(BinaryNode *node)
+{
+	return _bst_front(node);
+}
+
 static void*
 _bst_back(BinaryNode* node)
 {
@@ -128,6 +134,12 @@ bst_back(Bst *bst)
 {
 	assert(bst != NULL);
 	return _bst_back(bst->root);
+}
+
+void*
+bst_node_back(BinaryNode *node)
+{
+	return _bst_back(node);
 }
 
 static void
