@@ -11,12 +11,12 @@ typedef struct KVpair {
 Map*
 createMap()
 {
-    Map* m = MALLOC(Map);
+    Map *m = MALLOC(Map);
     if(m == NULL) {
     	errno = ENOMEM;
     	return 0;
     }
-    m->head = 0;
+    m->root = 0;
     m->size = 0;
     return m;
 }
