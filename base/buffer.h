@@ -3,6 +3,8 @@
 #ifndef _BUFFER_H_
 #define _BUFFER_H_
 
+#include <string.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -18,7 +20,7 @@ typedef struct HexBuffer_s {
 	union {
 		size_t expected;   /* for reader, # of bytes expected */
 		size_t remaining;  /* for writing, # of bytes remaining */
-	}
+	};
 	size_t size;           /* actual size of buffer */
 	size_t capacity;       /* amount of memory allocated for the buffer */
 } Buffer;
