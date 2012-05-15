@@ -1,3 +1,7 @@
+#include <errno.h>
+#include <assert.h>
+#include "map.h"
+
 // Defines a generic key-value pair.
 typedef struct KVpair {
 	void* key;
