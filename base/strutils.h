@@ -51,5 +51,11 @@ strlcpy(char *dst, const char *src, size_t size);
 void
 safe_strcpy(char *out, long outlen, const char *in, long inlen);
 
+/*
+ * Integer to string, with base 2, 8 and 16 formatting.
+ */
+char*
+itoa_fmt(int value, char *str, int base, int capital);
+
 
 #endif /* _STRNUTILS_H_ */
