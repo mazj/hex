@@ -1,9 +1,7 @@
-/*
- * HEX list object type.
- */
+/* HEX list object type. */
 
-#ifndef HEX_LIST_OBJ_H
-#define HEX_LIST_OBJ_H
+#ifndef _HEX_LIST_OBJ_H_
+#define _HEX_LIST_OBJ_H_
 
 #include "hex.h"
 #include "object.h"
@@ -96,4 +94,4 @@ int HexListObj_Extend(HexObject*, HexListObj*);
 }
 #endif
 
-#endif /* HEX_LIST_OBJ_H */
+#endif /* _HEX_LIST_OBJ_H_ */

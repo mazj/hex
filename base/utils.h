@@ -26,10 +26,14 @@ typedef struct HexDoubleNode_s {
 } DoubleNode;
 
 
+//===========================================================================
+// Binary node.
+//===========================================================================
 typedef struct HexBinaryNode_s {
 	struct HexBinaryNode_s* left;
 	struct HexBinaryNode_s* right;
 	void* value;
 } BinaryNode;
+
 
 #endif /* _UTILS_H_ */
