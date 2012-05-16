@@ -1,7 +1,7 @@
 %{
 
 #include <stdio.h>
-#include "ast3.h"
+#include "ast.h"
 
 #define YYDEBUG 1
 #define YYERROR_VERBOSE
