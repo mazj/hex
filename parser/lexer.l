@@ -1,6 +1,6 @@
 %{
 #include <stdio.h>
-#include "parser3.tab.h"
+#include "parser.tab.h"
 
 #define DEBUG
 

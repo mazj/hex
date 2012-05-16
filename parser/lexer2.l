@@ -1,6 +1,6 @@
 %{
 #include <stdio.h>
-#include "parser3.tab.h"
+#include "parser.tab.h"
 
 int current_line_indent = 0;            /* indentation of current line */
 int indent_level = 0;                   /* indentation level passed to parser */
