@@ -1,5 +1,5 @@
-#ifndef HEX_OBJECT_H
-#define HEX_OBJECT_H
+#ifndef _HEX_OBJECT_H_
+#define _HEX_OBJECT_H_
 
 #include "hex.h"
 
@@ -116,4 +116,4 @@ int HexObj_SetDestructor(HexObject*, Hexobj_destructor);
 }
 #endif
 
-#endif // HEX_OBJECT_H
+#endif /* _HEX_OBJECT_H_ */

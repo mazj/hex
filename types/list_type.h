@@ -3,7 +3,6 @@
 #ifndef _HEX_LIST_OBJ_H_
 #define _HEX_LIST_OBJ_H_
 
-#include "hex.h"
 #include "object.h"
 
 #ifdef __cplusplus
