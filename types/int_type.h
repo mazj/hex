@@ -60,37 +60,37 @@ int HexInt_GetMax();
 /*
  * Get a HexObject from an unsigned integer.
  */
-HexIntObj* HexIntObj_FromUnsignedInteger(unsigned int);
+HexIntObj* HexInt_FromUnsignedInteger(unsigned int);
 
 
 /*
  * Get a HexIntObj from a signed integer.
  */
-HexIntObj* HexIntObj_FromSignedInteger(int);
+HexIntObj* HexInt_FromSignedInteger(int);
 
 
 /*
  * Get a HexObject from a long integer.
  */
-HexIntObj* HexIntObj_FromLong(long);
+HexIntObj* HexInt_FromLong(long);
 
 
 /*
  * Get a HexObject from size_t.
  */
-HexIntObj* HexIntObj_FromSize_t(size_t);
+HexIntObj* HexInt_FromSize_t(size_t);
 
 
 /*
  * Get a HexObject from a char.
  */
-HexIntObj* HexIntObj_FromChar(char);
+HexIntObj* HexInt_FromChar(char);
 
 
 /*
  * Get a HexIntObj from a string.
  */
-HexIntObj* HexIntObj_FromString(char*);
+HexIntObj* HexInt_FromString(char*);
 
 
 /*
@@ -100,7 +100,7 @@ HexIntObj* HexIntObj_FromString(char*);
  *  - octal(base 8): prefix '0o' or '0O'
  *  - hexidecimal(base 16): prefix '0x' or '0X'
  */
-HexObject* HexIntObj_FormatString(HexIntObj* obj, int base, int capital);
+HexObject* HexInt_FormatString(HexIntObj* obj, int base, int capital);
 
 
 

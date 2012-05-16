@@ -9,7 +9,7 @@ HexInt_GetMax(void)
 }
 
 HexIntObj*
-HexIntObj_FromUnsignedInteger(unsigned int uint_val)
+HexInt_FromUnsignedInteger(unsigned int uint_val)
 {
     HexIntObj *obj = MALLOC(HexIntObj);
 
@@ -20,7 +20,7 @@ HexIntObj_FromUnsignedInteger(unsigned int uint_val)
 }
 
 HexIntObj*
-HexIntObj_FromSignedInteger(int int_val)
+HexInt_FromSignedInteger(int int_val)
 {
     HexIntObj obj = MALLOC(HexIntObj);
 
@@ -31,7 +31,7 @@ HexIntObj_FromSignedInteger(int int_val)
 }
 
 HexIntObj*
-HexIntObj_FromLong(long l)
+HexInt_FromLong(long l)
 {
     HexIntObj obj = MALLOC(HexIntObj);
 
@@ -42,14 +42,14 @@ HexIntObj_FromLong(long l)
 }
 
 HexObject*
-HexIntObj_FromSize_t(size_t t)
+HexInt_FromSize_t(size_t t)
 {
     if(t >= HEX_INT_MIN_SIGNED && t <= HEX_INT_MAX_SIGNED)
       return HexInt_FromUnsignedInteger((unsigned int)t);
 }
 
 HexIntObj*
-HexIntObj_FromChar(char c)
+HexInt_FromChar(char c)
 {
     return HexIntObj_FromSignedInteger((int)c);
 }
