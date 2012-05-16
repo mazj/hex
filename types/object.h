@@ -13,6 +13,7 @@ extern "C" {
 typedef void (*Hexobj_constructor)(void*);
 typedef void (*Hexobj_destructor)(void*);
 
+typedef int Hex_type_s;
 
 /*
  * Hex Object encapsulation
@@ -23,6 +24,7 @@ typedef struct HexObject_s {
   void *desc;                     /* object descriptor */
   Hexobj_constructor constructor; /* object constructor */
   Hexobj_destructor desctructor;  /* object destructor */
+  Hex_type_s obj_type;			  /* object type */
 } HexObject;
 
 
