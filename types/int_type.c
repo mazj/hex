@@ -1,56 +1,73 @@
+/* HEX 32-bit integer. */
+
 #include "int_type.h"
 
-long
-HexInt_GetMax(void) {
-  return HEX_INT_MAX;
+int
+HexInt_GetMax(void)
+{
+    return HEX_INT_MAX;
+}
+
+HexIntObj*
+HexIntObj_FromUnsignedInteger(unsigned int uint_val)
+{
+    HexIntObj *obj = MALLOC(HexIntObj);
+
+    obj->hex_int_obj_type = hex_int_obj_type_uint;
+    obj->uint_val = uint_val;
+
+    return obj;
+}
+
+HexIntObj*
+HexIntObj_FromSignedInteger(int int_val)
+{
+    HexIntObj obj = MALLOC(HexIntObj);
+
+    obj->hex_int_obj_type = hex_int_obj_type_int;
+    obj->int_val = int_val;
+
+    return obj;
+}
+
+HexIntObj*
+HexIntObj_FromLong(long l)
+{
+    HexIntObj obj = MALLOC(HexIntObj);
+
+    obj->hex_int_obj_type = hex_int_obj_type_int;
+    obj->int_val = (int)int_val;
+
+    return obj;
 }
 
 HexObject*
-HexInt_FromLong(long l)
+HexIntObj_FromSize_t(size_t t)
 {
-  register HexIntObj *obj;
-  // HexObject_INIT(obj, &HexInt_Type);
-  return (HexObject*)obj;	
+    if(t >= HEX_INT_MIN_SIGNED && t <= HEX_INT_MAX_SIGNED)
+      return HexInt_FromUnsignedInteger((unsigned int)t);
+}
+
+HexIntObj*
+HexIntObj_FromChar(char c)
+{
+    return HexIntObj_FromSignedInteger((int)c);
 }
 
 HexObject*
-HexInt_FromSize_t(Hex_size_t t)
+HexInt_FromString(char *str)
 {
-  if(t >= HEX_INT_MIN_SIGNED && t <= HEX_INT_MAX_SIGNED)
-  	return HexInt_FromLong((long)t);
-}
-
-Hex_size_t
-HexInt_ConvertSize_t(HexObject* obj)
-{
-	if(!obj) {
-		HEX_SET_ERR_STR(HEX_ERR_TYPE_ARG, "null arg");
-        return -1;
-    }
-
-  	if(HexInt_Check(obj))
-    	return HexInt_AS_LONG((HexIntObj*)obj);
-  	if(HexLong_Check(obj))
-		return HexLong_ConvertSize_t(obj);
-
-    return HexInt_AsLong(obj);
-}
-
-HexObject*
-HexInt_FromString(char *str, int base)
-{
-	if(!str) {
-		HEX_SET_ERR_STR(HEX_ERR_TYPE_ARG, "null arg");
-		return 0;
-	}
-
-    long val = itoa(str);
-
-    return val;
+    int int_val = atoi(str);
+    return int_val < 0 ? HexIntObj_FromSignedInteger(int_val)
+      : HexIntObj_FromUnsignedInteger((unsigned int)int_val);
 }
 
 HexObject*
 HexInt_FormatString(HexIntObject *obj, int base, int capital)
 {
-	itoa_format(integer, base, capital);
+    assert(obj != NULL);
+
+    int_val = obj->int_val;
+    char *s = itoa_fmt(int_val, base, capital);
+    return 0;
 }

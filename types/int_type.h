@@ -1,39 +1,45 @@
-/* 
- * HexIntObj represents a 32-bit immutable integer.
- */
+/* HEX 32-bit integer. */
 
-#ifndef HEX_INT_OBJ_H
-#define HEX_INT_OBJ_H
+#ifndef _HEX_INT_OBJ_H_
+#define _HEX_INT_OBJ_H_
 
-#include "hex.h"
 #include "object.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+
 /*
  * Hex integer type(32bit).
  */
 typedef struct HexIntObj_s {
-  long int_val;
+	enum {
+		hex_int_obj_type_int;
+		hex_int_obj_type_uint;
+	} hex_int_obj_type;
+  	union {
+  		int int_val;
+  		unsigned uint_val;
+	};
 } HexIntObj;
 
 
 /*
  * Max value of positive 32-bit unsigned integer (2^32-1)
  */
-#define HEX_INT_MAX_UNSIGNED ULONG_MAX
+#define HEX_INT_MAX_UNSIGNED UINT_MAX
 
 /*
  * Max value of positive 32-bit signed integer (2^31-1)
  */
-#define HEX_INT_MAX_SIGNED   LONG_MAX
+#define HEX_INT_MAX_SIGNED   INT_MAX
+
 
 /*
  * Min value of 32-bit signed integer  
  */
-#define HEX_INT_MIN_SIGNED  LONG_MIN
+#define HEX_INT_MIN_SIGNED  INT_MIN
 
 
 /*
@@ -45,30 +51,46 @@ typedef struct HexIntObj_s {
 /*
  * Convenience macro(use with caution).
  */
-#define HexInt_AS_LONG(obj) (((HexIntObj*)(obj))->int_val)
+#define HexIntObj_AS_UINT(obj) (((HexIntObj*)(obj))->uint_val)
+#define HexIntObj_AS_INT(obj)  (((HexIntObj*)(obj))->int_val)
+
+
+int HexInt_GetMax();
 
 /*
- * Get a HexObject from a string.
+ * Get a HexObject from an unsigned integer.
  */
-HexObject* HexIntObj_FromString(char*);
+HexIntObj* HexIntObj_FromUnsignedInteger(unsigned int);
+
+
+/*
+ * Get a HexIntObj from a signed integer.
+ */
+HexIntObj* HexIntObj_FromSignedInteger(int);
 
 
 /*
  * Get a HexObject from a long integer.
  */
-HexObject* HexIntObj_FromLong(long);
+HexIntObj* HexIntObj_FromLong(long);
 
 
 /*
  * Get a HexObject from size_t.
  */
-HexObject* HexIntObj_FromSize_t(Hex_size_t);
+HexIntObj* HexIntObj_FromSize_t(size_t);
 
 
 /*
  * Get a HexObject from a char.
  */
-HexObject* HexIntObj_FromChar(char);
+HexIntObj* HexIntObj_FromChar(char);
+
+
+/*
+ * Get a HexIntObj from a string.
+ */
+HexIntObj* HexIntObj_FromString(char*);
 
 
 /*
@@ -78,7 +100,7 @@ HexObject* HexIntObj_FromChar(char);
  *  - octal(base 8): prefix '0o' or '0O'
  *  - hexidecimal(base 16): prefix '0x' or '0X'
  */
-HexObject* HexIntObj_FormatString(HexIntObj* o, int base, int capital);
+HexObject* HexIntObj_FormatString(HexIntObj* obj, int base, int capital);
 
 
 
@@ -87,4 +109,4 @@ HexObject* HexIntObj_FormatString(HexIntObj* o, int base, int capital);
 }
 #endif
 
- #endif /* HEX_INT_OBJ_H */
+#endif /* _HEX_INT_OBJ_H_ */
