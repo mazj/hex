@@ -1,19 +1,22 @@
 /* HEX Preprocessor */
 #include <stdlib.h>
 #include <stdio.h>
+#include "memory.h"
 #include "esb.h"
 #include "utils.h"
 
 #define HEX_PREPROCESSOR_FILE_LINE_SIZE 200
 
 int in_stmt_group = 0;
-node_s* esb_buf_head;
-node_s* esb_buf_tail;
+Node* esb_buf_head;
+Node* esb_buf_tail;
 
 static void
-process_line(char *line) {
-	if(!line)
+process_line(char *line)
+{
+	if(!line) {
 		return;
+	}
 
 	static esb_s esb_buf;
 
@@ -23,17 +26,18 @@ process_line(char *line) {
 		if(in_stmt_group) {
 			in_stmt_group = 0;
 			if(!esb_buf_head) {
-				esb_buf_head = MALLOC(node_s);
+				esb_buf_head = MALLOC(Node);
 				char *str = (char*)esb_get_string(&esb_buf);
 				esb_buf_head->value = (char*)strndup(str, strlen(str));			
 				esb_buf_tail = esb_buf_head;
 			} else {
-				node_s *node = MALLOC(node_s);
+				Node *node = MALLOC(Node);
 				char *str = (char*)esb_get_string(&esb_buf);
 				node->value = (char*)strndup(str, strlen(str));	
 				node->next = 0;
-				if(!esb_buf_tail)
-					esb_buf_tail = MALLOC(node_s);
+				if(!esb_buf_tail) {
+					esb_buf_tail = MALLOC(Node);
+				}
 				esb_buf_tail->next = node;
 				esb_buf_tail = node;
 			}
@@ -68,18 +72,8 @@ int main(int argc, char const *argv[])
 		while(fgets(line, sizeof(line), fin)) {
 			process_line(line);
 		}
-
-		// test
-		node_s *node = esb_buf_head;
-		while(node) {
-			char *c = (char*)node->value;
-			printf("***********\n");
-			printf("%s", c);
-			printf("***********\n");
-			node = node->next;
-		}
 	} else {
-		printf("ERROR READING FILE: %s.\n", filename);	
+		fprintf(stderr, s"ERROR READING FILE: %s.\n", filename);	
 	}
 
 	fclose(fin);
