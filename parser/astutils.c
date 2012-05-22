@@ -1,4 +1,4 @@
-#include <assert.h>
+#include "assert.h"
 #include "ast.h"
 #include "map.h"
 #include "memory.h"
@@ -6,7 +6,7 @@
 static int
 _is_expr_list_identifier_list(ExprList* expr_list)
 {
-	assert(expr_list);
+	HEX_ASSERT(expr_list);
 
 	while(expr_list) {
 		Expr *expr = expr_list->expr;
@@ -28,7 +28,7 @@ _is_expr_list_identifier_list(ExprList* expr_list)
 static int
 _check_type_qualifier_list(TypeQualifierList *type_qualifier_list)
 {
-	assert(type_qualifier_list);
+	HEX_ASSERT(type_qualifier_list);
 
 	int type_qualifier_const_count = 0;
 	int type_qualifier_volatile_count = 0;
@@ -60,7 +60,7 @@ _check_type_qualifier_list(TypeQualifierList *type_qualifier_list)
 static int
 _check_parameter_list(ParameterList *paramlist)
 {
-	assert(paramlist);
+	HEX_ASSERT(paramlist);
 
 	int endOfTypedParameter = 0;
 
@@ -69,7 +69,7 @@ _check_parameter_list(ParameterList *paramlist)
 	while(paramlist) {
 		Parameter* param = paramlist->parameter;
 
-		assert(param);
+		HEX_ASSERT(param);
 
 		if(param->type_qualifier_list) {
 			if(endOfTypedParameter) {
@@ -96,6 +96,30 @@ _check_parameter_list(ParameterList *paramlist)
 		}
 
 		paramlist = paramlist->next;
+	}
+
+	return 1;
+}
+
+static int
+_check_assignment_list(AssignmentList *assigmentlist)
+{
+	HEX_ASSERT(assigmentlist);
+
+	while(assigmentlist) {
+		Assignment *assignment = assigmentlist->assignment;
+
+		HEX_ASSERT(assignment);
+
+		if(assignment->assignment_type == assignment_type_expr) {
+			Expr *expr = assignment->assignment_expr;
+
+			HEX_ASSERT(expr);
+
+			// TODO: check expr...
+		}
+
+		assigmentlist = assigmentlist->next;
 	}
 
 	return 1;
