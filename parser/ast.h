@@ -94,7 +94,8 @@ typedef struct HexInteger {
 //===========================================================================
 // createInteger() - construct an AST node of type Integer.
 //===========================================================================
-Integer* createInteger(int type, int is_signed, int value);
+Integer*
+createInteger(int type, int is_signed, int value);
 
 
 /*
@@ -119,7 +120,8 @@ typedef struct HexLiteral {
 //===========================================================================
 // createLiteral() - construct an AST node of type Literal.
 //===========================================================================
-Literal* createLiteral(int type, void* value);
+Literal*
+createLiteral(int type, void* value);
 
 
 /*
@@ -140,7 +142,8 @@ typedef struct HexPrimaryExpr {
 //===========================================================================
 // createPrimaryExpr() - construct an AST node of type PrimaryExpr.
 //===========================================================================
-Expr* createPrimaryExpr(int type, void* value);
+Expr*
+createPrimaryExpr(int type, void* value);
 
 
 /*
@@ -162,7 +165,8 @@ typedef struct HexPostfixIndexExpr {
 //===========================================================================
 // createPostfixIndexExpr() - construct an AST node of type PostfixIndexExpr.
 //===========================================================================
-PostfixIndexExpr* createPostfixIndexExpr(int type, void *value, ListInitializer* indeces);
+PostfixIndexExpr*
+createPostfixIndexExpr(int type, void *value, ListInitializer* indeces);
 
 
 /*
@@ -177,7 +181,8 @@ typedef struct HexPostfixAccessorExpr {
 //===========================================================================
 // createPostfixAccessorExpr() - construct an AST node of type PostfixAccessorExpr.
 //===========================================================================
-PostfixAccessorExpr* createPostfixAccessorExpr(Expr *caller, Expr* accessor);
+PostfixAccessorExpr*
+createPostfixAccessorExpr(Expr *caller, Expr* accessor);
 
 
 /*
@@ -198,7 +203,8 @@ typedef struct HexPostfixInvocationExpr {
 //===========================================================================
 // createPostfixInvocationExpr() - construct an AST node of type PostfixInvocationExpr.
 //===========================================================================
-PostfixInvocationExpr* createPostfixInvocationExpr(int type, void *invocation_src);
+PostfixInvocationExpr*
+createPostfixInvocationExpr(int type, void *invocation_src);
 
 
 /*
@@ -220,7 +226,8 @@ typedef struct HexPostfixInvocationWithArgsExpr {
 //===========================================================================
 // createPostfixInvocationWithArgsExpr() - construct an AST node of type PostfixInvocationWithArgsExpr.
 //===========================================================================
-PostfixInvocationWithArgsExpr* createPostfixInvocationWithArgsExpr(int type, void *value, ExprList* arg_list);
+PostfixInvocationWithArgsExpr*
+createPostfixInvocationWithArgsExpr(int type, void *value, ExprList* arg_list);
 
 
 /*
@@ -248,12 +255,13 @@ typedef struct HexPostfixExpr {
         postfix_expr_type_invocation_with_args      /* function invocation with args */
     } postfix_expr_type;
     union {
-        PostfixIndexExpr *postfix_expr_index_expr;                              /* index */
-        Expr *postfix_expr_postfix_inc_expr;                                    /* increment */
-        Expr *postfix_expr_postfix_dec_expr;                                    /* decrement */            
-        PostfixAccessorExpr *postfix_expr_accessor_expr;                        /* accessor */
-        PostfixInvocationExpr *postfix_expr_invocation_expr;                    /* function invocation */
-        PostfixInvocationWithArgsExpr *postfix_expr_invocation_with_args_expr;  /* function invocation with args */
+        PostfixIndexExpr *postfix_expr_index_expr;           /* index */
+        Expr *postfix_expr_postfix_inc_expr;                 /* increment */
+        Expr *postfix_expr_postfix_dec_expr;                 /* decrement */            
+        PostfixAccessorExpr *postfix_expr_accessor_expr;     /* accessor */
+        PostfixInvocationExpr *postfix_expr_invocation_expr; /* function invocation */
+        PostfixInvocationWithArgsExpr*
+            postfix_expr_invocation_with_args_expr;  /* function invocation with args */
     };
 } PostfixExpr;
 
@@ -261,7 +269,8 @@ typedef struct HexPostfixExpr {
 //===========================================================================
 // createPostfixExpr() - construct an AST node of type PostfixExpr.
 //===========================================================================
-Expr* createPostfixExpr(int type, int type2, void* value, void* value1);
+Expr*
+createPostfixExpr(int type, int type2, void* value, void* value1);
 
 
 /*
@@ -288,7 +297,8 @@ typedef struct HexUnaryExpr {
 //===========================================================================
 // createUnaryExpr() - construct an AST node of type UnaryExpr.
 //===========================================================================
-Expr* createUnaryExpr(int type, Expr *expr);
+Expr*
+createUnaryExpr(int type, Expr *expr);
 
 
 /*
@@ -330,7 +340,8 @@ typedef struct HexCastExpr {
 //===========================================================================
 // createCastExpr() - construct an AST node of type CastExpr.
 //===========================================================================
-Expr* createCastExpr(int type, void* value, Expr *expr);
+Expr*
+createCastExpr(int type, void* value, Expr *expr);
 
 
 /*
@@ -350,7 +361,8 @@ typedef struct HexMultiplicativeExpr {
 //===========================================================================
 // createMultiplcativeExpr() - construct an AST node of type MultiplcativeExpr.
 //===========================================================================
-Expr* createMultiplicativeExpr(int type, Expr *left_expr, Expr *right_expr);
+Expr*
+createMultiplicativeExpr(int type, Expr *left_expr, Expr *right_expr);
 
 
 /*
@@ -369,7 +381,8 @@ typedef struct HexAdditiveExpr {
 //===========================================================================
 // createAdditiveExpr() - construct an AST node of type AdditiveExpr.
 //===========================================================================
-Expr* createAdditiveExpr(int type, Expr *left_expr, Expr *right_expr);
+Expr*
+createAdditiveExpr(int type, Expr *left_expr, Expr *right_expr);
 
 
 /*
@@ -397,7 +410,8 @@ typedef struct HexArithmeticExpr {
 //===========================================================================
 // createArithmeticExpr() - construct an AST node of type ArithmeticExpr.
 //===========================================================================
-ArithmeticExpr* createArithmeticExpr(int type, void *expr);
+ArithmeticExpr*
+createArithmeticExpr(int type, void *expr);
 
 
 /*
@@ -433,7 +447,8 @@ typedef struct HexEqualityExpr {
 //===========================================================================
 // createEqualityExpr() - construct an AST node of type EqualityExpr.
 //===========================================================================
-Expr* createEqualityExpr(int type, Expr *left_expr, Expr *right_expr);
+Expr*
+createEqualityExpr(int type, Expr *left_expr, Expr *right_expr);
 
 
 /*
@@ -459,7 +474,8 @@ typedef struct HexLogicExpr {
 //===========================================================================
 // createLogicExpr() - construct an AST node of type LogicExpr.
 //===========================================================================
-Expr* createLogicExpr(int type, Expr *left_expr, Expr *right_expr);
+Expr*
+createLogicExpr(int type, Expr *left_expr, Expr *right_expr);
 
 
 /*
@@ -491,7 +507,8 @@ typedef struct HexBitwiseExpr {
 //===========================================================================
 // createBitwiseExpr() - construct an AST node of type BitwiseExpr.
 //===========================================================================
-Expr* createBitwiseExpr(int type, Expr *left_expr, Expr *right_expr);
+Expr*
+createBitwiseExpr(int type, Expr *left_expr, Expr *right_expr);
 
 
 /*
@@ -510,7 +527,9 @@ typedef struct HexConditionalExpr {
 //===========================================================================
 // createConditionalExpr() - construct an AST node of type ConditionalExpr.
 //===========================================================================
-Expr* createConditionalExpr(Expr *predicate_expr, Expr *alternative_expr, Expr *consequent_expr);
+Expr*
+createConditionalExpr(Expr *predicate_expr,
+    Expr *alternative_expr, Expr *consequent_expr);
 
 
 /*
@@ -528,7 +547,8 @@ typedef struct HexRangeExpr {
 //===========================================================================
 // createRangeExpr() - construct an AST node of type RangeExpr.
 //===========================================================================
-Expr* createRangeExpr(Expr *left_expr, Expr *right_expr);
+Expr*
+createRangeExpr(Expr *left_expr, Expr *right_expr);
 
 
 /*
@@ -543,7 +563,8 @@ typedef struct HexLockExpr {
 //===========================================================================
 // createLockExpr() - construct an AST node of type LockExpr.
 //===========================================================================
-Expr* createLockExpr(int is_lock, Expr *expr);
+Expr*
+createLockExpr(int is_lock, Expr *expr);
 
 
 /*
@@ -557,7 +578,8 @@ typedef struct HexWeakrefExpr {
 //===========================================================================
 // createWeakref() - construct an AST node of type WeakrefExpr.
 //===========================================================================
-Expr* createWeakref(Expr *expr);
+Expr*
+createWeakref(Expr *expr);
 
 
 /*
@@ -600,7 +622,8 @@ struct HexExpr {
 //===========================================================================
 // createExpr() - construct an AST node of type Expr.
 //===========================================================================
-Expr* createExpr(int type, void* value);
+Expr*
+createExpr(int type, void* value);
 
 
 /*
@@ -637,7 +660,8 @@ struct HexExprList {
 //===========================================================================
 // createExprList() - construct an AST node of type ExprList.
 //===========================================================================
-ExprList *createExprList(Expr* expr, ExprList* parent_list);
+ExprList*
+createExprList(Expr* expr, ExprList* parent_list);
 
 
 /***********************************************************************
@@ -667,7 +691,9 @@ typedef struct HexTypeQualifierList {
 //===========================================================================
 // createTypeQualifierList() - construct an AST node of type TypeQualifierList.
 //===========================================================================
-TypeQualifierList* createTypeQualifierList(TypeQualifier qualifier, TypeQualifierList* parent_list);
+TypeQualifierList*
+createTypeQualifierList(TypeQualifier qualifier,
+    TypeQualifierList* parent_list);
 
 
 /*
@@ -685,8 +711,10 @@ typedef struct HexDeclaration {
 //===========================================================================
 // createDeclaration() - construct an AST node of type Declaration.
 //===========================================================================
-Declaration* createDeclaration(TypeQualifierList *type_qualifier_list,
-    int type_specifier, char *custom_type, ExprList *expr_list, char *alias);
+Declaration*
+createDeclaration(TypeQualifierList *type_qualifier_list,
+    int type_specifier, char *custom_type,
+    ExprList *expr_list, char *alias);
 
 
 /***********************************************************************
@@ -710,7 +738,8 @@ typedef struct HexParameter {
 //===========================================================================
 // createParameter() - construct an AST node of type Parameter.
 //===========================================================================
-Parameter* createParameter(TypeQualifierList *type_qualifier_list, int type_specifier,
+Parameter*
+createParameter(TypeQualifierList *type_qualifier_list, int type_specifier,
     char *custom_type, char *parameter_name, char *alias, int is_ref);
 
 
@@ -726,7 +755,8 @@ typedef struct HexParameterList {
 //===========================================================================
 // createParameterList() - construct an AST node of type ParameterList.
 //===========================================================================
-ParameterList* createParameterList(Parameter *parameter, ParameterList* parent_list);
+ParameterList*
+createParameterList(Parameter *parameter, ParameterList* parent_list);
 
 
 /***********************************************************************
@@ -745,7 +775,8 @@ struct HexListInitializer {
 //===========================================================================
 // createListInitializer() - construct an AST node of type ListInitializer.
 //===========================================================================
-ListInitializer* createListInitializer(ExprList *expr_list);
+ListInitializer*
+createListInitializer(ExprList *expr_list);
 
 
 /*
@@ -759,7 +790,8 @@ typedef struct HexArrayInitializer {
 //===========================================================================
 // createArrayInitializer() - construct an AST node of type ArrayInitializer.
 //===========================================================================
-ArrayInitializer* createArrayInitializer(ExprList *expr_list);
+ArrayInitializer*
+createArrayInitializer(ExprList *expr_list);
 
 
 /*
@@ -773,7 +805,8 @@ typedef struct HexTupleInitializer {
 //===========================================================================
 // createTupleInitializer() - construct an AST node of type TupleInitializer.
 //===========================================================================
-TupleInitializer* createTupleInitializer(ExprList *expr_list);
+TupleInitializer*
+createTupleInitializer(ExprList *expr_list);
 
 
 /*
@@ -793,7 +826,8 @@ typedef struct HexStructInitializer {
 //===========================================================================
 // createStructInitializer() - construct an AST node of type StructInitializer.
 //===========================================================================
-StructInitializer* createStructInitializer(AssignmentStmtList *assignment_stmt_list);
+StructInitializer*
+createStructInitializer(AssignmentStmtList *assignment_stmt_list);
 
 
 /*
@@ -807,7 +841,8 @@ typedef struct HexSetInitializer {
 //===========================================================================
 // createSetInitializer() - construct an AST node of type SetInitializer.
 //===========================================================================
-SetInitializer* createSetInitializer(ExprList *expr_list);
+SetInitializer*
+createSetInitializer(ExprList *expr_list);
 
 
 /*
@@ -822,7 +857,8 @@ typedef struct HexMapMultimapInitializerSingle {
 //===========================================================================
 // createMapMultimapInitializerSingle() - construct an AST node of type MapMultimapInitializerSingle.
 //===========================================================================
-MapMultimapInitializerSingle* createMapMultimapInitializerSingle(Expr *key, Expr *value);
+MapMultimapInitializerSingle*
+createMapMultimapInitializerSingle(Expr *key, Expr *value);
 
 
 /*
@@ -837,7 +873,8 @@ typedef struct HexMapMultimapInitializerList {
 //===========================================================================
 // createMapMultimapInitializerList() - construct an AST node of type MapMultimapInitializerList.
 //===========================================================================
-MapMultimapInitializerList* createMapMultimapInitializerList(
+MapMultimapInitializerList*
+createMapMultimapInitializerList(
     MapMultimapInitializerSingle *map_initializer_single,
     MapMultimapInitializerList *parent_list);
 
@@ -853,7 +890,8 @@ typedef struct HexMapMultimapInitializer {
 //===========================================================================
 // createMapMultimapInitializer() - construct an AST node of type MapMultimapInitializer.
 //===========================================================================
-MapMultimapInitializer *createMapMultimapInitializer(
+MapMultimapInitializer*
+createMapMultimapInitializer(
     MapMultimapInitializerList *map_initializer_list);
 
 
@@ -883,7 +921,8 @@ typedef struct HexInitializer {
 //===========================================================================
 // createInitializer() - construct an AST node of type Initializer.
 //===========================================================================
-Initializer* createInitializer(int type, void* value);
+Initializer*
+createInitializer(int type, void* value);
 
 
 /***********************************************************************
@@ -910,7 +949,8 @@ typedef struct HexAssignment {
 //===========================================================================
 // createAssignment() - construct an AST node of type Assignment.
 //===========================================================================
-Assignment* createAssignment(int type, void* target);
+Assignment*
+createAssignment(int type, void* target);
 
 
 /*
@@ -925,7 +965,8 @@ typedef struct HexAssignmentList {
 //===========================================================================
 // createAssignmentList() - construct an AST node of type AssignmentList.
 //===========================================================================
-AssignmentList* createAssignmentList(Assignment *assignment, AssignmentList *parent_list);
+AssignmentList*
+createAssignmentList(Assignment *assignment, AssignmentList *parent_list);
 
 
 /*
@@ -947,7 +988,8 @@ typedef struct HexAssignmentStmt {
 //===========================================================================
 // createAssignmentStmt() - construct an AST node of type AssignmentStmt.
 //===========================================================================
-AssignmentStmt* createAssignmentStmt(int type, void* value, AssignmentList* assignment_list);
+AssignmentStmt*
+createAssignmentStmt(int type, void* value, AssignmentList* assignment_list);
 
 
 /*
@@ -962,7 +1004,8 @@ struct HexAssignmentStmtList {
 //===========================================================================
 // createAssignmentStmtList() - construct an AST node of type AssignmentStmtList.
 //===========================================================================
-AssignmentStmtList* createAssignmentStmtList(AssignmentStmt *assignment_stmt,
+AssignmentStmtList*
+createAssignmentStmtList(AssignmentStmt *assignment_stmt,
     AssignmentStmtList *parent_list);
 
 
@@ -981,9 +1024,10 @@ typedef struct HexFuncDec {
 //===========================================================================
 // createFuncDec() - construct an AST node of type FuncDec.
 //===========================================================================
-FuncDec* createFuncDec(TypeQualifierList *type_qualifier_list,
-    int type_specifier, char *custom_return_type, char *func_name,
-    ParameterList *parameter_list);
+FuncDec*
+createFuncDec(TypeQualifierList *type_qualifier_list,
+    int type_specifier, char *custom_return_type,
+    char *func_name, ParameterList *parameter_list);
 
 
 /*
@@ -998,7 +1042,8 @@ typedef struct HexFuncDef {
 //===========================================================================
 // createFuncDef() - construct an AST node of type FuncDef.
 //===========================================================================
-FuncDef* createFuncDef(FuncDec *func_declaration, Suite *func_suite);
+FuncDef*
+createFuncDef(FuncDec *func_declaration, Suite *func_suite);
 
 
 /*
@@ -1023,7 +1068,8 @@ struct HexLambdaExpr {
 //===========================================================================
 // createLambdaExpr() - construct an AST node of type LambdaExpr.
 //===========================================================================
-LambdaExpr* createLambdaExpr(int type, ParameterList* param_list, void* body);
+LambdaExpr*
+createLambdaExpr(int type, ParameterList* param_list, void* body);
 
 
 /*
@@ -1037,7 +1083,8 @@ typedef struct HexAttribute {
 //===========================================================================
 // createAttribute() - construct an AST node of type Attribute.
 //===========================================================================
-Attribute* createAttribute(Expr *expr);
+Attribute*
+createAttribute(Expr *expr);
 
 
 /*
@@ -1052,7 +1099,9 @@ typedef struct HexCompilerProperty {
 //===========================================================================
 // createCompilerProperty() - construct an AST node of type CompilerProperty.
 //===========================================================================
-CompilerProperty* createCompilerProperty(char *compiler_property_name, char *compiler_property_value);
+CompilerProperty*
+createCompilerProperty(char *compiler_property_name,
+    char *compiler_property_value);
 
 
 /*
@@ -1073,7 +1122,8 @@ typedef struct HexDecoratorListSingle {
 //===========================================================================
 // createDecoratorListSingle() - construct an AST node of type DecoratorListSingle.
 //===========================================================================
-DecoratorListSingle* createDecoratorListSingle(int type, void* value);
+DecoratorListSingle*
+createDecoratorListSingle(int type, void* value);
 
 
 /*
@@ -1088,7 +1138,9 @@ typedef struct HexDecoratorList {
 //===========================================================================
 // createDecoratorList() - construct an AST node of type DecoratorList.
 //===========================================================================
-DecoratorList* createDecoratorList(DecoratorListSingle *decorator_list_single, DecoratorList* parent_list);
+DecoratorList*
+createDecoratorList(DecoratorListSingle *decorator_list_single,
+    DecoratorList* parent_list);
 
 
 /*
@@ -1102,7 +1154,8 @@ typedef struct HexDecorator {
 //===========================================================================
 // createDecorator() - construct an AST node of type Decorator.
 //===========================================================================
-Decorator* createDecorator(DecoratorList* decorator_list);
+Decorator*
+createDecorator(DecoratorList* decorator_list);
 
 
 /*
@@ -1117,7 +1170,8 @@ typedef struct HexClassDeclaration {
 //===========================================================================
 // createClassDeclaration() - construct an AST node of type ClassDeclaration.
 //===========================================================================
-ClassDeclaration *createClassDeclaration(char *name, ExprList* expr_list);
+ClassDeclaration*
+createClassDeclaration(char *name, ExprList* expr_list);
 
 
 /*
@@ -1142,7 +1196,8 @@ typedef struct HexClassSection {
 //===========================================================================
 // createClassSection() - construct an AST node of type ClassSection.
 //===========================================================================
-ClassSection *createClassSection(int class_access_specifier, Suite *suite);
+ClassSection*
+createClassSection(int class_access_specifier, Suite *suite);
 
 
 /*
@@ -1156,7 +1211,8 @@ typedef struct HexModule {
 //===========================================================================
 // createModule() - construct an AST node of type Module.
 //===========================================================================
-Module* createModule(char *module_identifier);
+Module*
+createModule(char *module_identifier);
 
 
 /*
@@ -1171,7 +1227,8 @@ typedef struct HexModuleList {
 //===========================================================================
 // createModuleList() - construct an AST node of type ModuleList.
 //===========================================================================
-ModuleList* createModuleList(Module *module, ModuleList *parent_list);
+ModuleList*
+createModuleList(Module *module, ModuleList *parent_list);
 
 
 /*
@@ -1186,7 +1243,8 @@ typedef struct HexDirectImportStmt {
 //===========================================================================
 // createDirectImportStmt() - construct an AST node of type DirectImportStmt.
 //===========================================================================
-DirectImportStmt* createDirectImportStmt(ModuleList *module_list, char *alias);
+DirectImportStmt*
+createDirectImportStmt(ModuleList *module_list, char *alias);
 
 
 /*
@@ -1202,7 +1260,8 @@ typedef struct HexRelativeImportStmt {
 //===========================================================================
 // createRelativeImportStmt() - construct an AST node of type RelativeImportStmt.
 //===========================================================================
-RelativeImportStmt* createRelativeImportStmt(ModuleList *module_list, Module *module, char *alias);
+RelativeImportStmt*
+createRelativeImportStmt(ModuleList *module_list, Module *module, char *alias);
 
 
 /*
@@ -1223,7 +1282,8 @@ typedef struct HexImportStmt {
 //===========================================================================
 // createImportStmt() - construct an AST node of type ImportStmt.
 //===========================================================================
-ImportStmt* createImportStmt(int type, void* value);
+ImportStmt*
+createImportStmt(int type, void* value);
 
 
 /*
@@ -1238,7 +1298,8 @@ typedef struct HexElifStmt {
 //===========================================================================
 // createElifStmt() - construct an AST node of type ElifStmt.
 //===========================================================================
-ElifStmt* createElifStmt(Expr *elif_expr, Suite *elif_suite);
+ElifStmt*
+createElifStmt(Expr *elif_expr, Suite *elif_suite);
 
 
 /*
@@ -1253,7 +1314,8 @@ typedef struct HexElifGroup {
 //===========================================================================
 // createElifGroup() - construct an AST node of type ElifGroup.
 //===========================================================================
-ElifGroup* createElifGroup(ElifStmt* elif_stmt, ElifGroup *parent_list);
+ElifGroup*
+createElifGroup(ElifStmt* elif_stmt, ElifGroup *parent_list);
 
 
 /*
@@ -1270,7 +1332,9 @@ typedef struct HexIfStmt {
 //===========================================================================
 // createIfStmt() - construct an AST node of type IfStmt.
 //===========================================================================
-IfStmt* createIfStmt(Expr *if_expr, Suite *if_suite, ElifGroup *elif_group, Suite *else_stmt);
+IfStmt*
+createIfStmt(Expr *if_expr, Suite *if_suite,
+    ElifGroup *elif_group, Suite *else_stmt);
 
 
 /*
@@ -1289,7 +1353,8 @@ typedef struct HexIfStmtSimple {
 //===========================================================================
 // createIfStmtSimple() - construct an AST node of type IfStmtSimple.
 //===========================================================================
-IfStmtSimple* createIfStmtSimple(int type, Expr *expr, ExprList *expr_list);
+IfStmtSimple*
+createIfStmtSimple(int type, Expr *expr, ExprList *expr_list);
 
 
 /*
@@ -1304,7 +1369,8 @@ typedef struct HexWhileStmt {
 //===========================================================================
 // createWhileStmt() - construct an AST node of type WhileStmt.
 //===========================================================================
-WhileStmt* createWhileStmt(Expr *while_expr, Suite *while_suite);
+WhileStmt*
+createWhileStmt(Expr *while_expr, Suite *while_suite);
 
 
 /*
@@ -1325,7 +1391,8 @@ typedef struct HexIterable {
 //===========================================================================
 // createIterable() - construct an AST node of type Iterable.
 //===========================================================================
-Iterable* createIterable(int type, void* value);
+Iterable*
+createIterable(int type, void* value);
 
 
 /*
@@ -1342,7 +1409,9 @@ typedef struct HexForStmt {
 //===========================================================================
 // createForStmt() - construct an AST node of type ForStmt.
 //===========================================================================
-ForStmt* createForStmt(Iterable *iterable, Expr *expr, Expr *where_expr, Suite *suite);
+ForStmt*
+createForStmt(Iterable *iterable, Expr *expr,
+    Expr *where_expr, Suite *suite);
 
 
 /*
@@ -1365,7 +1434,8 @@ typedef struct HexCatchStmt {
 //===========================================================================
 // createCatchStmt() - construct an AST node of type CatchStmt.
 //===========================================================================
-CatchStmt* createCatchStmt(int type, void* value, Suite *suite);
+CatchStmt*
+createCatchStmt(int type, void* value, Suite *suite);
 
 
 /*
@@ -1380,7 +1450,8 @@ typedef struct HexCatchStmtGroup {
 //===========================================================================
 // createCatchStmtGroup() - construct an AST node of type CatchStmtGroup.
 //===========================================================================
-CatchStmtGroup* createCatchStmtGroup(CatchStmt* catch_stmt,
+CatchStmtGroup*
+createCatchStmtGroup(CatchStmt* catch_stmt,
     CatchStmtGroup* parent_group);
 
 
@@ -1395,7 +1466,8 @@ typedef struct HexFinallyStmt {
 //===========================================================================
 // createFinallyStmt() - construct an AST node of type FinallyStmt.
 //===========================================================================
-FinallyStmt* createFinallyStmt(Suite* suite);
+FinallyStmt*
+createFinallyStmt(Suite* suite);
 
 
 /*
@@ -1411,7 +1483,8 @@ typedef struct HexTryStmt {
 //===========================================================================
 // createTryStmt() - construct an AST node of type TryStmt.
 //===========================================================================
-TryStmt* createTryStmt(Suite* try_suite, CatchStmtGroup *catch_stmt_group,
+TryStmt*
+createTryStmt(Suite* try_suite, CatchStmtGroup *catch_stmt_group,
     FinallyStmt *finally_stmt);
 
 
@@ -1439,7 +1512,8 @@ struct HexCompoundStmt {
 //===========================================================================
 // createCompoundStmt() - construct an AST node of type CompoundStmt.
 //===========================================================================
-CompoundStmt* createCompoundStmt(int type, void* value);
+CompoundStmt*
+createCompoundStmt(int type, void* value);
 
 
 /*
@@ -1457,7 +1531,8 @@ typedef struct HexReturnStmt {
 //===========================================================================
 // createReturnStmt() - construct an AST node of type ReturnStmt.
 //===========================================================================
-ReturnStmt* createReturnStmt(int type, ExprList *expr_list);
+ReturnStmt*
+createReturnStmt(int type, ExprList *expr_list);
 
 
 /*
@@ -1504,7 +1579,8 @@ typedef struct HexControlSimpleStmt {
 //===========================================================================
 // createControlSimpleStmt() - construct an AST node of type ControlSimpleStmt.
 //===========================================================================
-ControlSimpleStmt* createControlSimpleStmt(int type, void* value);
+ControlSimpleStmt*
+createControlSimpleStmt(int type, void* value);
 
 
 /*
@@ -1535,7 +1611,8 @@ typedef struct HexSimpleStmt {
 //===========================================================================
 // createPassStmt() - construct an AST node of type PassStmt.
 //===========================================================================
-SimpleStmt* createSimpleStmt(int type, void* value);
+SimpleStmt*
+createSimpleStmt(int type, void* value);
 
 
 /*
@@ -1550,7 +1627,8 @@ struct HexSimpleStmtList {
 //===========================================================================
 // createSimpleStmtList() - construct an AST node of type SimpleStmtList.
 //===========================================================================
-SimpleStmtList* createSimpleStmtList(SimpleStmt *simple_stmt, SimpleStmtList *parent_list);
+SimpleStmtList*
+createSimpleStmtList(SimpleStmt *simple_stmt, SimpleStmtList *parent_list);
 
 
 /*
@@ -1573,7 +1651,8 @@ struct HexStmt {
 //===========================================================================
 // createStmt() - construct an AST node of type Stmt.
 //===========================================================================
-Stmt* createStmt(int type, void* value);
+Stmt*
+createStmt(int type, void* value);
 
 
 /*
@@ -1588,7 +1667,8 @@ typedef struct HexStmtGroup {
 //===========================================================================
 // createStmtGroup() - construct an AST node of type StmtGroup.
 //===========================================================================
-StmtGroup* createStmtGroup(Stmt *stmt, StmtGroup *parent_group);
+StmtGroup*
+createStmtGroup(Stmt *stmt, StmtGroup *parent_group);
 
 
 /*
@@ -1602,7 +1682,8 @@ struct HexSuite {
 //===========================================================================
 // createSuite() - construct an AST node of type Suite.
 //===========================================================================
-Suite* createSuite(StmtGroup *stmt_group);
+Suite*
+createSuite(StmtGroup *stmt_group);
 
 
-#endif // _AST_H_
+#endif /* _AST_H_ */
