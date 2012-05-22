@@ -5,10 +5,18 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "utils.h"
+#include "memory.h"
 
 
-#define AST_ERROR()
+#define AST_ERROR(level, errstr)        \
+    do {                                \
+        fprintf(stderr,                 \
+            "AST ERROR: %s at %d\n",    \
+            errstr, __LINE__);          \
+        if(level == -1) {               \
+            exit(EXIT_FAILURE);         \
+        }                               \
+    } while(0)
 
 
 //===========================================================================
