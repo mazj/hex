@@ -7,6 +7,9 @@ array.o: array.c array.h memory.h
 bst.o: bst.h bst.c memory.h utils.h
 	$(CC) $(CFLAGS) bst.h bst.c memory.h utils.h
 
+set.o: set.h set.c assert.h bst.h bst.o
+	$(CC) $(CFLAGS) set.h set.c bst.h bst.o assert.h
+
 buffer.o: buffer.c buffer.h memory.h
 	$(CC) $(CFLAGS) buffer.c buffer.h memory.h
 
