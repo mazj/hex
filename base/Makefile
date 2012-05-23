@@ -10,6 +10,9 @@ bst.o: bst.h bst.c memory.h utils.h
 set.o: set.h set.c assert.h bst.h bst.o
 	$(CC) $(CFLAGS) set.h set.c bst.h bst.o assert.h
 
+cutils.o: cutils.h cutils.c assert.h strutils.o strutils.h
+	$(CC) $(CFLAGS) cutils.c assert.h strutils.o
+
 buffer.o: buffer.c buffer.h memory.h
 	$(CC) $(CFLAGS) buffer.c buffer.h memory.h
 

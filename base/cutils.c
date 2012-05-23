@@ -1,3 +1,7 @@
+#include <limits.h>
+#include "strutils.h"
+#include "assert.h"
+
 char*
 itoa(int value, char *str, int base)
 {
@@ -35,7 +39,7 @@ itoa(int value, char *str, int base)
 		str_[0] = '-';
   	}
 
-  	str = str_
+  	str = str_;
 
   	return str;
 }
@@ -43,11 +47,11 @@ itoa(int value, char *str, int base)
 int
 atoi(const char *str)
 {
-	if(str == NULL) {
-		return 0;
-	}
+	HEX_ASSERT(str != NULL);
 
 	char *s = trim_hard(str);
+
+	HEX_ASSERT(s != NULL);
 
 	int val = 0;
 	int isNegative = (*s == '-') ? 1 : 0;
@@ -77,7 +81,7 @@ atoi(const char *str)
 
 	val = isNegative ? val * -1 : val;
 
-	assert(val >= INT_MIN && val <= INT_MAX);
+	HEX_ASSERT(val >= INT_MIN && val <= INT_MAX);
 
 	return val;
 }
