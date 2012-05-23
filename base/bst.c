@@ -1,5 +1,5 @@
-#include <assert.h>
 #include <errno.h>
+#include "assert.h"
 #include "memory.h"
 #include "bst.h"
 
@@ -16,17 +16,17 @@ createBst()
 	return bst;
 }
 
-static inline 
-BinaryNode* bst_left(BinaryNode* node)
+static BinaryNode*
+bst_left(BinaryNode* node)
 {
-	assert(node != NULL);
+	HEX_ASSERT(node != NULL);
 	return node->left;
 }
 
-static inline
-BinaryNode* bst_right(BinaryNode* node)
+static BinaryNode*
+bst_right(BinaryNode* node)
 {
-	assert(node != NULL);
+	HEX_ASSERT(node != NULL);
 	return node->right;
 }
 
@@ -44,21 +44,21 @@ bstCreateNode()
 void*
 bst_node_value(BinaryNode* node)
 {
-	assert(node != NULL);
+	HEX_ASSERT(node != NULL);
 	return node->value;
 }
 
 int
 bst_node_isleafnode(BinaryNode* node)
 {
-	assert(node != NULL);
+	HEX_ASSERT(node != NULL);
 	return (!node->left && !node->right);
 }
 
 int
 bst_node_isfullnode(BinaryNode* node)
 {
-	assert(node != NULL);
+	HEX_ASSERT(node != NULL);
 	return (node->left && node->right);
 }
 
@@ -72,13 +72,15 @@ bst_node_empty(BinaryNode* node)
 static size_t
 _bst_size(BinaryNode* node)
 {
-	return (node == 0) ? 0 : 1 + _bst_size(node->left) + _bst_size(node->right);
+	return (node == 0) ? 0 :
+		1 + _bst_size(node->left) 
+		+ _bst_size(node->right);
 }
 
 size_t
 bst_size(Bst *bst)
 {
-	assert(bst != NULL);
+	HEX_ASSERT(bst != NULL);
 	if(!bst->root) {
 		return 0;
 	}
@@ -88,31 +90,53 @@ bst_size(Bst *bst)
 static size_t
 _bst_height(BinaryNode* node)
 {
-	return (node == 0) ? -1 : MAX(1 + _bst_height(node->left),
+	return (node == 0) ? -1 :
+		MAX(1 + _bst_height(node->left),
 		1 + _bst_height(node->right));
 }
 
 size_t
 bst_height(Bst *bst)
 {
-	assert(bst != NULL);
+	HEX_ASSERT(bst != NULL);
 	if(!bst->root) {
 		return 0;
 	}
 	return _bst_height(bst->root);
 }
 
+int
+bst_equal(BinaryNode *node1, BinaryNode *node2,
+	CmpFunc cmpfunc)
+{
+	if(node1 && node2) {
+		if(cmpfunc(node1->value, node2->value) == 0) {
+			return (bst_equal(
+				node1->left, node2->left, cmpfunc) &&
+				bst_equal(
+					node1->right, node2->right, cmpfunc));
+		} else {
+			return 0;
+		}
+	} else {
+		return 0;
+	}
+}
+
+
 static void*
 _bst_front(BinaryNode* node)
 {
 	if(!node || !node->value) return 0;
-	return (node->left == 0) ? node->value : _bst_front(node->left) ? _bst_front(node->left) : node->value;
+	return (node->left == 0) ? node->value :
+		_bst_front(node->left) ? 
+		_bst_front(node->left) : node->value;
 }
 
 void*
 bst_front(Bst *bst)
 {
-	assert(bst != NULL);
+	HEX_ASSERT(bst != NULL);
 	return _bst_front(bst->root);
 }
 
@@ -127,13 +151,14 @@ _bst_back(BinaryNode* node)
 {
 	if(!node || !node->value) return 0;
 	return (node->right == 0) ? node->value :
-		_bst_back(node->right) ? _bst_back(node->right) : node->value;
+		_bst_back(node->right) ? 
+		_bst_back(node->right) : node->value;
 }
 
 void*
 bst_back(Bst *bst)
 {
-	assert(bst != NULL);
+	HEX_ASSERT(bst != NULL);
 	return _bst_back(bst->root);
 }
 
@@ -149,7 +174,7 @@ _bst_append_to_list(BinaryNode* node, Node** list) {
     _bst_append_to_list(node->right, list);
     if(node) {
         Node* tmp = MALLOC(Node);
-        tmp->value = node->value; //memset(tmp->value, list->value, sizeof(list->value));
+        tmp->value = node->value;
         tmp->next = *list;
         *list = tmp;
     }
@@ -159,8 +184,47 @@ _bst_append_to_list(BinaryNode* node, Node** list) {
 Node*
 bst_to_list(Bst *bst)
 {
-	assert(bst != NULL);
+	HEX_ASSERT(bst != NULL);
     Node* list = 0;
     _bst_append_to_list(bst->root, &list);
     return list;
+}
+
+BinaryNode*
+bst_node_insert(BinaryNode *node, void *val,
+	size_t size, CmpFunc cmpfunc)
+{
+	if(node == NULL) {
+		return NULL;
+	}
+
+	HEX_ASSERT(val != NULL);
+
+	if(node->value == NULL || 
+		cmpfunc(node->value, val) == 0) {
+		memcpy(node->value, val, size);
+		return node;
+	} else if(cmpfunc(node->value, val) < 0) {
+		return bst_node_insert(
+			node->left, val, size, cmpfunc);
+	} else {
+		return bst_node_insert(
+			node->right, val, size, cmpfunc);
+	}
+}
+
+BinaryNode*
+bst_node_find(BinaryNode *node, void *val, CmpFunc cmpfunc)
+{
+	if(node == NULL) {
+		return NULL;
+	}
+
+	if(cmpfunc(node->value, val) == 0) {
+		return node;
+	} else if(cmpfunc(node->value, val) < 0) {
+		return bst_node_find(node->left, val, cmpfunc);
+	} else {
+		return bst_node_find(node->right, val, cmpfunc);
+	}
 }
