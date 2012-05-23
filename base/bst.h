@@ -11,6 +11,15 @@ typedef struct HexBst_s {
 	size_t height;
 } Bst;
 
+//===========================================================================
+// A generic comparing function that compares the value of arg1 and arg2.
+// Returns:
+// 			0: if both values are the same
+//		    1: if arg1 is less than arg2
+//         -1: if arg1 is greater than arg2 
+//===========================================================================
+typedef int (*CmpFunc) (void* arg1, void* arg2);
+
 Bst*
 createBst();
 
@@ -41,6 +50,9 @@ bst_size(Bst *bst);
 size_t
 bst_height(Bst *bst);
 
+int
+bst_equal(BinaryNode *node1, BinaryNode *node2, CmpFunc);
+
 void*
 bst_front(Bst *bst);
 
@@ -52,6 +64,12 @@ bst_node_front(BinaryNode *node);
 
 void*
 bst_node_back(BinaryNode *node);
+
+BinaryNode*
+bst_node_insert(BinaryNode *node, void *val, size_t size, CmpFunc);
+
+BinaryNode*
+bst_node_find(BinaryNode *node, void *val, CmpFunc);
 
 /* Generates a list of all the values in ascending order. */
 Node*
