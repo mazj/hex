@@ -1,8 +1,8 @@
 CC=gcc
 CFLAGS=-Wno-implicit
 
-array.o: array.c array.h memory.h
-	$(CC) $(CFLAGS) array.c array.h memory.h
+array.o: array.c array.h memory.h assert.h
+	$(CC) $(CFLAGS) array.c array.h memory.h assert.h
 
 bst.o: bst.h bst.c memory.h utils.h
 	$(CC) $(CFLAGS) bst.h bst.c memory.h utils.h
