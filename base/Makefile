@@ -13,8 +13,8 @@ set.o: set.h set.c assert.h bst.h bst.o
 cutils.o: cutils.h cutils.c assert.h strutils.o strutils.h
 	$(CC) $(CFLAGS) cutils.c assert.h strutils.o
 
-buffer.o: buffer.c buffer.h memory.h
-	$(CC) $(CFLAGS) buffer.c buffer.h memory.h
+buffer.o: buffer.c buffer.h memory.h assert.h
+	$(CC) $(CFLAGS) buffer.c buffer.h memory.h assert.h
 
 esb.o: esb.c esb.h
 	$(CC) $(CFLAGS) esb.c esb.h
