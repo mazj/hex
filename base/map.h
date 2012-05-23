@@ -11,15 +11,6 @@ typedef struct HexMap_s {
     size_t size;  
 } Map;
 
-//===========================================================================
-// A generic comparing function that compares the value of arg1 and arg2.
-// Returns:
-// 			0: if both values are the same
-//		    1: if arg1 is less than arg2
-//         -1: if arg1 is greater than arg2 
-//===========================================================================
-typedef int (*CmpFunc) (void* arg1, void* arg2);
-
 Map*
 createMap();
 
