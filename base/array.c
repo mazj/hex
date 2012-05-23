@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include "memory.h"
+#include "assert.h"
 #include "array.h"
 
 #define INITIAL_CAPACITY 4
@@ -18,7 +19,7 @@ arrayCreate()
 void
 arrayFree(Array *array)
 {
-	assert(array);
+	HEX_ASSERT(array);
 	free(array->content);
 	free(array);
 }
@@ -62,7 +63,7 @@ _ensure_capacity(Array* array, size_t capacity)
 int
 arrayAppend(Array *array, void* ptr)
 {
-	assert(array);
+	HEX_ASSERT(array);
 	size_t size = array->size;
 	int res = _ensure_capacity(array, size+1);
 	if(!res) {
@@ -76,9 +77,9 @@ arrayAppend(Array *array, void* ptr)
 static void
 _check_bound(Array* array, int index)
 {
-	assert(array);
-	assert(index < array->size);
-	assert(index >= 0);
+	HEX_ASSERT(array);
+	HEX_ASSERT(index < array->size);
+	HEX_ASSERT(index >= 0);
 }
 
 void*
@@ -112,8 +113,8 @@ arraySet(Array *array, int index, void* ptr)
 int
 arraySetSize(Array *array, int newSize)
 {
-	assert(array);
-	assert(newSize >= 0);
+	HEX_ASSERT(array);
+	HEX_ASSERT(newSize >= 0);
 
 	int oldSize = array->size;
 
@@ -135,7 +136,7 @@ arraySetSize(Array *array, int newSize)
 int
 arraySize(Array *array)
 {
-	assert(array);
+	HEX_ASSERT(array);
 	return array->size;
 }
 

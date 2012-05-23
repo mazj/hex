@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "memory.h"
+#include "assert.h"
 #include "buffer.h"
 
 Buffer*
@@ -25,6 +26,7 @@ bufferCreate(size_t capacity)
 void
 bufferFree(Buffer *buffer)
 {
+	HEX_ASSERT(buffer != NULL);
 	free(buffer->data);
 	free(buffer);
 }
@@ -46,6 +48,8 @@ bufferWrap(char *data, size_t capacity, size_t size)
 int
 bufferPrepareForRead(Buffer *buffer, size_t expected)
 {
+	HEX_ASSERT(buffer != NULL);
+
 	if(expected > buffer->expected) {
 		char *expanded = realloc(buffer->data, expected);
 		if(!expanded) {
@@ -64,7 +68,9 @@ bufferPrepareForRead(Buffer *buffer, size_t expected)
 ssize_t
 bufferRead(Buffer *buffer, int fd)
 {
-	assert(buffer->size < buffer->expected);
+	HEX_ASSERT(buffer != NULL);
+
+	HEX_ASSERT(buffer->size < buffer->expected);
 
 	ssize_t bytesRead = read(fd,
 		buffer->data + buffer->size,
@@ -87,8 +93,8 @@ bufferPrepareForWrite(Buffer *buffer)
 ssize_t
 bufferWrite(Buffer *buffer, int fd)
 {
-	assert(buffer->remaining > 0);
-	assert(buffer->remaining <= buffer->size);
+	HEX_ASSERT(buffer->remaining > 0);
+	HEX_ASSERT(buffer->remaining <= buffer->size);
 
 	ssize_t bytesWritten = write(fd,
 		buffer->data + buffer->size - buffer->remaining,
