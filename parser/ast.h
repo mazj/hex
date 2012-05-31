@@ -4,8 +4,6 @@
 #define _AST_H_
 
 #include <stdlib.h>
-#include <string.h>
-#include "memory.h"
 
 
 #define AST_ERROR(level, errstr)        \
