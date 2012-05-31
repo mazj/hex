@@ -1,7 +1,8 @@
 /* Abstract Syntax Tree */
 
 #include "ast.h"
-
+#include "../base/assert.h"
+#include "../base/memory.h"
 
 //===========================================================================
 // createInteger() - construct an AST node of type Integer.
@@ -29,6 +30,8 @@ createInteger(int type, int is_signed, int value)
 Literal*
 createLiteral(int type, void* value)
 {
+	HEX_ASSERT(value != NULL);
+
 	Literal* literal = MALLOC(Literal);
 
 	switch(type) {
@@ -62,6 +65,8 @@ createLiteral(int type, void* value)
 Expr*
 createPrimaryExpr(int type, void* value)
 {
+	HEX_ASSERT(value != NULL);
+
 	PrimaryExpr *primary_expr = MALLOC(PrimaryExpr);
 
 	switch(type) {
@@ -90,6 +95,9 @@ createPrimaryExpr(int type, void* value)
 PostfixIndexExpr*
 createPostfixIndexExpr(int type, void *value, ListInitializer* indeces)
 {
+	HEX_ASSERT(value != NULL);
+	HEX_ASSERT(indeces != NULL);
+
 	PostfixIndexExpr *postfix_index_expr = MALLOC(PostfixIndexExpr);
 
 	switch(type) {
@@ -120,6 +128,9 @@ createPostfixIndexExpr(int type, void *value, ListInitializer* indeces)
 PostfixAccessorExpr*
 createPostfixAccessorExpr(Expr *caller, Expr* accessor)
 {
+	HEX_ASSERT(caller != NULL);
+	HEX_ASSERT(accessor != NULL);
+
 	PostfixAccessorExpr *postfix_accessor_expr = MALLOC(PostfixAccessorExpr);
 
 	postfix_accessor_expr->caller = caller;
@@ -135,6 +146,9 @@ createPostfixAccessorExpr(Expr *caller, Expr* accessor)
 PostfixInvocationWithArgsExpr*
 createPostfixInvocationWithArgsExpr(int type, void *value, ExprList* arg_list)
 {
+	HEX_ASSERT(value != NULL);
+	HEX_ASSERT(arg_list != NULL);
+
 	PostfixInvocationWithArgsExpr *postfix_invocation_with_args_expr
 		= MALLOC(PostfixInvocationWithArgsExpr);
 
@@ -166,6 +180,8 @@ createPostfixInvocationWithArgsExpr(int type, void *value, ExprList* arg_list)
 PostfixInvocationExpr*
 createPostfixInvocationExpr(int type, void *invocation_src)
 {
+	HEX_ASSERT(invocation_src != NULL);
+
 	PostfixInvocationExpr *postfix_invocation_expr
 		= MALLOC(PostfixInvocationExpr);
 
@@ -197,6 +213,9 @@ createPostfixInvocationExpr(int type, void *invocation_src)
 Expr*
 createPostfixExpr(int type, int type2, void* value, void* value1)
 {
+	HEX_ASSERT(value != NULL);
+	// HEX_ASSERT(value1 != NULL);
+
 	PostfixExpr *postfix_expr = MALLOC(PostfixExpr);
 
 	switch(type) {
@@ -249,6 +268,8 @@ createPostfixExpr(int type, int type2, void* value, void* value1)
 Expr*
 createUnaryExpr(int type, Expr *expr)
 {
+	HEX_ASSERT(expr != NULL);
+
 	UnaryExpr *unary_expr = MALLOC(UnaryExpr);
 
 	switch(type) {
@@ -285,6 +306,9 @@ createUnaryExpr(int type, Expr *expr)
 Expr*
 createCastExpr(int type, void* value, Expr *expr)
 {
+	HEX_ASSERT(value != NULL);
+	HEX_ASSERT(expr != NULL);
+
 	CastExpr *cast_expr = MALLOC(CastExpr);
 
 	switch(type) {
@@ -315,6 +339,9 @@ createCastExpr(int type, void* value, Expr *expr)
 Expr*
 createMultiplicativeExpr(int type, Expr *left_expr, Expr *right_expr)
 {
+	HEX_ASSERT(left_expr != NULL);
+	HEX_ASSERT(right_expr != NULL);
+
 	MultiplicativeExpr *multi_expr = MALLOC(MultiplicativeExpr);
 
 	switch(type) {
@@ -350,6 +377,9 @@ createMultiplicativeExpr(int type, Expr *left_expr, Expr *right_expr)
 Expr*
 createAdditiveExpr(int type, Expr *left_expr, Expr *right_expr)
 {
+	HEX_ASSERT(left_expr != NULL);
+	HEX_ASSERT(right_expr != NULL);
+
 	AdditiveExpr *additive_expr = MALLOC(AdditiveExpr);
 
 	switch(type) {
@@ -382,6 +412,8 @@ createAdditiveExpr(int type, Expr *left_expr, Expr *right_expr)
 ArithmeticExpr*
 createArithmeticExpr(int type, void *expr)
 {
+	HEX_ASSERT(expr != NULL);
+
 	ArithmeticExpr *arithmetic_expr = MALLOC(ArithmeticExpr);
 
 	switch(type) {
@@ -412,6 +444,9 @@ createArithmeticExpr(int type, void *expr)
 Expr*
 createEqualityExpr(int type, Expr *left_expr, Expr *right_expr)
 {
+	HEX_ASSERT(left_expr != NULL);
+	HEX_ASSERT(right_expr != NULL);
+
 	EqualityExpr* equality_expr = MALLOC(EqualityExpr);
 
 	switch(type) {
@@ -459,6 +494,9 @@ createEqualityExpr(int type, Expr *left_expr, Expr *right_expr)
 Expr*
 createLogicExpr(int type, Expr *left_expr, Expr *right_expr)
 {
+	HEX_ASSERT(left_expr != NULL);
+	HEX_ASSERT(right_expr != NULL);
+
 	LogicExpr* logic_expr = MALLOC(LogicExpr);
 
 	switch(type) {
@@ -488,6 +526,9 @@ createLogicExpr(int type, Expr *left_expr, Expr *right_expr)
 Expr*
 createBitwiseExpr(int type, Expr *left_expr, Expr *right_expr)
 {
+	HEX_ASSERT(left_expr != NULL);
+	HEX_ASSERT(right_expr != NULL);
+
 	BitwiseExpr* bitwise_expr = MALLOC(BitwiseExpr);
 
 	switch(type) {
@@ -527,6 +568,10 @@ Expr*
 createConditionalExpr(Expr *predicate_expr, Expr *consequent_expr,
 	Expr *alternative_expr)
 {
+	HEX_ASSERT(predicate_expr != NULL);
+	HEX_ASSERT(consequent_expr != NULL);
+	HEX_ASSERT(alternative_expr != NULL);
+
 	ConditionalExpr* conditional_expr = MALLOC(ConditionalExpr);
 
 	conditional_expr->consequent_expr = consequent_expr;
@@ -545,6 +590,9 @@ createConditionalExpr(Expr *predicate_expr, Expr *consequent_expr,
 Expr*
 createRangeExpr(Expr *left_expr, Expr *right_expr)
 {
+	HEX_ASSERT(left_expr != NULL);
+	HEX_ASSERT(right_expr != NULL);
+
 	RangeExpr *range_expr = MALLOC(RangeExpr);
 
 	range_expr->left_expr = left_expr;
@@ -562,6 +610,8 @@ createRangeExpr(Expr *left_expr, Expr *right_expr)
 Expr*
 createLockExpr(int is_lock, Expr *expr)
 {
+	HEX_ASSERT(expr != NULL);
+
 	LockExpr *lock_expr = MALLOC(LockExpr);
 
 	lock_expr->is_lock = is_lock;
@@ -579,6 +629,8 @@ createLockExpr(int is_lock, Expr *expr)
 Expr*
 createWeakref(Expr *expr)
 {
+	HEX_ASSERT(expr != NULL);
+
 	WeakrefExpr *weakref_expr = MALLOC(WeakrefExpr);
 
 	weakref_expr->expr = expr;
@@ -658,6 +710,8 @@ createWeakref(Expr *expr)
 Expr*
 createExpr(int type, void* value)
 {
+	// HEX_ASSERT(value != NULL);
+
 	Expr* expr = MALLOC(Expr);
 
 	switch(type) {
@@ -724,6 +778,9 @@ createExpr(int type, void* value)
 ExprList*
 createExprList(Expr* expr, ExprList* parent_list)
 {
+	HEX_ASSERT(expr != NULL);
+	// HEX_ASSERT(parent_list != NULL);
+
 	ExprList* expr_list = MALLOC(ExprList);
 	expr_list->expr = expr;
 
@@ -742,6 +799,8 @@ createExprList(Expr* expr, ExprList* parent_list)
 TypeQualifierList*
 createTypeQualifierList(TypeQualifier qualifier, TypeQualifierList* parent_list)
 {
+	// HEX_ASSERT(parent_list != NULL);
+
 	TypeQualifierList *qualifier_list = MALLOC(TypeQualifierList);
 	qualifier_list->type_qualifier = qualifier;
 	qualifier_list->next = 0;
@@ -762,6 +821,11 @@ Declaration*
 createDeclaration(TypeQualifierList *type_qualifier_list,
     int type_specifier, char *custom_type, ExprList *expr_list, char *alias)
 {
+	// HEX_ASSERT(type_qualifier_list != NULL);
+	// HEX_ASSERT(custom_type != NULL);
+	// HEX_ASSERT(expr_list != NULL);
+	// HEX_ASSERT(alias != NULL);
+
 	Declaration *declaration = MALLOC(Declaration);
 
 	declaration->type_qualifier_list = type_qualifier_list;
@@ -781,6 +845,11 @@ Parameter*
 createParameter(TypeQualifierList *type_qualifier_list, int type_specifier,
     char *custom_type, char *parameter_name, char *alias, int is_ref)
 {
+	// HEX_ASSERT(type_qualifier_list != NULL);
+	// HEX_ASSERT(custom_type != NULL);
+	// HEX_ASSERT(parameter_name != NULL);
+	// HEX_ASSERT(alias != NULL);
+
 	Parameter *parameter = MALLOC(Parameter);
 
 	parameter->type_qualifier_list = type_qualifier_list;
@@ -799,6 +868,9 @@ createParameter(TypeQualifierList *type_qualifier_list, int type_specifier,
 ParameterList*
 createParameterList(Parameter *parameter, ParameterList* parent_list)
 {
+	HEX_ASSERT(parameter != NULL);
+	// HEX_ASSERT(parent_list != NULL);
+
 	ParameterList *param_list = MALLOC(ParameterList);
 	param_list->parameter = parameter;
 	param_list->next = 0;
@@ -817,6 +889,8 @@ createParameterList(Parameter *parameter, ParameterList* parent_list)
 //===========================================================================
 ListInitializer* createListInitializer(ExprList *expr_list)
 {
+	HEX_ASSERT(expr_list != NULL);
+
 	ListInitializer *list_initializer = MALLOC(ListInitializer);
 	list_initializer->expr_list = expr_list;
 	return list_initializer;
@@ -829,6 +903,8 @@ ListInitializer* createListInitializer(ExprList *expr_list)
 ArrayInitializer*
 createArrayInitializer(ExprList *expr_list)
 {
+	HEX_ASSERT(expr_list != NULL);
+
 	ArrayInitializer *array_initializer = MALLOC(ArrayInitializer);
 	array_initializer->expr_list = expr_list;
 	return array_initializer;
@@ -841,6 +917,8 @@ createArrayInitializer(ExprList *expr_list)
 TupleInitializer*
 createTupleInitializer(ExprList *expr_list)
 {
+	HEX_ASSERT(expr_list != NULL);
+
 	TupleInitializer *tuple_initializer = MALLOC(TupleInitializer);
 	tuple_initializer->expr_list = expr_list;
 	return tuple_initializer;
@@ -853,6 +931,8 @@ createTupleInitializer(ExprList *expr_list)
 StructInitializer*
 createStructInitializer(AssignmentStmtList *assignment_stmt_list)
 {
+	HEX_ASSERT(assignment_stmt_list != NULL);
+
 	StructInitializer *struct_initializer = MALLOC(StructInitializer);
 	struct_initializer->assignment_stmt_list = assignment_stmt_list;
 	return struct_initializer;
@@ -865,6 +945,8 @@ createStructInitializer(AssignmentStmtList *assignment_stmt_list)
 SetInitializer*
 createSetInitializer(ExprList *expr_list)
 {
+	HEX_ASSERT(expr_list != NULL);
+
 	SetInitializer *set_initializer = MALLOC(SetInitializer);
 	set_initializer->expr_list = expr_list;
 	return set_initializer;
@@ -877,6 +959,9 @@ createSetInitializer(ExprList *expr_list)
 MapMultimapInitializerSingle*
 createMapMultimapInitializerSingle(Expr *key, Expr *value)
 {
+	HEX_ASSERT(key != NULL);
+	HEX_ASSERT(value != NULL);
+
 	MapMultimapInitializerSingle *map_initializer_single
 		= MALLOC(MapMultimapInitializerSingle);
 	map_initializer_single->key = key;
@@ -893,6 +978,9 @@ createMapMultimapInitializerList(
     MapMultimapInitializerSingle *map_initializer_single,
     MapMultimapInitializerList *parent_list)
 {
+	HEX_ASSERT(map_initializer_single != NULL);
+	// HEX_ASSERT(parent_list != NULL);
+
 	MapMultimapInitializerList *map_initializer_list
 		= MALLOC(MapMultimapInitializerList);
 	map_initializer_list->map_initializer_single = map_initializer_single;
@@ -914,6 +1002,8 @@ MapMultimapInitializer*
 createMapMultimapInitializer(
     MapMultimapInitializerList *map_initializer_list)
 {
+	HEX_ASSERT(map_initializer_list != NULL);
+
 	MapMultimapInitializer *map_initializer = MALLOC(MapMultimapInitializer);
 	map_initializer->map_initializer_list = map_initializer_list;
 	return map_initializer;
@@ -926,6 +1016,8 @@ createMapMultimapInitializer(
 Initializer*
 createInitializer(int type, void* value)
 {
+	HEX_ASSERT(value != NULL);
+
 	Initializer* initializer = MALLOC(Initializer);
 
 	switch(type) {
@@ -968,6 +1060,8 @@ createInitializer(int type, void* value)
 Assignment*
 createAssignment(int type, void* target)
 {
+	HEX_ASSERT(target != NULL);
+
 	Assignment *assignment = MALLOC(Assignment);
 
 	switch(type) {
@@ -998,6 +1092,9 @@ createAssignment(int type, void* target)
 AssignmentList*
 createAssignmentList(Assignment *assignment, AssignmentList *parent_list)
 {
+	HEX_ASSERT(assignment != NULL);
+	// HEX_ASSERT(parent_list != NULL);
+
 	AssignmentList *assignment_list = MALLOC(AssignmentList);
 	assignment_list->assignment = assignment;
 	assignment_list->next = 0;
@@ -1017,6 +1114,9 @@ createAssignmentList(Assignment *assignment, AssignmentList *parent_list)
 AssignmentStmt*
 createAssignmentStmt(int type, void* value, AssignmentList* assignment_list)
 {
+	HEX_ASSERT(value != NULL);
+	HEX_ASSERT(assignment_list != NULL);
+
 	AssignmentStmt *assignment_stmt = MALLOC(AssignmentStmt);
 
 	switch(type) {
@@ -1046,6 +1146,9 @@ AssignmentStmtList*
 createAssignmentStmtList(AssignmentStmt *assignment_stmt,
     AssignmentStmtList *parent_list)
 {
+	HEX_ASSERT(assignment_stmt != NULL);
+	// HEX_ASSERT(parent_list != NULL);
+
 	AssignmentStmtList *assignment_stmt_list = MALLOC(AssignmentStmtList);
 	assignment_stmt_list->assignment_stmt = assignment_stmt;
 	assignment_stmt_list->next = 0;
@@ -1067,6 +1170,11 @@ createFuncDec(TypeQualifierList *type_qualifier_list,
     int type_specifier, char *custom_return_type, char *func_name,
     ParameterList *parameter_list)
 {
+	// HEX_ASSERT(type_qualifier_list != NULL);
+	// HEX_ASSERT(custom_return_type != NULL);
+	// HEX_ASSERT(func_name != NULL);
+	// HEX_ASSERT(parameter_list != NULL);
+
 	FuncDec *func_declaration = MALLOC(FuncDec);
 	func_declaration->return_type_qualifier_list = type_qualifier_list;
 	func_declaration->return_type_specifier = type_specifier;
@@ -1084,6 +1192,9 @@ createFuncDec(TypeQualifierList *type_qualifier_list,
 FuncDef*
 createFuncDef(FuncDec *func_declaration, Suite *func_suite)
 {
+	HEX_ASSERT(func_declaration != NULL);
+	HEX_ASSERT(func_suite != NULL);
+
 	FuncDef *func_def = MALLOC(FuncDef);
 
 	func_def->func_declaration = func_declaration;
@@ -1099,6 +1210,9 @@ createFuncDef(FuncDec *func_declaration, Suite *func_suite)
 LambdaExpr*
 createLambdaExpr(int type, ParameterList* param_list, void* body)
 {
+	HEX_ASSERT(param_list != NULL);
+	HEX_ASSERT(body != NULL);
+
 	LambdaExpr* lambda_expr = MALLOC(LambdaExpr);
 
 	switch(lambda_expr->lambda_type) {
@@ -1125,6 +1239,8 @@ createLambdaExpr(int type, ParameterList* param_list, void* body)
 Attribute*
 createAttribute(Expr *expr)
 {
+	HEX_ASSERT(expr != NULL);
+
 	Attribute *attribute = MALLOC(Attribute);
 
 	attribute->expr = expr;
@@ -1140,6 +1256,9 @@ CompilerProperty*
 createCompilerProperty(char *compiler_property_name,
 	char *compiler_property_value)
 {
+	HEX_ASSERT(compiler_property_name != NULL);
+	HEX_ASSERT(compiler_property_value != NULL);
+
 	CompilerProperty *compiler_property = MALLOC(CompilerProperty);
 
 	compiler_property->compiler_property_name = compiler_property_name;
@@ -1155,6 +1274,8 @@ createCompilerProperty(char *compiler_property_name,
 DecoratorListSingle*
 createDecoratorListSingle(int type, void* value)
 {
+	HEX_ASSERT(value != NULL);
+
 	DecoratorListSingle *decorator_list_single = MALLOC(DecoratorListSingle);
 
 	switch(type) {
@@ -1186,6 +1307,9 @@ DecoratorList*
 createDecoratorList(DecoratorListSingle *decorator_list_single,
 	DecoratorList* parent_list)
 {
+	HEX_ASSERT(decorator_list_single != NULL);
+	//HEX_ASSERT(parent_list != NULL);
+
 	DecoratorList *decorator_list = MALLOC(DecoratorList);
 	decorator_list->decorator_list_single = decorator_list_single;
 	decorator_list->next = 0;
@@ -1205,6 +1329,8 @@ createDecoratorList(DecoratorListSingle *decorator_list_single,
 Decorator*
 createDecorator(DecoratorList* decorator_list)
 {
+	HEX_ASSERT(decorator_list != NULL);
+
 	Decorator *decorator = MALLOC(Decorator);
 	decorator->decorator_list = decorator_list;
 	return decorator;
@@ -1217,6 +1343,9 @@ createDecorator(DecoratorList* decorator_list)
 ClassDeclaration*
 createClassDeclaration(char *name, ExprList* expr_list)
 {
+	HEX_ASSERT(name != NULL);
+	//HEX_ASSERT(expr_list != NULL);
+
 	ClassDeclaration *class_declaration = MALLOC(ClassDeclaration);
 	class_declaration->name = name;
 	class_declaration->expr_list = expr_list;
@@ -1230,6 +1359,8 @@ createClassDeclaration(char *name, ExprList* expr_list)
 ClassSection
 *createClassSection(int class_access_specifier, Suite *suite)
 {
+	HEX_ASSERT(suite != NULL);
+
 	ClassSection *class_section = MALLOC(ClassSection);
 	class_section->class_access_specifier = class_access_specifier;
 	class_section->suite = suite;
@@ -1243,6 +1374,8 @@ ClassSection
 Module*
 createModule(char *module_identifier)
 {
+	HEX_ASSERT(module_identifier != NULL);
+
 	Module *module = MALLOC(Module);
 	module->module_identifier = module_identifier;
 	return module;
@@ -1255,6 +1388,9 @@ createModule(char *module_identifier)
 ModuleList*
 createModuleList(Module *module, ModuleList *parent_list)
 {
+	HEX_ASSERT(module != NULL);
+	//HEX_ASSERT(parent_list != NULL);
+
 	ModuleList *module_list = MALLOC(ModuleList);
 	module_list->module = module;
 	module_list->next = 0;
@@ -1274,6 +1410,9 @@ createModuleList(Module *module, ModuleList *parent_list)
 DirectImportStmt*
 createDirectImportStmt(ModuleList *module_list, char *alias)
 {
+	HEX_ASSERT(module_list != NULL);
+	//HEX_ASSERT(alias != NULL);
+
 	DirectImportStmt *direct_import_stmt = MALLOC(DirectImportStmt);
 	direct_import_stmt->module_list = module_list;
 	direct_import_stmt->alias = alias;
@@ -1288,6 +1427,10 @@ RelativeImportStmt*
 createRelativeImportStmt(ModuleList *module_list,
 	Module *module, char *alias)
 {
+	HEX_ASSERT(module_list != NULL);
+	HEX_ASSERT(module != NULL);
+	//HEX_ASSERT(alias != NULL);
+
 	RelativeImportStmt *relative_import_stmt = MALLOC(RelativeImportStmt);
 	relative_import_stmt->module_list = module_list;
 	relative_import_stmt->module = module;
@@ -1302,6 +1445,8 @@ createRelativeImportStmt(ModuleList *module_list,
 ImportStmt*
 createImportStmt(int type, void* value)
 {
+	HEX_ASSERT(value != NULL);
+
 	ImportStmt *import_stmt = MALLOC(ImportStmt);
 
 	switch(type) {
@@ -1330,6 +1475,9 @@ createImportStmt(int type, void* value)
 ElifStmt*
 createElifStmt(Expr *elif_expr, Suite *elif_suite)
 {
+	HEX_ASSERT(elif_expr != NULL);
+	HEX_ASSERT(elif_suite != NULL);
+
 	ElifStmt *elif_stmt = MALLOC(ElifStmt);
 	elif_stmt->elif_expr = elif_expr;
 	elif_stmt->elif_suite = elif_suite;
@@ -1343,6 +1491,9 @@ createElifStmt(Expr *elif_expr, Suite *elif_suite)
 ElifGroup*
 createElifGroup(ElifStmt* elif_stmt, ElifGroup *parent_list)
 {
+	HEX_ASSERT(elif_stmt != NULL);
+	//HEX_ASSERT(parent_list != NULL);
+
 	ElifGroup *elif_group = MALLOC(ElifGroup);
 	elif_group->elif_stmt = elif_stmt;
 	elif_group->next = 0;
@@ -1363,6 +1514,11 @@ IfStmt*
 createIfStmt(Expr *if_expr, Suite *if_suite,
 	ElifGroup *elif_group, Suite *else_stmt)
 {
+	HEX_ASSERT(if_expr != NULL);
+	HEX_ASSERT(if_suite != NULL);
+	//HEX_ASSERT(elif_group != NULL);
+	//HEX_ASSERT(else_stmt != NULL);
+
 	IfStmt *if_stmt = MALLOC(IfStmt);
 	if_stmt->if_expr = if_expr;
 	if_stmt->elif_group = elif_group;
@@ -1378,6 +1534,9 @@ createIfStmt(Expr *if_expr, Suite *if_suite,
 IfStmtSimple*
 createIfStmtSimple(int type, Expr *expr, ExprList *expr_list)
 {
+	HEX_ASSERT(expr != NULL);
+	HEX_ASSERT(expr_list != NULL);
+
 	IfStmtSimple *if_stmt_simple = MALLOC(IfStmtSimple);
 
 	switch(type) {
@@ -1406,6 +1565,9 @@ createIfStmtSimple(int type, Expr *expr, ExprList *expr_list)
 WhileStmt*
 createWhileStmt(Expr *while_expr, Suite *while_suite)
 {
+	HEX_ASSERT(while_expr != NULL);
+	HEX_ASSERT(while_suite != NULL);
+
 	WhileStmt *while_stmt = MALLOC(WhileStmt);
 
 	while_stmt->while_expr = while_expr;
@@ -1421,6 +1583,8 @@ createWhileStmt(Expr *while_expr, Suite *while_suite)
 Iterable*
 createIterable(int type, void* value)
 {
+	HEX_ASSERT(value != NULL);
+
 	Iterable *iterable = MALLOC(Iterable);
 
 	switch(type) {
@@ -1448,6 +1612,11 @@ ForStmt*
 createForStmt(Iterable *iterable, Expr *expr,
 	Expr *where_expr, Suite *suite)
 {
+	HEX_ASSERT(iterable != NULL);
+	HEX_ASSERT(expr != NULL);
+	//HEX_ASSERT(where_expr != NULL);
+	HEX_ASSERT(suite != NULL);
+
 	ForStmt *for_stmt = MALLOC(ForStmt);
 
 	for_stmt->iterable = iterable;
@@ -1465,6 +1634,9 @@ createForStmt(Iterable *iterable, Expr *expr,
 CatchStmt*
 createCatchStmt(int type, void* value, Suite *suite)
 {
+	//HEX_ASSERT(value != NULL);
+	HEX_ASSERT(suite != NULL);
+
 	CatchStmt *catch_stmt = MALLOC(CatchStmt);
 
 	switch(type) {
@@ -1495,6 +1667,9 @@ CatchStmtGroup*
 createCatchStmtGroup(CatchStmt* catch_stmt,
 	CatchStmtGroup* parent_group)
 {
+	HEX_ASSERT(catch_stmt != NULL);
+	//HEX_ASSERT(parent_group != NULL);
+
 	CatchStmtGroup *catch_stmt_group = MALLOC(CatchStmtGroup);
 
 	catch_stmt_group->catch_stmt = catch_stmt;
@@ -1515,6 +1690,8 @@ createCatchStmtGroup(CatchStmt* catch_stmt,
 FinallyStmt*
 createFinallyStmt(Suite* suite)
 {
+	HEX_ASSERT(suite != NULL);
+
 	FinallyStmt *finally_stmt = MALLOC(FinallyStmt);
 	finally_stmt->finally_suite = suite;
 	return finally_stmt;
@@ -1528,6 +1705,10 @@ TryStmt*
 createTryStmt(Suite* try_suite,
 	CatchStmtGroup *catch_stmt_group, FinallyStmt *finally_stmt)
 {
+	HEX_ASSERT(try_suite != NULL);
+	//HEX_ASSERT(catch_stmt_group != NULL);
+	//HEX_ASSERT(finally_stmt != NULL);
+
 	TryStmt *try_stmt = MALLOC(TryStmt);
 	try_stmt->try_suite = try_suite;
 	try_stmt->catch_stmt_group = catch_stmt_group;
@@ -1542,6 +1723,8 @@ createTryStmt(Suite* try_suite,
 CompoundStmt*
 createCompoundStmt(int type, void* value)
 {
+	HEX_ASSERT(value != NULL);
+
 	CompoundStmt *compound_stmt = MALLOC(CompoundStmt);
 
 	switch(type) {
@@ -1580,6 +1763,8 @@ createCompoundStmt(int type, void* value)
 ReturnStmt*
 createReturnStmt(int type, ExprList *expr_list)
 {
+	//HEX_ASSERT(expr_list != NULL);
+
 	ReturnStmt *return_stmt = MALLOC(ReturnStmt);
 
 	switch(type) {
@@ -1623,6 +1808,8 @@ createReturnStmt(int type, ExprList *expr_list)
 ControlSimpleStmt*
 createControlSimpleStmt(int type, void* value)
 {
+	//HEX_ASSERT(value != NULL);
+
 	ControlSimpleStmt *control_simple_stmt = MALLOC(ControlSimpleStmt);
 
 	switch(type) {
@@ -1655,6 +1842,8 @@ createControlSimpleStmt(int type, void* value)
 SimpleStmt*
 createSimpleStmt(int type, void* value)
 {
+	HEX_ASSERT(value != NULL);
+
 	SimpleStmt *simple_stmt = MALLOC(SimpleStmt);
 
 	switch(type) {
@@ -1702,6 +1891,9 @@ SimpleStmtList*
 createSimpleStmtList(SimpleStmt *simple_stmt,
 	SimpleStmtList *parent_list)
 {
+	HEX_ASSERT(simple_stmt != NULL);
+	//HEX_ASSERT(parent_list != NULL);
+
 	SimpleStmtList *simple_stmt_list = MALLOC(SimpleStmtList);
 	simple_stmt_list->simple_stmt = simple_stmt;
 	simple_stmt_list->next = 0;
@@ -1721,6 +1913,8 @@ createSimpleStmtList(SimpleStmt *simple_stmt,
 Stmt*
 createStmt(int type, void* value)
 {
+	HEX_ASSERT(value != NULL);
+
 	Stmt *stmt = MALLOC(Stmt);
 
 	switch(type) {
@@ -1750,6 +1944,9 @@ createStmt(int type, void* value)
 StmtGroup*
 createStmtGroup(Stmt *stmt, StmtGroup *parent_group)
 {
+	HEX_ASSERT(stmt != NULL);
+	//HEX_ASSERT(parent_group != NULL);
+
 	StmtGroup *stmt_group = MALLOC(StmtGroup);
 	stmt_group->stmt = stmt;
 	stmt_group->next = 0;
@@ -1769,7 +1966,10 @@ createStmtGroup(Stmt *stmt, StmtGroup *parent_group)
 Suite*
 createSuite(StmtGroup *stmt_group)
 {
+	HEX_ASSERT(stmt_group != NULL);
+
 	Suite *suite = MALLOC(Suite);
 	suite->stmt_group = stmt_group;
+
 	return suite;
 }
