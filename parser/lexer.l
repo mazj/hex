@@ -294,7 +294,9 @@ L?\"(\\.|[^\\"])*\"         RETURN("STRING_LITERAL", yytext, STRING_LITERAL);
 
 %%
 
-int main(int argc, char** argv) {
+int
+main(int argc, char** argv)
+{
     if((yyin = fopen(argv[1], "r")) == 0) {
         exit(1);
     }

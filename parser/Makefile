@@ -19,8 +19,8 @@ preprocessor: esb.o utils.h preprocessor.c
 parser.tab.h: parser.y
 	bison -d -t -v parser.y
 
-ast.o: ast.c ast.h memory.h
-	$(CC) $(CFLAGS) ast.h ast.c memory.h
+ast.o: ast.c ast.h ../base/memory.h ../base/assert.h
+	$(CC) $(CFLAGS) -c ast.h ast.c ../base/memory.h ../base/assert.h
 
 clean:
 	rm *.gch *.out *.o *.swp .lexer.l.swp *.output lexer lex.yy.c parser.tab.c parser.tab.h
