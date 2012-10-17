@@ -1,106 +1,89 @@
-/* Sorted string list. */
+/*
+ * HEX Programming Language
+ * Copyright (C) 2012  Yanzheng Li
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-#include "strutils.h"
-#include "bst.h"
+
+#include <string.h>
+#include "assert.h"
 #include "memory.h"
+#include "bst.h"
 
-BinaryNode*
-stl_insert(BinaryNode* node, const char* value)
+struct HexStl_s {
+  Bst bst;
+};
+
+
+Stl stl_create()
 {
-    if(!node) {
-        node = MALLOC(BinaryNode);
-        node->value = malloc(sizeof(strlen(value)));
-        strcpy((char*)node->value, value);
-        return node;
-    }
-    else if(!node->value) {
-        node->value = malloc(sizeof(strlen(value)));
-        strcpy((char*)(node->value), value);
-        return node;
-    } else {
-        int i = strcmp((char*)(node->value), value);
-        if(i == 0) return node;
-        if(i > 0) {
-            BinaryNode* n = stl_insert(node->left, value);
-            if(n && !node->left) {
-                node->left = n;
-            }
-            return n;
-        }
-        if(i < 0) {
-            BinaryNode* n = stl_insert(node->right, value);
-            if(n && !node->right) {
-                node->right = n;
-            }
-            return n;
-        }
-    }
+  Stl stl = HEX_MALLOC(struct HexStl_s);
+
+  if(stl == NULL) {
+    errno = ENOMEM;
+    return NULL;
+  }
+
+  Bst bst = bst_create();
+
+  if(bst == NULL) {
+    errno = ENOMEM;
+    HEX_FREE(bst);
+    return NULL;
+  }
+
+  stil->bst = bst;
+
+  return stl;
 }
 
-BinaryNode*
-stl_insert_node(BinaryNode* node1, BinaryNode* node2)
+size_t stl_size(Stl stl)
 {
-    if(!node1 || !node2) {
-    	return 0;
-    }
+  HEX_ASSERT(stl);
 
-    int i = strcmp((char*)(node1->value), (char*)(node2->value));
-    if(i == 0) {
-        strcpy_hard((char*)(node1->value), (const char*)(node2->value));
-        return node1;
-    }
-    if(i > 0) return stl_insert_node(node1->left, node2);
-    if(i < 0) return stl_insert_node(node1->right, node2);
+  return bst_size(stl->bst);
 }
 
-/*
- * Find the specified string value among the given node
- * and all of its descendents. If found, return the pointer
- * to the child node that contains the identical string,
- * otherwise returns null.
- */
-BinaryNode*
-stl_find(BinaryNode* node, const char* value)
+void stl_clear(Stl stl)
 {
-    if(!node || !node->value) {
-    	return 0;
-    }
-	int i = strcmp((char*)(node->value), value);
-	if(i == 0) return node;
-	if(i > 0) return stl_find(node->left, value);
-	if(i < 0) return stl_find(node->right, value);
+  HEX_ASSERT(stl);
+  //bst_clear(stl->bst);
 }
 
-/*
- * Remove a child node of the given node that contains
- * the same string as the given value. Returns true if
- * success, false otherwise.
- */
 int
-stl_remove(BinaryNode* node, BinaryNode* ptr_to_node, const char* value)
+stl_insert(Stl stl, const char *value)
 {
-    if(!node || !ptr_to_node) {
-    	return 0;
-    }
+  HEX_ASSERT(stl);
+  HEX_ASSERT(value);
 
-	if(strcmp((char*)node->value, value)==0) {
-		if(bst_node_isleafnode(node)) { // leaf node
-			ptr_to_node = 0;
-			free(node);
-		} else if(bst_node_isfullnode(node)) { // full node
-            strcpy_hard((char*)node->value, (char*)bst_node_front(node->right));
-            stl_remove(node->right, node, node->value);
-        } else { // only one child node
-            if(node->left) ptr_to_node = node->left;
-            else ptr_to_node = node->right;
-            free(node);
-        }
-        return 1;
-	} else if(strcmp((char*)node->value, value) == -1) {
-        if(!node->left) return 0;
-        else return stl_remove(node->left, node, value);
-    } else {
-        if(!node->right) return 0;
-        else return stl_remove(node->right, node, value);
-    }
+  return bst_insert(stl->bst, value, strlen(value), strcmp);
+}
+
+char*
+stl_find(Stl stl, const char *value)
+{
+  HEX_ASSERT(stl);
+  HEX_ASSERT(value);
+
+  return (char*)bst_find(stl->bst, value, strcmp);
+}
+
+char*
+stl_remove(Stl stl, const char* value)
+{
+  HEX_ASSERT(stl);
+  HEX_ASSERT(value);
+
+  return (char*)bst_remove(stl->bst, value, strcmp);
 }

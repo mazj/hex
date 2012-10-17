@@ -1,53 +1,107 @@
-#include <assert.h>
+/*
+ * HEX Programming Language
+ * Copyright (C) 2012  Yanzheng Li
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <errno.h>
+#include "assert.h"
 #include "memory.h"
+#include "utils.h"
 #include "stack.h"
 
-size_t
-stack_size(Stack *s)
+
+struct HexStack_s {
+  Node top;
+  size_t size;
+};
+
+
+Stack create_stack()
 {
-	assert(s != NULL);
-	return s->size;
+  Stack stack = HEX_MALLOC(struct HexStack_s);
+
+  if(stack == NULL) {
+    errno = ENOMEM;
+    return NULL;
+  }
+
+  stack->top = NULL;
+  stack->size = 0;
+
+  return stack;
 }
 
-void*
-stack_top(Stack *s)
+size_t stack_size(Stack stack)
 {
-	assert(s != NULL);
-	if(s->top) {
-		return s->top->value;
-	} else {
-		return 0;
-	}
+  HEX_ASSERT(stack);
+  return stack->size;
 }
 
-void
-stack_push(Stack *s, void* value)
+void* stack_top(Stack stack)
 {
-	assert(s != NULL);
-	Node* node = MALLOC(Node);
-	if(!node) {
-		errno = ENOMEM;
-		return;
-	}
-	node->value = value;
-	if(s->top) node->next = s->top;
-	s->top = node;
-	s->size++;
+  HEX_ASSERT(stack);
+
+  RETURN_VAL_IF_NULL(stack->top, NULL);
+
+  return stack->top->value;
 }
 
-void*
-stack_pop(Stack* s) 
+int stack_push(Stack stack, void *val, size_t size)
 {
-	assert(s != NULL);
-	assert(s->top != NULL);
-	Node* node = s->top;
-	s->top = s->top->next;
-	if(node) {
-		void* value = node->value;
-		free(node);
-		s->size--;
-		return value;
-	}
-	return 0;
+  HEX_ASSERT(stack);
+
+  RETURN_VAL_IF_NULL(val, 0);
+
+  Node node = HEX_MALLOC(struct HexNode_s);
+
+  if(!node) {
+    errno = ENOMEM;
+    return -1;
+  }
+
+  if(!node->value) {
+    node->value = MALLOC(size);
+    RETURN_VAL_IF_NULL(node->value, -1);
+  }
+
+  memcpy(node->value, val, size);
+  node->next = NULL;
+
+  if(stack->top) node->next = stack->top;
+  stack->top = node;
+  stack->size++;
+
+  return 1;
+}
+
+void* stack_pop(Stack stack) 
+{
+  HEX_ASSERT(stack);
+
+  RETURN_VAL_IF_NULL(stack->top, NULL);
+
+  Node node = stack->top;
+
+  stack->top = stack->top->next;
+
+  if(node) {
+    void* val = node->value;
+    HEX_FREE(node);
+    stack->size--;
+    return val;
+  }
+
+  return NULL;
 }
