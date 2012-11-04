@@ -655,37 +655,37 @@ type_qualifier
 	;
 
 assignment_operator
-	: ASSIGN_OP                                                                   { $$ = assign_op; }
-	| ASSIGN_OP_WEAKREF                                                           { $$ = assign_op_weakref; }
-	| ASSIGN_OP NEW                                                               { $$ = assign_op_new; }
-	| ASSIGN_OP LAZY NEW                                                          { $$ = assign_op_lazy_new; }
-	| ASSIGN_OP STACKALLOC NEW                                                    { $$ = assign_op_new; }
-	| ASSIGN_OP STACKALLOC LAZY NEW                                               { $$ = assign_op_lazy_new; }
+  : ASSIGN_OP                                                                   { $$ = assign_op; }
+  | ASSIGN_OP_WEAKREF                                                           { $$ = assign_op_weakref; }
+  | ASSIGN_OP NEW                                                               { $$ = assign_op_new; }
+  | ASSIGN_OP LAZY NEW                                                          { $$ = assign_op_lazy_new; }
+  | ASSIGN_OP STACKALLOC NEW                                                    { $$ = assign_op_new; }
+  | ASSIGN_OP STACKALLOC LAZY NEW                                               { $$ = assign_op_lazy_new; }
   | ASSIGN_DIV                                                                  { $$ = assign_op_div; }
-	| ASSIGN_MUL                                                                  { $$ = assign_op_mul; }
-	| ASSIGN_MOD                                                                  { $$ = assign_op_mod; }
-	| ASSIGN_PLUS                                                                 { $$ = assign_op_plus; }
-	| ASSIGN_MINUS                                                                { $$ = assign_op_minus; }
-	| ASSIGN_SHIFTLEFT                                                            { $$ = assign_op_shift_left; }
-	| ASSIGN_SHIFTRIGHT                                                           { $$ = assign_op_shift_right; }
-	| ASSIGN_BITWISE_AND                                                          { $$ = assign_op_bitwise_and; }
-	| ASSIGN_BITWISE_OR                                                           { $$ = assign_op_bitwise_or; }
-	| ASSIGN_BITWISE_XOR                                                          { $$ = assign_op_bitwise_xor; }
-	;
+  | ASSIGN_MUL                                                                  { $$ = assign_op_mul; }
+  | ASSIGN_MOD                                                                  { $$ = assign_op_mod; }
+  | ASSIGN_PLUS                                                                 { $$ = assign_op_plus; }
+  | ASSIGN_MINUS                                                                { $$ = assign_op_minus; }
+  | ASSIGN_SHIFTLEFT                                                            { $$ = assign_op_shift_left; }
+  | ASSIGN_SHIFTRIGHT                                                           { $$ = assign_op_shift_right; }
+  | ASSIGN_BITWISE_AND                                                          { $$ = assign_op_bitwise_and; }
+  | ASSIGN_BITWISE_OR                                                           { $$ = assign_op_bitwise_or; }
+  | ASSIGN_BITWISE_XOR                                                          { $$ = assign_op_bitwise_xor; }
+  ;
 
 LITERAL
-	: CHARACTER_LITERAL                                                           { $$ = createLiteral(literal_type_char, &$1); }
-	| STRING_LITERAL                                                              { $$ = createLiteral(literal_type_string, $1); }
-	| INTEGER                                                                     { $$ = createLiteral(literal_type_integer, $1); }
-	| FLOATINGNUM                                                                 { $$ = createLiteral(literal_type_float, &$1); }
-	;
+  : CHARACTER_LITERAL                                                           { $$ = createLiteral(literal_type_char, &$1); }
+  | STRING_LITERAL                                                              { $$ = createLiteral(literal_type_string, $1); }
+  | INTEGER                                                                     { $$ = createLiteral(literal_type_integer, $1); }
+  | FLOATINGNUM                                                                 { $$ = createLiteral(literal_type_float, &$1); }
+  ;
 
 INTEGER
-	: DECIMALINTEGER                                                              { $$ = createInteger(integer_type_decimal, 0, $1); }
-	| BININTEGER                                                                  { $$ = createInteger(integer_type_binary, 0, $1); }
-	| OCTINTEGER                                                                  { $$ = createInteger(integer_type_octal, 0, $1); }
-	| HEXINTEGER                                                                  { $$ = createInteger(integer_type_hexadecimal, 0, $1); }
-	;
+  : DECIMALINTEGER                                                              { $$ = createInteger(integer_type_decimal, 0, $1); }
+  | BININTEGER                                                                  { $$ = createInteger(integer_type_binary, 0, $1); }
+  | OCTINTEGER                                                                  { $$ = createInteger(integer_type_octal, 0, $1); }
+  | HEXINTEGER                                                                  { $$ = createInteger(integer_type_hexadecimal, 0, $1); }
+  ;
 
 %%
 
