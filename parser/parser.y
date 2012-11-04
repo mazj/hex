@@ -315,82 +315,82 @@ catch_stmt_group
   ;
 
 catch_stmt
-	: CATCH COLON suite                                                           { $$ = createCatchStmt(catch_stmt_type_none, 0, $3); }
-	| CATCH LPAREN declaration RPAREN COLON suite                                 { $$ = createCatchStmt(catch_stmt_type_declaration, $3, $6); }
-	| CATCH LPAREN IDENTIFIER RPAREN COLON suite                                  { $$ = createCatchStmt(catch_stmt_type_identifier, $3, $6); }
-	;
+  : CATCH COLON suite                                                           { $$ = createCatchStmt(catch_stmt_type_none, 0, $3); }
+  | CATCH LPAREN declaration RPAREN COLON suite                                 { $$ = createCatchStmt(catch_stmt_type_declaration, $3, $6); }
+  | CATCH LPAREN IDENTIFIER RPAREN COLON suite                                  { $$ = createCatchStmt(catch_stmt_type_identifier, $3, $6); }
+  ;
 
 while_stmt
-	: WHILE expr COLON suite                                                      { $$ = createWhileStmt($2, $4); }
-	;
+  : WHILE expr COLON suite                                                      { $$ = createWhileStmt($2, $4); }
+  ;
 
 for_stmt
-	: FOR expr IN iterable COLON suite                                            { $$ = createForStmt($4, $2, 0, $6); }
-	| FOR expr IN iterable WHERE expr COLON suite                                 { $$ = createForStmt($4, $2, $6, $8); }
-	;
+  : FOR expr IN iterable COLON suite                                            { $$ = createForStmt($4, $2, 0, $6); }
+  | FOR expr IN iterable WHERE expr COLON suite                                 { $$ = createForStmt($4, $2, $6, $8); }
+  ;
 
 iterable
-	: expr                                                                        { $$ = createIterable(iterable_type_expr, $1); }
-	| initializer                                                                 { $$ = createIterable(iterable_type_initializer, $1); }
-	;
+  : expr                                                                        { $$ = createIterable(iterable_type_expr, $1); }
+  | initializer                                                                 { $$ = createIterable(iterable_type_initializer, $1); }
+  ;
 
 if_stmt_simple
-	: IF expr COLON expr_list_                                                    { $$ = createIfStmtSimple(if_stmt_simple_type_expr, $2, $4); }
-	| IF expr RETURN expr_list_                                                   { $$ = createIfStmtSimple(if_stmt_simple_type_return, $2, $4); }
-	;
+  : IF expr COLON expr_list_                                                    { $$ = createIfStmtSimple(if_stmt_simple_type_expr, $2, $4); }
+  | IF expr RETURN expr_list_                                                   { $$ = createIfStmtSimple(if_stmt_simple_type_return, $2, $4); }
+  ;
 
 if_stmt
-	: IF expr COLON suite elif_group ELSE COLON suite                             { $$ = createIfStmt($2, $4, $5, $8); }
-	| IF expr COLON suite ELSE COLON suite                                        { $$ = createIfStmt($2, $4, 0, $7); }
-	| IF expr COLON suite elif_group                                              { $$ = createIfStmt($2, $4, $5, 0); }
-	| IF expr COLON suite                                                         { $$ = createIfStmt($2, $4, 0, 0); }
-	;
+  : IF expr COLON suite elif_group ELSE COLON suite                             { $$ = createIfStmt($2, $4, $5, $8); }
+  | IF expr COLON suite ELSE COLON suite                                        { $$ = createIfStmt($2, $4, 0, $7); }
+  | IF expr COLON suite elif_group                                              { $$ = createIfStmt($2, $4, $5, 0); }
+  | IF expr COLON suite                                                         { $$ = createIfStmt($2, $4, 0, 0); }
+  ;
 
 elif_group
-	: elif_stmt                                                                   { $$ = createElifGroup($1, 0); }
-	| elif_group elif_stmt                                                        { $$ = createElifGroup($2, $1); }
-	;
+  : elif_stmt                                                                   { $$ = createElifGroup($1, 0); }
+  | elif_group elif_stmt                                                        { $$ = createElifGroup($2, $1); }
+  ;
 
 elif_stmt                              
-	: ELIF expr COLON suite                                                       { $$ = createElifStmt($2, $4); }
-	;
+  : ELIF expr COLON suite                                                       { $$ = createElifStmt($2, $4); }
+  ;
 
 import_stmt
-	: direct_import_stmt                                                          { $$ = createImportStmt(import_stmt_type_direct, $1); }
-	| relative_import_stmt                                                        { $$ = createImportStmt(import_stmt_type_relative, $1); }
-	;
+  : direct_import_stmt                                                          { $$ = createImportStmt(import_stmt_type_direct, $1); }
+  | relative_import_stmt                                                        { $$ = createImportStmt(import_stmt_type_relative, $1); }
+  ;
 
 relative_import_stmt
-	: FROM module_list IMPORT module                                              { $$ = createRelativeImportStmt($2, $4, 0); }
-	| FROM module_list IMPORT module AS IDENTIFIER                                { $$ = createRelativeImportStmt($2, $4, $6); }
-	;
+  : FROM module_list IMPORT module                                              { $$ = createRelativeImportStmt($2, $4, 0); }
+  | FROM module_list IMPORT module AS IDENTIFIER                                { $$ = createRelativeImportStmt($2, $4, $6); }
+  ;
 
 direct_import_stmt
-	: IMPORT module_list                                                          { $$ = createDirectImportStmt($2, 0); }
-	| IMPORT module_list AS IDENTIFIER                                            { $$ = createDirectImportStmt($2, $4); }
-	;
+  : IMPORT module_list                                                          { $$ = createDirectImportStmt($2, 0); }
+  | IMPORT module_list AS IDENTIFIER                                            { $$ = createDirectImportStmt($2, $4); }
+  ;
 
 module_list
-	: module                                                                      { $$ = createModuleList($1, 0); }
-	| module_list DOT module                                                      { $$ = createModuleList($3, $1); }
-	;
+  : module                                                                      { $$ = createModuleList($1, 0); }
+  | module_list DOT module                                                      { $$ = createModuleList($3, $1); }
+  ;
 
 module
-	: IDENTIFIER                                                                  { $$ = createModule($1); }
-	;
+  : IDENTIFIER                                                                  { $$ = createModule($1); }
+  ;
 
 class
-	: class_declaration NEWLINE class_section
-	;
+  : class_declaration NEWLINE class_section
+  ;
 
 class_section
-	: INDENT class_access_specifier COLON suite                                   { $$ = createClassSection($2, $4); }
-	;
+  : INDENT class_access_specifier COLON suite                                   { $$ = createClassSection($2, $4); }
+  ;
 
 class_access_specifier
-	: PRIVATE                                                                     { $$ = class_access_specifier_private; }
-	| PUBLIC                                                                      { $$ = class_access_specifier_public; }
-	| PROTECTED                                                                   { $$ = class_access_specifier_protected; }
+  : PRIVATE                                                                     { $$ = class_access_specifier_private; }
+  | PUBLIC                                                                      { $$ = class_access_specifier_public; }
+  | PROTECTED                                                                   { $$ = class_access_specifier_protected; }
 	;
 
 class_declaration
