@@ -540,138 +540,138 @@ expr
   ;
 
 expr_list_
-	: expr                                                                        { $$ = createExprList($1, 0); }
-	| expr_list_ COMMA expr                                                       { $$ = createExprList($3, $1); }
-	;
+  : expr                                                                        { $$ = createExprList($1, 0); }
+  | expr_list_ COMMA expr                                                       { $$ = createExprList($3, $1); }
+  ;
 
 initializer
-	: list_initializer                                                            { $$ = createInitializer(initializer_type_list, $1); }
-	| array_initializer                                                           { $$ = createInitializer(initializer_type_array, $1); }
-	| struct_initializer                                                          { $$ = createInitializer(initializer_type_struct, $1); }
-	| tuple_initializer                                                           { $$ = createInitializer(initializer_type_tuple, $1); }  
-	| set_initializer                                                             { $$ = createInitializer(initializer_type_set, $1); }
-	| map_multimap_initializer                                                    { $$ = createInitializer(initializer_type_mapmultimap, $1); }
-	;
+  : list_initializer                                                            { $$ = createInitializer(initializer_type_list, $1); }
+  | array_initializer                                                           { $$ = createInitializer(initializer_type_array, $1); }
+  | struct_initializer                                                          { $$ = createInitializer(initializer_type_struct, $1); }
+  | tuple_initializer                                                           { $$ = createInitializer(initializer_type_tuple, $1); }  
+  | set_initializer                                                             { $$ = createInitializer(initializer_type_set, $1); }
+  | map_multimap_initializer                                                    { $$ = createInitializer(initializer_type_mapmultimap, $1); }
+  ;
 
 map_multimap_initializer
-	: LBRACE map_multimap_initializer_list RBRACE                                 { $$ = createMapMultimapInitializer($2); }
-	;
+  : LBRACE map_multimap_initializer_list RBRACE                                 { $$ = createMapMultimapInitializer($2); }
+  ;
 
 map_multimap_initializer_list
-	: map_multimap_initializer_single                                             { $$ = createMapMultimapInitializerList($1, 0); }
-	| map_multimap_initializer_list COMMA map_multimap_initializer_single         { $$ = createMapMultimapInitializerList($3, $1); }
-	;
+  : map_multimap_initializer_single                                             { $$ = createMapMultimapInitializerList($1, 0); }
+  | map_multimap_initializer_list COMMA map_multimap_initializer_single         { $$ = createMapMultimapInitializerList($3, $1); }
+  ;
 
 map_multimap_initializer_single
-	: expr COLON expr                                                             { $$ = createMapMultimapInitializerSingle($1, $3); }
-	;
+  : expr COLON expr                                                             { $$ = createMapMultimapInitializerSingle($1, $3); }
+  ;
 
 struct_initializer
-	: LBRACE assignment_stmt_list RBRACE                                          { $$ = createStructInitializer($2); }
-	;
+  : LBRACE assignment_stmt_list RBRACE                                          { $$ = createStructInitializer($2); }
+  ;
 
 set_initializer
-	: LBRACKET LPAREN expr_list_ RPAREN RBRACKET                                  { $$ = createSetInitializer($3); }
-	;
+  : LBRACKET LPAREN expr_list_ RPAREN RBRACKET                                  { $$ = createSetInitializer($3); }
+  ;
 
 array_initializer
-	: LBRACE expr_list_ RBRACE                                                    { $$ = createArrayInitializer($2); }
-	;
+  : LBRACE expr_list_ RBRACE                                                    { $$ = createArrayInitializer($2); }
+  ;
 
 tuple_initializer
-	: LPAREN expr_list_ RPAREN                                                    { $$ = createTupleInitializer($2); }
-	;
+  : LPAREN expr_list_ RPAREN                                                    { $$ = createTupleInitializer($2); }
+  ;
 
 list_initializer
-	: LBRACKET expr_list_ RBRACKET                                                { $$ = createListInitializer($2); }
-	;
+  : LBRACKET expr_list_ RBRACKET                                                { $$ = createListInitializer($2); }
+  ;
 
 parameter_list
-	: LPAREN parameter_list_core RPAREN                                           { $$ = $2; }
-	| LPAREN parameter_list_core COMMA ELLIPSIS RPAREN                            { $$ = $2; } 
-	;
+  : LPAREN parameter_list_core RPAREN                                           { $$ = $2; }
+  | LPAREN parameter_list_core COMMA ELLIPSIS RPAREN                            { $$ = $2; } 
+  ;
 
 parameter_list_core
-	: parameter                                                                   { $$ = createParameterList($1, 0); }           
-	| parameter_list_core COMMA parameter                                         { $$ = createParameterList($3, $1); }  
-	;
+  : parameter                                                                   { $$ = createParameterList($1, 0); }           
+  | parameter_list_core COMMA parameter                                         { $$ = createParameterList($3, $1); }  
+  ;
 
 parameter
-	: type_qualifier_list type_specifier IDENTIFIER                               { $$ = createParameter($1, $2, 0, $3, 0, 0); }
-	| type_qualifier_list type_specifier IDENTIFIER AS IDENTIFIER                 { $$ = createParameter($1, $2, 0, $3, $5, 0); }
-	| type_qualifier_list IDENTIFIER                                              { $$ = createParameter($1, 0, 0, $2, 0, 0); }
-	| type_qualifier_list IDENTIFIER AS IDENTIFIER                                { $$ = createParameter($1, 0, 0, $3, $4, 0); }
-	| type_specifier IDENTIFIER                                                   { $$ = createParameter(0, $1, 0, $2, 0, 0); }
-	| type_specifier IDENTIFIER AS IDENTIFIER                                     { $$ = createParameter(0, $1, 0, $2, $4, 0); }
-	| IDENTIFIER                                                                  { $$ = createParameter(0, 0, $1, 0, 0, 0); }
-	| IDENTIFIER IDENTIFIER                                                       { $$ = createParameter(0, 0, $1, $2, 0, 0); }
-	| IDENTIFIER AS IDENTIFIER                                                    { $$ = createParameter(0, 0, 0, $1, $2, 0); }
-	| IDENTIFIER IDENTIFIER AS IDENTIFIER                                         { $$ = createParameter(0, 0, $1, $2, $4, 0); }
-	| REF type_qualifier_list type_specifier IDENTIFIER                           { $$ = createParameter($2, $3, 0, $4, 0, 1); }
-	| REF type_qualifier_list type_specifier IDENTIFIER AS IDENTIFIER             { $$ = createParameter($2, $3, 0, $4, $6, 1); }
-	| REF type_qualifier_list IDENTIFIER                                          { $$ = createParameter($2, 0, 0, $3, 0, 1); }
-	| REF type_qualifier_list IDENTIFIER AS IDENTIFIER                            { $$ = createParameter($2, 0, 0, $3, $5, 1); }
-	| REF type_specifier IDENTIFIER                                               { $$ = createParameter(0, $2, 0, $3, 0, 1); }
-	| REF type_specifier IDENTIFIER AS IDENTIFIER                                 { $$ = createParameter(0, $2, 0, $3, $5, 1); }
-	| REF IDENTIFIER                                                              { $$ = createParameter(0, 0, $2, 0, 0, 1); }
-	| REF IDENTIFIER IDENTIFIER                                                   { $$ = createParameter(0, 0, $2, $3, 0, 1); }
-	| REF IDENTIFIER AS IDENTIFIER                                                { $$ = createParameter(0, 0, 0, $2, $3, 1); }
-	| REF IDENTIFIER IDENTIFIER AS IDENTIFIER                                     { $$ = createParameter(0, 0, $2, $3, $5, 1); }
-	;
+  : type_qualifier_list type_specifier IDENTIFIER                               { $$ = createParameter($1, $2, 0, $3, 0, 0); }
+  | type_qualifier_list type_specifier IDENTIFIER AS IDENTIFIER                 { $$ = createParameter($1, $2, 0, $3, $5, 0); }
+  | type_qualifier_list IDENTIFIER                                              { $$ = createParameter($1, 0, 0, $2, 0, 0); }
+  | type_qualifier_list IDENTIFIER AS IDENTIFIER                                { $$ = createParameter($1, 0, 0, $3, $4, 0); }
+  | type_specifier IDENTIFIER                                                   { $$ = createParameter(0, $1, 0, $2, 0, 0); }
+  | type_specifier IDENTIFIER AS IDENTIFIER                                     { $$ = createParameter(0, $1, 0, $2, $4, 0); }
+  | IDENTIFIER                                                                  { $$ = createParameter(0, 0, $1, 0, 0, 0); }
+  | IDENTIFIER IDENTIFIER                                                       { $$ = createParameter(0, 0, $1, $2, 0, 0); }
+  | IDENTIFIER AS IDENTIFIER                                                    { $$ = createParameter(0, 0, 0, $1, $2, 0); }
+  | IDENTIFIER IDENTIFIER AS IDENTIFIER                                         { $$ = createParameter(0, 0, $1, $2, $4, 0); }
+  | REF type_qualifier_list type_specifier IDENTIFIER                           { $$ = createParameter($2, $3, 0, $4, 0, 1); }
+  | REF type_qualifier_list type_specifier IDENTIFIER AS IDENTIFIER             { $$ = createParameter($2, $3, 0, $4, $6, 1); }
+  | REF type_qualifier_list IDENTIFIER                                          { $$ = createParameter($2, 0, 0, $3, 0, 1); }
+  | REF type_qualifier_list IDENTIFIER AS IDENTIFIER                            { $$ = createParameter($2, 0, 0, $3, $5, 1); }
+  | REF type_specifier IDENTIFIER                                               { $$ = createParameter(0, $2, 0, $3, 0, 1); }
+  | REF type_specifier IDENTIFIER AS IDENTIFIER                                 { $$ = createParameter(0, $2, 0, $3, $5, 1); }
+  | REF IDENTIFIER                                                              { $$ = createParameter(0, 0, $2, 0, 0, 1); }
+  | REF IDENTIFIER IDENTIFIER                                                   { $$ = createParameter(0, 0, $2, $3, 0, 1); }
+  | REF IDENTIFIER AS IDENTIFIER                                                { $$ = createParameter(0, 0, 0, $2, $3, 1); }
+  | REF IDENTIFIER IDENTIFIER AS IDENTIFIER                                     { $$ = createParameter(0, 0, $2, $3, $5, 1); }
+  ;
 
 declaration
-	: type_qualifier_list type_specifier expr_list_                               { $$ = createDeclaration($1, $2, 0, $3, 0); }
-	| type_qualifier_list expr_list_                                              { $$ = createDeclaration($1, 0, 0, $2, 0); }
-	| type_specifier expr_list_                                                   { $$ = createDeclaration(0, $1, 0, $2, 0); }
-	| IDENTIFIER expr_list_                                                       { $$ = createDeclaration(0, 0, $1, $2, 0); }
-	| type_qualifier_list type_specifier expr_list_ AS IDENTIFIER                 { $$ = createDeclaration($1, $2, 0, $3, $5); }
-	| type_qualifier_list expr_list_ AS IDENTIFIER                                { $$ = createDeclaration($1, 0, 0, $2, $4); }
-	| type_specifier expr_list_ AS IDENTIFIER                                     { $$ = createDeclaration(0, $1, 0, $2, $4); }
-	| IDENTIFIER expr_list_ AS IDENTIFIER                                         { $$ = createDeclaration(0, 0, $1, $2, $4); }
-	;
+  : type_qualifier_list type_specifier expr_list_                               { $$ = createDeclaration($1, $2, 0, $3, 0); }
+  | type_qualifier_list expr_list_                                              { $$ = createDeclaration($1, 0, 0, $2, 0); }
+  | type_specifier expr_list_                                                   { $$ = createDeclaration(0, $1, 0, $2, 0); }
+  | IDENTIFIER expr_list_                                                       { $$ = createDeclaration(0, 0, $1, $2, 0); }
+  | type_qualifier_list type_specifier expr_list_ AS IDENTIFIER                 { $$ = createDeclaration($1, $2, 0, $3, $5); }
+  | type_qualifier_list expr_list_ AS IDENTIFIER                                { $$ = createDeclaration($1, 0, 0, $2, $4); }
+  | type_specifier expr_list_ AS IDENTIFIER                                     { $$ = createDeclaration(0, $1, 0, $2, $4); }
+  | IDENTIFIER expr_list_ AS IDENTIFIER                                         { $$ = createDeclaration(0, 0, $1, $2, $4); }
+  ;
 
 type_specifier
-	: CHAR                                                                        { $$ = type_specifier_char; }
-	| SHORT                                                                       { $$ = type_specifier_short; }
-	| INT                                                                         { $$ = type_specifier_int; }
-	| LONG                                                                        { $$ = type_specifier_long; }
-	| FLOAT                                                                       { $$ = type_specifier_float; }
-	| DOUBLE                                                                      { $$ = type_specifier_double; }
-	| UCHAR                                                                       { $$ = type_specifier_uchar; }
-	| USHORT                                                                      { $$ = type_specifier_ushort; }
-	| UINT                                                                        { $$ = type_specifier_uint; }
-	| ULONG                                                                       { $$ = type_specifier_ulong; }
-	;
+  : CHAR                                                                        { $$ = type_specifier_char; }
+  | SHORT                                                                       { $$ = type_specifier_short; }
+  | INT                                                                         { $$ = type_specifier_int; }
+  | LONG                                                                        { $$ = type_specifier_long; }
+  | FLOAT                                                                       { $$ = type_specifier_float; }
+  | DOUBLE                                                                      { $$ = type_specifier_double; }
+  | UCHAR                                                                       { $$ = type_specifier_uchar; }
+  | USHORT                                                                      { $$ = type_specifier_ushort; }
+  | UINT                                                                        { $$ = type_specifier_uint; }
+  | ULONG                                                                       { $$ = type_specifier_ulong; }
+  ;
 
 type_qualifier_list
-	: type_qualifier                                                              { $$ = createTypeQualifierList($1, 0); }
-	| type_qualifier_list type_qualifier                                          { $$ = createTypeQualifierList($2, $1); }
-	;
+  : type_qualifier                                                              { $$ = createTypeQualifierList($1, 0); }
+  | type_qualifier_list type_qualifier                                          { $$ = createTypeQualifierList($2, $1); }
+  ;
 
 type_qualifier
-	: CONST                                                                       { $$ = type_qualifier_const; }
-	| VOLATILE                                                                    { $$ = type_qualifier_volatile; }
-	| STATIC                                                                      { $$ = type_qualifier_static; }
-	;
+  : CONST                                                                       { $$ = type_qualifier_const; }
+  | VOLATILE                                                                    { $$ = type_qualifier_volatile; }
+  | STATIC                                                                      { $$ = type_qualifier_static; }
+  ;
 
 assignment_operator
-	: ASSIGN_OP                                                                   { $$ = assign_op; }
-	| ASSIGN_OP_WEAKREF                                                           { $$ = assign_op_weakref; }
-	| ASSIGN_OP NEW                                                               { $$ = assign_op_new; }
-	| ASSIGN_OP LAZY NEW                                                          { $$ = assign_op_lazy_new; }
-	| ASSIGN_OP STACKALLOC NEW                                                    { $$ = assign_op_new; }
-	| ASSIGN_OP STACKALLOC LAZY NEW                                               { $$ = assign_op_lazy_new; }
-	| ASSIGN_DIV                                                                  { $$ = assign_op_div; }
-	| ASSIGN_MUL                                                                  { $$ = assign_op_mul; }
-	| ASSIGN_MOD                                                                  { $$ = assign_op_mod; }
-	| ASSIGN_PLUS                                                                 { $$ = assign_op_plus; }
-	| ASSIGN_MINUS                                                                { $$ = assign_op_minus; }
-	| ASSIGN_SHIFTLEFT                                                            { $$ = assign_op_shift_left; }
-	| ASSIGN_SHIFTRIGHT                                                           { $$ = assign_op_shift_right; }
-	| ASSIGN_BITWISE_AND                                                          { $$ = assign_op_bitwise_and; }
-	| ASSIGN_BITWISE_OR                                                           { $$ = assign_op_bitwise_or; }
-	| ASSIGN_BITWISE_XOR                                                          { $$ = assign_op_bitwise_xor; }
-	;
+  : ASSIGN_OP                                                                   { $$ = assign_op; }
+  | ASSIGN_OP_WEAKREF                                                           { $$ = assign_op_weakref; }
+  | ASSIGN_OP NEW                                                               { $$ = assign_op_new; }
+  | ASSIGN_OP LAZY NEW                                                          { $$ = assign_op_lazy_new; }
+  | ASSIGN_OP STACKALLOC NEW                                                    { $$ = assign_op_new; }
+  | ASSIGN_OP STACKALLOC LAZY NEW                                               { $$ = assign_op_lazy_new; }
+  | ASSIGN_DIV                                                                  { $$ = assign_op_div; }
+  | ASSIGN_MUL                                                                  { $$ = assign_op_mul; }
+  | ASSIGN_MOD                                                                  { $$ = assign_op_mod; }
+  | ASSIGN_PLUS                                                                 { $$ = assign_op_plus; }
+  | ASSIGN_MINUS                                                                { $$ = assign_op_minus; }
+  | ASSIGN_SHIFTLEFT                                                            { $$ = assign_op_shift_left; }
+  | ASSIGN_SHIFTRIGHT                                                           { $$ = assign_op_shift_right; }
+  | ASSIGN_BITWISE_AND                                                          { $$ = assign_op_bitwise_and; }
+  | ASSIGN_BITWISE_OR                                                           { $$ = assign_op_bitwise_or; }
+  | ASSIGN_BITWISE_XOR                                                          { $$ = assign_op_bitwise_xor; }
+  ;
 
 LITERAL
 	: CHARACTER_LITERAL                                                           { $$ = createLiteral(literal_type_char, &$1); }
