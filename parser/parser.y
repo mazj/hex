@@ -674,18 +674,18 @@ assignment_operator
   ;
 
 LITERAL
-	: CHARACTER_LITERAL                                                           { $$ = createLiteral(literal_type_char, &$1); }
-	| STRING_LITERAL                                                              { $$ = createLiteral(literal_type_string, $1); }
-	| INTEGER                                                                     { $$ = createLiteral(literal_type_integer, $1); }
-	| FLOATINGNUM                                                                 { $$ = createLiteral(literal_type_float, &$1); }
-	;
+  : CHARACTER_LITERAL                                                           { $$ = createLiteral(literal_type_char, &$1); }
+  | STRING_LITERAL                                                              { $$ = createLiteral(literal_type_string, $1); }
+  | INTEGER                                                                     { $$ = createLiteral(literal_type_integer, $1); }
+  | FLOATINGNUM                                                                 { $$ = createLiteral(literal_type_float, &$1); }
+  ;
 
 INTEGER
-	: DECIMALINTEGER                                                              { $$ = createInteger(integer_type_decimal, 0, $1); }
-	| BININTEGER                                                                  { $$ = createInteger(integer_type_binary, 0, $1); }
-	| OCTINTEGER                                                                  { $$ = createInteger(integer_type_octal, 0, $1); }
-	| HEXINTEGER                                                                  { $$ = createInteger(integer_type_hexadecimal, 0, $1); }
-	;
+  : DECIMALINTEGER                                                              { $$ = createInteger(integer_type_decimal, 0, $1); }
+  | BININTEGER                                                                  { $$ = createInteger(integer_type_binary, 0, $1); }
+  | OCTINTEGER                                                                  { $$ = createInteger(integer_type_octal, 0, $1); }
+  | HEXINTEGER                                                                  { $$ = createInteger(integer_type_hexadecimal, 0, $1); }
+  ;
 
 %%
 
