@@ -620,28 +620,28 @@ parameter
 	;
 
 declaration
-	: type_qualifier_list type_specifier expr_list_                								{ $$ = createDeclaration($1, $2, 0, $3, 0); }
-	| type_qualifier_list expr_list_                               								{ $$ = createDeclaration($1, 0, 0, $2, 0); }
-	| type_specifier expr_list_                                    								{ $$ = createDeclaration(0, $1, 0, $2, 0); }
-	| IDENTIFIER expr_list_                                        								{ $$ = createDeclaration(0, 0, $1, $2, 0); }
-	| type_qualifier_list type_specifier expr_list_ AS IDENTIFIER  								{ $$ = createDeclaration($1, $2, 0, $3, $5); }
-	| type_qualifier_list expr_list_ AS IDENTIFIER                 								{ $$ = createDeclaration($1, 0, 0, $2, $4); }
-	| type_specifier expr_list_ AS IDENTIFIER                      								{ $$ = createDeclaration(0, $1, 0, $2, $4); }
-	| IDENTIFIER expr_list_ AS IDENTIFIER                          								{ $$ = createDeclaration(0, 0, $1, $2, $4); }
-	;
+  : type_qualifier_list type_specifier expr_list_                               { $$ = createDeclaration($1, $2, 0, $3, 0); }
+  | type_qualifier_list expr_list_                                              { $$ = createDeclaration($1, 0, 0, $2, 0); }
+  | type_specifier expr_list_                                                   { $$ = createDeclaration(0, $1, 0, $2, 0); }
+  | IDENTIFIER expr_list_                                                       { $$ = createDeclaration(0, 0, $1, $2, 0); }
+  | type_qualifier_list type_specifier expr_list_ AS IDENTIFIER                 { $$ = createDeclaration($1, $2, 0, $3, $5); }
+  | type_qualifier_list expr_list_ AS IDENTIFIER                                { $$ = createDeclaration($1, 0, 0, $2, $4); }
+  | type_specifier expr_list_ AS IDENTIFIER                                     { $$ = createDeclaration(0, $1, 0, $2, $4); }
+  | IDENTIFIER expr_list_ AS IDENTIFIER                                         { $$ = createDeclaration(0, 0, $1, $2, $4); }
+  ;
 
 type_specifier
-	: CHAR                          																							{ $$ = type_specifier_char; }
-	| SHORT                         																							{ $$ = type_specifier_short; }
-	| INT                           																							{ $$ = type_specifier_int; }
-	| LONG                          																							{ $$ = type_specifier_long; }
-	| FLOAT                         																							{ $$ = type_specifier_float; }
-	| DOUBLE                        																							{ $$ = type_specifier_double; }
-	| UCHAR                         																							{ $$ = type_specifier_uchar; }
-	| USHORT                        																							{ $$ = type_specifier_ushort; }
-	| UINT                          																							{ $$ = type_specifier_uint; }
-	| ULONG                         																							{ $$ = type_specifier_ulong; }
-	;
+  : CHAR                                                                        { $$ = type_specifier_char; }
+  | SHORT                                                                       { $$ = type_specifier_short; }
+  | INT                                                                         { $$ = type_specifier_int; }
+  | LONG                                                                        { $$ = type_specifier_long; }
+  | FLOAT                                                                       { $$ = type_specifier_float; }
+  | DOUBLE                                                                      { $$ = type_specifier_double; }
+  | UCHAR                                                                       { $$ = type_specifier_uchar; }
+  | USHORT                                                                      { $$ = type_specifier_ushort; }
+  | UINT                                                                        { $$ = type_specifier_uint; }
+  | ULONG                                                                       { $$ = type_specifier_ulong; }
+  ;
 
 type_qualifier_list
   : type_qualifier                                                              { $$ = createTypeQualifierList($1, 0); }
