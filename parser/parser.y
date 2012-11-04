@@ -466,78 +466,78 @@ assignment
 	;
 
 expr
-	: LITERAL                                                                    	{ $$ = createPrimaryExpr(primary_expr_type_literal, $1); }
-	| IDENTIFIER                                                                 	{ $$ = createPrimaryExpr(primary_expr_type_identifier, $1); }
-	| expr tuple_initializer                                                     	{
-																																									int type = postfix_invocation_expr_with_args_type_expr;
-																																									$$ = createPostfixExpr(postfix_expr_type_invocation_with_args, type, $1, $2);
-																																								}
-	| IDENTIFIER tuple_initializer                                               	{
-																																									int type = postfix_invocation_expr_with_args_type_identifier;
-																																									$$ = createPostfixExpr(postfix_expr_type_invocation_with_args, type, $1, $2);
-																																								}
-	| expr list_initializer               																				{
-																																									int type = postfix_index_expr_type_expr;
+  : LITERAL                                                                     { $$ = createPrimaryExpr(primary_expr_type_literal, $1); }
+  | IDENTIFIER                                                                  { $$ = createPrimaryExpr(primary_expr_type_identifier, $1); }
+  | expr tuple_initializer                                                      {
+                                                                                  int type = postfix_invocation_expr_with_args_type_expr;
+                                                                                  $$ = createPostfixExpr(postfix_expr_type_invocation_with_args, type, $1, $2);
+                                                                                }
+  | IDENTIFIER tuple_initializer                                                {
+                                                                                  int type = postfix_invocation_expr_with_args_type_identifier;
+                                                                                  $$ = createPostfixExpr(postfix_expr_type_invocation_with_args, type, $1, $2);
+                                                                                }
+  | expr list_initializer                                                       {
+                                                                                  int type = postfix_index_expr_type_expr;
 																																									$$ = createPostfixExpr(postfix_expr_type_index, type, $1, $2);
 																																								}
-	| IDENTIFIER list_initializer         																				{
-																																									int type = postfix_index_expr_type_identifier;
-																																									$$ = createPostfixExpr(postfix_expr_type_index, type, $1, $2);
-																																								}
-	| expr LPAREN RPAREN                  																				{
-																																									int invocation_type = postfix_invocation_expr_type_expr;
-																																									$$ = createPostfixExpr(postfix_expr_type_invocation, invocation_type, $1, 0);
-																																								}
-	| IDENTIFIER LPAREN RPAREN            																				{
-																																									int invocation_type = postfix_invocation_expr_type_identifier;
-																																									$$ = createPostfixExpr(postfix_expr_type_invocation, invocation_type, $1, 0);
-																																								}
-	| expr LBRACKET RBRACKET              																				{
-																																									int type = postfix_index_expr_type_expr;
-																																									$$ = createPostfixExpr(postfix_expr_type_index, type, $1, 0);
-																																								}
-	| IDENTIFIER LBRACKET RBRACKET        																				{
-																																									int type = postfix_index_expr_type_identifier;
-																																									$$ = createPostfixExpr(postfix_expr_type_index, type, $1, 0);
-																																								}
-	| expr INC_OP                         																				{ $$ = createPostfixExpr(postfix_expr_type_postfix_inc, -1, $1, 0); }
-	| expr DEC_OP                         																				{ $$ = createPostfixExpr(postfix_expr_type_postfix_dec, -1, $1, 0); }
-	| INC_OP expr                         																				{ $$ = createUnaryExpr(unary_expr_type_prefix_inc, $2); }
-	| DEC_OP expr                         																				{ $$ = createUnaryExpr(unary_expr_type_prefix_dec, $2); }
-	| expr MUL_OP expr                    																				{ $$ = createMultiplicativeExpr(multiplicative_expr_type_mul, $1, $3); }
-	| expr DIV_OP expr                    																				{ $$ = createMultiplicativeExpr(multiplicative_expr_type_div, $1, $3); }
-	| expr MOD_OP expr                    																				{ $$ = createMultiplicativeExpr(multiplicative_expr_type_mod, $1, $3); }
-	| expr PLUS_OP expr                   																				{ $$ = createAdditiveExpr(additive_expr_type_plus, $1, $3); }
-	| expr MINUS_OP expr                  																				{ $$ = createAdditiveExpr(additive_expr_type_minus, $1, $3); }
-	| MINUS_OP expr %prec UMINUS          																				{ $$ = createUnaryExpr(unary_expr_type_unary_minus, $2); }
-	| expr BITWISE_SHIFTLEFT expr         																				{ $$ = createBitwiseExpr(bitwise_expr_type_shift_left, $1, $3); }
-	| expr BITWISE_SHIFTRIGHT expr        																				{ $$ = createBitwiseExpr(bitwise_expr_type_shift_right, $1, $3); }
-	| expr LESS_OP expr                   																				{ $$ = createEqualityExpr(equality_expr_type_less, $1, $3); }
-	| expr GREATER_OP expr                																				{ $$ = createEqualityExpr(equality_expr_type_greater, $1, $3); }
-	| expr LEQ_OP expr                    																				{ $$ = createEqualityExpr(equality_expr_type_le, $1, $3); }
-	| expr GEQ_OP expr                    																				{ $$ = createEqualityExpr(equality_expr_type_is, $1, $3); }
-	| expr IS expr                        																				{ $$ = createEqualityExpr(equality_expr_type_le, $1, $3); }
-	| expr IS_NOT expr                    																				{ $$ = createEqualityExpr(equality_expr_type_is_not, $1, $3); }
-	| expr EQ_OP expr                     																				{ $$ = createEqualityExpr(equality_expr_type_eq, $1, $3); }    
-	| expr NEQ_OP expr                    																				{ $$ = createEqualityExpr(equality_expr_type_neq, $1, $3); }
-	| expr BITWISE_AND expr               																				{ $$ = createBitwiseExpr(bitwise_expr_type_bitwise_and, $1, $3); }
-	| expr BITWISE_XOR expr               																				{ $$ = createBitwiseExpr(bitwise_expr_type_bitwise_xor, $1, $3); }
-	| expr BITWISE_OR expr                																				{ $$ = createBitwiseExpr(bitwise_expr_type_bitwise_or, $1, $3); }
-	| expr AND expr                       																				{ $$ = createLogicExpr(logic_expr_type_logic_and, $1, $3); }
-	| expr OR expr                        																				{ $$ = createLogicExpr(logic_expr_type_logic_or, $1, $3); }
-	| expr ELLIPSIS expr                  																				{ $$ = createRangeExpr($1, $3); }
-	| IF expr THEN expr ELSE expr         																				{ $$ = createConditionalExpr($2, $4, $6); }
-	| expr DOT IDENTIFIER                 																				{ $$ = createPostfixExpr(postfix_expr_type_accessor, -1, $1, $3); }
-	| WEAKREF expr                        																				{ $$ = createWeakref($2); }
-	| NOT expr                            																				{ $$ = createUnaryExpr(unary_expr_type_not, $2); }
-	| LOCK expr                           																				{ $$ = createLockExpr(1, $2); }
-	| UNLOCK expr                         																				{ $$ = createLockExpr(0, $2); }
-	| BITWISE_NOT expr                    																				{ $$ = createUnaryExpr(unary_expr_type_bitwise_not, $2); }
-	| LPAREN IDENTIFIER RPAREN expr       																				{ $$ = createCastExpr(cast_expr_type_custom_type, $2, $4); }
-	| LPAREN type_specifier RPAREN expr   																				{ $$ = createCastExpr(cast_expr_type_type_specifier, &$2, $4); }                  
-	| THIS                                																				{ $$ = createExpr(expr_type_this, 0); }
-	| BASE                                																				{ $$ = createExpr(expr_type_base, 0); }
-	;
+  | IDENTIFIER list_initializer                                                 {
+                                                                                  int type = postfix_index_expr_type_identifier;
+                                                                                  $$ = createPostfixExpr(postfix_expr_type_index, type, $1, $2);
+                                                                                }
+  | expr LPAREN RPAREN                                                          {
+                                                                                  int invocation_type = postfix_invocation_expr_type_expr;
+                                                                                  $$ = createPostfixExpr(postfix_expr_type_invocation, invocation_type, $1, 0);
+                                                                                }
+  | IDENTIFIER LPAREN RPAREN                                                    {
+                                                                                  int invocation_type = postfix_invocation_expr_type_identifier;
+                                                                                  $$ = createPostfixExpr(postfix_expr_type_invocation, invocation_type, $1, 0);
+                                                                                }
+  | expr LBRACKET RBRACKET                                                      {
+                                                                                  int type = postfix_index_expr_type_expr;
+                                                                                  $$ = createPostfixExpr(postfix_expr_type_index, type, $1, 0);
+                                                                                }
+  | IDENTIFIER LBRACKET RBRACKET                                                {
+                                                                                  int type = postfix_index_expr_type_identifier;
+                                                                                  $$ = createPostfixExpr(postfix_expr_type_index, type, $1, 0);
+                                                                                }
+  | expr INC_OP                                                                 { $$ = createPostfixExpr(postfix_expr_type_postfix_inc, -1, $1, 0); }
+  | expr DEC_OP                                                                 { $$ = createPostfixExpr(postfix_expr_type_postfix_dec, -1, $1, 0); }
+  | INC_OP expr                                                                 { $$ = createUnaryExpr(unary_expr_type_prefix_inc, $2); }
+  | DEC_OP expr                                                                 { $$ = createUnaryExpr(unary_expr_type_prefix_dec, $2); }
+  | expr MUL_OP expr                                                            { $$ = createMultiplicativeExpr(multiplicative_expr_type_mul, $1, $3); }
+  | expr DIV_OP expr                                                            { $$ = createMultiplicativeExpr(multiplicative_expr_type_div, $1, $3); }
+  | expr MOD_OP expr                                                            { $$ = createMultiplicativeExpr(multiplicative_expr_type_mod, $1, $3); }
+  | expr PLUS_OP expr                                                           { $$ = createAdditiveExpr(additive_expr_type_plus, $1, $3); }
+  | expr MINUS_OP expr                                                          { $$ = createAdditiveExpr(additive_expr_type_minus, $1, $3); }
+  | MINUS_OP expr %prec UMINUS                                                  { $$ = createUnaryExpr(unary_expr_type_unary_minus, $2); }
+  | expr BITWISE_SHIFTLEFT expr                                                 { $$ = createBitwiseExpr(bitwise_expr_type_shift_left, $1, $3); }
+  | expr BITWISE_SHIFTRIGHT expr                                                { $$ = createBitwiseExpr(bitwise_expr_type_shift_right, $1, $3); }
+  | expr LESS_OP expr                                                           { $$ = createEqualityExpr(equality_expr_type_less, $1, $3); }
+  | expr GREATER_OP expr                                                        { $$ = createEqualityExpr(equality_expr_type_greater, $1, $3); }
+  | expr LEQ_OP expr                                                            { $$ = createEqualityExpr(equality_expr_type_le, $1, $3); }
+  | expr GEQ_OP expr                                                            { $$ = createEqualityExpr(equality_expr_type_is, $1, $3); }
+  | expr IS expr                                                                { $$ = createEqualityExpr(equality_expr_type_le, $1, $3); }
+  | expr IS_NOT expr                                                            { $$ = createEqualityExpr(equality_expr_type_is_not, $1, $3); }
+  | expr EQ_OP expr                                                             { $$ = createEqualityExpr(equality_expr_type_eq, $1, $3); }    
+  | expr NEQ_OP expr                                                            { $$ = createEqualityExpr(equality_expr_type_neq, $1, $3); }
+  | expr BITWISE_AND expr                                                       { $$ = createBitwiseExpr(bitwise_expr_type_bitwise_and, $1, $3); }
+  | expr BITWISE_XOR expr                                                       { $$ = createBitwiseExpr(bitwise_expr_type_bitwise_xor, $1, $3); }
+  | expr BITWISE_OR expr                                                        { $$ = createBitwiseExpr(bitwise_expr_type_bitwise_or, $1, $3); }
+  | expr AND expr                                                               { $$ = createLogicExpr(logic_expr_type_logic_and, $1, $3); }
+  | expr OR expr                                                                { $$ = createLogicExpr(logic_expr_type_logic_or, $1, $3); }
+  | expr ELLIPSIS expr                                                          { $$ = createRangeExpr($1, $3); }
+  | IF expr THEN expr ELSE expr                                                 { $$ = createConditionalExpr($2, $4, $6); }
+  | expr DOT IDENTIFIER                                                         { $$ = createPostfixExpr(postfix_expr_type_accessor, -1, $1, $3); }
+  | WEAKREF expr                                                                { $$ = createWeakref($2); }
+  | NOT expr                                                                    { $$ = createUnaryExpr(unary_expr_type_not, $2); }
+  | LOCK expr                                                                   { $$ = createLockExpr(1, $2); }
+  | UNLOCK expr                                                                 { $$ = createLockExpr(0, $2); }
+  | BITWISE_NOT expr                                                            { $$ = createUnaryExpr(unary_expr_type_bitwise_not, $2); }
+  | LPAREN IDENTIFIER RPAREN expr                                               { $$ = createCastExpr(cast_expr_type_custom_type, $2, $4); }
+  | LPAREN type_specifier RPAREN expr                                           { $$ = createCastExpr(cast_expr_type_type_specifier, &$2, $4); }                  
+  | THIS                                                                        { $$ = createExpr(expr_type_this, 0); }
+  | BASE                                                                        { $$ = createExpr(expr_type_base, 0); }
+  ;
 
 expr_list_
   : expr                                                                        { $$ = createExprList($1, 0); }
