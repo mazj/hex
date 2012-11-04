@@ -450,53 +450,53 @@ assignment_stmt_list
   ;
 
 assignment_stmt
-	: declaration assignment_list                                                 { $$ = createAssignmentStmt(assignment_stmt_type_declaration, $1, $2); }
-	| expr_list_ assignment_list                                                  { $$ = createAssignmentStmt(assignment_stmt_type_expr_list, $1, $2); }
-	;
+  : declaration assignment_list                                                 { $$ = createAssignmentStmt(assignment_stmt_type_declaration, $1, $2); }
+  | expr_list_ assignment_list                                                  { $$ = createAssignmentStmt(assignment_stmt_type_expr_list, $1, $2); }
+  ;
 
 assignment_list
-	: assignment                                                                  { $$ = createAssignmentList($1, 0); }
-	| assignment_list assignment                                                  { $$ = createAssignmentList($2, $1); }
-	;
+  : assignment                                                                  { $$ = createAssignmentList($1, 0); }
+  | assignment_list assignment                                                  { $$ = createAssignmentList($2, $1); }
+  ;
 
 assignment
-	: assignment_operator expr                                                    { $$ = createAssignment($1, $2); }
-	| assignment_operator initializer                                             { $$ = createAssignment($1, $2); }
-	| assignment_operator lambda_expr                                             { $$ = createAssignment($1, $2); }
-	;
+  : assignment_operator expr                                                    { $$ = createAssignment($1, $2); }
+  | assignment_operator initializer                                             { $$ = createAssignment($1, $2); }
+  | assignment_operator lambda_expr                                             { $$ = createAssignment($1, $2); }
+  ;
 
 expr
-	: LITERAL                                                                     { $$ = createPrimaryExpr(primary_expr_type_literal, $1); }
-	| IDENTIFIER                                                                  { $$ = createPrimaryExpr(primary_expr_type_identifier, $1); }
-	| expr tuple_initializer                                                      {
+  : LITERAL                                                                     { $$ = createPrimaryExpr(primary_expr_type_literal, $1); }
+  | IDENTIFIER                                                                  { $$ = createPrimaryExpr(primary_expr_type_identifier, $1); }
+  | expr tuple_initializer                                                      {
 																																									int type = postfix_invocation_expr_with_args_type_expr;
 																																									$$ = createPostfixExpr(postfix_expr_type_invocation_with_args, type, $1, $2);
 																																								}
-	| IDENTIFIER tuple_initializer                                                {
+  | IDENTIFIER tuple_initializer                                                {
 																																									int type = postfix_invocation_expr_with_args_type_identifier;
 																																									$$ = createPostfixExpr(postfix_expr_type_invocation_with_args, type, $1, $2);
 																																								}
-	| expr list_initializer                                                       {
+  | expr list_initializer                                                       {
 																																									int type = postfix_index_expr_type_expr;
 																																									$$ = createPostfixExpr(postfix_expr_type_index, type, $1, $2);
 																																								}
-	| IDENTIFIER list_initializer                                                 {
+  | IDENTIFIER list_initializer                                                 {
 																																									int type = postfix_index_expr_type_identifier;
 																																									$$ = createPostfixExpr(postfix_expr_type_index, type, $1, $2);
 																																								}
-	| expr LPAREN RPAREN                                                          {
+  | expr LPAREN RPAREN                                                          {
 																																									int invocation_type = postfix_invocation_expr_type_expr;
 																																									$$ = createPostfixExpr(postfix_expr_type_invocation, invocation_type, $1, 0);
 																																								}
-	| IDENTIFIER LPAREN RPAREN                                                    {
+  | IDENTIFIER LPAREN RPAREN                                                    {
 																																									int invocation_type = postfix_invocation_expr_type_identifier;
 																																									$$ = createPostfixExpr(postfix_expr_type_invocation, invocation_type, $1, 0);
 																																								}
-	| expr LBRACKET RBRACKET                                                      {
+  | expr LBRACKET RBRACKET                                                      {
 																																									int type = postfix_index_expr_type_expr;
 																																									$$ = createPostfixExpr(postfix_expr_type_index, type, $1, 0);
 																																								}
-	| IDENTIFIER LBRACKET RBRACKET                                                {
+  | IDENTIFIER LBRACKET RBRACKET                                                {
 																																									int type = postfix_index_expr_type_identifier;
 																																									$$ = createPostfixExpr(postfix_expr_type_index, type, $1, 0);
 																																								}
