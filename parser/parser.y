@@ -250,93 +250,93 @@ input/* empty line */
   ;
 
 suite
-	: NEWLINE INDENT stmt_group NEWLINE DEDENT %prec SUITE_PREC      							{ $$ =  createSuite($3); }
-	| NEWLINE INDENT stmt_group NEWLINE                              							{ $$ =  createSuite($3); }
-	;
+  : NEWLINE INDENT stmt_group NEWLINE DEDENT %prec SUITE_PREC                   { $$ =  createSuite($3); }
+  | NEWLINE INDENT stmt_group NEWLINE                                           { $$ =  createSuite($3); }
+  ;
 
 stmt_group
-	: stmt                                                           							{ $$ = createStmtGroup($1, 0); }
-	| stmt_group NEWLINE stmt                                        							{ $$ = createStmtGroup($3, $1); }
-	;
+  : stmt                                                                        { $$ = createStmtGroup($1, 0); }
+  | stmt_group NEWLINE stmt                                                     { $$ = createStmtGroup($3, $1); }
+  ;
 
 stmt
-	: simple_stmt_list                                               							{ $$ = createStmt(stmt_type_simple_stmt_list, $1); }
-	| compound_stmt                                                  							{ $$ = createStmt(stmt_type_compound_stmt, $1); }
-	| control_simple_stmt                                            							{ $$ = createStmt(stmt_type_control_simple_stmt, $1); }
-	;
+  : simple_stmt_list                                                            { $$ = createStmt(stmt_type_simple_stmt_list, $1); }
+  | compound_stmt                                                               { $$ = createStmt(stmt_type_compound_stmt, $1); }
+  | control_simple_stmt                                                         { $$ = createStmt(stmt_type_control_simple_stmt, $1); }
+  ;
 
 simple_stmt_list
-	: simple_stmt                                                    							{ $$ = createSimpleStmtList($1, 0); }
-	| simple_stmt_list SEMICOLON simple_stmt                         							{ $$ = createSimpleStmtList($3, $1); }
-	;
+  : simple_stmt                                                                 { $$ = createSimpleStmtList($1, 0); }
+  | simple_stmt_list SEMICOLON simple_stmt                                      { $$ = createSimpleStmtList($3, $1); }
+  ;
 
 simple_stmt
-	: expr_list_                                                     							{ $$ = createSimpleStmt(simple_stmt_type_expr_list, $1); }
-	| declaration                                                    							{ $$ = createSimpleStmt(simple_stmt_type_declaration, $1); }
-	| assignment_stmt                                                							{ $$ = createSimpleStmt(simple_stmt_type_assignment_stmt, $1); }
-	| import_stmt                                                    							{ $$ = createSimpleStmt(simple_stmt_type_import_stmt, $1); }
-	| func_declaration                                               							{ $$ = createSimpleStmt(simple_stmt_type_func_declaration, $1); }
-	| if_stmt_simple                                                 							{ $$ = createSimpleStmt(simple_stmt_type_if_stmt_simple, $1); }
-	| decorator                                                      							{ $$ = createSimpleStmt(simple_stmt_type_decorator, $1); }
-	;
+  : expr_list_                                                                  { $$ = createSimpleStmt(simple_stmt_type_expr_list, $1); }
+  | declaration                                                                 { $$ = createSimpleStmt(simple_stmt_type_declaration, $1); }
+  | assignment_stmt                                                             { $$ = createSimpleStmt(simple_stmt_type_assignment_stmt, $1); }
+  | import_stmt                                                                 { $$ = createSimpleStmt(simple_stmt_type_import_stmt, $1); }
+  | func_declaration                                                            { $$ = createSimpleStmt(simple_stmt_type_func_declaration, $1); }
+  | if_stmt_simple                                                              { $$ = createSimpleStmt(simple_stmt_type_if_stmt_simple, $1); }
+  | decorator                                                                   { $$ = createSimpleStmt(simple_stmt_type_decorator, $1); }
+  ;
 
 control_simple_stmt
-	: return_stmt                                                    							{ $$ = createControlSimpleStmt(control_simple_stmt_return, $1); }
-	| BREAK NEWLINE                                                  							{ $$ = createControlSimpleStmt(control_simple_stmt_break, 0); }
-	| CONTINUE NEWLINE                                               							{ $$ = createControlSimpleStmt(control_simple_stmt_continue, 0); }
-	;
+  : return_stmt                                                                 { $$ = createControlSimpleStmt(control_simple_stmt_return, $1); }
+  | BREAK NEWLINE                                                               { $$ = createControlSimpleStmt(control_simple_stmt_break, 0); }
+  | CONTINUE NEWLINE                                                            { $$ = createControlSimpleStmt(control_simple_stmt_continue, 0); }
+  ;
 
 return_stmt
-	: RETURN NEWLINE                                                 							{ $$ = createReturnStmt(return_stmt_type_none, 0); }
-	| RETURN expr_list_ NEWLINE                                      							{ $$ = createReturnStmt(return_stmt_type_none, $2); }
-	;
+  : RETURN NEWLINE                                                              { $$ = createReturnStmt(return_stmt_type_none, 0); }
+  | RETURN expr_list_ NEWLINE                                                   { $$ = createReturnStmt(return_stmt_type_none, $2); }
+  ;
 
 compound_stmt
-	: if_stmt                                                        							{ $$ = createCompoundStmt(compound_stmt_type_if_stmt, $1); }
-	| while_stmt                                                     							{ $$ = createCompoundStmt(compound_stmt_type_while_stmt, $1); }
-	| try_stmt                                                       							{ $$ = createCompoundStmt(compound_stmt_type_try_stmt, $1); }
-	| for_stmt                                                       							{ $$ = createCompoundStmt(compound_stmt_type_for_stmt, $1); }
-	| func_definition                                                							{ $$ = createCompoundStmt(compound_stmt_type_func_def, $1); }
-	;
+  : if_stmt                                                                     { $$ = createCompoundStmt(compound_stmt_type_if_stmt, $1); }
+  | while_stmt                                                                  { $$ = createCompoundStmt(compound_stmt_type_while_stmt, $1); }
+  | try_stmt                                                                    { $$ = createCompoundStmt(compound_stmt_type_try_stmt, $1); }
+  | for_stmt                                                                    { $$ = createCompoundStmt(compound_stmt_type_for_stmt, $1); }
+  | func_definition                                                             { $$ = createCompoundStmt(compound_stmt_type_func_def, $1); }
+  ;
 
 try_stmt
-	: TRY COLON suite catch_stmt_group                               							{ $$ = createTryStmt($3, $4, 0); }
-	| TRY COLON suite catch_stmt_group finally_stmt                  							{ $$ = createTryStmt($3, $4, $5); }
-	| TRY COLON suite finally_stmt                                   							{ $$ = createTryStmt($3, 0, $4); }
-	;
+  : TRY COLON suite catch_stmt_group                                            { $$ = createTryStmt($3, $4, 0); }
+  | TRY COLON suite catch_stmt_group finally_stmt                               { $$ = createTryStmt($3, $4, $5); }
+  | TRY COLON suite finally_stmt                                                { $$ = createTryStmt($3, 0, $4); }
+  ;
 
 finally_stmt
-	: FINALLY COLON suite                                            							{ $$ = createFinallyStmt($3); }
-	;
+  : FINALLY COLON suite                                                         { $$ = createFinallyStmt($3); }
+  ;
 
 catch_stmt_group
-	: catch_stmt                                                     							{ $$ = createCatchStmtGroup($1, 0); }
-	| catch_stmt_group catch_stmt                                    							{ $$ = createCatchStmtGroup($2, $1); }
-	;
+  : catch_stmt                                                                  { $$ = createCatchStmtGroup($1, 0); }
+  | catch_stmt_group catch_stmt                                                 { $$ = createCatchStmtGroup($2, $1); }
+  ;
 
 catch_stmt
-	: CATCH COLON suite                                              							{ $$ = createCatchStmt(catch_stmt_type_none, 0, $3); }
-	| CATCH LPAREN declaration RPAREN COLON suite                    							{ $$ = createCatchStmt(catch_stmt_type_declaration, $3, $6); }
-	| CATCH LPAREN IDENTIFIER RPAREN COLON suite                     							{ $$ = createCatchStmt(catch_stmt_type_identifier, $3, $6); }
+	: CATCH COLON suite                                                           { $$ = createCatchStmt(catch_stmt_type_none, 0, $3); }
+	| CATCH LPAREN declaration RPAREN COLON suite                                 { $$ = createCatchStmt(catch_stmt_type_declaration, $3, $6); }
+	| CATCH LPAREN IDENTIFIER RPAREN COLON suite                                  { $$ = createCatchStmt(catch_stmt_type_identifier, $3, $6); }
 	;
 
 while_stmt
-	: WHILE expr COLON suite                                         							{ $$ = createWhileStmt($2, $4); }
+	: WHILE expr COLON suite                                                      { $$ = createWhileStmt($2, $4); }
 	;
 
 for_stmt
-	: FOR expr IN iterable COLON suite                               							{ $$ = createForStmt($4, $2, 0, $6); }
-	| FOR expr IN iterable WHERE expr COLON suite                    							{ $$ = createForStmt($4, $2, $6, $8); }
+	: FOR expr IN iterable COLON suite                                            { $$ = createForStmt($4, $2, 0, $6); }
+	| FOR expr IN iterable WHERE expr COLON suite                                 { $$ = createForStmt($4, $2, $6, $8); }
 	;
 
 iterable
-	: expr                                                           							{ $$ = createIterable(iterable_type_expr, $1); }
-	| initializer                                                    							{ $$ = createIterable(iterable_type_initializer, $1); }
+	: expr                                                                        { $$ = createIterable(iterable_type_expr, $1); }
+	| initializer                                                                 { $$ = createIterable(iterable_type_initializer, $1); }
 	;
 
 if_stmt_simple
 	: IF expr COLON expr_list_                                                    { $$ = createIfStmtSimple(if_stmt_simple_type_expr, $2, $4); }
-	| IF expr RETURN expr_list_                                      							{ $$ = createIfStmtSimple(if_stmt_simple_type_return, $2, $4); }
+	| IF expr RETURN expr_list_                                                   { $$ = createIfStmtSimple(if_stmt_simple_type_return, $2, $4); }
 	;
 
 if_stmt
@@ -347,45 +347,45 @@ if_stmt
 	;
 
 elif_group
-  : elif_stmt                                                                   { $$ = createElifGroup($1, 0); }
-  | elif_group elif_stmt                                                        { $$ = createElifGroup($2, $1); }
-  ;
+	: elif_stmt                                                                   { $$ = createElifGroup($1, 0); }
+	| elif_group elif_stmt                                                        { $$ = createElifGroup($2, $1); }
+	;
 
 elif_stmt                              
-  : ELIF expr COLON suite                                                       { $$ = createElifStmt($2, $4); }
-  ;
+	: ELIF expr COLON suite                                                       { $$ = createElifStmt($2, $4); }
+	;
 
 import_stmt
-  : direct_import_stmt                                                          { $$ = createImportStmt(import_stmt_type_direct, $1); }
-  | relative_import_stmt                                                        { $$ = createImportStmt(import_stmt_type_relative, $1); }
-  ;
+	: direct_import_stmt                                                          { $$ = createImportStmt(import_stmt_type_direct, $1); }
+	| relative_import_stmt                                                        { $$ = createImportStmt(import_stmt_type_relative, $1); }
+	;
 
 relative_import_stmt
-  : FROM module_list IMPORT module                                              { $$ = createRelativeImportStmt($2, $4, 0); }
-  | FROM module_list IMPORT module AS IDENTIFIER                                { $$ = createRelativeImportStmt($2, $4, $6); }
-  ;
+	: FROM module_list IMPORT module                                              { $$ = createRelativeImportStmt($2, $4, 0); }
+	| FROM module_list IMPORT module AS IDENTIFIER                                { $$ = createRelativeImportStmt($2, $4, $6); }
+	;
 
 direct_import_stmt
-  : IMPORT module_list                                                          { $$ = createDirectImportStmt($2, 0); }
-  | IMPORT module_list AS IDENTIFIER                                            { $$ = createDirectImportStmt($2, $4); }
-  ;
+	: IMPORT module_list                                                          { $$ = createDirectImportStmt($2, 0); }
+	| IMPORT module_list AS IDENTIFIER                                            { $$ = createDirectImportStmt($2, $4); }
+	;
 
 module_list
-  : module                                                                      { $$ = createModuleList($1, 0); }
-  | module_list DOT module                                                      { $$ = createModuleList($3, $1); }
-  ;
+	: module                                                                      { $$ = createModuleList($1, 0); }
+	| module_list DOT module                                                      { $$ = createModuleList($3, $1); }
+	;
 
 module
-  : IDENTIFIER                                                                  { $$ = createModule($1); }
-  ;
+	: IDENTIFIER                                                                  { $$ = createModule($1); }
+	;
 
 class
-  : class_declaration NEWLINE class_section
-  ;
+	: class_declaration NEWLINE class_section
+	;
 
 class_section
-  : INDENT class_access_specifier COLON suite                                   { $$ = createClassSection($2, $4); }
-  ;
+	: INDENT class_access_specifier COLON suite                                   { $$ = createClassSection($2, $4); }
+	;
 
 class_access_specifier
 	: PRIVATE                                                                     { $$ = class_access_specifier_private; }
