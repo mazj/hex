@@ -1,3 +1,21 @@
+/*
+ * HEX Programming Language
+ * Copyright (C) 2012  Yanzheng Li
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 /* Abstract Syntax Tree */
 
 #ifndef _AST_H_
@@ -7,14 +25,18 @@
 
 
 #define AST_ERROR(level, errstr)        \
-    do {                                \
-        fprintf(stderr,                 \
-            "AST ERROR: %s at %d\n",    \
-            errstr, __LINE__);          \
-        if(level == -1) {               \
-            exit(EXIT_FAILURE);         \
-        }                               \
-    } while(0)
+  do {                                  \
+    fprintf(                            \
+      stderr,                           \
+      "AST ERROR: %s at %d\n",          \
+      errstr,                           \
+      __LINE__                          \
+    );                                  \
+                                        \
+    if(level == -1) {                   \
+      exit(EXIT_FAILURE);               \
+    }                                   \
+  } while(0)
 
 
 //===========================================================================
