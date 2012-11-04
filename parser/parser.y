@@ -597,27 +597,27 @@ parameter_list_core
 	;
 
 parameter
-	: type_qualifier_list type_specifier IDENTIFIER                      					{ $$ = createParameter($1, $2, 0, $3, 0, 0); }
-	| type_qualifier_list type_specifier IDENTIFIER AS IDENTIFIER        					{ $$ = createParameter($1, $2, 0, $3, $5, 0); }
-	| type_qualifier_list IDENTIFIER                                     					{ $$ = createParameter($1, 0, 0, $2, 0, 0); }
-	| type_qualifier_list IDENTIFIER AS IDENTIFIER                       					{ $$ = createParameter($1, 0, 0, $3, $4, 0); }
-	| type_specifier IDENTIFIER                                          					{ $$ = createParameter(0, $1, 0, $2, 0, 0); }
-	| type_specifier IDENTIFIER AS IDENTIFIER                            					{ $$ = createParameter(0, $1, 0, $2, $4, 0); }
-	| IDENTIFIER                                                         					{ $$ = createParameter(0, 0, $1, 0, 0, 0); }
-	| IDENTIFIER IDENTIFIER                                              					{ $$ = createParameter(0, 0, $1, $2, 0, 0); }
-	| IDENTIFIER AS IDENTIFIER                                           					{ $$ = createParameter(0, 0, 0, $1, $2, 0); }
-	| IDENTIFIER IDENTIFIER AS IDENTIFIER                                					{ $$ = createParameter(0, 0, $1, $2, $4, 0); }
-	| REF type_qualifier_list type_specifier IDENTIFIER                  					{ $$ = createParameter($2, $3, 0, $4, 0, 1); }
-	| REF type_qualifier_list type_specifier IDENTIFIER AS IDENTIFIER    					{ $$ = createParameter($2, $3, 0, $4, $6, 1); }
-	| REF type_qualifier_list IDENTIFIER                                 					{ $$ = createParameter($2, 0, 0, $3, 0, 1); }
-	| REF type_qualifier_list IDENTIFIER AS IDENTIFIER                   					{ $$ = createParameter($2, 0, 0, $3, $5, 1); }
-	| REF type_specifier IDENTIFIER                                      					{ $$ = createParameter(0, $2, 0, $3, 0, 1); }
-	| REF type_specifier IDENTIFIER AS IDENTIFIER                        					{ $$ = createParameter(0, $2, 0, $3, $5, 1); }
-	| REF IDENTIFIER                                                     					{ $$ = createParameter(0, 0, $2, 0, 0, 1); }
-	| REF IDENTIFIER IDENTIFIER                                          					{ $$ = createParameter(0, 0, $2, $3, 0, 1); }
-	| REF IDENTIFIER AS IDENTIFIER                                       					{ $$ = createParameter(0, 0, 0, $2, $3, 1); }
-	| REF IDENTIFIER IDENTIFIER AS IDENTIFIER                            					{ $$ = createParameter(0, 0, $2, $3, $5, 1); }
-	;
+  : type_qualifier_list type_specifier IDENTIFIER                               { $$ = createParameter($1, $2, 0, $3, 0, 0); }
+  | type_qualifier_list type_specifier IDENTIFIER AS IDENTIFIER                 { $$ = createParameter($1, $2, 0, $3, $5, 0); }
+  | type_qualifier_list IDENTIFIER                                              { $$ = createParameter($1, 0, 0, $2, 0, 0); }
+  | type_qualifier_list IDENTIFIER AS IDENTIFIER                                { $$ = createParameter($1, 0, 0, $3, $4, 0); }
+  | type_specifier IDENTIFIER                                                   { $$ = createParameter(0, $1, 0, $2, 0, 0); }
+  | type_specifier IDENTIFIER AS IDENTIFIER                                     { $$ = createParameter(0, $1, 0, $2, $4, 0); }
+  | IDENTIFIER                                                                  { $$ = createParameter(0, 0, $1, 0, 0, 0); }
+  | IDENTIFIER IDENTIFIER                                                       { $$ = createParameter(0, 0, $1, $2, 0, 0); }
+  | IDENTIFIER AS IDENTIFIER                                                    { $$ = createParameter(0, 0, 0, $1, $2, 0); }
+  | IDENTIFIER IDENTIFIER AS IDENTIFIER                                         { $$ = createParameter(0, 0, $1, $2, $4, 0); }
+  | REF type_qualifier_list type_specifier IDENTIFIER                           { $$ = createParameter($2, $3, 0, $4, 0, 1); }
+  | REF type_qualifier_list type_specifier IDENTIFIER AS IDENTIFIER             { $$ = createParameter($2, $3, 0, $4, $6, 1); }
+  | REF type_qualifier_list IDENTIFIER                                          { $$ = createParameter($2, 0, 0, $3, 0, 1); }
+  | REF type_qualifier_list IDENTIFIER AS IDENTIFIER                            { $$ = createParameter($2, 0, 0, $3, $5, 1); }
+  | REF type_specifier IDENTIFIER                                               { $$ = createParameter(0, $2, 0, $3, 0, 1); }
+  | REF type_specifier IDENTIFIER AS IDENTIFIER                                 { $$ = createParameter(0, $2, 0, $3, $5, 1); }
+  | REF IDENTIFIER                                                              { $$ = createParameter(0, 0, $2, 0, 0, 1); }
+  | REF IDENTIFIER IDENTIFIER                                                   { $$ = createParameter(0, 0, $2, $3, 0, 1); }
+  | REF IDENTIFIER AS IDENTIFIER                                                { $$ = createParameter(0, 0, 0, $2, $3, 1); }
+  | REF IDENTIFIER IDENTIFIER AS IDENTIFIER                                     { $$ = createParameter(0, 0, $2, $3, $5, 1); }
+  ;
 
 declaration
   : type_qualifier_list type_specifier expr_list_                               { $$ = createDeclaration($1, $2, 0, $3, 0); }
