@@ -445,9 +445,9 @@ func_declaration
 	;
 
 assignment_stmt_list
-	: assignment_stmt                                                            	{ $$ = createAssignmentStmtList($1,0); }
-	| assignment_stmt_list COMMA assignment_stmt                                 	{ $$ = createAssignmentStmtList($3, $1); }
-	;
+  : assignment_stmt                                                             { $$ = createAssignmentStmtList($1,0); }
+  | assignment_stmt_list COMMA assignment_stmt                                  { $$ = createAssignmentStmtList($3, $1); }
+  ;
 
 assignment_stmt
   : declaration assignment_list                                                 { $$ = createAssignmentStmt(assignment_stmt_type_declaration, $1, $2); }
