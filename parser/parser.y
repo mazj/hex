@@ -691,12 +691,12 @@ INTEGER
 
 
 int yyerror(char* s) {
-	printf("[%d] %s\n", __LINE__, s);
+  printf("[%d] %s\n", __LINE__, s);
 }
 
 /* Return 1 stops at EOF,
  * return 0 continues reading. 
  */
 int yywrap() {
-	return 1;
+  return 1;
 }
