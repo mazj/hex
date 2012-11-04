@@ -394,60 +394,60 @@ class_access_specifier
 	;
 
 class_declaration
-	: CLASS IDENTIFIER COLON                                                      { $$ = createClassDeclaration($2, 0); }
-	| CLASS IDENTIFIER COLON expr_list_ COLON                                     { $$ = createClassDeclaration($2, $4); }
-	;
+  : CLASS IDENTIFIER COLON                                                      { $$ = createClassDeclaration($2, 0); }
+  | CLASS IDENTIFIER COLON expr_list_ COLON                                     { $$ = createClassDeclaration($2, $4); }
+  ;
 
 decorator
-	: LBRACKET decorator_list RBRACKET                                            { $$ = createDecorator($2); }
-	;
+  : LBRACKET decorator_list RBRACKET                                            { $$ = createDecorator($2); }
+  ;
 
 decorator_list
-	: decorator_list_single                                                       { $$ = createDecoratorList($1, 0); }
-	| decorator_list COMMA decorator_list_single                                  { $$ = createDecoratorList($3, $1); }
-	;
+  : decorator_list_single                                                       { $$ = createDecoratorList($1, 0); }
+  | decorator_list COMMA decorator_list_single                                  { $$ = createDecoratorList($3, $1); }
+  ;
 
 decorator_list_single                                                   
-	: compiler_property                                                           { $$ = createDecoratorListSingle(decorator_list_single_type_compiler_property, $1); }
-	| attribute                                                                   { $$ = createDecoratorListSingle(decorator_list_single_type_attribute, $1); }
-	;
+  : compiler_property                                                           { $$ = createDecoratorListSingle(decorator_list_single_type_compiler_property, $1); }
+  | attribute                                                                   { $$ = createDecoratorListSingle(decorator_list_single_type_attribute, $1); }
+  ;
 
 compiler_property
-	: POND IDENTIFIER ASSIGN_OP IDENTIFIER                                        { $$ = createCompilerProperty($2, $4); }
-	;
+  : POND IDENTIFIER ASSIGN_OP IDENTIFIER                                        { $$ = createCompilerProperty($2, $4); }
+  ;
 
 attribute
-	: AT expr                                                                     { $$ = createAttribute($2); }
-	;
+  : AT expr                                                                     { $$ = createAttribute($2); }
+  ;
 
 lambda_expr
-	: parameter_list LAMBDA_OP LBRACKET simple_stmt_list RBRACKET                 { $$ = createLambdaExpr(lambda_type_simple, $1, $4); }
-	| parameter_list LAMBDA_OP suite                                              { $$ = createLambdaExpr(lambda_type_suite, $1, $3); }
-	;
+  : parameter_list LAMBDA_OP LBRACKET simple_stmt_list RBRACKET                 { $$ = createLambdaExpr(lambda_type_simple, $1, $4); }
+  | parameter_list LAMBDA_OP suite                                              { $$ = createLambdaExpr(lambda_type_suite, $1, $3); }
+  ;
 
 func_definition
-	: func_declaration COLON suite                                                { $$ = createFuncDef($1, $3); }
-	;
+  : func_declaration COLON suite                                                { $$ = createFuncDef($1, $3); }
+  ;
 
 func_declaration
-	: DEF IDENTIFIER parameter_list                                               { $$ = createFuncDec(0, 0, 0, $2, $3); }
-	| DEF IDENTIFIER LPAREN RPAREN                                                { $$ = createFuncDec(0, 0, 0, $2, 0); }
-	| DEF IDENTIFIER IDENTIFIER parameter_list                                    { $$ = createFuncDec(0, 0, $2, $3, $4); }
-	| DEF IDENTIFIER IDENTIFIER LPAREN RPAREN                                     { $$ = createFuncDec(0, 0, $2, $3, 0); }
-	| DEF type_specifier IDENTIFIER parameter_list                                { $$ = createFuncDec(0, $2, 0, $3, $4); }
-	| DEF type_specifier IDENTIFIER LPAREN RPAREN                                 { $$ = createFuncDec(0, $2, 0, $3, 0); }
-	| DEF type_qualifier_list IDENTIFIER parameter_list                           { $$ = createFuncDec($2, 0, 0, $3, $4); }
-	| DEF type_qualifier_list IDENTIFIER LPAREN RPAREN                            { $$ = createFuncDec($2, 0, 0, $3, 0); }
-	| DEF type_qualifier_list type_specifier IDENTIFIER parameter_list            { $$ = createFuncDec($2, $3, 0, $4, $5); }
-	| DEF type_qualifier_list type_specifier IDENTIFIER LPAREN RPAREN             { $$ = createFuncDec($2, $3, 0, $4, 0); }
-	| DEF type_qualifier_list IDENTIFIER IDENTIFIER parameter_list                { $$ = createFuncDec($2, 0, $3, $4, $5); }
-	| DEF type_qualifier_list IDENTIFIER IDENTIFIER LPAREN RPAREN                 { $$ = createFuncDec($2, 0, $3, $4, 0); }
-	;
+  : DEF IDENTIFIER parameter_list                                               { $$ = createFuncDec(0, 0, 0, $2, $3); }
+  | DEF IDENTIFIER LPAREN RPAREN                                                { $$ = createFuncDec(0, 0, 0, $2, 0); }
+  | DEF IDENTIFIER IDENTIFIER parameter_list                                    { $$ = createFuncDec(0, 0, $2, $3, $4); }
+  | DEF IDENTIFIER IDENTIFIER LPAREN RPAREN                                     { $$ = createFuncDec(0, 0, $2, $3, 0); }
+  | DEF type_specifier IDENTIFIER parameter_list                                { $$ = createFuncDec(0, $2, 0, $3, $4); }
+  | DEF type_specifier IDENTIFIER LPAREN RPAREN                                 { $$ = createFuncDec(0, $2, 0, $3, 0); }
+  | DEF type_qualifier_list IDENTIFIER parameter_list                           { $$ = createFuncDec($2, 0, 0, $3, $4); }
+  | DEF type_qualifier_list IDENTIFIER LPAREN RPAREN                            { $$ = createFuncDec($2, 0, 0, $3, 0); }
+  | DEF type_qualifier_list type_specifier IDENTIFIER parameter_list            { $$ = createFuncDec($2, $3, 0, $4, $5); }
+  | DEF type_qualifier_list type_specifier IDENTIFIER LPAREN RPAREN             { $$ = createFuncDec($2, $3, 0, $4, 0); }
+  | DEF type_qualifier_list IDENTIFIER IDENTIFIER parameter_list                { $$ = createFuncDec($2, 0, $3, $4, $5); }
+  | DEF type_qualifier_list IDENTIFIER IDENTIFIER LPAREN RPAREN                 { $$ = createFuncDec($2, 0, $3, $4, 0); }
+  ;
 
 assignment_stmt_list
-	: assignment_stmt                                                             { $$ = createAssignmentStmtList($1,0); }
-	| assignment_stmt_list COMMA assignment_stmt                                  { $$ = createAssignmentStmtList($3, $1); }
-	;
+  : assignment_stmt                                                             { $$ = createAssignmentStmtList($1,0); }
+  | assignment_stmt_list COMMA assignment_stmt                                  { $$ = createAssignmentStmtList($3, $1); }
+  ;
 
 assignment_stmt
 	: declaration assignment_list                                                 { $$ = createAssignmentStmt(assignment_stmt_type_declaration, $1, $2); }
