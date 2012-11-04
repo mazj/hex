@@ -558,25 +558,25 @@ map_multimap_initializer
 	;
 
 map_multimap_initializer_list
-	: map_multimap_initializer_single                                      				{ $$ = createMapMultimapInitializerList($1, 0); }
-	| map_multimap_initializer_list COMMA map_multimap_initializer_single  				{ $$ = createMapMultimapInitializerList($3, $1); }
-	;
+  : map_multimap_initializer_single                                             { $$ = createMapMultimapInitializerList($1, 0); }
+  | map_multimap_initializer_list COMMA map_multimap_initializer_single         { $$ = createMapMultimapInitializerList($3, $1); }
+  ;
 
 map_multimap_initializer_single
-	: expr COLON expr                                        											{ $$ = createMapMultimapInitializerSingle($1, $3); }
-	;
+  : expr COLON expr                                                             { $$ = createMapMultimapInitializerSingle($1, $3); }
+  ;
 
 struct_initializer
-	: LBRACE assignment_stmt_list RBRACE                     											{ $$ = createStructInitializer($2); }
-	;
+  : LBRACE assignment_stmt_list RBRACE                                          { $$ = createStructInitializer($2); }
+  ;
 
 set_initializer
-	: LBRACKET LPAREN expr_list_ RPAREN RBRACKET             											{ $$ = createSetInitializer($3); }
-	;
+  : LBRACKET LPAREN expr_list_ RPAREN RBRACKET                                  { $$ = createSetInitializer($3); }
+  ;
 
 array_initializer
-	: LBRACE expr_list_ RBRACE                               											{ $$ = createArrayInitializer($2); }
-	;
+  : LBRACE expr_list_ RBRACE                                                    { $$ = createArrayInitializer($2); }
+  ;
 
 tuple_initializer
   : LPAREN expr_list_ RPAREN                                                    { $$ = createTupleInitializer($2); }
