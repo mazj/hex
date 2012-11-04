@@ -579,22 +579,22 @@ array_initializer
 	;
 
 tuple_initializer
-	: LPAREN expr_list_ RPAREN                               											{ $$ = createTupleInitializer($2); }
-	;
+  : LPAREN expr_list_ RPAREN                                                    { $$ = createTupleInitializer($2); }
+  ;
 
 list_initializer
-	: LBRACKET expr_list_ RBRACKET                           											{ $$ = createListInitializer($2); }
-	;
+  : LBRACKET expr_list_ RBRACKET                                                { $$ = createListInitializer($2); }
+  ;
 
 parameter_list
-	: LPAREN parameter_list_core RPAREN                      											{ $$ = $2; }
-	| LPAREN parameter_list_core COMMA ELLIPSIS RPAREN       											{ $$ = $2; } 
-	;
+  : LPAREN parameter_list_core RPAREN                                           { $$ = $2; }
+  | LPAREN parameter_list_core COMMA ELLIPSIS RPAREN                            { $$ = $2; } 
+  ;
 
 parameter_list_core
-	: parameter                                              											{ $$ = createParameterList($1, 0); }           
-	| parameter_list_core COMMA parameter                    											{ $$ = createParameterList($3, $1); }  
-	;
+  : parameter                                                                   { $$ = createParameterList($1, 0); }           
+  | parameter_list_core COMMA parameter                                         { $$ = createParameterList($3, $1); }  
+  ;
 
 parameter
   : type_qualifier_list type_specifier IDENTIFIER                               { $$ = createParameter($1, $2, 0, $3, 0, 0); }
