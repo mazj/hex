@@ -113,7 +113,8 @@ typedef struct HexInteger {
 
 
 //===========================================================================
-// hex_parser_create_integer() - construct an AST node of type Integer.
+// hex_parser_create_integer()
+// construct an AST node of type Integer.
 //===========================================================================
 Integer
 hex_parser_create_integer(int type, int is_signed, int value);
@@ -139,7 +140,8 @@ typedef struct HexLiteral {
 
 
 //===========================================================================
-// hex_parser_create_literal() - construct an AST node of type Literal.
+// hex_parser_create_literal()
+// construct an AST node of type Literal.
 //===========================================================================
 Literal
 hex_parser_create_literal(int type, void* value);
@@ -161,7 +163,8 @@ typedef struct HexPrimaryExpr {
 
 
 //===========================================================================
-// hex_parser_create_primary_expr() - construct an AST node of type PrimaryExpr.
+// hex_parser_create_primary_expr()
+// construct an AST node of type PrimaryExpr.
 //===========================================================================
 Expr
 hex_parser_create_primary_expr(int type, void* value);
@@ -184,7 +187,8 @@ typedef struct HexPostfixIndexExpr {
 
 
 //===========================================================================
-// hex_parser_create_postfix_index_expr() - construct an AST node of type PostfixIndexExpr.
+// hex_parser_create_postfix_index_expr()
+// construct an AST node of type PostfixIndexExpr.
 //===========================================================================
 PostfixIndexExpr
 hex_parser_create_postfix_index_expr(int type, void *value, ListInitializer indeces);
@@ -200,7 +204,8 @@ typedef struct HexPostfixAccessorExpr {
 
 
 //===========================================================================
-// hex_parser_create_postfix_accessor_expr() - construct an AST node of type PostfixAccessorExpr.
+// hex_parser_create_postfix_accessor_expr()
+// construct an AST node of type PostfixAccessorExpr.
 //===========================================================================
 PostfixAccessorExpr
 hex_parser_create_postfix_accessor_expr(Expr caller, Expr accessor);
@@ -222,7 +227,8 @@ typedef struct HexPostfixInvocationExpr {
 
 
 //===========================================================================
-// hex_parser_create_postfix_invocation_expr() - construct an AST node of type PostfixInvocationExpr.
+// hex_parser_create_postfix_invocation_expr()
+// construct an AST node of type PostfixInvocationExpr.
 //===========================================================================
 PostfixInvocationExpr
 hex_parser_create_postfix_invocation_expr(int type, void *invocation_src);
@@ -232,23 +238,24 @@ hex_parser_create_postfix_invocation_expr(int type, void *invocation_src);
  * Postfix invocation with args expression
  */
 typedef struct HexPostfixInvocationWithArgsExpr {
-    enum {
-        postfix_invocation_expr_with_args_type_identifier,
-        postfix_invocation_expr_with_args_type_expr  
-    } postfix_invocation_expr_with_args_type;
-    union {
-        char *invocation_name;
-        Expr *invocation_expr;
-    };
-    ExprList *arg_list;
-} PostfixInvocationWithArgsExpr;
+  enum {
+    postfix_invocation_expr_with_args_type_identifier,
+    postfix_invocation_expr_with_args_type_expr  
+  } postfix_invocation_expr_with_args_type;
+  union {
+    char *invocation_name;
+    Expr invocation_expr;
+  };
+  ExprList arg_list;
+} *PostfixInvocationWithArgsExpr;
 
 
 //===========================================================================
-// createPostfixInvocationWithArgsExpr() - construct an AST node of type PostfixInvocationWithArgsExpr.
+// hex_parser_create_postfix_invocation_with_args_expr()
+// construct an AST node of type PostfixInvocationWithArgsExpr.
 //===========================================================================
 PostfixInvocationWithArgsExpr*
-createPostfixInvocationWithArgsExpr(int type, void *value, ExprList* arg_list);
+hex_parser_create_postfix_invocation_with_args_expr(int type, void *value, ExprList arg_list);
 
 
 /*
