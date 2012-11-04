@@ -554,7 +554,7 @@ initializer
   ;
 
 map_multimap_initializer
-  : LBRACE map_multimap_initializer_list RBRACE                                { $$ = createMapMultimapInitializer($2); }
+  : LBRACE map_multimap_initializer_list RBRACE                                 { $$ = createMapMultimapInitializer($2); }
   ;
 
 map_multimap_initializer_list
