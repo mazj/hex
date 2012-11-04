@@ -540,22 +540,22 @@ expr
 	;
 
 expr_list_
-	: expr                           																							{ $$ = createExprList($1, 0); }
-	| expr_list_ COMMA expr          																							{ $$ = createExprList($3, $1); }
-	;
+  : expr                                                                        { $$ = createExprList($1, 0); }
+  | expr_list_ COMMA expr                                                       { $$ = createExprList($3, $1); }
+  ;
 
 initializer
- : list_initializer                           																	{ $$ = createInitializer(initializer_type_list, $1); }
- | array_initializer                          																	{ $$ = createInitializer(initializer_type_array, $1); }
- | struct_initializer                         																	{ $$ = createInitializer(initializer_type_struct, $1); }
- | tuple_initializer                          																	{ $$ = createInitializer(initializer_type_tuple, $1); }
- | set_initializer                            																	{ $$ = createInitializer(initializer_type_set, $1); }
- | map_multimap_initializer                   																	{ $$ = createInitializer(initializer_type_mapmultimap, $1); }
- ;
+  : list_initializer                                                            { $$ = createInitializer(initializer_type_list, $1); }
+  | array_initializer                                                           { $$ = createInitializer(initializer_type_array, $1); }
+  | struct_initializer                                                          { $$ = createInitializer(initializer_type_struct, $1); }
+  | tuple_initializer                                                           { $$ = createInitializer(initializer_type_tuple, $1); }  
+  | set_initializer                                                             { $$ = createInitializer(initializer_type_set, $1); }
+  | map_multimap_initializer                                                    { $$ = createInitializer(initializer_type_mapmultimap, $1); }
+  ;
 
 map_multimap_initializer
-	: LBRACE map_multimap_initializer_list RBRACE            											{ $$ = createMapMultimapInitializer($2); }
-	;
+  : LBRACE map_multimap_initializer_list RBRACE                                { $$ = createMapMultimapInitializer($2); }
+  ;
 
 map_multimap_initializer_list
   : map_multimap_initializer_single                                             { $$ = createMapMultimapInitializerList($1, 0); }
