@@ -644,15 +644,15 @@ type_specifier
 	;
 
 type_qualifier_list
-	: type_qualifier                      																				{ $$ = createTypeQualifierList($1, 0); }
-	| type_qualifier_list type_qualifier  																				{ $$ = createTypeQualifierList($2, $1); }
-	;
+  : type_qualifier                                                              { $$ = createTypeQualifierList($1, 0); }
+  | type_qualifier_list type_qualifier                                          { $$ = createTypeQualifierList($2, $1); }
+  ;
 
 type_qualifier
-	: CONST                          																							{ $$ = type_qualifier_const; }
-	| VOLATILE                       																							{ $$ = type_qualifier_volatile; }
-	| STATIC                         																							{ $$ = type_qualifier_static; }
-	;
+  : CONST                                                                       { $$ = type_qualifier_const; }
+  | VOLATILE                                                                    { $$ = type_qualifier_volatile; }
+  | STATIC                                                                      { $$ = type_qualifier_static; }
+  ;
 
 assignment_operator
   : ASSIGN_OP                                                                   { $$ = assign_op; }
@@ -691,12 +691,12 @@ INTEGER
 
 
 int yyerror(char* s) {
-	printf("[%d] %s\n", __LINE__, s);
+  printf("[%d] %s\n", __LINE__, s);
 }
 
 /* Return 1 stops at EOF,
  * return 0 continues reading. 
  */
 int yywrap() {
-	return 1;
+  return 1;
 }
