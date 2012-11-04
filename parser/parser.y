@@ -347,9 +347,9 @@ if_stmt
 	;
 
 elif_group
-	: elif_stmt                                                                   { $$ = createElifGroup($1, 0); }
-	| elif_group elif_stmt                                                        { $$ = createElifGroup($2, $1); }
-	;
+  : elif_stmt                                                                   { $$ = createElifGroup($1, 0); }
+  | elif_group elif_stmt                                                        { $$ = createElifGroup($2, $1); }
+  ;
 
 elif_stmt                              
   : ELIF expr COLON suite                                                       { $$ = createElifStmt($2, $4); }
