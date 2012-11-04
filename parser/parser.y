@@ -243,11 +243,11 @@ yydebug = 1;
 %%
 
 input/* empty line */
-	: NEWLINE
-	| stmt_group
-	| class
-	| class_section
-	;
+  : NEWLINE
+  | stmt_group
+  | class
+  | class_section
+  ;
 
 suite
 	: NEWLINE INDENT stmt_group NEWLINE DEDENT %prec SUITE_PREC      							{ $$ =  createSuite($3); }
