@@ -46,43 +46,43 @@
 /*
  * Expression
  */
-typedef struct HexExpr Expr;
+typedef struct HexExpr *Expr;
 
 
 /*
  * Expr list
  */
-typedef struct HexExprList ExprList;
+typedef struct HexExprList *ExprList;
 
 
 /*
  * List initializer
  */
-typedef struct HexListInitializer ListInitializer;
+typedef struct HexListInitializer *ListInitializer;
 
 
 /*
  * Lambda expression
  */
-typedef struct HexLambdaExpr LambdaExpr;
+typedef struct HexLambdaExpr *LambdaExpr;
 
 
 /*
  * Simple statement list 
  */
-typedef struct HexSimpleStmtList SimpleStmtList;
+typedef struct HexSimpleStmtList *SimpleStmtList;
 
 
 /*
  * Statement
  */
-typedef struct HexStmt Stmt;
+typedef struct HexStmt *Stmt;
 
 
 /*
  * Compound statement
  */
-typedef struct HexCompoundStmt CompoundStmt;
+typedef struct HexCompoundStmt *CompoundStmt;
 
 
 /*
@@ -149,83 +149,83 @@ hex_parser_create_literal(int type, void* value);
  * Primary expression
  */
 typedef struct HexPrimaryExpr {
-    enum {
-        primary_expr_type_identifier,       /* identifier */
-        primary_expr_type_literal,          /* literal */
-    } primary_expr_type;
-    union {
-        char *primary_expr_identifier;      /* identifier */
-        Literal* primary_expr_literal;      /* literal */
-    };
-} PrimaryExpr;
+  enum {
+    primary_expr_type_identifier,       /* identifier */
+    primary_expr_type_literal,          /* literal */
+  } primary_expr_type;
+  union {
+    char *primary_expr_identifier;      /* identifier */
+    Literal primary_expr_literal;       /* literal */
+  };
+} *PrimaryExpr;
 
 
 //===========================================================================
-// createPrimaryExpr() - construct an AST node of type PrimaryExpr.
+// hex_parser_create_primary_expr() - construct an AST node of type PrimaryExpr.
 //===========================================================================
-Expr*
-createPrimaryExpr(int type, void* value);
+Expr
+hex_parser_create_primary_expr(int type, void* value);
 
 
 /*
  * Postfix index expression
  */
 typedef struct HexPostfixIndexExpr {
-    enum {
-        postfix_index_expr_type_identifier,
-        postfix_index_expr_type_expr
-    } postfix_index_expr_type;
-    union {
-        char *identifier;
-        Expr *index_expr;
-    };
-    ListInitializer *indeces;
-} PostfixIndexExpr;
+  enum {
+    postfix_index_expr_type_identifier,
+    postfix_index_expr_type_expr
+  } postfix_index_expr_type;
+  union {
+    char *identifier;
+    Expr index_expr;
+  };
+  ListInitializer indeces;
+} *PostfixIndexExpr;
 
 
 //===========================================================================
-// createPostfixIndexExpr() - construct an AST node of type PostfixIndexExpr.
+// hex_parser_create_postfix_index_expr() - construct an AST node of type PostfixIndexExpr.
 //===========================================================================
-PostfixIndexExpr*
-createPostfixIndexExpr(int type, void *value, ListInitializer* indeces);
+PostfixIndexExpr
+hex_parser_create_postfix_index_expr(int type, void *value, ListInitializer indeces);
 
 
 /*
  * Postfix accessor expression
  */
 typedef struct HexPostfixAccessorExpr {
-    Expr *caller;
-    Expr *accessor;
-} PostfixAccessorExpr;
+  Expr caller;
+  Expr accessor;
+} *PostfixAccessorExpr;
 
 
 //===========================================================================
-// createPostfixAccessorExpr() - construct an AST node of type PostfixAccessorExpr.
+// hex_parser_create_postfix_accessor_expr() - construct an AST node of type PostfixAccessorExpr.
 //===========================================================================
-PostfixAccessorExpr*
-createPostfixAccessorExpr(Expr *caller, Expr* accessor);
+PostfixAccessorExpr
+hex_parser_create_postfix_accessor_expr(Expr caller, Expr accessor);
 
 
 /*
  * Postfix invocation with args expression
  */
 typedef struct HexPostfixInvocationExpr {
-    enum {
-        postfix_invocation_expr_type_identifier,
-        postfix_invocation_expr_type_expr
-    } postfix_invocation_expr_type;
-    union {
-        char *invocation_name;
-        Expr *invocation_expr;
-    };
-} PostfixInvocationExpr;
+  enum {
+    postfix_invocation_expr_type_identifier,
+    postfix_invocation_expr_type_expr
+  } postfix_invocation_expr_type;
+  union {
+    char *invocation_name;
+    Expr invocation_expr;
+  };
+} *PostfixInvocationExpr;
 
 
 //===========================================================================
-// createPostfixInvocationExpr() - construct an AST node of type PostfixInvocationExpr.
+// hex_parser_create_postfix_invocation_expr() - construct an AST node of type PostfixInvocationExpr.
 //===========================================================================
-PostfixInvocationExpr*
-createPostfixInvocationExpr(int type, void *invocation_src);
+PostfixInvocationExpr
+hex_parser_create_postfix_invocation_expr(int type, void *invocation_src);
 
 
 /*
