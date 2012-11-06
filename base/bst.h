@@ -1,78 +1,54 @@
+/*
+ * HEX Programming Language
+ * Copyright (C) 2012  Yanzheng Li
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /* Binary search tree. */
 
 #ifndef _BST_H_
 #define _BST_H_
 
-#include <stdlib.h>
-#include "utils.h"
+#include <stddef.h>
 
-typedef struct HexBst_s {
-	BinaryNode *root;
-	size_t height;
-} Bst;
+typedef struct HexBst_s *Bst;
 
 //===========================================================================
 // A generic comparing function that compares the value of arg1 and arg2.
 // Returns:
-// 			0: if both values are the same
-//		    1: if arg1 is less than arg2
-//         -1: if arg1 is greater than arg2 
+//    0: if both values are the same
+//    1: if arg1 is less than arg2
+//   -1: if arg1 is greater than arg2 
 //===========================================================================
-typedef int (*CmpFunc) (void* arg1, void* arg2);
+typedef int (*CmpFunc) (void *arg1, void *arg2);
 
-Bst*
-createBst();
+Bst create_bst();
 
-static inline
-BinaryNode* bst_left(BinaryNode* node);
+size_t bst_size(Bst bst);
 
-static inline
-BinaryNode* bst_right(BinaryNode* node);
+size_t bst_height(Bst bst);
 
-static BinaryNode*
-bstCreateNode();
+int bst_equal(Bst bst1, Bst bst2, CmpFunc);
 
-void*
-bst_node_value(BinaryNode* node);
+void* bst_front(Bst bst);
 
-int
-bst_node_isleafnode(BinaryNode* node);
+void* bst_back(Bst bst);
 
-int
-bst_node_isfullnode(BinaryNode* node);
+int bst_insert(Bst bst, void *val, size_t size, CmpFunc);
 
-int
-bst_node_empty(BinaryNode* node);
+void* bst_find(Bst bst, void *val, CmpFunc);
 
-size_t
-bst_size(Bst *bst);
-
-size_t
-bst_height(Bst *bst);
-
-int
-bst_equal(BinaryNode *node1, BinaryNode *node2, CmpFunc);
-
-void*
-bst_front(Bst *bst);
-
-void*
-bst_back(Bst *bst);
-
-void*
-bst_node_front(BinaryNode *node);
-
-void*
-bst_node_back(BinaryNode *node);
-
-BinaryNode*
-bst_node_insert(BinaryNode *node, void *val, size_t size, CmpFunc);
-
-BinaryNode*
-bst_node_find(BinaryNode *node, void *val, CmpFunc);
-
-/* Generates a list of all the values in ascending order. */
-Node*
-bst_to_list(Bst *bst);
+void* bst_remove(Bst bst, void *val, CmpFunc);
 
 #endif /* _BST_H_ */

@@ -1,3 +1,21 @@
+/*
+ * HEX Programming Language
+ * Copyright (C) 2012  Yanzheng Li
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 /* Abstract Syntax Tree */
 
 #ifndef _AST_H_
@@ -7,65 +25,75 @@
 
 
 #define AST_ERROR(level, errstr)        \
-    do {                                \
-        fprintf(stderr,                 \
-            "AST ERROR: %s at %d\n",    \
-            errstr, __LINE__);          \
-        if(level == -1) {               \
-            exit(EXIT_FAILURE);         \
-        }                               \
-    } while(0)
+  do {                                  \
+    fprintf(                            \
+      stderr,                           \
+      "AST ERROR: %s at %d\n",          \
+      errstr,                           \
+      __LINE__                          \
+    );                                  \
+                                        \
+    if(level == -1) {                   \
+      exit(EXIT_FAILURE);               \
+    }                                   \
+  } while(0)
 
 
 //===========================================================================
 // global typedefs
 //===========================================================================
+
 /*
  * Expression
  */
-typedef struct HexExpr Expr;
+typedef struct HexExpr *Expr;
 
 
 /*
  * Expr list
  */
-typedef struct HexExprList ExprList;
+typedef struct HexExprList *ExprList;
 
 
 /*
  * List initializer
  */
-typedef struct HexListInitializer ListInitializer;
+typedef struct HexListInitializer *ListInitializer;
 
 
 /*
  * Lambda expression
  */
-typedef struct HexLambdaExpr LambdaExpr;
+typedef struct HexLambdaExpr *LambdaExpr;
 
+/*
+ * Assignment statement list
+ */
+typedef struct HexAssignmentStmtList *AssignmentStmtList;
 
 /*
  * Simple statement list 
  */
-typedef struct HexSimpleStmtList SimpleStmtList;
+typedef struct HexSimpleStmtList *SimpleStmtList;
 
 
 /*
  * Statement
  */
-typedef struct HexStmt Stmt;
+typedef struct HexStmt *Stmt;
 
 
 /*
  * Compound statement
  */
-typedef struct HexCompoundStmt CompoundStmt;
-
+typedef struct HexCompoundStmt *CompoundStmt;
 
 /*
  * Suite
  */
-typedef struct HexSuite Suite;
+typedef struct HexSuite *Suite;
+
+
 //===========================================================================
 // global typedefs
 //===========================================================================
@@ -74,158 +102,165 @@ typedef struct HexSuite Suite;
  * Integer
  */
 typedef struct HexInteger {
-    enum {
-        integer_type_decimal,       /* decimal integer */
-        integer_type_binary,        /* binary integer */
-        integer_type_octal,         /* octal decimal integer */
-        integer_type_hexadecimal    /* hexa decimal integer */
-    } integer_type;
-    int is_signed;                  /* integer signness */
-    int integer;                    /* underlying integer number */
-    union {
-        int signed_integer;
-        unsigned int unsigned_integer;
-    };
-} Integer;
+  enum {
+    integer_type_decimal,               /* decimal integer */
+    integer_type_binary,                /* binary integer */
+    integer_type_octal,                 /* octal decimal integer */
+    integer_type_hexadecimal            /* hexa decimal integer */
+  } integer_type;
+  int is_signed;                        /* integer signness */
+  int integer;                          /* underlying integer number */
+  union {
+    int signed_integer;
+    unsigned int unsigned_integer;
+  };
+} *Integer;
 
 
 //===========================================================================
-// createInteger() - construct an AST node of type Integer.
+// hex_ast_create_integer()
+// construct an AST node of type HexInteger.
 //===========================================================================
-Integer*
-createInteger(int type, int is_signed, int value);
+Integer
+hex_ast_create_integer(int type, int is_signed, int value);
 
 
 /*
  * Literal
  */
 typedef struct HexLiteral {
-    enum {
-        literal_type_char,          /* character literal */
-        literal_type_string,        /* string literal */
-        literal_type_integer,       /* integer literal */
-        literal_type_float,         /* floating number literal */
-    } literal_type;
-    union {
-        char literal_char;          /* character literal */
-        char* literal_string;       /* string literal */
-        Integer* literal_integer;        /* integer literal */
-        double literal_float;       /* floating number literal */
-    };
-} Literal;
+  enum {
+    literal_type_char,                  /* character literal */
+    literal_type_string,                /* string literal */
+    literal_type_integer,               /* integer literal */
+    literal_type_float,                 /* floating number literal */
+  } literal_type;
+  union {
+    char literal_char;                  /* character literal */
+    char* literal_string;               /* string literal */
+    Integer literal_integer;           /* integer literal */
+    double literal_float;               /* floating number literal */
+  };
+} *Literal;
 
 
 //===========================================================================
-// createLiteral() - construct an AST node of type Literal.
+// hex_ast_create_literal()
+// construct an AST node of type HexLiteral.
 //===========================================================================
-Literal*
-createLiteral(int type, void* value);
+Literal
+hex_ast_create_literal(int type, void *value);
 
 
 /*
  * Primary expression
  */
 typedef struct HexPrimaryExpr {
-    enum {
-        primary_expr_type_identifier,       /* identifier */
-        primary_expr_type_literal,          /* literal */
-    } primary_expr_type;
-    union {
-        char *primary_expr_identifier;      /* identifier */
-        Literal* primary_expr_literal;      /* literal */
-    };
-} PrimaryExpr;
+  enum {
+    primary_expr_type_identifier,       /* identifier */
+    primary_expr_type_literal,          /* literal */
+  } primary_expr_type;
+  union {
+    char *primary_expr_identifier;      /* identifier */
+    Literal primary_expr_literal;       /* literal */
+  };
+} *PrimaryExpr;
 
 
 //===========================================================================
-// createPrimaryExpr() - construct an AST node of type PrimaryExpr.
+// hex_ast_create_primary_expr()
+// construct an AST node of type HexPrimaryExpr.
 //===========================================================================
-Expr*
-createPrimaryExpr(int type, void* value);
+Expr
+hex_ast_create_primary_expr(int type, void *value);
 
 
 /*
  * Postfix index expression
  */
 typedef struct HexPostfixIndexExpr {
-    enum {
-        postfix_index_expr_type_identifier,
-        postfix_index_expr_type_expr
-    } postfix_index_expr_type;
-    union {
-        char *identifier;
-        Expr *index_expr;
-    };
-    ListInitializer *indeces;
-} PostfixIndexExpr;
+  enum {
+    postfix_index_expr_type_identifier,
+    postfix_index_expr_type_expr
+  } postfix_index_expr_type;
+  union {
+    char *identifier;
+    Expr index_expr;
+  };
+  ListInitializer indeces;
+} *PostfixIndexExpr;
 
 
 //===========================================================================
-// createPostfixIndexExpr() - construct an AST node of type PostfixIndexExpr.
+// hex_ast_create_postfix_index_expr()
+// construct an AST node of type HexPostfixIndexExpr.
 //===========================================================================
-PostfixIndexExpr*
-createPostfixIndexExpr(int type, void *value, ListInitializer* indeces);
+PostfixIndexExpr
+hex_ast_create_postfix_index_expr(int type, void *value, ListInitializer indeces);
 
 
 /*
  * Postfix accessor expression
  */
 typedef struct HexPostfixAccessorExpr {
-    Expr *caller;
-    Expr *accessor;
-} PostfixAccessorExpr;
+  Expr caller;
+  Expr accessor;
+} *PostfixAccessorExpr;
 
 
 //===========================================================================
-// createPostfixAccessorExpr() - construct an AST node of type PostfixAccessorExpr.
+// hex_ast_create_postfix_accessor_expr()
+// construct an AST node of type HexPostfixAccessorExpr.
 //===========================================================================
-PostfixAccessorExpr*
-createPostfixAccessorExpr(Expr *caller, Expr* accessor);
+PostfixAccessorExpr
+hex_ast_create_postfix_accessor_expr(Expr caller, Expr accessor);
 
 
 /*
  * Postfix invocation with args expression
  */
 typedef struct HexPostfixInvocationExpr {
-    enum {
-        postfix_invocation_expr_type_identifier,
-        postfix_invocation_expr_type_expr
-    } postfix_invocation_expr_type;
-    union {
-        char *invocation_name;
-        Expr *invocation_expr;
-    };
-} PostfixInvocationExpr;
+  enum {
+    postfix_invocation_expr_type_identifier,
+    postfix_invocation_expr_type_expr
+  } postfix_invocation_expr_type;
+  union {
+    char *invocation_name;
+    Expr invocation_expr;
+  };
+} *PostfixInvocationExpr;
 
 
 //===========================================================================
-// createPostfixInvocationExpr() - construct an AST node of type PostfixInvocationExpr.
+// hex_ast_create_postfix_invocation_expr()
+// construct an AST node of type HexPostfixInvocationExpr.
 //===========================================================================
-PostfixInvocationExpr*
-createPostfixInvocationExpr(int type, void *invocation_src);
+PostfixInvocationExpr
+hex_ast_create_postfix_invocation_expr(int type, void *invocation_src);
 
 
 /*
  * Postfix invocation with args expression
  */
 typedef struct HexPostfixInvocationWithArgsExpr {
-    enum {
-        postfix_invocation_expr_with_args_type_identifier,
-        postfix_invocation_expr_with_args_type_expr  
-    } postfix_invocation_expr_with_args_type;
-    union {
-        char *invocation_name;
-        Expr *invocation_expr;
-    };
-    ExprList *arg_list;
-} PostfixInvocationWithArgsExpr;
+  enum {
+    postfix_invocation_expr_with_args_type_identifier,
+    postfix_invocation_expr_with_args_type_expr  
+  } postfix_invocation_expr_with_args_type;
+  union {
+    char *invocation_name;
+    Expr invocation_expr;
+  };
+  ExprList arg_list;
+} *PostfixInvocationWithArgsExpr;
 
 
 //===========================================================================
-// createPostfixInvocationWithArgsExpr() - construct an AST node of type PostfixInvocationWithArgsExpr.
+// hex_ast_create_postfix_invocation_with_args_expr()
+// construct an AST node of type HexPostfixInvocationWithArgsExpr.
 //===========================================================================
-PostfixInvocationWithArgsExpr*
-createPostfixInvocationWithArgsExpr(int type, void *value, ExprList* arg_list);
+PostfixInvocationWithArgsExpr
+hex_ast_create_postfix_invocation_with_args_expr(int type, void *value, ExprList arg_list);
 
 
 /*
@@ -244,75 +279,76 @@ createPostfixInvocationWithArgsExpr(int type, void *value, ExprList* arg_list);
  *  expr--
  */
 typedef struct HexPostfixExpr {
-    enum {
-        postfix_expr_type_index,                    /* index */
-        postfix_expr_type_postfix_inc,              /* increment */
-        postfix_expr_type_postfix_dec,              /* decrement */
-        postfix_expr_type_accessor,                 /* accessor */
-        postfix_expr_type_invocation,               /* function invocation */
-        postfix_expr_type_invocation_with_args      /* function invocation with args */
-    } postfix_expr_type;
-    union {
-        PostfixIndexExpr *postfix_expr_index_expr;           /* index */
-        Expr *postfix_expr_postfix_inc_expr;                 /* increment */
-        Expr *postfix_expr_postfix_dec_expr;                 /* decrement */            
-        PostfixAccessorExpr *postfix_expr_accessor_expr;     /* accessor */
-        PostfixInvocationExpr *postfix_expr_invocation_expr; /* function invocation */
-        PostfixInvocationWithArgsExpr*
-            postfix_expr_invocation_with_args_expr;  /* function invocation with args */
-    };
-} PostfixExpr;
+  enum {
+    postfix_expr_type_index,                                                    /* index */
+    postfix_expr_type_postfix_inc,                                              /* increment */
+    postfix_expr_type_postfix_dec,                                              /* decrement */
+    postfix_expr_type_accessor,                                                 /* accessor */
+    postfix_expr_type_invocation,                                               /* function invocation */
+    postfix_expr_type_invocation_with_args                                      /* function invocation with args */
+  } postfix_expr_type;
+  union {
+    PostfixIndexExpr postfix_expr_index_expr;                                   /* index */
+    Expr postfix_expr_postfix_inc_expr;                                         /* increment */
+    Expr postfix_expr_postfix_dec_expr;                                         /* decrement */            
+    PostfixAccessorExpr postfix_expr_accessor_expr;                             /* accessor */
+    PostfixInvocationExpr postfix_expr_invocation_expr;                         /* function invocation */
+    PostfixInvocationWithArgsExpr postfix_expr_invocation_with_args_expr;       /* function invocation with args */
+  };
+} *PostfixExpr;
 
 
 //===========================================================================
-// createPostfixExpr() - construct an AST node of type PostfixExpr.
+// hex_ast_create_postfix_expr()
+// construct an AST node of type HexPostfixExpr.
 //===========================================================================
-Expr*
-createPostfixExpr(int type, int type2, void* value, void* value1);
+Expr
+hex_ast_create_postfix_expr(int type, int type2, void *value, void *value1);
 
 
 /*
  * Unary expression
  */
 typedef struct HexUnaryExpr {
-    enum {
-        unary_expr_type_prefix_inc,             /* prefix increment */
-        unary_expr_type_prefix_dec,             /* prefix decrement */
-        unary_expr_type_unary_minus,            /* prefix unary minus */
-        unary_expr_type_not,                    /* prefix unary not */
-        unary_expr_type_bitwise_not             /* unary bitwise not */
-    } unary_expr_type;
-    union {
-        Expr *unary_expr_prefix_inc_expr;       /* prefix increment */
-        Expr *unary_expr_prefix_dec_expr;       /* prefix decrement */
-        Expr *unary_expr_unary_expr;            /* unary minus */
-        Expr *unary_expr_not;                   /* unary not */
-        Expr *unary_expr_bitwise_not;           /* unary bitwise not */
-    };
-} UnaryExpr;
+  enum {
+    unary_expr_type_prefix_inc,             /* prefix increment */
+    unary_expr_type_prefix_dec,             /* prefix decrement */
+    unary_expr_type_unary_minus,            /* prefix unary minus */
+    unary_expr_type_not,                    /* prefix unary not */
+    unary_expr_type_bitwise_not             /* unary bitwise not */
+  } unary_expr_type;
+  union {
+    Expr unary_expr_prefix_inc_expr;        /* prefix increment */
+    Expr unary_expr_prefix_dec_expr;        /* prefix decrement */
+    Expr unary_expr_unary_expr;             /* unary minus */
+    Expr unary_expr_not;                    /* unary not */
+    Expr unary_expr_bitwise_not;            /* unary bitwise not */
+  };
+} *UnaryExpr;
 
 
 //===========================================================================
-// createUnaryExpr() - construct an AST node of type UnaryExpr.
+// hex_ast_create_unary_expr()
+// construct an AST node of type HexUnaryExpr.
 //===========================================================================
-Expr*
-createUnaryExpr(int type, Expr *expr);
+Expr
+hex_ast_create_unary_expr(int type, Expr expr);
 
 
 /*
  * Type specifier
  */
 typedef enum HexTypeSpecifier {
-    type_specifier_char,            /* type char */
-    type_specifier_short,           /* type short */
-    type_specifier_int,             /* type int */
-    type_specifier_long,            /* type long */
-    type_specifier_float,           /* type float */
-    type_specifier_double,          /* type double */
-    type_specifier_uchar,           /* type uchar */
-    type_specifier_ushort,          /* type ushort */
-    type_specifier_uint,            /* type uint */
-    type_specifier_ulong            /* type ulong */
+  type_specifier_char,            /* type char */
+  type_specifier_short,           /* type short */
+  type_specifier_int,             /* type int */
+  type_specifier_long,            /* type long */
+  type_specifier_float,           /* type float */
+  type_specifier_double,          /* type double */
+  type_specifier_uchar,           /* type uchar */
+  type_specifier_ushort,          /* type ushort */
+  type_specifier_uint,            /* type uint */
+  type_specifier_ulong            /* type ulong */
 } TypeSpecifier;
 
 
@@ -323,64 +359,67 @@ typedef enum HexTypeSpecifier {
  *  target_expr = (cast_type)expr
  */
 typedef struct HexCastExpr {
-    Expr* expr;
-    enum {
-        cast_expr_type_type_specifier,
-        cast_expr_type_custom_type
-    } cast_expr_type;
-    union {
-        int type_specifier;
-        char* identifier;
-    };
-} CastExpr;
+  Expr expr;
+  enum {
+    cast_expr_type_type_specifier,
+    cast_expr_type_custom_type
+  } cast_expr_type;
+  union {
+    int type_specifier;
+    char* identifier;
+  };
+} *CastExpr;
 
 
 //===========================================================================
-// createCastExpr() - construct an AST node of type CastExpr.
+// hex_ast_create_cast_expr()
+// construct an AST node of type HexCastExpr.
 //===========================================================================
-Expr*
-createCastExpr(int type, void* value, Expr *expr);
+Expr
+hex_ast_create_cast_expr(int type, void* value, Expr expr);
 
 
 /*
  * Multiplcative expression
  */
 typedef struct HexMultiplicativeExpr {
-    enum {
-        multiplicative_expr_type_mul,
-        multiplicative_expr_type_div,
-        multiplicative_expr_type_mod
-    } multi_expr_type;
-    Expr* left_expr;
-    Expr* right_expr;
-} MultiplicativeExpr;
+  enum {
+    multiplicative_expr_type_mul,
+    multiplicative_expr_type_div,
+    multiplicative_expr_type_mod
+  } multi_expr_type;
+  Expr left_expr;
+  Expr right_expr;
+} *MultiplicativeExpr;
 
 
 //===========================================================================
-// createMultiplcativeExpr() - construct an AST node of type MultiplcativeExpr.
+// hex_ast_create_multiplicative_expr()
+// construct an AST node of type HexMultiplcativeExpr.
 //===========================================================================
-Expr*
-createMultiplicativeExpr(int type, Expr *left_expr, Expr *right_expr);
+Expr
+hex_ast_create_multiplicative_expr(int type, Expr left_expr, Expr right_expr);
 
 
 /*
  * Additive expression
  */
 typedef struct HexAdditiveExpr {
-    enum {
-        additive_expr_type_plus,
-        additive_expr_type_minus
-    } additive_expr_type;
-    Expr* left_expr;
-    Expr* right_expr;
-} AdditiveExpr;
+  enum {
+    additive_expr_type_plus,
+    additive_expr_type_minus
+  } additive_expr_type;
+  Expr left_expr;
+  Expr right_expr;
+} *AdditiveExpr;
 
 
 //===========================================================================
-// createAdditiveExpr() - construct an AST node of type AdditiveExpr.
+// hex_ast_create_additive_expr()
+// construct an AST node of type HexAdditiveExpr.
 //===========================================================================
-Expr*
-createAdditiveExpr(int type, Expr *left_expr, Expr *right_expr);
+Expr
+hex_ast_create_additive_expr(int type, Expr left_expr, Expr right_expr);
 
 
 /*
@@ -394,22 +433,23 @@ createAdditiveExpr(int type, Expr *left_expr, Expr *right_expr);
  *  target_expr = left_expr [ * | / | % | + | - ] right_expr
  */
 typedef struct HexArithmeticExpr {
-    enum {
-        arithmetic_expr_type_multiplicative,
-        arithmetic_expr_type_additive
-    } arithmetic_expr_type;
-    union {
-        MultiplicativeExpr *arithmetic_expr_multiplicative_expr;
-        AdditiveExpr *arithmetic_expr_additive_expr;
-    };
-} ArithmeticExpr;
+  enum {
+    arithmetic_expr_type_multiplicative,
+    arithmetic_expr_type_additive
+  } arithmetic_expr_type;
+  union {
+    MultiplicativeExpr arithmetic_expr_multiplicative_expr;
+    AdditiveExpr arithmetic_expr_additive_expr;
+  };
+} *ArithmeticExpr;
 
 
 //===========================================================================
-// createArithmeticExpr() - construct an AST node of type ArithmeticExpr.
+// hex_ast_create_arithmetic_expr()
+// construct an AST node of type HexArithmeticExpr.
 //===========================================================================
-ArithmeticExpr*
-createArithmeticExpr(int type, void *expr);
+ArithmeticExpr
+hex_ast_create_arithmetic_expr(int type, void *expr);
 
 
 /*
@@ -427,26 +467,27 @@ createArithmeticExpr(int type, void *expr);
  *  target_expr = left_expr [ == | not | < | > | <= | >= ] right_expr
  */
 typedef struct HexEqualityExpr {
-    enum {
-        equality_expr_type_eq,          /* == */
-        equality_expr_type_neq,         /* != */
-        equality_expr_type_less,        /* < */
-        equality_expr_type_greater,     /* > */
-        equality_expr_type_le,          /* <= */
-        equality_expr_type_ge,          /* >= */
-        equality_expr_type_is,          /* is */
-        equality_expr_type_is_not       /* is not */
-    } equality_expr_type;
-    Expr* left_expr;
-    Expr* right_expr;
-} EqualityExpr;
+  enum {
+    equality_expr_type_eq,          /* == */
+    equality_expr_type_neq,         /* != */
+    equality_expr_type_less,        /* < */
+    equality_expr_type_greater,     /* > */
+    equality_expr_type_le,          /* <= */
+    equality_expr_type_ge,          /* >= */
+    equality_expr_type_is,          /* is */
+    equality_expr_type_is_not       /* is not */
+  } equality_expr_type;
+  Expr left_expr;
+  Expr right_expr;
+} *EqualityExpr;
 
 
 //===========================================================================
-// createEqualityExpr() - construct an AST node of type EqualityExpr.
+// hex_ast_create_equality_expr()
+// construct an AST node of type HexEqualityExpr.
 //===========================================================================
-Expr*
-createEqualityExpr(int type, Expr *left_expr, Expr *right_expr);
+Expr
+hex_ast_create_equality_expr(int type, Expr left_expr, Expr right_expr);
 
 
 /*
@@ -460,20 +501,21 @@ createEqualityExpr(int type, Expr *left_expr, Expr *right_expr);
  *  target_expr = left_expr [ and | or ] right_expr
  */
 typedef struct HexLogicExpr {
-    enum {
-        logic_expr_type_logic_and,      /* and */
-        logic_expr_type_logic_or        /* or */
-    } logic_expr_type;
-    Expr* left_expr;
-    Expr* right_expr;
-} LogicExpr;
+  enum {
+    logic_expr_type_logic_and,      /* and */
+    logic_expr_type_logic_or        /* or */
+  } logic_expr_type;
+  Expr left_expr;
+  Expr right_expr;
+} *LogicExpr;
 
 
 //===========================================================================
-// createLogicExpr() - construct an AST node of type LogicExpr.
+// hex_ast_create_logic_expr()
+// construct an AST node of type HexLogicExpr.
 //===========================================================================
-Expr*
-createLogicExpr(int type, Expr *left_expr, Expr *right_expr);
+Expr
+hex_ast_create_logic_expr(int type, Expr left_expr, Expr right_expr);
 
 
 /*
@@ -490,23 +532,24 @@ createLogicExpr(int type, Expr *left_expr, Expr *right_expr);
  *  target_expr = left_expr [ >> | << | & | | | ^ ] right_expr
  */
 typedef struct HexBitwiseExpr {
-    enum {
-        bitwise_expr_type_shift_left,       /* << */
-        bitwise_expr_type_shift_right,      /* >> */
-        bitwise_expr_type_bitwise_and,      /* & */
-        bitwise_expr_type_bitwise_or,       /* | */
-        bitwise_expr_type_bitwise_xor       /* ^ */
-    } bitwise_expr_type;
-    Expr* left_expr;
-    Expr* right_expr;
-} BitwiseExpr;
+  enum {
+    bitwise_expr_type_shift_left,       /* << */
+    bitwise_expr_type_shift_right,      /* >> */
+    bitwise_expr_type_bitwise_and,      /* & */
+    bitwise_expr_type_bitwise_or,       /* | */
+    bitwise_expr_type_bitwise_xor       /* ^ */
+  } bitwise_expr_type;
+  Expr left_expr;
+  Expr right_expr;
+} *BitwiseExpr;
 
 
 //===========================================================================
-// createBitwiseExpr() - construct an AST node of type BitwiseExpr.
+// hex_ast_create_bitwise_expr()
+// construct an AST node of type HexBitwiseExpr.
 //===========================================================================
-Expr*
-createBitwiseExpr(int type, Expr *left_expr, Expr *right_expr);
+Expr
+hex_ast_create_bitwise_expr(int type, Expr left_expr, Expr right_expr);
 
 
 /*
@@ -516,18 +559,18 @@ createBitwiseExpr(int type, Expr *left_expr, Expr *right_expr);
  *  target_expr = if predicate then alternative else consequent
  */
 typedef struct HexConditionalExpr {
-    Expr* predicate_expr;
-    Expr* alternative_expr;
-    Expr* consequent_expr;
-} ConditionalExpr;
+  Expr predicate_expr;
+  Expr alternative_expr;
+  Expr consequent_expr;
+} *ConditionalExpr;
 
 
 //===========================================================================
-// createConditionalExpr() - construct an AST node of type ConditionalExpr.
+// hex_ast_create_conditional_expr()
+// construct an AST node of type HexConditionalExpr.
 //===========================================================================
-Expr*
-createConditionalExpr(Expr *predicate_expr,
-    Expr *alternative_expr, Expr *consequent_expr);
+Expr
+hex_ast_create_conditional_expr(Expr predicate_expr, Expr alternative_expr, Expr consequent_expr);
 
 
 /*
@@ -537,133 +580,138 @@ createConditionalExpr(Expr *predicate_expr,
  * to denote a range, using the ellipsis operator.
  */
 typedef struct HexRangeExpr {
-    Expr *left_expr;
-    Expr *right_expr;
-} RangeExpr;
+  Expr left_expr;
+  Expr right_expr;
+} *RangeExpr;
 
 
 //===========================================================================
-// createRangeExpr() - construct an AST node of type RangeExpr.
+// hex_ast_create_range_expr()
+// construct an AST node of type HexRangeExpr.
 //===========================================================================
-Expr*
-createRangeExpr(Expr *left_expr, Expr *right_expr);
+Expr
+hex_ast_create_range_expr(Expr left_expr, Expr right_expr);
 
 
 /*
  * Lock/unlock expression
  */
 typedef struct HexLockExpr {
-    int is_lock;
-    Expr *expr;
-} LockExpr;
+  int is_lock;
+  Expr expr;
+} *LockExpr;
 
 
 //===========================================================================
-// createLockExpr() - construct an AST node of type LockExpr.
+// hex_ast_create_lock_expr()
+// construct an AST node of type HexLockExpr.
 //===========================================================================
-Expr*
-createLockExpr(int is_lock, Expr *expr);
+Expr
+hex_ast_create_lock_expr(int is_lock, Expr expr);
 
 
 /*
  * Weakref expression
  */
 typedef struct HexWeakrefExpr {
-    Expr *expr;
-} WeakrefExpr;
+  Expr expr;
+} *WeakrefExpr;
 
 
 //===========================================================================
-// createWeakref() - construct an AST node of type WeakrefExpr.
+// hex_ast_create_weakref_expr()
+// construct an AST node of type HexWeakrefExpr.
 //===========================================================================
-Expr*
-createWeakref(Expr *expr);
+Expr
+hex_ast_create_weakref_expr(Expr expr);
 
 
 /*
  * HEX expression
  */
 struct HexExpr {
-    enum {
-        expr_type_primary,
-        expr_type_postfix,
-        expr_type_unary,
-        expr_type_cast,
-        expr_type_arithmetic,
-        expr_type_equality,
-        expr_type_logic,
-        expr_type_bitwise,
-        expr_type_conditional,
-        expr_type_range,
-        expr_type_lock,
-        expr_type_weakref,
-        expr_type_this,
-        expr_type_base
-    } expr_type;
-    union {
-        PrimaryExpr *primary_expr;
-        PostfixExpr *postfix_expr;
-        UnaryExpr *unary_expr;
-        CastExpr *cast_expr;
-        ArithmeticExpr *arithmetic_expr;
-        EqualityExpr *equality_expr;
-        LogicExpr *logic_expr;
-        BitwiseExpr *bitwise_expr;
-        ConditionalExpr *conditional_expr;
-        RangeExpr *range_expr;
-        LockExpr *lock_expr;
-        WeakrefExpr *weakref_expr;
-    };
+  enum {
+    expr_type_primary,
+    expr_type_postfix,
+    expr_type_unary,
+    expr_type_cast,
+    expr_type_arithmetic,
+    expr_type_equality,
+    expr_type_logic,
+    expr_type_bitwise,
+    expr_type_conditional,
+    expr_type_range,
+    expr_type_lock,
+    expr_type_weakref,
+    expr_type_this,
+    expr_type_base
+  } expr_type;
+  union {
+    PrimaryExpr primary_expr;
+    PostfixExpr postfix_expr;
+    UnaryExpr unary_expr;
+    CastExpr cast_expr;
+    ArithmeticExpr arithmetic_expr;
+    EqualityExpr equality_expr;
+    LogicExpr logic_expr;
+    BitwiseExpr bitwise_expr;
+    ConditionalExpr conditional_expr;
+    RangeExpr range_expr;
+    LockExpr lock_expr;
+    WeakrefExpr weakref_expr;
+  };
 };
 
 
 //===========================================================================
-// createExpr() - construct an AST node of type Expr.
+// hex_ast_create_expr()
+// construct an AST node of type HexExpr.
 //===========================================================================
-Expr*
-createExpr(int type, void* value);
+Expr
+hex_ast_create_expr(int type, void *value);
 
 
 /*
  * Assignment operator
  */
 typedef enum HexAssignmentOp {
-    assign_op,                  /* = */
-    assign_op_weakref,          /* ~= */
-    assign_op_new,              /* = new */
-    assign_op_lazy_new,         /* = lazy new */
-    assign_op_mul,              /* *= */
-    assign_op_div,              /* /= */
-    assign_op_mod,              /* %= */
-    assign_op_plus,             /* += */
-    assign_op_minus,            /* -= */
-    assign_op_shift_left,       /* <<= */
-    assign_op_shift_right,      /* >>= */
-    assign_op_bitwise_not,      /* != */
-    assign_op_bitwise_and,      /* &= */
-    assign_op_bitwise_or,       /* |= */
-    assign_op_bitwise_xor       /* ^= */
-} AssignmentOp;
+  assign_op,                  /* = */
+  assign_op_weakref,          /* ~= */
+  assign_op_new,              /* = new */
+  assign_op_lazy_new,         /* = lazy new */
+  assign_op_mul,              /* *= */
+  assign_op_div,              /* /= */
+  assign_op_mod,              /* %= */
+  assign_op_plus,             /* += */
+  assign_op_minus,            /* -= */
+  assign_op_shift_left,       /* <<= */
+  assign_op_shift_right,      /* >>= */
+  assign_op_bitwise_not,      /* != */
+  assign_op_bitwise_and,      /* &= */
+  assign_op_bitwise_or,       /* |= */
+  assign_op_bitwise_xor       /* ^= */
+} *AssignmentOp;
 
 
 /*
  * Expression list
  */
 struct HexExprList {
-    Expr *expr;
-    struct HexExprList *next;
+  Expr expr;
+  struct HexExprList *next;
 };
 
 
 //===========================================================================
-// createExprList() - construct an AST node of type ExprList.
+// hex_ast_create_expr_list()
+// construct an AST node of type HexExprList.
 //===========================================================================
-ExprList*
-createExprList(Expr* expr, ExprList* parent_list);
+ExprList
+hex_ast_create_expr_list(Expr expr, ExprList parent_list);
 
 
 /***********************************************************************
- *  Declaration definitions
+ * Declaration definitions
  ***********************************************************************/
 
 
@@ -671,9 +719,9 @@ createExprList(Expr* expr, ExprList* parent_list);
  * Type qualifier
  */
 typedef enum HexTypeQualifier {
-    type_qualifier_const,           /* qualifier const */
-    type_qualifier_volatile,        /* qualifier volatile */
-    type_qualifier_static           /* qualifier static */
+  type_qualifier_const,           /* qualifier const */
+  type_qualifier_volatile,        /* qualifier volatile */
+  type_qualifier_static           /* qualifier static */
 } TypeQualifier;
 
 
@@ -681,38 +729,38 @@ typedef enum HexTypeQualifier {
  * Type qualifier list
  */
 typedef struct HexTypeQualifierList {
-    TypeQualifier type_qualifier;
-    struct HexTypeQualifierList *next;
-} TypeQualifierList;
+  TypeQualifier type_qualifier;
+  struct HexTypeQualifierList *next;
+} *TypeQualifierList;
 
 
 //===========================================================================
-// createTypeQualifierList() - construct an AST node of type TypeQualifierList.
+// hex_ast_create_type_qualifier_list()
+// construct an AST node of type HexTypeQualifierList.
 //===========================================================================
-TypeQualifierList*
-createTypeQualifierList(TypeQualifier qualifier,
-    TypeQualifierList* parent_list);
+TypeQualifierList
+hex_ast_create_type_qualifier_list(TypeQualifier qualifier, TypeQualifierList parent_list);
 
 
 /*
  *  Declaration
  */
 typedef struct HexDeclaration {
-    TypeQualifierList *type_qualifier_list;
-    int type_specifier;
-    char *custom_type;
-    ExprList *expr_list;
-    char *alias;
-} Declaration;
+  TypeQualifierList type_qualifier_list;
+  int type_specifier;
+  char *custom_type;
+  ExprList expr_list;
+  char *alias;
+} *Declaration;
 
 
 //===========================================================================
-// createDeclaration() - construct an AST node of type Declaration.
+// hex_ast_create_declaration()
+// construct an AST node of type HexDeclaration.
 //===========================================================================
-Declaration*
-createDeclaration(TypeQualifierList *type_qualifier_list,
-    int type_specifier, char *custom_type,
-    ExprList *expr_list, char *alias);
+Declaration
+hex_ast_create_declaration(TypeQualifierList type_qualifier_list,
+  int type_specifier, char *custom_type, ExprList expr_list, char *alias);
 
 
 /***********************************************************************
@@ -724,37 +772,39 @@ createDeclaration(TypeQualifierList *type_qualifier_list,
  *  Declaration
  */
 typedef struct HexParameter {
-    TypeQualifierList *type_qualifier_list;
-    int type_specifier;
-    char *custom_type;
-    char *parameter_name;
-    char *alias;
-    int is_ref;
-} Parameter;
+  TypeQualifierList type_qualifier_list;
+  int type_specifier;
+  char *custom_type;
+  char *parameter_name;
+  char *alias;
+  int is_ref;
+} *Parameter;
 
 
 //===========================================================================
-// createParameter() - construct an AST node of type Parameter.
+// hex_ast_create_parameter()
+// construct an AST node of type HexParameter.
 //===========================================================================
-Parameter*
-createParameter(TypeQualifierList *type_qualifier_list, int type_specifier,
-    char *custom_type, char *parameter_name, char *alias, int is_ref);
+Parameter
+hex_ast_create_parameter(TypeQualifierList type_qualifier_list, int type_specifier,
+  char *custom_type, char *parameter_name, char *alias, int is_ref);
 
 
 /*
  * Parameter list
  */
 typedef struct HexParameterList {
-    Parameter *parameter;
-    struct HexParameterList *next;
-} ParameterList;
+  Parameter parameter;
+  struct HexParameterList *next;
+} *ParameterList;
 
 
 //===========================================================================
-// createParameterList() - construct an AST node of type ParameterList.
+// hex_ast_create_parameter_list()
+// construct an AST node of type HexParameterList.
 //===========================================================================
-ParameterList*
-createParameterList(Parameter *parameter, ParameterList* parent_list);
+ParameterList
+hex_ast_create_parameter_list(Parameter parameter, ParameterList parent_list);
 
 
 /***********************************************************************
@@ -766,161 +816,162 @@ createParameterList(Parameter *parameter, ParameterList* parent_list);
  * List initializer
  */
 struct HexListInitializer {
-    ExprList *expr_list;
+  ExprList expr_list;
 };
 
 
 //===========================================================================
-// createListInitializer() - construct an AST node of type ListInitializer.
+// hex_ast_create_list_initializer()
+// construct an AST node of type HexListInitializer.
 //===========================================================================
-ListInitializer*
-createListInitializer(ExprList *expr_list);
+ListInitializer
+hex_ast_create_list_initializer(ExprList expr_list);
 
 
 /*
  * Array initializer
  */
 typedef struct HexArrayInitializer {
-    ExprList* expr_list; 
-} ArrayInitializer;
+  ExprList expr_list; 
+} *ArrayInitializer;
 
 
 //===========================================================================
-// createArrayInitializer() - construct an AST node of type ArrayInitializer.
+// hex_ast_create_array_initializer()
+// construct an AST node of type HexArrayInitializer.
 //===========================================================================
-ArrayInitializer*
-createArrayInitializer(ExprList *expr_list);
+ArrayInitializer
+hex_ast_create_array_initializer(ExprList expr_list);
 
 
 /*
  * Tuple initializer
  */
 typedef struct HexTupleInitializer {
-    ExprList *expr_list;
-} TupleInitializer;
+  ExprList expr_list;
+} *TupleInitializer;
 
 
 //===========================================================================
-// createTupleInitializer() - construct an AST node of type TupleInitializer.
+// hex_ast_create_tuple_initializer()
+// construct an AST node of type HexTupleInitializer.
 //===========================================================================
-TupleInitializer*
-createTupleInitializer(ExprList *expr_list);
-
-
-/*
- * Assignment statement list
- */
-typedef struct HexAssignmentStmtList AssignmentStmtList;
+TupleInitializer
+hex_ast_create_tuple_initializer(ExprList expr_list);
 
 
 /*
  * Struct initializer
  */
 typedef struct HexStructInitializer {
-    AssignmentStmtList *assignment_stmt_list;
-} StructInitializer;
+  AssignmentStmtList assignment_stmt_list;
+} *StructInitializer;
 
 
 //===========================================================================
-// createStructInitializer() - construct an AST node of type StructInitializer.
+// hex_ast_create_struct_initializer()
+// construct an AST node of type HexStructInitializer.
 //===========================================================================
-StructInitializer*
-createStructInitializer(AssignmentStmtList *assignment_stmt_list);
+StructInitializer
+hex_ast_create_struct_initializer(AssignmentStmtList assignment_stmt_list);
 
 
 /*
  * Set initializer
  */
 typedef struct HexSetInitializer {
-    ExprList *expr_list;
-} SetInitializer;
+  ExprList expr_list;
+} *SetInitializer;
 
 
 //===========================================================================
-// createSetInitializer() - construct an AST node of type SetInitializer.
+// hex_ast_create_set_initializer()
+// construct an AST node of type HexSetInitializer.
 //===========================================================================
-SetInitializer*
-createSetInitializer(ExprList *expr_list);
+SetInitializer
+hex_ast_create_set_initializer(ExprList expr_list);
 
 
 /*
  *  MapMultimapSingle
  */
 typedef struct HexMapMultimapInitializerSingle {
-    Expr *key;
-    Expr *value;
-} MapMultimapInitializerSingle;
+  Expr key;
+  Expr value;
+} *MapMultimapInitializerSingle;
 
 
 //===========================================================================
-// createMapMultimapInitializerSingle() - construct an AST node of type MapMultimapInitializerSingle.
+// hex_ast_create_map_multimap_initializer_single()
+// construct an AST node of type HexMapMultimapInitializerSingle.
 //===========================================================================
-MapMultimapInitializerSingle*
-createMapMultimapInitializerSingle(Expr *key, Expr *value);
+MapMultimapInitializerSingle
+hex_ast_create_map_multimap_initializer_single(Expr key, Expr value);
 
 
 /*
  * MapMultimapInitializerList
  */
 typedef struct HexMapMultimapInitializerList {
-    MapMultimapInitializerSingle *map_initializer_single;
-    struct HexMapMultimapInitializerList *next;
-} MapMultimapInitializerList;
+  MapMultimapInitializerSingle map_initializer_single;
+  struct HexMapMultimapInitializerList *next;
+} *MapMultimapInitializerList;
 
 
 //===========================================================================
-// createMapMultimapInitializerList() - construct an AST node of type MapMultimapInitializerList.
+// hex_ast_create_map_multimap_initializer_list()
+// construct an AST node of type HexMapMultimapInitializerList.
 //===========================================================================
-MapMultimapInitializerList*
-createMapMultimapInitializerList(
-    MapMultimapInitializerSingle *map_initializer_single,
-    MapMultimapInitializerList *parent_list);
+MapMultimapInitializerList
+hex_ast_create_map_multimap_initializer_list(
+  MapMultimapInitializerSingle map_initializer_single, MapMultimapInitializerList parent_list);
 
 
 /*
  * MapMultimapInitializer
  */
 typedef struct HexMapMultimapInitializer {
-    MapMultimapInitializerList *map_initializer_list;
-} MapMultimapInitializer;
+  MapMultimapInitializerList map_initializer_list;
+} *MapMultimapInitializer;
 
 
 //===========================================================================
-// createMapMultimapInitializer() - construct an AST node of type MapMultimapInitializer.
+// hex_ast_create_map_multimap_initializer()
+// construct an AST node of type HexMapMultimapInitializer.
 //===========================================================================
-MapMultimapInitializer*
-createMapMultimapInitializer(
-    MapMultimapInitializerList *map_initializer_list);
+MapMultimapInitializer
+hex_ast_create_map_multimap_initializer(MapMultimapInitializerList map_initializer_list);
 
 
 /*
  * Initializer
  */
 typedef struct HexInitializer {
-    enum {
-        initializer_type_list,                              /* list initializer */
-        initializer_type_array,                             /* array initializer */
-        initializer_type_tuple,                             /* tuple initializer */
-        initializer_type_struct,                            /* struct initializer */
-        initializer_type_set,                               /* set initializer */
-        initializer_type_mapmultimap                        /* map & multimap initializer */
-    } initializer_type;
-    union {
-        ListInitializer *list_initializer;                  /* list initializer */
-        ArrayInitializer *array_initializer;                /* array initializer */
-        TupleInitializer *tuple_initializer;                /* tuple initializer */
-        StructInitializer *struct_initializer;              /* struct initializer */
-        SetInitializer *set_initialier;                     /* set initializer */
-        MapMultimapInitializer *map_multimap_initializer;   /* map & multimap initializer */
+  enum {
+    initializer_type_list,                              /* list initializer */
+    initializer_type_array,                             /* array initializer */
+    initializer_type_tuple,                             /* tuple initializer */
+    initializer_type_struct,                            /* struct initializer */
+    initializer_type_set,                               /* set initializer */
+    initializer_type_mapmultimap                        /* map & multimap initializer */
+  } initializer_type;
+  union {
+    ListInitializer list_initializer;                   /* list initializer */
+    ArrayInitializer array_initializer;                 /* array initializer */
+    TupleInitializer tuple_initializer;                 /* tuple initializer */
+    StructInitializer struct_initializer;               /* struct initializer */
+    SetInitializer set_initialier;                      /* set initializer */
+    MapMultimapInitializer map_multimap_initializer;    /* map & multimap initializer */
     };
-} Initializer;
+} *Initializer;
 
 
 //===========================================================================
-// createInitializer() - construct an AST node of type Initializer.
+// hex_ast_create_initializer()
+// construct an AST node of type HexInitializer.
 //===========================================================================
-Initializer*
-createInitializer(int type, void* value);
+Initializer
+hex_ast_create_initializer(int type, void *value);
 
 
 /***********************************************************************
@@ -931,117 +982,121 @@ createInitializer(int type, void* value);
  * Assignment
  */
 typedef struct HexAssignment {
-    enum {
-        assignment_type_expr,
-        assignment_type_initializer,
-        assignment_type_lambda
-    } assignment_type;
-    union {
-        Expr *assignment_expr;                      /* target assignment expression */
-        Initializer *assignment_initializer;        /* target assignment initializer */
-        LambdaExpr *assignment_lambda;              /* target assignment lambda */
-    };
-} Assignment;
+  enum {
+    assignment_type_expr,
+    assignment_type_initializer,
+    assignment_type_lambda
+  } assignment_type;
+  union {
+    Expr assignment_expr;                         /* target assignment expression */
+    Initializer assignment_initializer;           /* target assignment initializer */
+    LambdaExpr assignment_lambda;                 /* target assignment lambda */
+  };
+} *Assignment;
 
 
 //===========================================================================
-// createAssignment() - construct an AST node of type Assignment.
+// hex_ast_create_assignment()
+// construct an AST node of type HexAssignment.
 //===========================================================================
-Assignment*
-createAssignment(int type, void* target);
+Assignment
+hex_ast_create_assignment(int type, void *target);
 
 
 /*
  * Assignment list
  */
 typedef struct HexAssignmentList {
-    Assignment *assignment;
-    struct HexAssignmentList *next;
-} AssignmentList;
+  Assignment assignment;
+  struct HexAssignmentList *next;
+} *AssignmentList;
 
 
 //===========================================================================
-// createAssignmentList() - construct an AST node of type AssignmentList.
+// hex_ast_create_assignment_list()
+// construct an AST node of type HexAssignmentList.
 //===========================================================================
-AssignmentList*
-createAssignmentList(Assignment *assignment, AssignmentList *parent_list);
+AssignmentList
+hex_ast_create_assignment_list(Assignment assignment, AssignmentList parent_list);
 
 
 /*
  * Assignment statement
  */
 typedef struct HexAssignmentStmt {
-    enum {
-        assignment_stmt_type_declaration,
-        assignment_stmt_type_expr_list
-    } assignment_stmt_type;
-    union {
-        Declaration *assignment_stmt_declaration;
-        ExprList *assignment_stmt_expr_list;
-    };
-    AssignmentList *assignment_list;
-} AssignmentStmt;
+  enum {
+    assignment_stmt_type_declaration,
+    assignment_stmt_type_expr_list
+  } assignment_stmt_type;
+  union {
+    Declaration assignment_stmt_declaration;
+    ExprList assignment_stmt_expr_list;
+  };
+  AssignmentList assignment_list;
+} *AssignmentStmt;
 
 
 //===========================================================================
-// createAssignmentStmt() - construct an AST node of type AssignmentStmt.
+// hex_ast_create_assignment_stmt()
+// construct an AST node of type HexAssignmentStmt.
 //===========================================================================
-AssignmentStmt*
-createAssignmentStmt(int type, void* value, AssignmentList* assignment_list);
+AssignmentStmt
+hex_ast_create_assignment_stmt(int type, void *value, AssignmentList assignment_list);
 
 
 /*
  * Assignment statement list
  */
 struct HexAssignmentStmtList {
-    AssignmentStmt *assignment_stmt;
-    AssignmentStmtList *next;
+  AssignmentStmt assignment_stmt;
+  struct HexAssignmentStmtList *next;
 };
 
 
 //===========================================================================
-// createAssignmentStmtList() - construct an AST node of type AssignmentStmtList.
+// hex_ast_create_assignment_stmt_list()
+// construct an AST node of type HexAssignmentStmtList.
 //===========================================================================
-AssignmentStmtList*
-createAssignmentStmtList(AssignmentStmt *assignment_stmt,
-    AssignmentStmtList *parent_list);
+AssignmentStmtList
+hex_ast_create_assignment_stmt_list(AssignmentStmt assignment_stmt, AssignmentStmtList parent_list);
 
 
 /*
  * Function declaration
  */
 typedef struct HexFuncDec {
-    TypeQualifierList *return_type_qualifier_list;
-    int return_type_specifier;
-    char *custom_return_type;
-    char *func_name;
-    ParameterList* parameter_list;
-} FuncDec;
+  TypeQualifierList return_type_qualifier_list;
+  int return_type_specifier;
+  char *custom_return_type;
+  char *func_name;
+  ParameterList parameter_list;
+} *FuncDec;
 
 
 //===========================================================================
-// createFuncDec() - construct an AST node of type FuncDec.
+// hex_ast_create_func_dec()
+// construct an AST node of type HexFuncDec.
 //===========================================================================
-FuncDec*
-createFuncDec(TypeQualifierList *type_qualifier_list,
-    int type_specifier, char *custom_return_type,
-    char *func_name, ParameterList *parameter_list);
+FuncDec
+hex_ast_create_func_dec(TypeQualifierList type_qualifier_list,
+  int type_specifier, char *custom_return_type, char *func_name, ParameterList parameter_list);
 
 
 /*
  * Function definition
  */
 typedef struct HexFuncDef {
-    FuncDec *func_declaration;
-    Suite *func_suite;
-} FuncDef;
+  FuncDec func_declaration;
+  Suite func_suite;
+} *FuncDef;
 
 
 //===========================================================================
-// createFuncDef() - construct an AST node of type FuncDef.
+// hex_ast_create_func_def()
+// construct an AST node of type HexFuncDef.
 //===========================================================================
-FuncDef*
-createFuncDef(FuncDec *func_declaration, Suite *func_suite);
+FuncDef
+hex_ast_create_func_def(FuncDec func_declaration, Suite func_suite);
 
 
 /*
@@ -1051,134 +1106,139 @@ createFuncDef(FuncDec *func_declaration, Suite *func_suite);
  *  target_expr = (arg_init_list) => expr
  */
 struct HexLambdaExpr {
-    ParameterList* lambda_param_list;
-    enum {
-        lambda_type_simple,     /* simple stmt list */
-        lambda_type_suite       /* suite */
-    } lambda_type;
-    union {
-        SimpleStmtList* lambda_simple_stmt_list;
-        Suite* lambda_suite;
-    };
+  ParameterList lambda_param_list;
+  enum {
+    lambda_type_simple,                     /* simple stmt list */
+    lambda_type_suite                       /* suite */
+  } lambda_type;
+  union {
+    SimpleStmtList lambda_simple_stmt_list;
+    Suite lambda_suite;
+  };
 };
 
 
 //===========================================================================
-// createLambdaExpr() - construct an AST node of type LambdaExpr.
+// hex_ast_create_lambda_expr()
+// construct an AST node of type HexLambdaExpr.
 //===========================================================================
-LambdaExpr*
-createLambdaExpr(int type, ParameterList* param_list, void* body);
+LambdaExpr
+hex_ast_create_lambda_expr(int type, ParameterList param_list, void *body);
 
 
 /*
  * Attribute
  */
 typedef struct HexAttribute {
-    Expr *expr;
-} Attribute;
+  Expr expr;
+} *Attribute;
 
 
 //===========================================================================
-// createAttribute() - construct an AST node of type Attribute.
+// hex_ast_create_attribute()
+// construct an AST node of type HexAttribute.
 //===========================================================================
-Attribute*
-createAttribute(Expr *expr);
+Attribute
+hex_ast_create_attribute(Expr expr);
 
 
 /*
  * Compiler property
  */
 typedef struct HexCompilerProperty {
-    char *compiler_property_name;
-    char *compiler_property_value;
-} CompilerProperty;
+  char *compiler_property_name;
+  char *compiler_property_value;
+} *CompilerProperty;
 
 
 //===========================================================================
-// createCompilerProperty() - construct an AST node of type CompilerProperty.
+// createCompilerProperty()
+// construct an AST node of type HexCompilerProperty.
 //===========================================================================
-CompilerProperty*
-createCompilerProperty(char *compiler_property_name,
-    char *compiler_property_value);
+CompilerProperty
+hex_ast_create_compiler_property(char *compiler_property_name, char *compiler_property_value);
 
 
 /*
  * Decorator list single
  */
 typedef struct HexDecoratorListSingle {
-    enum {
-        decorator_list_single_type_attribute,                           /* attribute */
-        decorator_list_single_type_compiler_property                    /* compiler property */
-    } decorator_list_single_type;
-    union {
-        Attribute* decorator_list_single_attribute;                     /* attribute */
-        CompilerProperty* decorator_list_single_compiler_property;      /* compiler property */
-    };
-} DecoratorListSingle;
+  enum {
+    decorator_list_single_type_attribute,                           /* attribute */
+    decorator_list_single_type_compiler_property                    /* compiler property */
+  } decorator_list_single_type;
+  union {
+    Attribute decorator_list_single_attribute;                      /* attribute */
+    CompilerProperty decorator_list_single_compiler_property;       /* compiler property */
+  };
+} *DecoratorListSingle;
 
 
 //===========================================================================
-// createDecoratorListSingle() - construct an AST node of type DecoratorListSingle.
+// hex_ast_create_decorator_list_single()
+// construct an AST node of type HexDecoratorListSingle.
 //===========================================================================
-DecoratorListSingle*
-createDecoratorListSingle(int type, void* value);
+DecoratorListSingle
+hex_ast_create_decorator_list_single(int type, void *value);
 
 
 /*
  * Decorator list
  */
 typedef struct HexDecoratorList {
-    DecoratorListSingle *decorator_list_single;
-    struct HexDecoratorList* next;
-} DecoratorList;
+  DecoratorListSingle decorator_list_single;
+  struct HexDecoratorList* next;
+} *DecoratorList;
 
 
 //===========================================================================
-// createDecoratorList() - construct an AST node of type DecoratorList.
+// hex_ast_create_decorator_list()
+// construct an AST node of type HexDecoratorList.
 //===========================================================================
-DecoratorList*
-createDecoratorList(DecoratorListSingle *decorator_list_single,
-    DecoratorList* parent_list);
+DecoratorList
+hex_ast_create_decorator_list(DecoratorListSingle decorator_list_single, DecoratorList parent_list);
 
 
 /*
  * Decorator
  */
 typedef struct HexDecorator {
-    DecoratorList *decorator_list;
-} Decorator;
+  DecoratorList decorator_list;
+} *Decorator;
 
 
 //===========================================================================
-// createDecorator() - construct an AST node of type Decorator.
+// hex_ast_create_decorator()
+// construct an AST node of type HexDecorator.
 //===========================================================================
-Decorator*
-createDecorator(DecoratorList* decorator_list);
+Decorator
+hex_ast_create_decorator(DecoratorList decorator_list);
 
 
 /*
  * Class declaration
  */
 typedef struct HexClassDeclaration {
-    char *name;
-    ExprList* expr_list;
-} ClassDeclaration;
+  char *name;
+  ExprList expr_list;
+} *ClassDeclaration;
 
 
 //===========================================================================
-// createClassDeclaration() - construct an AST node of type ClassDeclaration.
+// hex_ast_create_class_declaration()
+// construct an AST node of type HexClassDeclaration.
 //===========================================================================
-ClassDeclaration*
-createClassDeclaration(char *name, ExprList* expr_list);
+ClassDeclaration
+hex_ast_create_class_declaration(char *name, ExprList expr_list);
 
 
 /*
  * Class access specifier
  */
 typedef enum HexClassAccessSpecifier {
-    class_access_specifier_private,         /* private */
-    class_access_specifier_protected,       /* protected */
-    class_access_specifier_public           /* public */
+  class_access_specifier_private,           /* private */
+  class_access_specifier_protected,         /* protected */
+  class_access_specifier_public             /* public */
 } ClassAccessSpecifier;
 
 
@@ -1186,502 +1246,497 @@ typedef enum HexClassAccessSpecifier {
  * Class section
  */
 typedef struct HexClassSection {
-    int class_access_specifier;
-    Suite *suite;
-} ClassSection;
+  int class_access_specifier;
+  Suite suite;
+} *ClassSection;
 
 
 //===========================================================================
-// createClassSection() - construct an AST node of type ClassSection.
+// hex_ast_create_class_section()
+// construct an AST node of type HexClassSection.
 //===========================================================================
-ClassSection*
-createClassSection(int class_access_specifier, Suite *suite);
+ClassSection
+hex_ast_create_class_section(int class_access_specifier, Suite suite);
 
 
 /*
  * Module
  */
 typedef struct HexModule {
-    char *module_identifier;
-} Module;
+  char *module_identifier;
+} *Module;
 
 
 //===========================================================================
-// createModule() - construct an AST node of type Module.
+// hex_ast_create_module()
+// construct an AST node of type HexModule.
 //===========================================================================
-Module*
-createModule(char *module_identifier);
+Module
+hex_ast_create_module(char *module_identifier);
 
 
 /*
  * Module list
  */
 typedef struct HexModuleList {
-    Module *module;
-    struct HexModuleList *next;
-} ModuleList;
+  Module module;
+  struct HexModuleList *next;
+} *ModuleList;
 
 
 //===========================================================================
-// createModuleList() - construct an AST node of type ModuleList.
+// hex_ast_create_module_list()
+// construct an AST node of type HexModuleList.
 //===========================================================================
-ModuleList*
-createModuleList(Module *module, ModuleList *parent_list);
+ModuleList
+hex_ast_create_module_list(Module module, ModuleList parent_list);
 
 
 /*
  * Direct import statement
  */
 typedef struct HexDirectImportStmt {
-    ModuleList *module_list;
-    char *alias;
-} DirectImportStmt;
+  ModuleList module_list;
+  char *alias;
+} *DirectImportStmt;
 
 
 //===========================================================================
-// createDirectImportStmt() - construct an AST node of type DirectImportStmt.
+// hex_ast_create_direct_import_stmt()
+// construct an AST node of type HexDirectImportStmt.
 //===========================================================================
-DirectImportStmt*
-createDirectImportStmt(ModuleList *module_list, char *alias);
+DirectImportStmt
+hex_ast_create_direct_import_stmt(ModuleList module_list, char *alias);
 
 
 /*
  * Relative import statement
  */
 typedef struct HexRelativeImportStmt {
-    ModuleList* module_list;
-    Module *module;
-    char *alias;
-} RelativeImportStmt;
+  ModuleList module_list;
+  Module module;
+  char *alias;
+} *RelativeImportStmt;
 
 
 //===========================================================================
-// createRelativeImportStmt() - construct an AST node of type RelativeImportStmt.
+// hex_ast_create_relative_import_stmt()
+// construct an AST node of type HexRelativeImportStmt.
 //===========================================================================
-RelativeImportStmt*
-createRelativeImportStmt(ModuleList *module_list, Module *module, char *alias);
+RelativeImportStmt
+hex_ast_create_relative_import_stmt(ModuleList module_list, Module module, char *alias);
 
 
 /*
  * Import statement
  */
 typedef struct HexImportStmt {
-    enum {
-        import_stmt_type_direct,
-        import_stmt_type_relative
-    } import_stmt_type;
-    union {
-        DirectImportStmt *import_stmt_direct_import_stmt;
-        RelativeImportStmt *import_stmt_relative_import_stmt;
-    };
-} ImportStmt;
+  enum {
+    import_stmt_type_direct,
+    import_stmt_type_relative
+  } import_stmt_type;
+  union {
+    DirectImportStmt import_stmt_direct_import_stmt;
+    RelativeImportStmt import_stmt_relative_import_stmt;
+  };
+} *ImportStmt;
 
 
 //===========================================================================
-// createImportStmt() - construct an AST node of type ImportStmt.
+// hex_ast_create_import_stmt()
+// construct an AST node of type HexImportStmt.
 //===========================================================================
-ImportStmt*
-createImportStmt(int type, void* value);
+ImportStmt
+hex_ast_create_import_stmt(int type, void *value);
 
 
 /*
  * Elif statement
  */
 typedef struct HexElifStmt {
-    Expr *elif_expr;
-    Suite *elif_suite;
-} ElifStmt;
+  Expr elif_expr;
+  Suite elif_suite;
+} *ElifStmt;
 
 
 //===========================================================================
-// createElifStmt() - construct an AST node of type ElifStmt.
+// hex_ast_create_elif_stmt()
+// construct an AST node of type HexElifStmt.
 //===========================================================================
-ElifStmt*
-createElifStmt(Expr *elif_expr, Suite *elif_suite);
+ElifStmt
+hex_ast_create_elif_stmt(Expr elif_expr, Suite elif_suite);
 
 
 /*
  * Elif group
  */
 typedef struct HexElifGroup {
-    ElifStmt *elif_stmt;
-    struct HexElifGroup *next;
-} ElifGroup;
+  ElifStmt elif_stmt;
+  struct HexElifGroup *next;
+} *ElifGroup;
 
 
 //===========================================================================
-// createElifGroup() - construct an AST node of type ElifGroup.
+// hex_ast_create_elif_group()
+// construct an AST node of type HexElifGroup.
 //===========================================================================
-ElifGroup*
-createElifGroup(ElifStmt* elif_stmt, ElifGroup *parent_list);
+ElifGroup
+hex_ast_create_elif_group(ElifStmt elif_stmt, ElifGroup parent_list);
 
 
 /*
  * If statement
  */
 typedef struct HexIfStmt {
-    Expr *if_expr;
-    Suite *if_suite;
-    ElifGroup *elif_group;
-    Suite *else_stmt;
-} IfStmt;
+  Expr if_expr;
+  Suite if_suite;
+  ElifGroup elif_group;
+  Suite else_stmt;
+} *IfStmt;
 
 
 //===========================================================================
-// createIfStmt() - construct an AST node of type IfStmt.
+// hex_ast_create_if_stmt()
+// construct an AST node of type HexIfStmt.
 //===========================================================================
-IfStmt*
-createIfStmt(Expr *if_expr, Suite *if_suite,
-    ElifGroup *elif_group, Suite *else_stmt);
+IfStmt
+hex_ast_create_if_stmt(Expr if_expr, Suite if_suite, ElifGroup elif_group, Suite else_stmt);
 
 
 /*
  * If statement simple
  */
 typedef struct HexIfStmtSimple {
-    enum {
-        if_stmt_simple_type_expr,
-        if_stmt_simple_type_return
-    } if_stmt_simple_type;
-    Expr *expr;
-    ExprList *expr_list;
-} IfStmtSimple;
+  enum {
+    if_stmt_simple_type_expr,
+    if_stmt_simple_type_return
+  } if_stmt_simple_type;
+  Expr expr;
+  ExprList expr_list;
+} *IfStmtSimple;
 
 
 //===========================================================================
-// createIfStmtSimple() - construct an AST node of type IfStmtSimple.
+// hex_ast_create_if_stmt_simple()
+// construct an AST node of type HexIfStmtSimple.
 //===========================================================================
-IfStmtSimple*
-createIfStmtSimple(int type, Expr *expr, ExprList *expr_list);
+IfStmtSimple
+hex_ast_create_if_stmt_simple(int type, Expr expr, ExprList expr_list);
 
 
 /*
  * While statement
  */
 typedef struct HexWhileStmt {
-    Expr *while_expr;
-    Suite *while_suite;
-} WhileStmt;
+  Expr while_expr;
+  Suite while_suite;
+} *WhileStmt;
 
 
 //===========================================================================
-// createWhileStmt() - construct an AST node of type WhileStmt.
+// hex_ast_create_while_stmt()
+// construct an AST node of type HexWhileStmt.
 //===========================================================================
-WhileStmt*
-createWhileStmt(Expr *while_expr, Suite *while_suite);
+WhileStmt
+hex_ast_create_while_stmt(Expr while_expr, Suite while_suite);
 
 
 /*
  * Iterable
  */
 typedef struct HexIterable {
-    enum {
-        iterable_type_expr,
-        iterable_type_initializer
-    } iterable_type;
-    union {
-        Expr *iterable_expr;
-        Initializer *iterable_initializer;
-    };
-} Iterable;
+  enum {
+    iterable_type_expr,
+    iterable_type_initializer
+  } iterable_type;
+  union {
+    Expr iterable_expr;
+    Initializer iterable_initializer;
+  };
+} *Iterable;
 
 
 //===========================================================================
-// createIterable() - construct an AST node of type Iterable.
+// hex_ast_create_iterable()
+// construct an AST node of type HexIterable.
 //===========================================================================
-Iterable*
-createIterable(int type, void* value);
+Iterable
+hex_ast_create_iterable(int type, void *value);
 
 
 /*
  * For statement
  */
 typedef struct HexForStmt {
-    Iterable *iterable;
-    Expr *expr;
-    Expr *where_expr;
-    Suite *suite;
-} ForStmt;
+  Iterable iterable;
+  Expr expr;
+  Expr where_expr;
+  Suite suite;
+} *ForStmt;
 
 
 //===========================================================================
-// createForStmt() - construct an AST node of type ForStmt.
+// hex_ast_create_for_stmt()
+// construct an AST node of type HexForStmt.
 //===========================================================================
-ForStmt*
-createForStmt(Iterable *iterable, Expr *expr,
-    Expr *where_expr, Suite *suite);
+ForStmt
+hex_ast_create_for_stmt(Iterable iterable, Expr expr, Expr where_expr, Suite suite);
 
 
 /*
  * Catch statement
  */
 typedef struct HexCatchStmt {
-    enum {
-        catch_stmt_type_none,
-        catch_stmt_type_identifier,
-        catch_stmt_type_declaration
-    } catch_stmt_type;
-    union {
-        char *catch_identifier;
-        Declaration *catch_declaration;
-    };
-    Suite *catch_suite;
-} CatchStmt;
+  enum {
+    catch_stmt_type_none,
+    catch_stmt_type_identifier,
+    catch_stmt_type_declaration
+  } catch_stmt_type;
+  union {
+    char *catch_identifier;
+    Declaration catch_declaration;
+  };
+  Suite catch_suite;
+} *CatchStmt;
 
 
 //===========================================================================
-// createCatchStmt() - construct an AST node of type CatchStmt.
+// hex_ast_create_catch_stmt()
+// construct an AST node of type HexCatchStmt.
 //===========================================================================
-CatchStmt*
-createCatchStmt(int type, void* value, Suite *suite);
+CatchStmt
+hex_ast_create_catch_stmt(int type, void *value, Suite suite);
 
 
 /*
  * Catch statement group
  */
 typedef struct HexCatchStmtGroup {
-    CatchStmt* catch_stmt;
-    struct HexCatchStmtGroup *next;
-} CatchStmtGroup;
+  CatchStmt catch_stmt;
+  struct HexCatchStmtGroup *next;
+} *CatchStmtGroup;
 
 
 //===========================================================================
-// createCatchStmtGroup() - construct an AST node of type CatchStmtGroup.
+// hex_ast_create_catch_stmt_group()
+// construct an AST node of type HexCatchStmtGroup.
 //===========================================================================
-CatchStmtGroup*
-createCatchStmtGroup(CatchStmt* catch_stmt,
-    CatchStmtGroup* parent_group);
+CatchStmtGroup
+hex_ast_create_catch_stmt_group(CatchStmt catch_stmt, CatchStmtGroup parent_group);
 
 
 /*
  * Finally statement
  */
 typedef struct HexFinallyStmt {
-    Suite* finally_suite;
-} FinallyStmt;
+  Suite finally_suite;
+} *FinallyStmt;
 
 
 //===========================================================================
-// createFinallyStmt() - construct an AST node of type FinallyStmt.
+// hex_ast_create_finally_stmt()
+// construct an AST node of type HexFinallyStmt.
 //===========================================================================
-FinallyStmt*
-createFinallyStmt(Suite* suite);
+FinallyStmt
+hex_ast_create_finally_stmt(Suite suite);
 
 
 /*
  * Try statement
  */
 typedef struct HexTryStmt {
-    Suite *try_suite;
-    CatchStmtGroup *catch_stmt_group;
-    FinallyStmt *finally_stmt;
-} TryStmt;
+  Suite try_suite;
+  CatchStmtGroup catch_stmt_group;
+  FinallyStmt finally_stmt;
+} *TryStmt;
 
 
 //===========================================================================
-// createTryStmt() - construct an AST node of type TryStmt.
+// hex_ast_create_try_stmt()
+// construct an AST node of type HexTryStmt.
 //===========================================================================
-TryStmt*
-createTryStmt(Suite* try_suite, CatchStmtGroup *catch_stmt_group,
-    FinallyStmt *finally_stmt);
+TryStmt
+hex_ast_create_try_stmt(Suite try_suite, CatchStmtGroup catch_stmt_group, FinallyStmt finally_stmt);
 
 
 /*
  * Compound statement
  */
 struct HexCompoundStmt {
-    enum {
-        compound_stmt_type_if_stmt,             /* if statement */
-        compound_stmt_type_while_stmt,          /* while statement */
-        compound_stmt_type_try_stmt,            /* try statement */
-        compound_stmt_type_for_stmt,            /* for statement */
-        compound_stmt_type_func_def             /* function definition */
-    } compound_stmt_type;
-    union {
-        IfStmt *compound_stmt_if_stmt;          /* if statement */
-        WhileStmt *compound_stmt_while_stmt;    /* while statement */
-        ForStmt *compound_stmt_for_stmt;        /* for statement */
-        TryStmt *compound_stmt_try_stmt;        /* try statement */
-        FuncDef *compound_stmt_func_def;        /* function definition */
-    };
+  enum {
+    compound_stmt_type_if_stmt,             /* if statement */
+    compound_stmt_type_while_stmt,          /* while statement */
+    compound_stmt_type_try_stmt,            /* try statement */
+    compound_stmt_type_for_stmt,            /* for statement */
+    compound_stmt_type_func_def             /* function definition */
+  } compound_stmt_type;
+  union {
+    IfStmt compound_stmt_if_stmt;           /* if statement */
+    WhileStmt compound_stmt_while_stmt;     /* while statement */
+    ForStmt compound_stmt_for_stmt;         /* for statement */
+    TryStmt compound_stmt_try_stmt;         /* try statement */
+    FuncDef compound_stmt_func_def;         /* function definition */
+  };
 };
 
 
 //===========================================================================
-// createCompoundStmt() - construct an AST node of type CompoundStmt.
+// hex_ast_create_compound_stmt()
+// construct an AST node of type HexCompoundStmt.
 //===========================================================================
-CompoundStmt*
-createCompoundStmt(int type, void* value);
+CompoundStmt
+hex_ast_create_compound_stmt(int type, void *value);
 
 
 /*
  * Return statement
  */
 typedef struct HexReturnStmt {
-    enum {
-        return_stmt_type_none,
-        return_stmt_type_expr_list
-    } return_stmt_type;
-    ExprList *return_expr_list;
-} ReturnStmt;
+  enum {
+    return_stmt_type_none,
+    return_stmt_type_expr_list
+  } return_stmt_type;
+  ExprList return_expr_list;
+} *ReturnStmt;
 
 
 //===========================================================================
-// createReturnStmt() - construct an AST node of type ReturnStmt.
+// hex_ast_create_return_stmt()
+// construct an AST node of type HexReturnStmt.
 //===========================================================================
-ReturnStmt*
-createReturnStmt(int type, ExprList *expr_list);
-
-
-/*
- * Continue statement
- */
-// typedef struct HexContinueStmt ContinueStmt;
-
-
-//===========================================================================
-// createContinueStmt() - construct an AST node of type ContinueStmt.
-//===========================================================================
-// ContinueStmt* createContinueStmt();
-
-
-/*
- * Break statement
- */
-// typedef struct HexBreakStmt BreakStmt;
-
-
-//===========================================================================
-// createBreakStmt() - construct an AST node of type BreakStmt.
-//===========================================================================
-// BreakStmt* createBreakStmt();
+ReturnStmt
+hex_ast_create_return_stmt(int type, ExprList expr_list);
 
 
 /*
  * Control simple statement
  */
 typedef struct HexControlSimpleStmt {
-    enum {
-        control_simple_stmt_return,
-        control_simple_stmt_continue,
-        control_simple_stmt_break
-    } control_simple_stmt_type;
-    union {
-        ReturnStmt *control_simple_stmt_return_stmt;
-        // ContinueStmt *control_simple_stmt_continue_stmt;
-        // BreakStmt *control_simple_stmt_break_stmt;
-    };
-} ControlSimpleStmt;
+  enum {
+    control_simple_stmt_return,
+    control_simple_stmt_continue,
+    control_simple_stmt_break
+  } control_simple_stmt_type;
+  union {
+    ReturnStmt control_simple_stmt_return_stmt;
+  };
+} *ControlSimpleStmt;
 
 
 //===========================================================================
-// createControlSimpleStmt() - construct an AST node of type ControlSimpleStmt.
+// hex_ast_create_control_simple_stmt()
+// construct an AST node of type HexControlSimpleStmt.
 //===========================================================================
-ControlSimpleStmt*
-createControlSimpleStmt(int type, void* value);
+ControlSimpleStmt
+hex_ast_create_control_simple_stmt(int type, void *value);
 
 
 /*
  * Simple statement
  */
 typedef struct HexSimpleStmt {
-    enum {
-        simple_stmt_type_expr_list,             /* expression list */
-        simple_stmt_type_declaration,           /* declaration */
-        simple_stmt_type_assignment_stmt,       /* assignment statement */
-        simple_stmt_type_import_stmt,           /* import statement */
-        simple_stmt_type_if_stmt_simple,        /* simple if statement */
-        simple_stmt_type_func_declaration,      /* function declaration */
-        simple_stmt_type_decorator              /* decorator */
-    } simple_stmt_type;
-    union {
-        ExprList* simple_stmt_expr_list;                /* expression list */
-        Declaration *simple_stmt_declaration;           /* declaration */
-        AssignmentStmt *simple_stmt_assignment_stmt;    /* assignment statement */
-        ImportStmt *simple_stmt_import_stmt;            /* import statement */
-        IfStmtSimple *simple_stmt_if_stmt_simple;       /* simple if statement */
-        FuncDec *simple_stmt_func_declaration;          /* function declaration */
-        Decorator *simple_stmt_decorator;               /* decorator */   
-    };
-} SimpleStmt;
+  enum {
+    simple_stmt_type_expr_list,                     /* expression list */
+    simple_stmt_type_declaration,                   /* declaration */
+    simple_stmt_type_assignment_stmt,               /* assignment statement */
+    simple_stmt_type_import_stmt,                   /* import statement */
+    simple_stmt_type_if_stmt_simple,                /* simple if statement */
+    simple_stmt_type_func_declaration,              /* function declaration */
+    simple_stmt_type_decorator                      /* decorator */
+  } simple_stmt_type;
+  union {
+    ExprList simple_stmt_expr_list;                 /* expression list */
+    Declaration simple_stmt_declaration;            /* declaration */
+    AssignmentStmt simple_stmt_assignment_stmt;     /* assignment statement */
+    ImportStmt simple_stmt_import_stmt;             /* import statement */
+    IfStmtSimple simple_stmt_if_stmt_simple;        /* simple if statement */
+    FuncDec simple_stmt_func_declaration;           /* function declaration */
+    Decorator simple_stmt_decorator;                /* decorator */   
+  };
+} *SimpleStmt;
 
 
 //===========================================================================
-// createPassStmt() - construct an AST node of type PassStmt.
+// hex_ast_create_simple_stmt()
+// construct an AST node of type HexSimpleStmt.
 //===========================================================================
-SimpleStmt*
-createSimpleStmt(int type, void* value);
+SimpleStmt
+hex_ast_create_simple_stmt(int type, void *value);
 
 
 /*
  * Simple statement list
  */
 struct HexSimpleStmtList {
-    SimpleStmt *simple_stmt;
-    struct HexSimpleStmtList *next;
+  SimpleStmt simple_stmt;
+  struct HexSimpleStmtList *next;
 };
 
 
 //===========================================================================
-// createSimpleStmtList() - construct an AST node of type SimpleStmtList.
+// hex_ast_create_simple_stmt_list()
+// construct an AST node of type HexSimpleStmtList.
 //===========================================================================
-SimpleStmtList*
-createSimpleStmtList(SimpleStmt *simple_stmt, SimpleStmtList *parent_list);
+SimpleStmtList
+hex_ast_create_simple_stmt_list(SimpleStmt simple_stmt, SimpleStmtList parent_list);
 
 
 /*
  * Statement
  */
 struct HexStmt {
-    enum {
-        stmt_type_simple_stmt_list,         /* statement list */
-        stmt_type_compound_stmt,            /* compound statement */
-        stmt_type_control_simple_stmt       /* control_simple_stmt */
-    } stmt_type;
-    union {
-        SimpleStmtList *stmt_simple_stmt_list;          /* simple statement list */
-        CompoundStmt* stmt_compound_stmt;               /* compound statement */
-        ControlSimpleStmt *stmt_control_simple_stmt;    /* control simple statement */
-    };
+  enum {
+    stmt_type_simple_stmt_list,                       /* statement list */
+    stmt_type_compound_stmt,                          /* compound statement */
+    stmt_type_control_simple_stmt                     /* control_simple_stmt */
+  } stmt_type;
+  union {
+    SimpleStmtList stmt_simple_stmt_list;             /* simple statement list */
+    CompoundStmt stmt_compound_stmt;                  /* compound statement */
+    ControlSimpleStmt stmt_control_simple_stmt;       /* control simple statement */
+  };
 };
 
 
 //===========================================================================
-// createStmt() - construct an AST node of type Stmt.
+// hex_ast_create_stmt()
+// construct an AST node of type HexStmt.
 //===========================================================================
-Stmt*
-createStmt(int type, void* value);
+Stmt
+hex_ast_create_stmt(int type, void *value);
 
 
 /*
  * Statement group
  */
 typedef struct HexStmtGroup {
-    Stmt *stmt;
-    struct HexStmtGroup *next;
-} StmtGroup;
+  Stmt stmt;
+  struct HexStmtGroup *next;
+} *StmtGroup;
 
 
 //===========================================================================
-// createStmtGroup() - construct an AST node of type StmtGroup.
+// hex_ast_create_stmt_group()
+// construct an AST node of type HexStmtGroup.
 //===========================================================================
-StmtGroup*
-createStmtGroup(Stmt *stmt, StmtGroup *parent_group);
+StmtGroup
+hex_ast_create_stmt_group(Stmt stmt, StmtGroup parent_group);
 
 
 /*
  * Suite
  */
 struct HexSuite {
-    StmtGroup *stmt_group;
+  StmtGroup stmt_group;
 };
 
 
 //===========================================================================
-// createSuite() - construct an AST node of type Suite.
+// hex_ast_create_suite()
+// construct an AST node of type HexSuite.
 //===========================================================================
-Suite*
-createSuite(StmtGroup *stmt_group);
+Suite
+hex_ast_create_suite(StmtGroup stmt_group);
 
 
 #endif /* _AST_H_ */

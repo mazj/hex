@@ -15,28 +15,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* Queue - FIFO storage container. */
+/* String buffer */
 
-#ifndef _QUEUE_H_
-#define _QUEUE_H_
+#ifndef _STRBUF_H_
+#define _STRBUF_H_
+
 
 #include <stddef.h>
+#include <stdarg.h>
+
+typedef struct HexStrbuf_s *Strbuf;
 
 
-typedef struct HexQueue_s *Queue;
+void strbuf_append(Strbuf strbuf, const char *in_str);
+
+void strbuf_appendn(Strbuf strbuf, const char *in_str, size_t len);
+
+char* strbuf_string(Strbuf strbuf);
+
+void strbuf_empty(Strbuf strbuf);
+
+size_t strbuf_len(Strbuf strbuf);
+
+void strbuf_constructor(Strbuf strbuf);
+
+void strbuf_destructor(Strbuf strbuf);
+
+void strbuf_reverse(Strbuf strbuf);
+
+void strbuf_set_alloc_size(size_t size);
+
+size_t strbuf_get_allocated_size(Strbuf strbuf);
+
+void strbuf_append_printf(Strbuf strbuf, const char *in_str, ...);
 
 
-Queue create_queue();
-
-size_t queue_size(Queue queue);
-
-void* queue_front(Queue queue);
-
-void* queue_back(Queue queue);
-
-int queue_push(Queue queue, void *val, size_t size);
-
-void* queue_pop(Queue queue);
-
-
-#endif /* _QUEUE_H_ */
+#endif /* _STRBUF_H_ */
