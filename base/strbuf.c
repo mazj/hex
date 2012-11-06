@@ -27,11 +27,11 @@
 static size_t strbuf_alloc_size = STRBUF_INITIAL_ALLOC;
 
 
-typedef struct HexStrbuf_s {
+struct HexStrbuf_s {
   char*  c_str;               /* pointer to the raw string */
   size_t  capacity;           /* size of allocated data */
   size_t  size;               /* amount of space used */
-} *Strbuf;
+};
 
 
 static
@@ -150,11 +150,6 @@ char*
 strbuf_get_string(Strbuf strbuf)
 {
   HEX_ASSERT(strbuf);
-
-  // if(strbuf->capacity == 0) {
-  //   init_strbuf(strbuf, strbuf_alloc_size);
-  // }
-  // return strbuf->c_str;
 
   return strbuf->c_str;
 }
