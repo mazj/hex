@@ -7,9 +7,6 @@ parser: lex.yy.c parser.tab.h ast.o ast.h
 lex.yy.c: lexer.l
 	lex lexer.l
 
-lexer2.out:
-	make LDLIBS=-ll lexer2
-
 lexer.out:
 	make LDLIBS=-ll lexer
 
