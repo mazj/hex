@@ -56,6 +56,8 @@ int hashmap_contains_key(Hashmap hashmap, void *key);
 
 void* hashmap_remove(Hashmap hashmap, void *key);
 
+void* hashmap_lookup(Hashmap hashmap, int(*callback)(void *key, void *value, void* arg), void *arg);
+
 void hashmap_iterate(Hashmap hashmap, int(*callback)(void *key, void *value));
 
 size_t hashmap_bucketcount(Hashmap hashmap);

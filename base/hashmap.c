@@ -18,7 +18,6 @@
 #include <sys/types.h>
 #include <pthread.h>
 #include <errno.h>
-#include <stddef.h>
 #include "assert.h"
 #include "memory.h"
 #include "utils.h"
@@ -185,7 +184,7 @@ int hashmap_hash(void *key, size_t key_size)
   size_t i;
   for(i = 0; i < key_size; i++) {
     h = h * 31 + *data;
-    data++;@
+    data++;
   }
 
   return h;
@@ -244,7 +243,7 @@ void* hashmap_put(Hashmap hashmap, void *key, void *val)
 
       hashmap->size++;
       _hashmap_expand(hashmap);
-      return NULL;
+      return (*p)->val;
     }
 
     if(_equals_key(
@@ -310,6 +309,26 @@ hashmap_contains_key(Hashmap hashmap, void *key)
   return 0;
 }
 
+int hashmap_remove_bucket(Hashmap hashmap, void *key)
+{
+  HEX_ASSERT(hashmap);
+
+  RETURN_VAL_IF_NULL(key, 0);
+
+  int hash = _hash_key(hashmap, key);
+  int index = _calculate_index(hashmap->bucketCount, hash);
+
+  Entry **p = &(hashmap->buckets[index]);
+  Entry *current = NULL;
+
+  while((current = *p)) {
+    p = &current->next;
+    HEX_FREE(current);
+  }
+
+  return 1;
+}
+
 void* hashmap_remove(Hashmap hashmap, void *key)
 {
   HEX_ASSERT(hashmap);
@@ -336,6 +355,26 @@ void* hashmap_remove(Hashmap hashmap, void *key)
 
     p = &current->next;
   }
+
+  return NULL;
+}
+
+void* hashmap_lookup(Hashmap hashmap, int(*callback)(void *key, void *value, void* arg), void *arg)
+{
+  HEX_ASSERT(hashmap);
+  HEX_ASSERT(callback);
+
+  size_t i;
+  for (i = 0; i < hashmap->bucketCount; i++) {
+    Entry* entry = hashmap->buckets[i];
+    while(entry != NULL) {
+      Entry *next = entry->next;
+      if(callback(entry->key, entry->value, arg)) {
+        return entry->value;
+      }
+      entry = next;
+    }
+  } /* end of for-loop */
 
   return NULL;
 }
