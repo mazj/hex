@@ -24,7 +24,7 @@
 #include <stddef.h>
 
 
-typedef struct HexHashmap_s *Hashmap;
+typedef struct HexHashmap *Hashmap;
 
 
 /* hash function */
