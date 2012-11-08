@@ -23,10 +23,10 @@
 #define HEX_VAR_SCOPE_TYPE_MEMBER     0x00000003
 
 /* scope type */
-typedef int hex_scope_type;
+typedef int hex_scope_type_t;
 
 /* scope identifier */
-typedef int hex_scope_id;
+typedef int hex_scope_id_t;
 
 
 #endif /* _SCOPE_H_ */

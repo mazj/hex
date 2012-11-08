@@ -22,15 +22,15 @@
 #include "scope.h"
 #include "token_loc.h"
 
-typedef struct HexVtableEntry_s {
-  hex_scope_id scope_id;
-  hex_scope_type scope_type;
+typedef struct HexVtableEntry {
+  hex_scope_id_t scope_id;
+  hex_scope_type_t scope_type;
   TokenLoc token_loc;
   char *var_name;
   void *var_type;
 } *VtableEntry;
 
-typedef struct HexVtable_s *Vtable;
+typedef struct HexVtable *Vtable;
 
 Vtable vtable_create();
 
@@ -38,9 +38,11 @@ size_t vtable_size();
 
 void* vtable_put(Vtable vtable, VtableEntry var);
 
-VtableEntry vtable_lookup(Vtable vtable, char *name);
+int vtable_remove(Vtbale vtable, hex_scope_id scope_id);
 
-VtableEntry vtable_lookup_global(Vtable vtable, char *name);
+VtableEntry vtable_lookup(Vtable vtable, char *var_name, hex_scope_id_t scope_id);
+
+VtableEntry vtable_lookup_global(Vtable vtable, char *var_name, hex_scope_id_t scope_id);
 
 size_t vtable_bucketcount(Vtable vtable);
 
