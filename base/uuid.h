@@ -15,20 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _SCOPE_H_
-#define _SCOPE_H_
-
-#include "uuid.h"
-
-#define HEX_VAR_SCOPE_TYPE_GLOBAL     0x00000001
-#define HEX_VAR_SCOPE_TYPE_LOCAL      0x00000002
-#define HEX_VAR_SCOPE_TYPE_MEMBER     0x00000003
-
-/* scope type */
-typedef uuid_t hex_scope_type_t;
-
-/* scope identifier */
-typedef uuid_t hex_scope_id_t;
+#ifndef _UUID_H_
+#define _UUID_H_
 
 
-#endif /* _SCOPE_H_ */
+typedef long uuid_t;
+
+
+#endif /* _UUID_H_ */
