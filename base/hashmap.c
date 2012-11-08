@@ -326,6 +326,10 @@ int hashmap_remove_bucket(Hashmap hashmap, void *key)
     HEX_FREE(current);
   }
 
+  hashmap->buckets[index] = NULL;
+
+  _hashmap_expand(hashmap);
+
   return 1;
 }
 
@@ -359,17 +363,17 @@ void* hashmap_remove(Hashmap hashmap, void *key)
   return NULL;
 }
 
-void* hashmap_lookup(Hashmap hashmap, int(*callback)(void *key, void *value, void* arg), void *arg)
+void* hashmap_lookup(Hashmap hashmap, int(*lookup)(void *key, void *value, void* arg), void *arg)
 {
   HEX_ASSERT(hashmap);
-  HEX_ASSERT(callback);
+  HEX_ASSERT(lookup);
 
   size_t i;
   for (i = 0; i < hashmap->bucketCount; i++) {
-    HashmapEntry* entry = hashmap->buckets[i];
+    HashmapEntry *entry = hashmap->buckets[i];
     while(entry != NULL) {
       HashmapEntry *next = entry->next;
-      if(callback(entry->key, entry->value, arg)) {
+      if(lookup(entry->key, entry->value, arg)) {
         return entry->value;
       }
       entry = next;
@@ -379,17 +383,17 @@ void* hashmap_lookup(Hashmap hashmap, int(*callback)(void *key, void *value, voi
   return NULL;
 }
 
-void hashmap_iterate(Hashmap hashmap, int(*callback)(void *key, void *value))
+void hashmap_iterate(Hashmap hashmap, int(*callback)(void *key, void *value), int haltOnFail)
 {
   HEX_ASSERT(hashmap);
   HEX_ASSERT(callback);
 
   size_t i;
   for (i = 0; i < hashmap->bucketCount; i++) {
-    HashmapEntry* entry = hashmap->buckets[i];
+    HashmapEntry *entry = hashmap->buckets[i];
     while(entry != NULL) {
       HashmapEntry *next = entry->next;
-      if(!callback(entry->key, entry->value)) {
+      if(!callback(entry->key, entry->value) && haltOnFail) {
         return;
       }
       entry = next;
