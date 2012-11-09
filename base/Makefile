@@ -22,9 +22,6 @@ strbuf.o: strbuf.c strbuf.h
 hashmap.o: hashmap.c hashmap.h memory.h
 	$(CC) $(CFLAGS) hashmap.c hashmap.h memory.h
 
-map.o: map.c map.h memory.h bst.h bst.o
-	$(CC) $(CFLAGS) map.c map.h memory.h bst.h bst.o
-
 queue.o: queue.c queue.h memory.h
 	$(CC) $(CFLAGS) queue.c queue.h memory.h
 
