@@ -18,8 +18,26 @@
 #ifndef _UUID_H_
 #define _UUID_H_
 
+#include <string.h>
 
-typedef long uuid_t;
+typedef unsigned long uuid_t;
+
+static
+const unsigned int GOLDEN_PRIME = 12347;
+
+uuid_t uuid_from_str(char *str)
+{
+  RETURN_VAL_IF_NULL(str, (uuid_t)0);
+
+  unsigned long h = 0;
+
+  int i;
+  for(i = 1; i <= strlen(str); i *= 2) {
+    h = GOLDEN_PRIME * h + str[i-1];
+  }
+
+  return (uuid_t)h;
+}
 
 
 #endif /* _UUID_H_ */
