@@ -1,5 +1,15 @@
 CC=gcc
+GCC=g++
 CFLAGS=-Wno-implicit
+
+GTEST_INCLUDE=-I/usr/local/gtest-1.6.0/include
+LIBGTEST=/usr/lib/libgtest.a
+
+unittest.o: unittest.h unittest.cc
+	$(GCC) $(GTEST_INCLUDE) -c unittest.h unittest.cc
+
+utils_unittest: unittest.o utils_unittest.cc
+	$(GCC) $(LIBGTEST) unittest.o utils_unittest.cc -o utils_unittest
 
 array.o: array.c array.h memory.h assert.h
 	$(CC) $(CFLAGS) array.c array.h memory.h assert.h
@@ -35,4 +45,4 @@ strutils.o: strutils.c strutils.h strbuf.h strbuf.o
 	$(CC) $(CFLAGS) strutils.c strutils.h strbuf.h strbuf.o
 
 clean:
-	rm *.gch *.o
+	rm *.gch *.o *.a *.out
