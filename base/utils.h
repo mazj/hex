@@ -88,6 +88,69 @@
   } while(0)
 
 
+/*
+ * void
+ * set_nth_bit(int *val, char bit)
+ *
+ * Set a specific bit of a given number to 1.
+ *
+ * Parameters:
+ *  int *val: pointer points to the number to set.
+ *  char bit: the nth bit to set to 1.
+ *
+ * Return:
+ *  None.
+ */
+void
+set_nth_bit(int *val, char bit)
+{
+  int b = (1 << (bit-1));
+  *val = *val | b;
+}
+
+/*
+ * void
+ * clear_nth_bit(int *val, char bit)
+ *
+ * Clear a specific bit of a given number to 0.
+ *
+ * Parameters:
+ *  int *val: pointer points to the number to clear.
+ *  char bit: the nth bit to clear to 0.
+ *
+ * Return:
+ *  None.
+ */
+void
+clear_nth_bit(int *val, char bit)
+{
+  int b = (1 << (bit-1));
+  *val = *val & (~b);
+}
+
+/*
+ * int
+ * is_bit_set(int val, char bit)
+ *
+ * Checks if a specific bit of a given number is set to 1.
+ *
+ * Parameters:
+ *  int val: the value to check.
+ *  char bit: the number of bit from the right to check.
+ *
+ * Return:
+ *  An integer value representing whether or not the specific.
+ *  bit of the given is set. Returns 1 if set, 0 otherwise.
+ */
+int
+is_bit_set(int val, char bit)
+{
+  int and = (1 << (bit-1));
+  val = val & and;
+  return (val >> (bit-1)) == 1;
+}
+
+
 //===========================================================================
 // Singly linked list node.
 //===========================================================================

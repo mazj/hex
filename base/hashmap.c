@@ -28,17 +28,17 @@
 
 
 /* Hashmap entry(bucket) */
-typedef struct HexHashMapEntry_s {
+typedef struct HexHashMapEntry {
   void *key;
   int hash;
   void *value;
-  struct HexHashMapEntry_s *next;
-} Entry;
+  struct HexHashMapEntry *next;
+} *HashmapEntry;
 
 
 /* hashmap */
-typedef struct HexHashmap_s {
-  Entry** buckets;
+typedef struct HexHashmap {
+  HashmapEntry* buckets;
   size_t bucketCount;
   HashFunc hash;
   KeyCmpFunc keycmp;
@@ -53,7 +53,7 @@ Hashmap hashmap_create(size_t initial_capacity,
   HEX_ASSERT(hashfunc);
   HEX_ASSERT(keycmpfunc);
 
-  Hashmap hashmap = HEX_MALLOC(struct HexHashmap_s);
+  Hashmap hashmap = HEX_MALLOC(struct HexHashmap);
 
   if(!hashmap) {
     errno = ENOMEM;
@@ -68,7 +68,7 @@ Hashmap hashmap_create(size_t initial_capacity,
     hashmap->bucketCount <<= 1; // bucket count must be power of 2
   }
 
-  hashmap->buckets = calloc(hashmap->bucketCount, sizeof(Entry*));
+  hashmap->buckets = calloc(hashmap->bucketCount, sizeof(HashmapEntry));
   if(!hashmap->buckets) {
     HEX_FREE(hashmap);
     return NULL;
@@ -122,15 +122,15 @@ void _hashmap_expand(Hashmap hashmap)
 
   if(hashmap->size > (hashmap->bucketCount * LOAD_FACTOR)) {
     size_t newBucketCount = hashmap->bucketCount << 1;
-    Entry **newBuckets = calloc(newBucketCount, sizeof(Entry*));
+    HashmapEntry **newBuckets = calloc(newBucketCount, sizeof(HashmapEntry*));
 
     RETURN_IF_NULL(newBuckets);
 
     size_t i;
     for(i = 0; i < hashmap->bucketCount; ++i) {
-      Entry *entry = hashmap->buckets[i];
+      HashmapEntry entry = hashmap->buckets[i];
       while(entry) {
-        Entry *next = entry->next;
+        HashmapEntry next = entry->next;
         size_t index = _calculate_index(newBucketCount, entry->hash);
         entry->next = newBuckets[index];
         newBuckets[index] = entry;
@@ -162,9 +162,9 @@ void hashmap_free(Hashmap hashmap)
 
   size_t i;
   for(i = 0; i < hashmap->bucketCount; ++i) {
-    Entry *entry = hashmap->buckets[i];
+    HashmapEntry entry = hashmap->buckets[i];
     while(entry) {
-      Entry *next = entry->next;
+      HashmapEntry next = entry->next;
       HEX_FREE(entry);
       entry = next;
     }
@@ -191,9 +191,9 @@ int hashmap_hash(void *key, size_t key_size)
 }
 
 static
-Entry* _create_entry(void *key, int hash, void *val)
+HashmapEntry* _create_entry(void *key, int hash, void *val)
 {
-  Entry *entry = HEX_MALLOC(struct HexHashMapEntry_s);
+  HashmapEntry entry = HEX_MALLOC(struct HexHashMapEntry);
 
   if(entry == NULL) {
     errno = ENOMEM;
@@ -228,10 +228,10 @@ void* hashmap_put(Hashmap hashmap, void *key, void *val)
   int hash = _hash_key(hashmap, key);
   size_t index = _calculate_index(hashmap->bucketCount, hash);
 
-  Entry **p = &(hashmap->buckets[index]);
+  HashmapEntry *p = &(hashmap->buckets[index]);
 
   while(1) {
-    Entry *current = *p;
+    HashmapEntry current = *p;
 
     if(!current) {
       *p = _create_entry(key, hash, val);
@@ -243,7 +243,7 @@ void* hashmap_put(Hashmap hashmap, void *key, void *val)
 
       hashmap->size++;
       _hashmap_expand(hashmap);
-      return (*p)->val;
+      return (*p)->value;
     }
 
     if(_equals_key(
@@ -273,7 +273,7 @@ void* hashmap_get(Hashmap hashmap, void *key)
   int hash = _hash_key(hashmap, key);
   int index = _calculate_index(hashmap->bucketCount, hash);
 
-  Entry *entry = hashmap->buckets[index];
+  HashmapEntry entry = hashmap->buckets[index];
 
   while(entry) {
     if(_equals_key(entry->key, entry->hash, key, hash, hashmap->keycmp))
@@ -296,7 +296,7 @@ hashmap_contains_key(Hashmap hashmap, void *key)
   int hash = _hash_key(hashmap, key);
   int index = _calculate_index(hashmap->bucketCount, hash);
 
-  Entry *entry = hashmap->buckets[index];
+  HashmapEntry *entry = hashmap->buckets[index];
 
   while(entry) {
     if(_equals_key(entry->key, entry->hash, key, hash, hashmap->keycmp))
@@ -318,13 +318,17 @@ int hashmap_remove_bucket(Hashmap hashmap, void *key)
   int hash = _hash_key(hashmap, key);
   int index = _calculate_index(hashmap->bucketCount, hash);
 
-  Entry **p = &(hashmap->buckets[index]);
-  Entry *current = NULL;
+  HashmapEntry *p = &(hashmap->buckets[index]);
+  HashmapEntry current = NULL;
 
   while((current = *p)) {
     p = &current->next;
     HEX_FREE(current);
   }
+
+  hashmap->buckets[index] = NULL;
+
+  _hashmap_expand(hashmap);
 
   return 1;
 }
@@ -338,8 +342,8 @@ void* hashmap_remove(Hashmap hashmap, void *key)
   int hash = _hash_key(hashmap, key);
   int index = _calculate_index(hashmap->bucketCount, hash);
 
-  Entry **p = &(hashmap->buckets[index]);
-  Entry *current = NULL;
+  HashmapEntry *p = &(hashmap->buckets[index]);
+  HashmapEntry current = NULL;
 
   while((current = *p)) {
     if(_equals_key(current->key, current->hash, key, hash, hashmap->keycmp))
@@ -359,17 +363,17 @@ void* hashmap_remove(Hashmap hashmap, void *key)
   return NULL;
 }
 
-void* hashmap_lookup(Hashmap hashmap, int(*callback)(void *key, void *value, void* arg), void *arg)
+void* hashmap_lookup(Hashmap hashmap, int(*lookup)(void *key, void *value, void* arg), void *arg)
 {
   HEX_ASSERT(hashmap);
-  HEX_ASSERT(callback);
+  HEX_ASSERT(lookup);
 
   size_t i;
   for (i = 0; i < hashmap->bucketCount; i++) {
-    Entry* entry = hashmap->buckets[i];
+    HashmapEntry entry = hashmap->buckets[i];
     while(entry != NULL) {
-      Entry *next = entry->next;
-      if(callback(entry->key, entry->value, arg)) {
+      HashmapEntry next = entry->next;
+      if(lookup(entry->key, entry->value, arg)) {
         return entry->value;
       }
       entry = next;
@@ -379,17 +383,17 @@ void* hashmap_lookup(Hashmap hashmap, int(*callback)(void *key, void *value, voi
   return NULL;
 }
 
-void hashmap_iterate(Hashmap hashmap, int(*callback)(void *key, void *value))
+void hashmap_iterate(Hashmap hashmap, int(*callback)(void *key, void *value), int haltOnFail)
 {
   HEX_ASSERT(hashmap);
   HEX_ASSERT(callback);
 
   size_t i;
   for (i = 0; i < hashmap->bucketCount; i++) {
-    Entry* entry = hashmap->buckets[i];
+    HashmapEntry entry = hashmap->buckets[i];
     while(entry != NULL) {
-      Entry *next = entry->next;
-      if(!callback(entry->key, entry->value)) {
+      HashmapEntry next = entry->next;
+      if(!callback(entry->key, entry->value) && haltOnFail) {
         return;
       }
       entry = next;
@@ -420,7 +424,7 @@ size_t hashmap_count_collisions(Hashmap hashmap)
   size_t i;
 
   for(i = 0; i < hashmap->bucketCount; ++i) {
-    Entry *entry = hashmap->buckets[i];
+    HashmapEntry entry = hashmap->buckets[i];
     while(entry) {
       if(entry->next) {
         collisions++;
@@ -461,10 +465,10 @@ int hashmap_equal(Hashmap hashmap1, Hashmap hashmap2)
 
   int i;
   for(i = 0; i < hashmap1->bucketCount; i++) {
-    Entry* entry = hashmap1->buckets[i];
+    HashmapEntry entry = hashmap1->buckets[i];
     void *key = entry->key;
     while(entry != NULL) {
-      Entry *next = entry->next;
+      HashmapEntry next = entry->next;
       if(hashmap_get(hashmap2, entry->key)==NULL) {
         return 0;
       }
@@ -473,10 +477,10 @@ int hashmap_equal(Hashmap hashmap1, Hashmap hashmap2)
   } /* end of for-loop */
 
   for(i = 0; i < hashmap2->bucketCount; i++) {
-    Entry* entry = hashmap2->buckets[i];
+    HashmapEntry entry = hashmap2->buckets[i];
     void *key = entry->key;
     while(entry != NULL) {
-      Entry *next = entry->next;
+      HashmapEntry next = entry->next;
       if(hashmap_get(hashmap1, entry->key)==NULL) {
         return 0;
       }

@@ -15,18 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _SCOPE_H_
-#define _SCOPE_H_
+#ifndef _UUID_H_
+#define _UUID_H_
 
-#define HEX_VAR_SCOPE_TYPE_GLOBAL     0x00000001
-#define HEX_VAR_SCOPE_TYPE_LOCAL      0x00000002
-#define HEX_VAR_SCOPE_TYPE_MEMBER     0x00000003
+#include <string.h>
 
-/* scope type */
-typedef int hex_scope_type;
+typedef unsigned long uuid_t;
 
-/* scope identifier */
-typedef int hex_scope_id;
+static
+const unsigned int GOLDEN_PRIME = 12347;
+
+uuid_t uuid_from_str(char *str)
+{
+  RETURN_VAL_IF_NULL(str, (uuid_t)0);
+
+  unsigned long h = 0;
+
+  int i;
+  for(i = 1; i <= strlen(str); i *= 2) {
+    h = GOLDEN_PRIME * h + str[i-1];
+  }
+
+  return (uuid_t)h;
+}
 
 
-#endif /* _SCOPE_H_ */
+#endif /* _UUID_H_ */

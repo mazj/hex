@@ -26,24 +26,24 @@
 #define VTABLE_DEFAULT_CAPACITY 20
 
 
-struct HexVtable_s {
+struct HexVtable {
   Hashmap hashmap;
 };
 
 
 static
-int vtable_keycmpfunc(void *key1, void *key2)
+inline int vtable_keycmpfunc(void *key1, void *key2)
 {
-  int _key1 = DEREF_VOID(int, key1);
-  int _key2 = DERFE_VOID(int, key2);
+  hex_scope_type_t _key1 = DEREF_VOID(hex_scope_type_t, key1);
+  hex_scope_type_t _key2 = DERFE_VOID(hex_scope_type_t, key2);
 
   return _key1 == _key2;
 }
 
 static
-int vtable_hashfunc(void *key)
+inline int vtable_hashfunc(void *key)
 {
-  return DERFE_VOID(key);
+  return (int)DERFE_VOID(hex_scope_type_t, key);
 }
 
 Vtable vtable_create()
@@ -59,9 +59,9 @@ Vtable vtable_create()
     return NULL;
   }
 
-  Vtable vtable = HEX_MALLOC(struct HexVtable_s);
+  Vtable vtable = HEX_MALLOC(struct HexVtable);
 
-  if(!hashmap) {
+  if(!vtable) {
     errno = ENOMEM;
     return NULL;
   }
@@ -69,6 +69,31 @@ Vtable vtable_create()
   vtable->hashmap = hashmap;
 
   return vtable;
+}
+
+size_t vtable_size(Vtable vtable)
+{
+  HEX_ASSERT(vtable);
+  return hashmap_size(vtable->hashmap);
+}
+
+void* vtable_put(Vtable vtable, hex_scope_type_t scope_type,
+    hex_scope_id_t scope_it, char *var_name, TokenLoc token_loc, void *var_type)
+{
+  HEX_ASSERT(vtable);
+  HEX_ASSERT(var_name);
+
+  VtableEntry entry = HEX_MALLOC(struct HexVtableEntry);  
+
+  RETURN_VAL_IF_NULL(entry, NULL);
+
+  entry->scope_id = scope_id;
+  entry->scope_type = scope_type;
+  entry->var_name = var_name;
+  entry->token_loc = token_loc;
+  entry->var_type = var_type;
+
+  return vtable_put(Vtable vtable, entry);
 }
 
 void* vtable_put(Vtable vtable, VtableEntry var)
@@ -85,32 +110,43 @@ int vtable_remove(Vtbale vtable, hex_scope_id scope_id)
   return hashmap_remove_bucket(vtable->hashmap, scope_id);
 }
 
+typedef struct HexVtableLookupArg {
+  hex_scope_id_t scope_id;
+  char *var_name;
+} *VTableLookupArg;
+
 static
 VtableEntry _vtable_lookup(void *key, void *value, void *arg)
 {
   RETURN_VAL_IF_NULL(value, NULL);
   RETURN_VAL_IF_NULL(arg, NULL);
 
-  char *lookup_name = (char*)arg;
+  VtableLookupArg arg = (VtableLookupArg)arg;
   VtableEntry entry = (VtableEntry)value;
 
-  return entry->var_name == lookup_name ? entry : NULL; 
+  return entry->var_name == arg->var_name &&
+    entry->scope_id == arg->scope_id ? entry : NULL; 
 }
 
-VtableEntry vtable_lookup(Vtable vtable, char *name)
+VtableEntry vtable_lookup(Vtable vtable, char *var_name, hex_scope_id_t scope_id)
 {
   HEX_ASSERT(vtable);
 
-  void *ptr = hashmap_lookup(vtable->hashmap, _vtable_lookup, name);
+  struct HexVtableLookupArg arg = {
+    .scope_id = scope_id,
+    .var_name = var_name
+  };
+
+  void *ptr = hashmap_lookup(vtable->hashmap, _vtable_lookup, &arg);
 
   return (VtableEntry)ptr;
 }
 
-VtableEntry vtable_lookup_global(Vtable vtable, char *name)
+VtableEntry vtable_lookup_global(Vtable vtable, char *var_name, hex_scope_id_t scope_id)
 {
   HEX_ASSERT(vtable);
 
-  VtableEntry entry = vtable_lookup(vtable, name);
+  VtableEntry entry = vtable_lookup(vtable, var_name, scope_id);
 
   return entry->scope_type == HEX_VAR_SCOPE_TYPE_GLOBAL ? entry : NULL;
 }
