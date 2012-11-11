@@ -16,31 +16,37 @@
  */
 
 
-#ifndef _TTable_H_
-#define _TTable_H_
+#ifndef _TYPES_H_
+#define _TYPES_H_
 
-#include <stddef.h>
-#include "uuid.h"
+#include "utils.h"
+
+typedef unsigned char hex_type_qualifier_t;
+typedef uuid_t hex_type_id_t;
+
+const hex_type_qualifier_t HEX_TYPE_QUALIFIER_CONST    = 0x0001;
+const hex_type_qualifier_t HEX_TYPE_QUALIFIER_STATIC   = 0x0002;
+const hex_type_qualifier_t HEX_TYPE_QUALIFIER_VOLATILE = 0x0004;
+
+void
+hex_type_set_qualifier(hex_type_qualifier_t *dst, hex_type_qualifier_t src)
+{
+  HEX_ASSERT(dst);
+
+  char flag = 1;
+  hex_type_qualifier_t s = src;
+
+  while(s != 1) {
+    flag++;
+    s /= 2;
+  }
+
+  if(is_bit_set(*dst, flag)) {
+    // TODO: duplicate type, abort
+  }
+
+  set_nth_bit(dst, flag);
+}
 
 
-typedef struct HexTtableEntry {
-  hex_type_id_t type_id;
-  struct HexType type;
-} *TtableEntry;
-
-Ttable ttable_create();
-
-size_t ttable_size();
-
-void* ttable_put(Ttale ttable, TtableEntry entry);
-
-int ttable_remove(Ttable ttable, hex_type_id_t type_id);
-
-TtableEntry ttable_lookup(Ttable ttable, char *type_name);
-
-size_t ttable_bucketcount(Ttable ttable);
-
-int ttable_capacity(Ttable ttable);
-
-
-#endif /* _TTable_H_ */
+#endif /* _TYPES_H_ */
