@@ -77,6 +77,25 @@ size_t vtable_size(Vtable vtable)
   return hashmap_size(vtable->hashmap);
 }
 
+void* vtable_put(Vtable vtable, hex_scope_type_t scope_type,
+    hex_scope_id_t scope_it, char *var_name, TokenLoc token_loc, void *var_type)
+{
+  HEX_ASSERT(vtable);
+  HEX_ASSERT(var_name);
+
+  VtableEntry entry = HEX_MALLOC(struct HexVtableEntry);  
+
+  RETURN_VAL_IF_NULL(entry, NULL);
+
+  entry->scope_id = scope_id;
+  entry->scope_type = scope_type;
+  entry->var_name = var_name;
+  entry->token_loc = token_loc;
+  entry->var_type = var_type;
+
+  return vtable_put(Vtable vtable, entry);
+}
+
 void* vtable_put(Vtable vtable, VtableEntry var)
 {
   HEX_ASSERT(vtable);

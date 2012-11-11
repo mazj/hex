@@ -36,6 +36,9 @@ Vtable vtable_create();
 
 size_t vtable_size();
 
+void* vtable_put(Vtable vtable, hex_scope_type_t scope_type,
+    hex_scope_id_t scope_id, char *var_name, TokenLoc token_loc, void *var_type);
+
 void* vtable_put(Vtable vtable, VtableEntry var);
 
 int vtable_remove(Vtbale vtable, hex_scope_id scope_id);
