@@ -1,15 +1,21 @@
 CC=gcc
-GCC=g++
-CFLAGS=-Wno-implicit
+CXX=g++
+CFLAGS=-Wno-implicit -Wall
 
 GTEST_INCLUDE=-I/usr/local/gtest-1.6.0/include
 LIBGTEST=/usr/lib/libgtest.a
 
 unittest.o: unittest.h unittest.cc
-	$(GCC) $(GTEST_INCLUDE) -c unittest.h unittest.cc
+	$(CXX) $(GTEST_INCLUDE) -c unittest.h unittest.cc
 
 utils_unittest: unittest.o tests/utils_unittest.cc
-	$(GCC) $(LIBGTEST) unittest.o tests/utils_unittest.cc -o utils_unittest
+	$(CXX) $(LIBGTEST) unittest.o tests/utils_unittest.cc -o utils_unittest
+
+strutils.o: strutils.c strutils.h utils.h 
+	$(CC) $(CFLAGS) -arch x86_64 -c strutils.c strutils.h utils.h
+
+strutils_unittest: unittest.o strutils.o tests/strutils_unittest.cc
+	$(CXX) $(LIBGTEST) unittest.o strutils.o tests/strutils_unittest.cc -o strutils_unittest
 
 array.o: array.c array.h memory.h assert.h
 	$(CC) $(CFLAGS) array.c array.h memory.h assert.h
@@ -40,9 +46,6 @@ stack.o: stack.c stack.h memory.h
 
 sorted_string_list.o: sorted_string_list.h sorted_string_list.c bst.o strutils.o utils.h
 	$(CC $(CFLAGS) sorted_string_list.h sorted_string_list.c bst.o strutils.o utils.h
-
-strutils.o: strutils.c strutils.h strbuf.h strbuf.o
-	$(CC) $(CFLAGS) strutils.c strutils.h strbuf.h strbuf.o
 
 clean:
 	rm *.gch *.o *.a *.out

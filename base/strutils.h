@@ -22,6 +22,8 @@
 
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
 
 /*
  * Converts a string to upper case.
@@ -53,7 +55,7 @@ char* strtrim(char *s);
  * will be copied.  Always NULL terminates (unless size == 0).
  * Returns strlen(src); if retval >= size, truncation occurred.
  */
-size_t strlcpy(char *dst, const char *src, size_t size);
+size_t strlcpy2(char *dst, const char *src, size_t size);
 
 
 /*
@@ -66,5 +68,7 @@ char* strncpy_safe(char *dst, const char *src, size_t size);
  */
 char* itoa_fmt(int value, char *str, int base, int capital);
 
+}
+#endif /* ifdef __cplusplus */
 
 #endif /* _STRUTILS_H_ */

@@ -15,25 +15,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stddef.h>
+
 #include "utils.h"
 #include "memory.h"
+#include "strutils.h"
 
 
-char* strtoupper(char* s)
+char* strtoupper(char *s)
 {
-  while(s) {
-    *s = toupper(*s);
-    s++;
+  RETURN_VAL_IF_NULL(s, NULL);
+
+  char *str = s;
+
+  while(*str != '\0') {
+    *str = toupper(*str);
+    str++;
   }
+
   return s;
 }
 
 char* strtolower(char *s)
 {
-  while(s) {
-    *s = tolower(*s);
-    s++;
+  RETURN_VAL_IF_NULL(s, NULL);
+
+  char *str = s;
+
+  while(*str) {
+    *str = tolower(*str);
+    str++;
   }
   return s;
 }
@@ -66,7 +76,7 @@ char* strtrim(char *s)
   return s;
 }
 
-size_t strlcpy(char *dst, const char *src, size_t size)
+size_t strlcpy2(char *dst, const char *src, size_t size)
 {
   char *d = dst;
   const char *s = src;
