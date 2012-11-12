@@ -8,8 +8,8 @@ LIBGTEST=/usr/lib/libgtest.a
 unittest.o: unittest.h unittest.cc
 	$(GCC) $(GTEST_INCLUDE) -c unittest.h unittest.cc
 
-utils_unittest: unittest.o utils_unittest.cc
-	$(GCC) $(LIBGTEST) unittest.o utils_unittest.cc -o utils_unittest
+utils_unittest: unittest.o tests/utils_unittest.cc
+	$(GCC) $(LIBGTEST) unittest.o tests/utils_unittest.cc -o utils_unittest
 
 array.o: array.c array.h memory.h assert.h
 	$(CC) $(CFLAGS) array.c array.h memory.h assert.h
