@@ -70,6 +70,8 @@ char* strcpy_hard(char *dst, const char *src)
 
 char* strtrim(char *s)
 {
+  RETURN_VAL_IF_NULL(s, NULL);
+
   size_t l = strlen(s);
   while(l > 1 && isspace(s[l-1])) s[--l] = '\0';
   while(*s && isspace(*s)) *s = '\0', ++s;

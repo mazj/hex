@@ -1,6 +1,6 @@
 CC=gcc
 CXX=g++
-CFLAGS=-Wno-implicit -Wall
+CFLAGS=-Wno-implicit -Wall -arch x86_64
 
 GTEST_INCLUDE=-I/usr/local/gtest-1.6.0/include
 LIBGTEST=/usr/lib/libgtest.a
@@ -12,7 +12,7 @@ utils_unittest: unittest.o tests/utils_unittest.cc
 	$(CXX) $(LIBGTEST) unittest.o tests/utils_unittest.cc -o utils_unittest
 
 strutils.o: strutils.c strutils.h utils.h 
-	$(CC) $(CFLAGS) -arch x86_64 -c strutils.c strutils.h utils.h
+	$(CC) $(CFLAGS) -c strutils.c strutils.h utils.h
 
 strutils_unittest: unittest.o strutils.o tests/strutils_unittest.cc
 	$(CXX) $(LIBGTEST) unittest.o strutils.o tests/strutils_unittest.cc -o strutils_unittest
