@@ -18,10 +18,14 @@
 #ifndef _MEMORY_H_
 #define _MEMORY_H_
 
+#include <stddef.h>
 #include <stdint.h>
 #include <string.h>
 #include <errno.h>
 
+
+#ifdef __cplusplus
+extern "C" {
 
 void memset16(uint16_t *dst, uint16_t value, size_t size);
 void memset32(uint32_t *dst, uint32_t value, size_t size);
@@ -103,6 +107,10 @@ void memset32(uint32_t *dst, uint32_t value, size_t size);
       HEX_FREE( (target) );              \
     }                                    \
   } while(0)
+
+
+}
+#endif /* #ifdef __cplusplus */
 
 
 #endif /* _MEMORY_H_ */
