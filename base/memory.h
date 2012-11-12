@@ -101,7 +101,7 @@ void memset32(uint32_t *dst, uint32_t value, size_t size);
 // Free target if val is null.
 // USE WITH CAUTION
 //===========================================================================
-#define FREE_IF_NULL(val, target)        \
+#define HEX_FREE_IF_NULL(val, target)    \
   do {                                   \
     if( (val) == NULL) {                 \
       HEX_FREE( (target) );              \

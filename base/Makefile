@@ -8,20 +8,20 @@ LIBGTEST=/usr/lib/libgtest.a
 unittest.o: unittest.h unittest.cc
 	$(CXX) $(GTEST_INCLUDE) -c unittest.h unittest.cc
 
-utils_unittest: unittest.o tests/utils_unittest.cc
-	$(CXX) $(LIBGTEST) unittest.o tests/utils_unittest.cc -o utils_unittest
+utils_unittest.test: unittest.o tests/utils_unittest.cc
+	$(CXX) $(LIBGTEST) unittest.o tests/utils_unittest.cc -o utils_unittest.test
 
 strutils.o: strutils.c strutils.h utils.h 
 	$(CC) $(CFLAGS) -c strutils.c strutils.h utils.h
 
-strutils_unittest: unittest.o strutils.o tests/strutils_unittest.cc
-	$(CXX) $(LIBGTEST) unittest.o strutils.o tests/strutils_unittest.cc -o strutils_unittest
+strutils_unittest.test: unittest.o strutils.o tests/strutils_unittest.cc
+	$(CXX) $(LIBGTEST) unittest.o strutils.o tests/strutils_unittest.cc -o strutils_unittest.test
 
 memory.o: memory.c memory.h
 	$(CC) $(CFLAGS) -c memory.c memory.h
 
-memory_unittest: memory.o unittest.o utils.h assert.h tests/memory_unittest.cc
-	$(CXX) $(LIBGTEST) memory.o unittest.o utils.h assert.h tests/memory_unittest.cc -o memory_unittest
+memory_unittest.test: memory.o unittest.o utils.h assert.h tests/memory_unittest.cc
+	$(CXX) $(LIBGTEST) memory.o unittest.o utils.h assert.h tests/memory_unittest.cc -o memory_unittest.test
 
 array.o: array.c array.h memory.h assert.h
 	$(CC) $(CFLAGS) array.c array.h memory.h assert.h
@@ -54,4 +54,4 @@ sorted_string_list.o: sorted_string_list.h sorted_string_list.c bst.o strutils.o
 	$(CC $(CFLAGS) sorted_string_list.h sorted_string_list.c bst.o strutils.o utils.h
 
 clean:
-	rm *.gch *.o *.a *.out
+	rm *.gch *.o *.a *.out *.test
