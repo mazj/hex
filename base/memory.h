@@ -26,6 +26,7 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 
 void memset16(uint16_t *dst, uint16_t value, size_t size);
 void memset32(uint32_t *dst, uint32_t value, size_t size);
@@ -109,8 +110,9 @@ void memset32(uint32_t *dst, uint32_t value, size_t size);
   } while(0)
 
 
+#ifdef __cplusplus
 }
-#endif /* #ifdef __cplusplus */
+#endif
 
 
 #endif /* _MEMORY_H_ */

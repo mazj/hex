@@ -35,16 +35,15 @@ typedef struct HexHashMapEntry {
   struct HexHashMapEntry *next;
 } *HashmapEntry;
 
-
 /* hashmap */
-typedef struct HexHashmap {
+struct HexHashmap {
   HashmapEntry* buckets;
   size_t bucketCount;
   HashFunc hash;
   KeyCmpFunc keycmp;
   pthread_mutex_t lock;
   size_t size;
-} *Hashmap;
+};
 
 
 Hashmap hashmap_create(size_t initial_capacity,
@@ -53,7 +52,8 @@ Hashmap hashmap_create(size_t initial_capacity,
   HEX_ASSERT(hashfunc);
   HEX_ASSERT(keycmpfunc);
 
-  Hashmap hashmap = HEX_MALLOC(struct HexHashmap);
+  Hashmap hashmap = NULL;
+  hashmap = (Hashmap)malloc(sizeof(struct HexHashmap));
 
   if(!hashmap) {
     errno = ENOMEM;
@@ -122,7 +122,7 @@ void _hashmap_expand(Hashmap hashmap)
 
   if(hashmap->size > (hashmap->bucketCount * LOAD_FACTOR)) {
     size_t newBucketCount = hashmap->bucketCount << 1;
-    HashmapEntry **newBuckets = calloc(newBucketCount, sizeof(HashmapEntry*));
+    HashmapEntry *newBuckets = calloc(newBucketCount, sizeof(HashmapEntry));
 
     RETURN_IF_NULL(newBuckets);
 
@@ -191,9 +191,10 @@ int hashmap_hash(void *key, size_t key_size)
 }
 
 static
-HashmapEntry* _create_entry(void *key, int hash, void *val)
+HashmapEntry _create_entry(void *key, int hash, void *val)
 {
-  HashmapEntry entry = HEX_MALLOC(struct HexHashMapEntry);
+  HashmapEntry entry=NULL;
+  entry = (HashmapEntry)malloc(sizeof(struct HexHashMapEntry));
 
   if(entry == NULL) {
     errno = ENOMEM;
@@ -296,7 +297,7 @@ hashmap_contains_key(Hashmap hashmap, void *key)
   int hash = _hash_key(hashmap, key);
   int index = _calculate_index(hashmap->bucketCount, hash);
 
-  HashmapEntry *entry = hashmap->buckets[index];
+  HashmapEntry entry = hashmap->buckets[index];
 
   while(entry) {
     if(_equals_key(entry->key, entry->hash, key, hash, hashmap->keycmp))
@@ -439,7 +440,8 @@ size_t hashmap_count_collisions(Hashmap hashmap)
 int hashmap_int_hash(void *key)
 {
   HEX_ASSERT(key);
-  return DEREF_VOID(int, key);
+  int i = *(int*)key; //DEREF_VOID(int, key);
+  return i;
 }
 
 int
@@ -448,8 +450,8 @@ hashmap_int_equals(void *keyA, void *keyB)
   HEX_ASSERT(keyA);
   HEX_ASSERT(keyB);
 
-  int a = DEREF_VOID(int, keyA);
-  int b = DEREF_VOID(int, keyB);
+  int a = *(int*)keyA; //DEREF_VOID(int, keyA);
+  int b = *(int*)keyB; //DEREF_VOID(int, keyB);
 
   return a == b;
 }
@@ -466,7 +468,6 @@ int hashmap_equal(Hashmap hashmap1, Hashmap hashmap2)
   int i;
   for(i = 0; i < hashmap1->bucketCount; i++) {
     HashmapEntry entry = hashmap1->buckets[i];
-    void *key = entry->key;
     while(entry != NULL) {
       HashmapEntry next = entry->next;
       if(hashmap_get(hashmap2, entry->key)==NULL) {
@@ -478,7 +479,6 @@ int hashmap_equal(Hashmap hashmap1, Hashmap hashmap2)
 
   for(i = 0; i < hashmap2->bucketCount; i++) {
     HashmapEntry entry = hashmap2->buckets[i];
-    void *key = entry->key;
     while(entry != NULL) {
       HashmapEntry next = entry->next;
       if(hashmap_get(hashmap1, entry->key)==NULL) {
@@ -490,3 +490,4 @@ int hashmap_equal(Hashmap hashmap1, Hashmap hashmap2)
 
   return 1;
 }
+

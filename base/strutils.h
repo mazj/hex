@@ -24,6 +24,7 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 
 /*
  * Converts a string to upper case.
@@ -68,7 +69,10 @@ char* strncpy_safe(char *dst, const char *src, size_t size);
  */
 char* itoa_fmt(int value, char *str, int base, int capital);
 
+
+#ifdef __cplusplus
 }
-#endif /* ifdef __cplusplus */
+#endif
+
 
 #endif /* _STRUTILS_H_ */

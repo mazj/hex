@@ -23,6 +23,12 @@ memory.o: memory.c memory.h
 memory_unittest.test: memory.o unittest.o utils.h assert.h tests/memory_unittest.cc
 	$(CXX) $(LIBGTEST) memory.o unittest.o utils.h assert.h tests/memory_unittest.cc -o memory_unittest.test
 
+hashmap.o: hashmap.c hashmap.h assert.h memory.h utils.h
+	$(CC) $(CFLAGS) -c hashmap.c hashmap.h
+
+hashmap_unittest.test: hashmap.o unittest.o memory.h utils.h assert.h tests/hashmap_unittest.cc
+	$(CXX) $(LIBGTEST) hashmap.o unittest.o memory.h utils.h assert.h tests/hashmap_unittest.cc -o hashmap_unittest.test
+
 array.o: array.c array.h memory.h assert.h
 	$(CC) $(CFLAGS) array.c array.h memory.h assert.h
 
@@ -40,9 +46,6 @@ buffer.o: buffer.c buffer.h memory.h assert.h
 
 strbuf.o: strbuf.c strbuf.h
 	$(CC) $(CFLAGS) strbuf.c strbuf.h
-
-hashmap.o: hashmap.c hashmap.h memory.h
-	$(CC) $(CFLAGS) hashmap.c hashmap.h memory.h
 
 queue.o: queue.c queue.h memory.h
 	$(CC) $(CFLAGS) queue.c queue.h memory.h
