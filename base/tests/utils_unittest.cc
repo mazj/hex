@@ -72,41 +72,143 @@ TEST(MinTest, MinOfNegativeFloatingNumber) {
  * Tests for:
  * void set_nth_bit(int *val, char bit) 
  *******************************************/
-TEST(SetNthBitTest, Set1stBit) {
+TEST(set_nth_bitTest, Set1stBit) {
   int val=0;
   set_nth_bit(&val, 1);
   EXPECT_EQ(0x00000001, val);
 }
 
-TEST(SetNthBitTest, Set2ndBit) {
+TEST(set_nth_bitTest, Set2ndBit) {
   int val=0;
   set_nth_bit(&val, 2);
   EXPECT_EQ(0x00000002, val);
 }
 
-TEST(SetNthBitTest, Set4thBit) {
+TEST(set_nth_bitTest, Set4thBit) {
   int val=0;
   set_nth_bit(&val, 4);
   EXPECT_EQ(0x000000008, val);
 }
 
-TEST(SetNthBitTest, Set8thBit) {
+TEST(set_nth_bitTest, Set8thBit) {
   int val=0;
   set_nth_bit(&val, 8);
   EXPECT_EQ(128, val);
 }
 
-TEST(SetNthBitTest, Set16thBit) {
+TEST(set_nth_bitTest, Set16thBit) {
   int val=0;
   set_nth_bit(&val, 16);
   EXPECT_EQ(32768, val);
 }
 
-TEST(SetNthBitTest, Set32thBit) {
+TEST(set_nth_bitTest, Set32thBit) {
   int val=0;
   set_nth_bit(&val, 32);
   unsigned int val2 = 1;
   val2 <<= 31;
 
   EXPECT_EQ((int)((val2)*(-1)), val);
+}
+
+
+/*******************************************
+ * Tests for:
+ * void clear_nth_bit(int *val, char bit) 
+ *******************************************/
+TEST(clear_nth_bitTest, Clear1stBit) {
+  int val=0x00001;
+  clear_nth_bit(&val, 1);
+  EXPECT_EQ(0, val);
+}
+
+TEST(clear_nth_bitTest, Clear2ndBit) {
+  int val=0x0002;
+  clear_nth_bit(&val, 2);
+  EXPECT_EQ(0, val);
+}
+
+TEST(clear_nth_bitTest, Clear4thBit) {
+  int val=0x0008;
+  clear_nth_bit(&val, 4);
+  EXPECT_EQ(0, val);
+}
+
+TEST(clear_nth_bitTest, Clear8thBit) {
+  int val=128;
+  clear_nth_bit(&val, 8);
+  EXPECT_EQ(0, val);
+}
+
+TEST(clear_nth_bitTest, Clear16thBit) {
+  int val=32768;
+  clear_nth_bit(&val, 16);
+  EXPECT_EQ(0, val);
+}
+
+TEST(clear_nth_bitTest, Clear32thBit) {
+  int val=0;
+  unsigned int val2 = 1;
+  val2 <<= 31;
+  val = val2 * (-1);
+  clear_nth_bit(&val, 32);
+  EXPECT_EQ(0, val);
+}
+
+
+/*******************************************
+ * Tests for:
+ * void is_bit_set(int val, char bit) 
+ *******************************************/
+TEST(is_bit_setTest, TestBitSetOnZeroValueInteger) {
+  int val=0;
+  EXPECT_FALSE(is_bit_set(val, 1));
+}
+
+TEST(is_bit_setTest, TestSetOn1stBit) {
+  int val=1;
+  EXPECT_TRUE(is_bit_set(val, 1));
+}
+
+TEST(is_bit_setTest, TestSetOn2ndBit) {
+  int val=2;
+  EXPECT_FALSE(is_bit_set(val, 1));
+  EXPECT_TRUE(is_bit_set(val, 2));
+}
+
+TEST(is_bit_setTest, TestSetOn4thBit) {
+  int val=8;
+  EXPECT_FALSE(is_bit_set(val, 1));
+  EXPECT_FALSE(is_bit_set(val, 2));
+  EXPECT_TRUE(is_bit_set(val, 4));
+}
+
+TEST(is_bit_setTest, TestSetOn8thBit) {
+  int val=128;
+  EXPECT_FALSE(is_bit_set(val, 1));
+  EXPECT_FALSE(is_bit_set(val, 2));
+  EXPECT_FALSE(is_bit_set(val, 4));
+  EXPECT_TRUE(is_bit_set(val, 8));
+}
+
+TEST(is_bit_setTest, TestSetOn16thBit) {
+  int val=32768;
+  EXPECT_FALSE(is_bit_set(val, 1));
+  EXPECT_FALSE(is_bit_set(val, 2));
+  EXPECT_FALSE(is_bit_set(val, 4));
+  EXPECT_FALSE(is_bit_set(val, 8));
+  EXPECT_TRUE(is_bit_set(val, 16));
+}
+
+TEST(is_bit_setTest, TestSetOn32thBit) { 
+  int val=0;
+  unsigned int val2 = 1;
+  val2 <<= 31;
+  val = val2 * (-1); 
+  EXPECT_FALSE(is_bit_set(val, 1));
+  EXPECT_FALSE(is_bit_set(val, 2));
+  EXPECT_FALSE(is_bit_set(val, 4));
+  EXPECT_FALSE(is_bit_set(val, 8));
+  EXPECT_FALSE(is_bit_set(val, 16));
+  EXPECT_TRUE(is_bit_set(val, 32));
 }

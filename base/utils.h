@@ -145,9 +145,10 @@ clear_nth_bit(int *val, char bit)
 int
 is_bit_set(int val, char bit)
 {
-  int v = (1 << (bit-1));
-  val = val & v;
-  return (val >> (bit-1)) == 1;
+  unsigned int v = val;
+  int b = (1 << (bit-1));
+  v = v & b;
+  return (v >> (bit-1)) == 1;
 }
 
 
