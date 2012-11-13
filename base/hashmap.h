@@ -48,7 +48,7 @@ void hashmap_lock(Hashmap hashmap);
 
 void hashmap_unlock(Hashmap hashmap);
 
-void hashmap_free(Hashmap hashmap);
+void hashmap_free(Hashmap *hashmap);
 
 int hashmap_hash(void *key, size_t key_size);
 

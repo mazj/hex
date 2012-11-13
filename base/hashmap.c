@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+#include <stdio.h>
 #include <sys/types.h>
 #include <pthread.h>
 #include <errno.h>
@@ -25,6 +25,7 @@
 
 
 #define LOAD_FACTOR 0.75f
+#define HASHMAP_DEFAULT_BUCKETCOUNT 8
 
 
 /* Hashmap entry(bucket) */
@@ -157,13 +158,15 @@ void hashmap_unlock(Hashmap hashmap)
   pthread_mutex_unlock(&hashmap->lock);
 }
 
-void hashmap_free(Hashmap hashmap)
+void hashmap_free(Hashmap *hashmap)
 {
-  HEX_ASSERT(hashmap);
+  HEX_ASSERT(*hashmap);
+
+  Hashmap _hashmap = *hashmap;
 
   size_t i;
-  for(i = 0; i < hashmap->bucketCount; ++i) {
-    HashmapEntry entry = hashmap->buckets[i];
+  for(i = 0; i < _hashmap->bucketCount; ++i) {
+    HashmapEntry entry = _hashmap->buckets[i];
     while(entry) {
       HashmapEntry next = entry->next;
       HEX_FREE(entry);
@@ -171,10 +174,11 @@ void hashmap_free(Hashmap hashmap)
     }
   }
 
-  HEX_FREE(hashmap->buckets);
-  pthread_mutex_destroy(&hashmap->lock);
+  HEX_FREE(_hashmap->buckets);
+  pthread_mutex_destroy(&_hashmap->lock);
 
-  HEX_FREE(hashmap);
+  HEX_FREE(_hashmap);
+  *hashmap = NULL;
 }
 
 int hashmap_hash(void *key, size_t key_size)
@@ -214,8 +218,7 @@ static
 inline int _equals_key(void *keyA, int hashA, void *keyB, int hashB,
   KeyCmpFunc keycmp)
 {
-  RETURN_VAL_IF_EQUALS(keyA, keyB, 1);
-  RETURN_VAL_IF_TRUE(hashA != hashB, 0);
+  RETURN_VAL_IF_EQUALS(hashA, hashB, 1);
 
   return keycmp(keyA, keyB);
 }
@@ -271,18 +274,20 @@ void* hashmap_get(Hashmap hashmap, void *key)
   HEX_ASSERT(hashmap);
 
   RETURN_VAL_IF_NULL(key, NULL);
+  RETURN_VAL_IF_TRUE(hashmap->size == 0, NULL);
 
   int hash = _hash_key(hashmap, key);
   int index = _calculate_index(hashmap->bucketCount, hash);
 
-  HashmapEntry entry = hashmap->buckets[index];
+  HashmapEntry *p = &(hashmap->buckets[index]);
+  HashmapEntry entry = NULL;
 
-  while(entry) {
+  while((entry=*p)) {
     if(_equals_key(entry->key, entry->hash, key, hash, hashmap->keycmp))
     {
       return entry->value;
     }
-    entry = entry->next;
+    p = &(entry->next);
   }
 
   return NULL;
@@ -351,15 +356,13 @@ void* hashmap_remove(Hashmap hashmap, void *key)
     if(_equals_key(current->key, current->hash, key, hash, hashmap->keycmp))
     {
       void *value = current->value;
-
       *p = current->next;
       HEX_FREE(current);
       hashmap->size--;
-
       return value;
     }
 
-    p = &current->next;
+    p = &(current->next);
   }
 
   return NULL;
