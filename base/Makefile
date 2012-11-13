@@ -29,6 +29,12 @@ hashmap.o: hashmap.c hashmap.h assert.h memory.h utils.h
 hashmap_unittest.test: hashmap.o unittest.o memory.h utils.h assert.h tests/hashmap_unittest.cc
 	$(CXX) $(LIBGTEST) hashmap.o unittest.o memory.h utils.h assert.h tests/hashmap_unittest.cc -o hashmap_unittest.test
 
+uuid.o: uuid.h uuid.c utils.h rand.h
+	$(CC) $(CLAFGS) -c uuid.c uuid.h
+
+uuid_unittest.test: uuid.o unittest.o tests/uuid_unittest.cc
+	$(CXX) $(LIBGTEST) uuid.o unittest.o uuid.h tests/uuid_unittest.cc -o uuid_unittest.test
+
 array.o: array.c array.h memory.h assert.h
 	$(CC) $(CFLAGS) array.c array.h memory.h assert.h
 

@@ -21,31 +21,40 @@
 
 #include "utils.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 int
-inline rand(max)
+inline hex_rand_top(int max)
 {
   return rand() % max;
 }
 
 int
-inline rand(min, max)
+inline hex_rand_range(int min, int max)
 {
-  return MAX(min, rand(max));
+  return MAX(min, hex_rand_top(max));
 }
 
 double
-inline rand_f(double max)
+inline hex_randf_top(double max)
 {
   double f = (double)rand() / RAND_MAX;
   return f * max;
 }
 
 double
-inline rand_f(double min, double max)
+inline hex_randf_range(double min, double max)
 {
   double f = (double)rand() / RAND_MAX;
   return min + f * (max - min);
 }
 
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _RAND_H_ */

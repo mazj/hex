@@ -63,9 +63,16 @@
 #define RETURN_IF_FALSE(val)                          \
   RETURN_IF_EQUALS( (val), (0) )
 
-#define RETURN_VAL_IF_EQUALS(val1, val2, returnval)   \
+#define RETURN_VAL_IF_EQ(val1, val2, returnval)       \
   do {                                                \
     if( (val1) == (val2) ) {                          \
+      return (returnval);                             \
+    }                                                 \
+  } while(0)
+
+#define RETURN_VAL_IF_NE(val1, val2, returnval)       \
+  do {                                                \
+    if( (val1) != (val2) ) {                          \
       return (returnval);                             \
     }                                                 \
   } while(0)
