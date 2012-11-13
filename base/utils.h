@@ -78,7 +78,7 @@
   } while(0)
 
 #define RETURN_VAL_IF_NULL(val, returnval)            \
-  RETURN_VAL_IF_EQUALS( (val), (NULL), (returnval) )
+  RETURN_VAL_IF_EQ( (val), (NULL), (returnval) )
 
 #define RETURN_VAL_IF_TRUE(boolval, returnval)        \
   do {                                                \

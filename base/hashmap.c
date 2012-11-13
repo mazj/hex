@@ -218,7 +218,7 @@ static
 inline int _equals_key(void *keyA, int hashA, void *keyB, int hashB,
   KeyCmpFunc keycmp)
 {
-  RETURN_VAL_IF_EQUALS(hashA, hashB, 1);
+  RETURN_VAL_IF_EQ(hashA, hashB, 1);
 
   return keycmp(keyA, keyB);
 }
