@@ -67,6 +67,72 @@ TEST(MinTest, MinOfNegativeFloatingNumber) {
   EXPECT_EQ(-6.0f, MIN(0.0f, -6.0f));
 }
 
+/*******************************************
+ * Tests for:
+ * RETURN_IF_NULL(val)
+ *******************************************/
+TEST(RETURN_IF_NULLTest, PassNullTest) {
+  char *val = NULL;
+  RETURN_IF_NULL(val);
+  ASSERT_EQ(1, 2);
+}
+
+TEST(RETURN_IF_NULLTest, PassNotNullTest) {
+  char *val = (char*)malloc(sizeof(char));
+  ASSERT_TRUE(val != NULL);
+  RETURN_IF_NULL(val);
+  free(val);
+}
+
+/*******************************************
+ * Tests for:
+ * RETURN_IF_TRUE(val)
+ *******************************************/
+TEST(RETURN_IF_TRUETest, PassTrueTest) {
+  int val = 1 == 1;
+  RETURN_IF_TRUE(val);
+  ASSERT_EQ(1,2);
+}
+
+TEST(RETURN_IF_TRUETest, PassFalseTest) {
+  int val = 1 == 2;
+  RETURN_IF_TRUE(val);
+  ASSERT_EQ(1, 1);
+}
+
+/*******************************************
+ * Tests for:
+ * RETURN_IF_FALSE(val)
+ *******************************************/
+TEST(RETURN_IF_FALSETest, PassTrueTest) {
+  int val = 1 == 1;
+  RETURN_IF_FALSE(val);
+  ASSERT_EQ(1, 1);
+}
+
+TEST(RETURN_IF_FALSETest, PassFalseTest) {
+  int val = 1 == 2;
+  RETURN_IF_FALSE(val);
+  ASSERT_EQ(1, 2);
+}
+
+/*******************************************
+ * Tests for:
+ * RETURN_IF_EQUALS(val1, val2)
+ *******************************************/
+TEST(RETURN_IF_EQUALSTest, PassTrueTest) {
+  int val1 = 1;
+  int val2 = 1;
+  RETURN_IF_EQUALS(val1, val2);
+  ASSERT_EQ(1, 2);
+}
+
+TEST(RETURN_IF_EQUALSTest, PassFalseTest) {
+  int val1 = 1;
+  int val2 = 2;
+  RETURN_IF_EQUALS(val1, val2);
+  ASSERT_EQ(1, 1);
+}
 
 /*******************************************
  * Tests for:
