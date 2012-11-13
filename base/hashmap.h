@@ -23,6 +23,10 @@
 
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 typedef struct HexHashmap *Hashmap;
 
@@ -44,7 +48,7 @@ void hashmap_lock(Hashmap hashmap);
 
 void hashmap_unlock(Hashmap hashmap);
 
-void hashmap_free(Hashmap hashmap);
+void hashmap_free(Hashmap *hashmap);
 
 int hashmap_hash(void *key, size_t key_size);
 
@@ -72,5 +76,9 @@ int hashmap_int_equals(void *keyA, void *keyB);
 
 int hashmap_equal(Hashmap hashmap1, Hashmap hashmap2);
 
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _HASHMAP_H_ */

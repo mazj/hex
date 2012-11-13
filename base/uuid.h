@@ -18,26 +18,32 @@
 #ifndef _UUID_H_
 #define _UUID_H_
 
-#include <string.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-typedef unsigned long uuid_t;
 
-static
-const unsigned int GOLDEN_PRIME = 12347;
+/* struct __hex_uuid_t
+ * A 16-bytes structure
+ */
+struct __hex_uuid_t {
+  unsigned long  time_u;  /* 4 bytes */
+  unsigned long  time_l;  /* 4 bytes */
+  unsigned int   time_h;  /* 4 bytes */
+  unsigned short rand_1;  /* 2 bytes */
+  unsigned short rand_2;  /* 2 bytes */
+};
 
-uuid_t uuid_from_str(char *str)
-{
-  RETURN_VAL_IF_NULL(str, (uuid_t)0);
 
-  unsigned long h = 0;
+typedef struct __hex_uuid_t hex_uuid_t;
 
-  int i;
-  for(i = 1; i <= strlen(str); i *= 2) {
-    h = GOLDEN_PRIME * h + str[i-1];
-  }
+int uuid_create(hex_uuid_t*);
 
-  return (uuid_t)h;
+int uuid_compare(hex_uuid_t id1, hex_uuid_t id2);
+
+
+#ifdef __cplusplus
 }
-
+#endif
 
 #endif /* _UUID_H_ */

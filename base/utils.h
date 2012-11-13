@@ -63,15 +63,22 @@
 #define RETURN_IF_FALSE(val)                          \
   RETURN_IF_EQUALS( (val), (0) )
 
-#define RETURN_VAL_IF_EQUALS(val1, val2, returnval)   \
+#define RETURN_VAL_IF_EQ(val1, val2, returnval)       \
   do {                                                \
     if( (val1) == (val2) ) {                          \
       return (returnval);                             \
     }                                                 \
   } while(0)
 
+#define RETURN_VAL_IF_NE(val1, val2, returnval)       \
+  do {                                                \
+    if( (val1) != (val2) ) {                          \
+      return (returnval);                             \
+    }                                                 \
+  } while(0)
+
 #define RETURN_VAL_IF_NULL(val, returnval)            \
-  RETURN_VAL_IF_EQUALS( (val), (NULL), (returnval) )
+  RETURN_VAL_IF_EQ( (val), (NULL), (returnval) )
 
 #define RETURN_VAL_IF_TRUE(boolval, returnval)        \
   do {                                                \
@@ -145,9 +152,10 @@ clear_nth_bit(int *val, char bit)
 int
 is_bit_set(int val, char bit)
 {
-  int and = (1 << (bit-1));
-  val = val & and;
-  return (val >> (bit-1)) == 1;
+  unsigned int v = val;
+  int b = (1 << (bit-1));
+  v = v & b;
+  return (v >> (bit-1)) == 1;
 }
 
 

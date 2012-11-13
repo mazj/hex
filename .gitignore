@@ -3,3 +3,5 @@
 *.so
 *.gch
 *.swp
+*.out
+*.test

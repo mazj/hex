@@ -18,10 +18,15 @@
 #ifndef _MEMORY_H_
 #define _MEMORY_H_
 
+#include <stddef.h>
 #include <stdint.h>
 #include <string.h>
 #include <errno.h>
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void memset16(uint16_t *dst, uint16_t value, size_t size);
 void memset32(uint32_t *dst, uint32_t value, size_t size);
@@ -97,12 +102,17 @@ void memset32(uint32_t *dst, uint32_t value, size_t size);
 // Free target if val is null.
 // USE WITH CAUTION
 //===========================================================================
-#define FREE_IF_NULL(val, target)        \
+#define HEX_FREE_IF_NULL(val, target)    \
   do {                                   \
     if( (val) == NULL) {                 \
       HEX_FREE( (target) );              \
     }                                    \
   } while(0)
+
+
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif /* _MEMORY_H_ */

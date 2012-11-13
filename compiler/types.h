@@ -15,25 +15,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* Sorted string list */
 
-#ifndef _SORTED_STRING_LIST_H_
-#define _SORTED_STRING_LIST_H_
+#ifndef _TYPES_H_
+#define _TYPES_H_
 
-typedef struct HexStl_s *Stl;
+#include "utils.h"
+
+typedef unsigned char hex_type_qualifier_t;
+typedef uuid_t hex_type_id_t;
+
+const hex_type_qualifier_t HEX_TYPE_QUALIFIER_CONST    = 0x0001;
+const hex_type_qualifier_t HEX_TYPE_QUALIFIER_STATIC   = 0x0002;
+const hex_type_qualifier_t HEX_TYPE_QUALIFIER_VOLATILE = 0x0004;
+
+void
+hex_type_set_qualifier(hex_type_qualifier_t *dst, hex_type_qualifier_t src)
+{
+  HEX_ASSERT(dst);
+
+  char flag = 1;
+  hex_type_qualifier_t s = src;
+
+  while(s != 1) {
+    flag++;
+    s /= 2;
+  }
+
+  if(is_bit_set(*dst, flag)) {
+    // TODO: duplicate type, abort
+  }
+
+  set_nth_bit(dst, flag);
+}
 
 
-Stl stl_create();
-
-size_t stl_size(Stl stl);
-
-void stl_clear(Stl stl);
-
-ints stl_insert(Stl stl, const char *value);
-
-char* stl_find(Stl stl, const char *value);
-
-char* stl_remove(Stl stl, const char *value);
-
-
-#endif /* _SORTED_STRING_LIST_H_ */
+#endif /* _TYPES_H_ */

@@ -15,25 +15,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* A container that holds a unique set of elements. */
 
-#ifndef _SET_H_
-#define _SET_H_
+#ifndef _RAND_H_
+#define _RAND_H_
 
-#include <stddef.h>
+#include "utils.h"
 
-
-typedef struct HexSet_s *Set;
-
-Set set_create();
-
-int set_empty(Set set);
-
-int set_insert(Set set, void *val, size_t size);
-
-int set_contains(Set set, void *val);
-
-int set_equal(Set set1, Set set2);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
-#endif /* _SET_H_ */
+int
+inline hex_rand_top(int max)
+{
+  return rand() % max;
+}
+
+int
+inline hex_rand_range(int min, int max)
+{
+  return MAX(min, hex_rand_top(max));
+}
+
+double
+inline hex_randf_top(double max)
+{
+  double f = (double)rand() / RAND_MAX;
+  return f * max;
+}
+
+double
+inline hex_randf_range(double min, double max)
+{
+  double f = (double)rand() / RAND_MAX;
+  return min + f * (max - min);
+}
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* _RAND_H_ */
