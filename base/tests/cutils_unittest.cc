@@ -854,7 +854,7 @@ TEST(atoiTest, ValidTwoDigitPositiveIntegerTest1) {
 }
 
 TEST(atoiTest, ValidTwoDigitPositiveIntegerTest2) {
-  ASSERT_EQ(10, atoi("10"));
+  ASSERT_EQ(10, atoi("+10"));
 }
 
 TEST(atoiTest, ValidTwoDigitPositiveIntegerTest3) {
@@ -870,11 +870,11 @@ TEST(atoiTest, ValidThreeDigitPositiveIntegerTest1) {
 }
 
 TEST(atoiTest, ValidThreeDigitPositiveIntegerTest2) {
-  ASSERT_EQ(670, atoi("+670"));
+  ASSERT_EQ(120, atoi("120"));
 }
 
 TEST(atoiTest, ValidThreeDigitPositiveIntegerTest3) {
-  ASSERT_EQ(880, atoi("880"));
+  ASSERT_EQ(103, atoi("103"));
 }
 
 TEST(atoiTest, ValidFourDigitPositiveIntegerTest1) {
@@ -882,37 +882,417 @@ TEST(atoiTest, ValidFourDigitPositiveIntegerTest1) {
 }
 
 TEST(atoiTest, ValidFourDigitPositiveIntegerTest2) {
-  ASSERT_EQ(9876, atoi("+9876"));
+  ASSERT_EQ(1230, atoi("+1230"));
 }
 
 TEST(atoiTest, ValidFourDigitPositiveIntegerTest3) {
-  ASSERT_EQ(1000, atoi("1000"));
+  ASSERT_EQ(1204, atoi("1204"));
+}
+
+TEST(atoiTest, ValidFourDigitPositiveIntegerTest4) {
+  ASSERT_EQ(1034, atoi("+1034"));
 }
 
 TEST(atoiTest, ValidFiveDigitPositiveIntegerTest1) {
-  ASSERT_EQ(10000, atoi("+10000"));
-}
-
-TEST(atoiTest, ValidFiveDigitPositiveIntegerTest2) {
-  ASSERT_EQ(99999, atoi("99999"));
-}
-
-TEST(atoiTest, ValidFiveDigitPositiveIntegerTest3) {
   ASSERT_EQ(12345, atoi("+12345"));
 }
 
+TEST(atoiTest, ValidFiveDigitPositiveIntegerTest2) {
+  ASSERT_EQ(12340, atoi("12340"));
+}
+
+TEST(atoiTest, ValidFiveDigitPositiveIntegerTest3) {
+  ASSERT_EQ(12305, atoi("+12305"));
+}
+
 TEST(atoiTest, ValidFiveDigitPositiveIntegerTest4) {
-  ASSERT_EQ(10000, atoi("+10000"));
+  ASSERT_EQ(12045, atoi("12045"));
+}
+
+TEST(atoiTest, ValidFiveDigitPositiveIntegerTest5) {
+  ASSERT_EQ(10345, atoi("10345"));
+}
+
+TEST(atoiTest, ValidSixDigitPositiveIntegerTest1) {
+  ASSERT_EQ(123456, atoi("+123456"));
+}
+
+TEST(atoiTest, ValidSixDigitPositiveIntegerTest2) {
+  ASSERT_EQ(123450, atoi("123450"));
+}
+
+TEST(atoiTest, ValidSixDigitPositiveIntegerTest3) {
+  ASSERT_EQ(123406, atoi("+123406"));
+}
+
+TEST(atoiTest, ValidSixDigitPositiveIntegerTest4) {
+  ASSERT_EQ(123056, atoi("+123056"));
+}
+
+TEST(atoiTest, ValidSixDigitPositiveIntegerTest5) {
+  ASSERT_EQ(120456, atoi("+120456"));
+}
+
+TEST(atoiTest, ValidSixDigitPositiveIntegerTest6) {
+  ASSERT_EQ(103456, atoi("+103456"));
+}
+
+TEST(atoiTest, ValidSevenDigitPositiveIntegerTest1) {
+  ASSERT_EQ(1234567, atoi("+1234567"));
+}
+
+TEST(atoiTest, ValidSevenDigitPositiveIntegerTest2) {
+  ASSERT_EQ(1234560, atoi("1234560"));
+}
+
+TEST(atoiTest, ValidSevenDigitPositiveIntegerTest3) {
+  ASSERT_EQ(1234507, atoi("+1234507"));
+}
+
+TEST(atoiTest, ValidSevenDigitPositiveIntegerTest4) {
+  ASSERT_EQ(1234067, atoi("+1234067"));
+}
+
+TEST(atoiTest, ValidSevenDigitPositiveIntegerTest5) {
+  ASSERT_EQ(1230567, atoi("+1230567"));
+}
+
+TEST(atoiTest, ValidSevenDigitPositiveIntegerTest6) {
+  ASSERT_EQ(1204567, atoi("1204567"));
+}
+
+TEST(atoiTest, ValidSevenDigitPositiveIntegerTest7) {
+  ASSERT_EQ(1234567, atoi("+1234567"));
+}
+
+TEST(atoiTest, ValidEightDigitPositiveIntegerTest1) {
+  ASSERT_EQ(12345678, atoi("+12345678"));
+}
+
+TEST(atoiTest, ValidEightDigitPositiveIntegerTest2) {
+  ASSERT_EQ(12345670, atoi("12345670"));
+}
+
+TEST(atoiTest, ValidEightDigitPositiveIntegerTest3) {
+  ASSERT_EQ(12345608, atoi("+12345608"));
+}
+
+TEST(atoiTest, ValidEightDigitPositiveIntegerTest4) {
+  ASSERT_EQ(12345078, atoi("12345078"));
+}
+
+TEST(atoiTest, ValidEightDigitPositiveIntegerTest5) {
+  ASSERT_EQ(12340678, atoi("+12340678"));
+}
+
+TEST(atoiTest, ValidEightDigitPositiveIntegerTest6) {
+  ASSERT_EQ(12305678, atoi("+12305678"));
+}
+
+TEST(atoiTest, ValidEightDigitPositiveIntegerTest7) {
+  ASSERT_EQ(12045678, atoi("12045678"));
+}
+
+TEST(atoiTest, ValidEightDigitPositiveIntegerTest8) {
+  ASSERT_EQ(10345678, atoi("+10345678"));
+}
+
+TEST(atoiTest, ValidNineDigitPositiveIntegerTest1) {
+  ASSERT_EQ(123456789, atoi("+123456789"));
+}
+
+TEST(atoiTest, ValidNineDigitPositiveIntegerTest2) {
+  ASSERT_EQ(123456780, atoi("123456780"));
+}
+
+TEST(atoiTest, ValidNineDigitPositiveIntegerTest3) {
+  ASSERT_EQ(123456709, atoi("+123456709"));
+}
+
+TEST(atoiTest, ValidNineDigitPositiveIntegerTest4) {
+  ASSERT_EQ(123456089, atoi("123456089"));
+}
+
+TEST(atoiTest, ValidNineDigitPositiveIntegerTest5) {
+  ASSERT_EQ(123450789, atoi("+123450789"));
+}
+
+TEST(atoiTest, ValidNineDigitPositiveIntegerTest6) {
+  ASSERT_EQ(123406789, atoi("123406789"));
+}
+
+TEST(atoiTest, ValidNineDigitPositiveIntegerTest7) {
+  ASSERT_EQ(123056789, atoi("+123056789"));
+}
+
+TEST(atoiTest, ValidNineDigitPositiveIntegerTest8) {
+  ASSERT_EQ(120456789, atoi("120456789"));
+}
+
+TEST(atoiTest, ValidNineDigitPositiveIntegerTest9) {
+  ASSERT_EQ(103456789, atoi("+103456789"));
+}
+
+TEST(atoiTest, ValidTenDigitPositiveIntegerTest1) {
+  ASSERT_EQ(1234567891, atoi("+1234567891"));
+}
+
+TEST(atoiTest, ValidTenDigitPositiveIntegerTest2) {
+  ASSERT_EQ(1234567890, atoi("1234567890"));
+}
+
+TEST(atoiTest, ValidTenDigitPositiveIntegerTest3) {
+  ASSERT_EQ(1234567801, atoi("+1234567801"));
+}
+
+TEST(atoiTest, ValidTenDigitPositiveIntegerTest4) {
+  ASSERT_EQ(1234567091, atoi("1234567091"));
+}
+
+TEST(atoiTest, ValidTenDigitPositiveIntegerTest5) {
+  ASSERT_EQ(1234560891, atoi("+1234560891"));
+}
+
+TEST(atoiTest, ValidTenDigitPositiveIntegerTest6) {
+  ASSERT_EQ(1234507891, atoi("1234507891"));
+}
+
+TEST(atoiTest, ValidTenDigitPositiveIntegerTest7) {
+  ASSERT_EQ(1234067891, atoi("+1234067891"));
+}
+
+TEST(atoiTest, ValidTenDigitPositiveIntegerTest8) {
+  ASSERT_EQ(1230567891, atoi("1230567891"));
+}
+
+TEST(atoiTest, ValidTenDigitPositiveIntegerTest9) {
+  ASSERT_EQ(1204567891, atoi("+1204567891"));
+}
+
+TEST(atoiTest, ValidTenDigitPositiveIntegerTest10) {
+  ASSERT_EQ(1034567891, atoi("1034567891"));
+}
+
+TEST(atoiTest, ValidOneDigitNegativeIntegerTest1) {
+  ASSERT_EQ(-1, atoi("-1"));
+}
+
+TEST(atoiTest, ValidOneDigitNegativeIntegerTest2) {
+  ASSERT_EQ(-9, atoi("-9"));
 }
 
 TEST(atoiTest, ValidTwoDigitNegativeIntegerTest1) {
-  ASSERT_EQ(-12, atoi("-12"));
+  ASSERT_EQ(-21, atoi("-21"));
 }
 
 TEST(atoiTest, ValidTwoDigitNegativeIntegerTest2) {
   ASSERT_EQ(-20, atoi("-20"));
 }
 
-TEST(atoiTest, ValidTwoDigitNegativeIntegerTest3) {
-  ASSERT_EQ(-88, atoi("-88"));
+TEST(atoiTest, ValidThreeDigitNegativeIntegerTest1) {
+  ASSERT_EQ(-321, atoi("-321"));
+}
+
+TEST(atoiTest, ValidThreeDigitNegativeIntegerTest2) {
+  ASSERT_EQ(-320, atoi("-320"));
+}
+
+TEST(atoiTest, ValidThreeDigitNegativeIntegerTest3) {
+  ASSERT_EQ(-301, atoi("-301"));
+}
+
+TEST(atoiTest, ValidFourDigitNegativeIntegerTest1) {
+  ASSERT_EQ(-4321, atoi("-4321"));
+}
+
+TEST(atoiTest, ValidFourDigitNegativeIntegerTest2) {
+  ASSERT_EQ(-4320, atoi("-4320"));
+}
+
+TEST(atoiTest, ValidFourDigitNegativeIntegerTest3) {
+  ASSERT_EQ(-4301, atoi("-4301"));
+}
+
+TEST(atoiTest, ValidFourDigitNegativeIntegerTest4) {
+  ASSERT_EQ(-4021, atoi("-4021"));
+}
+
+TEST(atoiTest, ValidFiveDigitNegativeIntegerTest1) {
+  ASSERT_EQ(-54321, atoi("-54321"));
+}
+
+TEST(atoiTest, ValidFiveDigitNegativeIntegerTest2) {
+  ASSERT_EQ(-54320, atoi("-54320"));
+}
+
+TEST(atoiTest, ValidFiveDigitNegativeIntegerTest3) {
+  ASSERT_EQ(-54301, atoi("-54301"));
+}
+
+TEST(atoiTest, ValidFiveDigitNegativeIntegerTest4) {
+  ASSERT_EQ(-54021, atoi("-54021"));
+}
+
+TEST(atoiTest, ValidFiveDigitNegativeIntegerTest5) {
+  ASSERT_EQ(-50321, atoi("-50321"));
+}
+
+TEST(atoiTest, ValidSixDigitNegativeIntegerTest1) {
+  ASSERT_EQ(-654321, atoi("-654321"));
+}
+
+TEST(atoiTest, ValidSixDigitNegativeIntegerTest2) {
+  ASSERT_EQ(-654320, atoi("-654320"));
+}
+
+TEST(atoiTest, ValidSixDigitNegativeIntegerTest3) {
+  ASSERT_EQ(-654301, atoi("-654301"));
+}
+
+TEST(atoiTest, ValidSixDigitNegativeIntegerTest4) {
+  ASSERT_EQ(-654021, atoi("-654021"));
+}
+
+TEST(atoiTest, ValidSixDigitNegativeIntegerTest5) {
+  ASSERT_EQ(-650321, atoi("-650321"));
+}
+
+TEST(atoiTest, ValidSixDigitNegativeIntegerTest6) {
+  ASSERT_EQ(-604321, atoi("-604321"));
+}
+
+TEST(atoiTest, ValidSevenDigitNegativeIntegerTest1) {
+  ASSERT_EQ(-7654321, atoi("-7654321"));
+}
+
+TEST(atoiTest, ValidSevenDigitNegativeIntegerTest2) {
+  ASSERT_EQ(-7654320, atoi("-7654320"));
+}
+
+TEST(atoiTest, ValidSevenDigitNegativeIntegerTest3) {
+  ASSERT_EQ(-7654301, atoi("-7654301"));
+}
+
+TEST(atoiTest, ValidSevenDigitNegativeIntegerTest4) {
+  ASSERT_EQ(-7654021, atoi("-7654021"));
+}
+
+TEST(atoiTest, ValidSevenDigitNegativeIntegerTest5) {
+  ASSERT_EQ(-7650321, atoi("-7650321"));
+}
+
+TEST(atoiTest, ValidSevenDigitNegativeIntegerTest6) {
+  ASSERT_EQ(-7604321, atoi("-7604321"));
+}
+
+TEST(atoiTest, ValidSevenDigitNegativeIntegerTest7) {
+  ASSERT_EQ(-7054321, atoi("-7054321"));
+}
+
+TEST(atoiTest, ValidEightDigitNegativeIntegerTest1) {
+  ASSERT_EQ(-87654321, atoi("-87654321"));
+}
+
+TEST(atoiTest, ValidEightDigitNegativeIntegerTest2) {
+  ASSERT_EQ(-87654320, atoi("-87654320"));
+}
+
+TEST(atoiTest, ValidEightDigitNegativeIntegerTest3) {
+  ASSERT_EQ(-87654301, atoi("-87654301"));
+}
+
+TEST(atoiTest, ValidEightDigitNegativeIntegerTest4) {
+  ASSERT_EQ(-87654021, atoi("-87654021"));
+}
+
+TEST(atoiTest, ValidEightDigitNegativeIntegerTest5) {
+  ASSERT_EQ(-87650321, atoi("-87650321"));
+}
+
+TEST(atoiTest, ValidEightDigitNegativeIntegerTest6) {
+  ASSERT_EQ(-87604321, atoi("-87604321"));
+}
+
+TEST(atoiTest, ValidEightDigitNegativeIntegerTest7) {
+  ASSERT_EQ(-87054321, atoi("-87054321"));
+}
+
+TEST(atoiTest, ValidEightDigitNegativeIntegerTest8) {
+  ASSERT_EQ(-80654321, atoi("-80654321"));
+}
+
+TEST(atoiTest, ValidNineDigitNegativeIntegerTest1) {
+  ASSERT_EQ(-987654321, atoi("-987654321"));
+}
+
+TEST(atoiTest, ValidNineDigitNegativeIntegerTest2) {
+  ASSERT_EQ(-987654320, atoi("-987654320"));
+}
+
+TEST(atoiTest, ValidNineDigitNegativeIntegerTest3) {
+  ASSERT_EQ(-987654301, atoi("-987654301"));
+}
+
+TEST(atoiTest, ValidNineDigitNegativeIntegerTest4) {
+  ASSERT_EQ(-987654021, atoi("-987654021"));
+}
+
+TEST(atoiTest, ValidNineDigitNegativeIntegerTest5) {
+  ASSERT_EQ(-987650321, atoi("-987650321"));
+}
+
+TEST(atoiTest, ValidNineDigitNegativeIntegerTest6) {
+  ASSERT_EQ(-987604321, atoi("-987604321"));
+}
+
+TEST(atoiTest, ValidNineDigitNegativeIntegerTest7) {
+  ASSERT_EQ(-987054321, atoi("-987054321"));
+}
+
+TEST(atoiTest, ValidNineDigitNegativeIntegerTest8) {
+  ASSERT_EQ(-980654321, atoi("-980654321"));
+}
+
+TEST(atoiTest, ValidNineDigitNegativeIntegerTest9) {
+  ASSERT_EQ(-907654321, atoi("-907654321"));
+}
+
+TEST(atoiTest, ValidTenDigitNegativeIntegerTest1) {
+  ASSERT_EQ(-1987654321, atoi("-1987654321"));
+}
+
+TEST(atoiTest, ValidTenDigitNegativeIntegerTest2) {
+  ASSERT_EQ(-1987654320, atoi("-1987654320"));
+}
+
+TEST(atoiTest, ValidTenDigitNegativeIntegerTest3) {
+  ASSERT_EQ(-1987654301, atoi("-1987654301"));
+}
+
+TEST(atoiTest, ValidTenDigitNegativeIntegerTest4) {
+  ASSERT_EQ(-1987654021, atoi("-1987654021"));
+}
+
+TEST(atoiTest, ValidTenDigitNegativeIntegerTest5) {
+  ASSERT_EQ(-1987650321, atoi("-1987650321"));
+}
+
+TEST(atoiTest, ValidTenDigitNegativeIntegerTest6) {
+  ASSERT_EQ(-1987604321, atoi("-1987604321"));
+}
+
+TEST(atoiTest, ValidTenDigitNegativeIntegerTest7) {
+  ASSERT_EQ(-1987054321, atoi("-1987054321"));
+}
+
+TEST(atoiTest, ValidTenDigitNegativeIntegerTest8) {
+  ASSERT_EQ(-1980654321, atoi("-1980654321"));
+}
+
+TEST(atoiTest, ValidTenDigitNegativeIntegerTest9) {
+  ASSERT_EQ(-1907654321, atoi("-1907654321"));
+}
+
+TEST(atoiTest, ValidTenDigitNegativeIntegerTest10) {
+  ASSERT_EQ(-1087654321, atoi("-1087654321"));
 }
