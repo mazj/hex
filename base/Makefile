@@ -41,6 +41,12 @@ cutils.o: cutils.h cutils.c assert.h
 cutils_unittest.test: cutils.o unittest.o tests/cutils_unittest.cc
 	$(CXX) $(LIBGTEST) cutils.o unittest.o tests/cutils_unittest.cc -o cutils_unittest.test
 
+hash.o: hash.h hash.c utils.h
+	$(CC) $(CFLAGS) -c hash.h hash.c
+
+hash_unittest.test: hash.o unittest.o tests/hash_unittest.cc
+	$(CXX) $(LIBGTEST) hash.o unittest.o tests/hash_unittest.cc -o hash_unittest.test
+
 array.o: array.c array.h memory.h assert.h
 	$(CC) $(CFLAGS) array.c array.h memory.h assert.h
 
