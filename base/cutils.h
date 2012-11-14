@@ -20,6 +20,10 @@
 #ifndef _C_UTILS_H_
 #define _C_UTILS_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 //===========================================================================
 // Convert integer to string
@@ -62,6 +66,11 @@ itoa(int value, char *str, int base);
 //===========================================================================
 int
 atoi(const char *str);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif /* _C_UTILS_H_ */

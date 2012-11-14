@@ -35,14 +35,17 @@ uuid.o: uuid.h uuid.c utils.h rand.h
 uuid_unittest.test: uuid.o unittest.o tests/uuid_unittest.cc
 	$(CXX) $(LIBGTEST) uuid.o unittest.o uuid.h tests/uuid_unittest.cc -o uuid_unittest.test
 
+cutils.o: cutils.h cutils.c assert.h
+	$(CC) $(CFLAGS) -c cutils.c cutils.h 
+
+cutils_unittest.test: cutils.o unittest.o tests/cutils_unittest.cc
+	$(CXX) $(LIBGTEST) cutils.o unittest.o tests/cutils_unittest.cc -o cutils_unittest.test
+
 array.o: array.c array.h memory.h assert.h
 	$(CC) $(CFLAGS) array.c array.h memory.h assert.h
 
 bst.o: bst.h bst.c memory.h utils.h
 	$(CC) $(CFLAGS) bst.h bst.c memory.h utils.h
-
-cutils.o: cutils.h cutils.c assert.h strutils.o strutils.h
-	$(CC) $(CFLAGS) cutils.c assert.h strutils.o
 
 buffer.o: buffer.c buffer.h memory.h assert.h
 	$(CC) $(CFLAGS) buffer.c buffer.h memory.h assert.h

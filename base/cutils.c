@@ -15,19 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <limits.h>
-#include "strutils.h"
-#include "assert.h"
 
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <limits.h>
+#include "assert.h"
+#include "utils.h"
+
+#include <stdio.h>
 
 char*
-itoa(int value, char *str)
+itoa(int value, char *str, int base)
 {
-  RETURN_VAL_IF_NULL(str, NULL);
+  int isNegative = value < (int)0;
 
-  int isNegative = value < 0;
-
-  int v = value >= 0 ? : value * -1;
+  int v = abs(value);
   int v2 = v;
   int numDigits = 0;
 
@@ -44,8 +47,11 @@ itoa(int value, char *str)
     numDigits + 2 : numDigits + 1;
 
   char *_str = (char*)malloc(len);
+  memset(_str, 0, len);
 
-  int i = numDigits - 1;
+  HEX_ASSERT(_str);
+
+  int i = len - 2;
 
   while(v2 >= 0) {
     int c = v2 % 10;
@@ -63,7 +69,7 @@ itoa(int value, char *str)
     _str[0] = '-';
   }
 
-  str = _str;
+  *(&str) = _str;
 
   return str;
 }
@@ -71,21 +77,31 @@ itoa(int value, char *str)
 int
 atoi(const char *str)
 {
-  HEX_ASSERT(str);
+  RETURN_VAL_IF_NULL(str, 0);
 
-  char *s = strtrim(str);
+  char *s = (char*)str;
 
-  HEX_ASSERT(s);
+  /* trim leading whitespaces */
+  while(*s!='\0' && isspace(*s)) {
+    s++;
+  }
 
-  int val = 0;
-  int isNegative = (*s == '-') ? 1 : 0;
-  int start = (isdigit(*s)) ? 0 : 1;
-  int end = -1;
+  RETURN_VAL_IF_NULL(s, 0);
+
+  long val = 0;
+  int isNegative = (*s == '-');
   char *end_ptr = 0;
 
-  char *ss = s;
+  int start = (*s == '-' || *s == '+') ? 1 : 0;
+  int end = -1 + start;
 
-  while(*ss != '\0') {
+  /* potential start of the valid sequence of digits */
+  char *ss = s+start;
+
+  /* check the first digit in the sequence is a numeric digit. */
+  RETURN_VAL_IF_FALSE(isdigit(*ss), 0);
+
+  while(*ss!='\0') {
     if(isdigit(*ss)) {
       end_ptr = ss;
       ss++;
@@ -95,20 +111,22 @@ atoi(const char *str)
     }		
   }
 
-  if(end < start) {  // this is not a number
-    return 0;
-  }
+  /* this is not a number */
+  RETURN_VAL_IF_TRUE(end < start, 0);
 
   int powerOfTen = 1;
   while(end >= start) {
-    val += (*end_ptr - '0') * powerOfTen;
+    char c = (char)*end_ptr;
+    val += (long)( (long)(c - '0') * powerOfTen );
     powerOfTen *= 10;
     end_ptr--;
+    end--;
   }
 
-  val = isNegative ? val * -1 : val;
+  val = isNegative ? val * (long)-1 : val;
 
-  HEX_ASSERT(val >= INT_MIN && val <= INT_MAX);
+  RETURN_VAL_IF_TRUE((int)val < INT_MIN, INT_MIN);
+  RETURN_VAL_IF_TRUE((int)val > INT_MAX, INT_MAX);
 
-  return val;
+  return (int)val;
 }

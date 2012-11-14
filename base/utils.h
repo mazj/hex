@@ -20,6 +20,11 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
@@ -187,5 +192,9 @@ typedef struct HexBinaryNode_s {
   void* value;
 } *BinaryNode;
 
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UTILS_H_ */
