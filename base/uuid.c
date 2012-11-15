@@ -82,6 +82,7 @@ hash_t uuid_to_hash(const hex_uuid_t uuid)
   hash_t rand_1_hash = (hash_t)hash_robert_jenkin((unsigned int)uuid.rand_1);
   hash_t rand_2_hash = (hash_t)hash_robert_jenkin((unsigned int)uuid.rand_2);
 
+  /*
   time_u_hash &= 0xFF000000;
   time_l_hash &= 0x00FF0000;
   time_h_hash &= 0x0000FF00;
@@ -89,6 +90,17 @@ hash_t uuid_to_hash(const hex_uuid_t uuid)
   rand_2_hash &= 0x0000000F;
 
   hash = time_u_hash | time_l_hash | time_h_hash | rand_1_hash | rand_2_hash; 
+  */
+
+#ifndef GOLDEN_PRIME
+#define GOLDEN_PRIME 37
+#endif
+
+  hash = hash * GOLDEN_PRIME + time_u_hash;
+  hash = hash * GOLDEN_PRIME + time_l_hash;
+  hash = hash * GOLDEN_PRIME + time_h_hash;
+  hash = hash * GOLDEN_PRIME + rand_1_hash;
+  hash = hash * GOLDEN_PRIME + rand_2_hash;
 
   return hash;
 }
