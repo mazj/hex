@@ -1,3 +1,20 @@
+#
+# HEX Programming Language
+# Copyright (C) 2012  Yanzheng Li
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 CC=gcc
 CXX=g++
 CFLAGS=-Wno-implicit -Wall -arch x86_64
@@ -35,14 +52,23 @@ uuid.o: uuid.h uuid.c utils.h rand.h
 uuid_unittest.test: uuid.o unittest.o tests/uuid_unittest.cc
 	$(CXX) $(LIBGTEST) uuid.o unittest.o uuid.h tests/uuid_unittest.cc -o uuid_unittest.test
 
+cutils.o: cutils.h cutils.c assert.h
+	$(CC) $(CFLAGS) -c cutils.c cutils.h 
+
+cutils_unittest.test: cutils.o unittest.o tests/cutils_unittest.cc
+	$(CXX) $(LIBGTEST) cutils.o unittest.o tests/cutils_unittest.cc -o cutils_unittest.test
+
+hash.o: hash.h hash.c utils.h
+	$(CC) $(CFLAGS) -c hash.h hash.c
+
+hash_unittest.test: hash.o unittest.o tests/hash_unittest.cc
+	$(CXX) $(LIBGTEST) hash.o unittest.o tests/hash_unittest.cc -o hash_unittest.test
+
 array.o: array.c array.h memory.h assert.h
 	$(CC) $(CFLAGS) array.c array.h memory.h assert.h
 
 bst.o: bst.h bst.c memory.h utils.h
 	$(CC) $(CFLAGS) bst.h bst.c memory.h utils.h
-
-cutils.o: cutils.h cutils.c assert.h strutils.o strutils.h
-	$(CC) $(CFLAGS) cutils.c assert.h strutils.o
 
 buffer.o: buffer.c buffer.h memory.h assert.h
 	$(CC) $(CFLAGS) buffer.c buffer.h memory.h assert.h

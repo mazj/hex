@@ -15,28 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef _HASH_H_
+#define _HASH_H_
 
-/* Unit test
- *
- * All unit testing stuff should be here.
- * All unit tests do and should be linked to this.
- * */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#include "unittest.h"
+unsigned long hash_str(const char * str);
 
-using ::testing::EmptyTestEventListener;
-using ::testing::InitGoogleTest;
-using ::testing::Test;
-using ::testing::TestCase;
-using ::testing::TestEventListeners;
-using ::testing::TestInfo;
-using ::testing::TestPartResult;
-using ::testing::UnitTest;
-
-
-/* entry point for unit test executable */
-int main(int argc, char **argv)
-{
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* _HASH_H_ */
