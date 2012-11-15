@@ -25,44 +25,47 @@ LIBGTEST=/usr/lib/libgtest.a
 unittest.o: unittest.h unittest.cc
 	$(CXX) $(GTEST_INCLUDE) -c unittest.h unittest.cc
 
-utils_unittest.test: unittest.o tests/utils_unittest.cc
-	$(CXX) $(LIBGTEST) unittest.o tests/utils_unittest.cc -o utils_unittest.test
+utils.o: utils.c utils.h
+	$(CC) $(CFLAGS) -c utils.c utils.h
+
+utils_unittest.test: utils.o unittest.o tests/utils_unittest.cc
+	$(CXX) $(LIBGTEST) utils.o unittest.o tests/utils_unittest.cc -o utils_unittest.test
 
 strutils.o: strutils.c strutils.h utils.h 
-	$(CC) $(CFLAGS) -c strutils.c strutils.h utils.h
+	$(CC) $(CFLAGS) -c strutils.c strutils.h
 
-strutils_unittest.test: unittest.o strutils.o tests/strutils_unittest.cc
-	$(CXX) $(LIBGTEST) unittest.o strutils.o tests/strutils_unittest.cc -o strutils_unittest.test
+strutils_unittest.test: utils.o unittest.o strutils.o tests/strutils_unittest.cc
+	$(CXX) $(LIBGTEST) utils.o unittest.o strutils.o tests/strutils_unittest.cc -o strutils_unittest.test
 
 memory.o: memory.c memory.h
 	$(CC) $(CFLAGS) -c memory.c memory.h
 
-memory_unittest.test: memory.o unittest.o utils.h assert.h tests/memory_unittest.cc
-	$(CXX) $(LIBGTEST) memory.o unittest.o utils.h assert.h tests/memory_unittest.cc -o memory_unittest.test
+memory_unittest.test: utils.o memory.o unittest.o tests/memory_unittest.cc
+	$(CXX) $(LIBGTEST) utils.o memory.o unittest.o tests/memory_unittest.cc -o memory_unittest.test
 
-hashmap.o: hashmap.c hashmap.h assert.h memory.h utils.h
+hashmap.o: hashmap.c hashmap.h
 	$(CC) $(CFLAGS) -c hashmap.c hashmap.h
 
-hashmap_unittest.test: hashmap.o unittest.o memory.h utils.h assert.h tests/hashmap_unittest.cc
-	$(CXX) $(LIBGTEST) hashmap.o unittest.o memory.h utils.h assert.h tests/hashmap_unittest.cc -o hashmap_unittest.test
+hashmap_unittest.test: utils.o hashmap.o unittest.o memory.h utils.h assert.h tests/hashmap_unittest.cc
+	$(CXX) $(LIBGTEST) utils.o hashmap.o unittest.o memory.h utils.h assert.h tests/hashmap_unittest.cc -o hashmap_unittest.test
 
-uuid.o: uuid.h uuid.c utils.h rand.h
+uuid.o: uuid.h uuid.c
 	$(CC) $(CLAFGS) -c uuid.c uuid.h
 
-uuid_unittest.test: uuid.o unittest.o tests/uuid_unittest.cc
-	$(CXX) $(LIBGTEST) uuid.o unittest.o uuid.h tests/uuid_unittest.cc -o uuid_unittest.test
+uuid_unittest.test: utils.o uuid.o hash.o unittest.o tests/uuid_unittest.cc
+	$(CXX) $(LIBGTEST) utils.o uuid.o hash.o unittest.o uuid.h tests/uuid_unittest.cc -o uuid_unittest.test
 
-cutils.o: cutils.h cutils.c assert.h
+cutils.o: cutils.h cutils.c 
 	$(CC) $(CFLAGS) -c cutils.c cutils.h 
 
-cutils_unittest.test: cutils.o unittest.o tests/cutils_unittest.cc
-	$(CXX) $(LIBGTEST) cutils.o unittest.o tests/cutils_unittest.cc -o cutils_unittest.test
+cutils_unittest.test: utils.o cutils.o unittest.o tests/cutils_unittest.cc
+	$(CXX) $(LIBGTEST) utils.o cutils.o unittest.o tests/cutils_unittest.cc -o cutils_unittest.test
 
 hash.o: hash.h hash.c utils.h
 	$(CC) $(CFLAGS) -c hash.h hash.c
 
-hash_unittest.test: hash.o unittest.o tests/hash_unittest.cc
-	$(CXX) $(LIBGTEST) hash.o unittest.o tests/hash_unittest.cc -o hash_unittest.test
+hash_unittest.test: utils.o hash.o unittest.o tests/hash_unittest.cc
+	$(CXX) $(LIBGTEST) utils.o hash.o unittest.o tests/hash_unittest.cc -o hash_unittest.test
 
 array.o: array.c array.h memory.h assert.h
 	$(CC) $(CFLAGS) array.c array.h memory.h assert.h

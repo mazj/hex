@@ -77,3 +77,49 @@ TEST(uuid_compareTest, UUIDCompareDifferentIDTest) {
   ASSERT_FALSE(uuid_compare(id1, id2));
 }
 
+/****************************************
+ * Test for:
+ * hash_t uuid_to_hash(const hex_uuid_t)
+ ****************************************/
+TEST(uuid_to_hashTest, HashOnDifferentUUIDTest1) {
+  hex_uuid_t uuid1;
+  hex_uuid_t uuid2;
+
+  ASSERT_TRUE(uuid_create(&uuid1));
+  ASSERT_TRUE(uuid_create(&uuid2));
+
+  ASSERT_FALSE(uuid_compare(uuid1, uuid2));
+
+  hash_t hash1 = uuid_to_hash((const hex_uuid_t)uuid1);
+  hash_t hash2 = uuid_to_hash((const hex_uuid_t)uuid2);
+
+  ASSERT_NE(hash1, hash2);
+}
+
+TEST(uuid_to_hashTest, HashOnDifferentUUID_STRESSTest) {
+  int i;
+  for(i = 0; i < 9999; i++) {
+    hex_uuid_t uuid1;
+    hex_uuid_t uuid2;
+
+    ASSERT_TRUE(uuid_create(&uuid1));
+    ASSERT_TRUE(uuid_create(&uuid2));
+
+    ASSERT_FALSE(uuid_compare(uuid1, uuid2));
+
+    ASSERT_NE(
+      uuid_to_hash((const hex_uuid_t)uuid1),
+      uuid_to_hash((const hex_uuid_t)uuid2)
+    );
+  }
+}
+
+TEST(uuid_create_and_hashTest, UUIDCreateAndHash_STRESSTest) {
+  int i;
+  for(i = 0; i < 9999; i++) {
+    ASSERT_NE(
+      uuid_create_and_hash(),
+      uuid_create_and_hash()
+    );
+  }
+}

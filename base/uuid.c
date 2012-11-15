@@ -23,7 +23,7 @@
 #include "rand.h"
 
 
-int uuid_create(hex_uuid_t* id)
+int uuid_create(hex_uuid_t *uuid)
 {
   time_t t;
   char buf[30];
@@ -52,23 +52,64 @@ int uuid_create(hex_uuid_t* id)
   u4 = (unsigned short)hex_rand_top(USHRT_MAX);
   u5 = (unsigned short)hex_rand_top(USHRT_MAX);
 
-  id->time_u = u1;
-  id->time_l = u2;
-  id->time_h = u3;
-  id->rand_1 = u4;
-  id->rand_2 = u5;
+  uuid->time_u = u1;
+  uuid->time_l = u2;
+  uuid->time_h = u3;
+  uuid->rand_1 = u4;
+  uuid->rand_2 = u5;
 
   return 1;
 }
 
-int uuid_compare(hex_uuid_t id1, hex_uuid_t id2)
+int uuid_compare(hex_uuid_t uuid1, hex_uuid_t uuid2)
 {
-  RETURN_VAL_IF_NE(id1.time_u, id2.time_u, 0);
-  RETURN_VAL_IF_NE(id1.time_l, id2.time_l, 0);
-  RETURN_VAL_IF_NE(id1.time_h, id2.time_h, 0);
-  RETURN_VAL_IF_NE(id1.rand_1, id2.rand_1, 0);
-  RETURN_VAL_IF_NE(id1.rand_2, id2.rand_2, 0);
+  RETURN_VAL_IF_NE(uuid1.time_u, uuid2.time_u, 0);
+  RETURN_VAL_IF_NE(uuid1.time_l, uuid2.time_l, 0);
+  RETURN_VAL_IF_NE(uuid1.time_h, uuid2.time_h, 0);
+  RETURN_VAL_IF_NE(uuid1.rand_1, uuid2.rand_1, 0);
+  RETURN_VAL_IF_NE(uuid1.rand_2, uuid2.rand_2, 0);
 
   return 1;
 }
 
+hash_t uuid_to_hash(const hex_uuid_t uuid)
+{
+  hash_t hash = 0;
+
+  hash_t time_u_hash = (hash_t)hash64shift(uuid.time_u);
+  hash_t time_l_hash = (hash_t)hash64shift(uuid.time_l);
+  hash_t time_h_hash = (hash_t)hash64shift(uuid.time_h);
+  hash_t rand_1_hash = (hash_t)hash_robert_jenkin((unsigned int)uuid.rand_1);
+  hash_t rand_2_hash = (hash_t)hash_robert_jenkin((unsigned int)uuid.rand_2);
+
+  /*
+  time_u_hash &= 0xFF000000;
+  time_l_hash &= 0x00FF0000;
+  time_h_hash &= 0x0000FF00;
+  rand_1_hash &= 0x000000F0;
+  rand_2_hash &= 0x0000000F;
+
+  hash = time_u_hash | time_l_hash | time_h_hash | rand_1_hash | rand_2_hash; 
+  */
+
+#ifndef GOLDEN_PRIME
+#define GOLDEN_PRIME 37
+#endif
+
+  hash = hash * GOLDEN_PRIME + time_u_hash;
+  hash = hash * GOLDEN_PRIME + time_l_hash;
+  hash = hash * GOLDEN_PRIME + time_h_hash;
+  hash = hash * GOLDEN_PRIME + rand_1_hash;
+  hash = hash * GOLDEN_PRIME + rand_2_hash;
+
+  return hash;
+}
+
+hash_t uuid_create_and_hash()
+{
+  hex_uuid_t uuid;
+
+  int res = uuid_create(&uuid);
+
+  return uuid_to_hash((const hex_uuid_t)uuid);
+}

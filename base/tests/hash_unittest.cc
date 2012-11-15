@@ -22,7 +22,7 @@
 
 /********************************************
  * Test for:
- * unsigned long hash_str(const char * str)
+ * hash_t hash_str(const char * str)
  ********************************************/
 TEST(hash_strTest, HashNullStringTest) {
   ASSERT_EQ(hash_str(NULL), hash_str(NULL));
@@ -106,4 +106,137 @@ TEST(hash_strTest, HashLongStringTest6) {
     hash_str("                                                               "),
     hash_str(NULL)
   );
+}
+
+
+/********************************************
+ * Test for:
+ * hash_t hash32shift(unsigned int)
+ ********************************************/
+TEST(hash32shiftTest, HashOnSameKeyTest) {
+  unsigned int key = 6688;
+  ASSERT_EQ(
+    hash32shift(key),
+    hash32shift(key)
+  );
+}
+
+TEST(hash32shiftTest, HashOnDifferentKeyTest) {
+  int i;
+  for(i = 0; i < 499; i++) {
+    unsigned int key1 = (unsigned int)i;
+    unsigned int key2 = (unsigned int)((i*i)+1);
+
+    ASSERT_NE(
+      hash32shift(key1),
+      hash32shift(key2)
+    );
+  }
+}
+
+
+/********************************************
+ * Test for:
+ * hash_t hash64shift(unsigned int)
+ ********************************************/
+TEST(hash64shiftTest, HashOnSameKeyTest) {
+  unsigned long key = 66888888;
+  ASSERT_EQ(
+    hash64shift(key),
+    hash64shift(key)
+  );
+}
+
+TEST(hash64shiftTest, HashOnDifferentKeyTest) {
+  int i;
+  for(i = 0; i < 9999; i++) {
+    unsigned long key1 = (unsigned long)i;
+    unsigned long key2 = (unsigned long)(i*i+1);
+
+    ASSERT_NE(
+      hash64shift(key1),
+      hash64shift(key2)
+    );
+  }
+}
+
+
+/**********************************************************
+ * Test for:
+ * hash_t hash_str_jenkins_one_at_a_time(const char * str)
+ **********************************************************/
+TEST(hash_str_jenkins_one_at_a_timeTest, HashNullStringTest) {
+  ASSERT_EQ(
+    hash_str_jenkins_one_at_a_time(NULL),
+    hash_str_jenkins_one_at_a_time(NULL)
+  );
+}
+
+TEST(hash_str_jenkins_one_at_a_timeTest, HashSameStringTest1) {
+  const char str[] = "this is a test string!!!";
+
+  ASSERT_EQ(
+    hash_str_jenkins_one_at_a_time(str),
+    hash_str_jenkins_one_at_a_time(str)
+  );
+}
+
+TEST(hash_str_jenkins_one_at_a_timeTest, HashSameStringTest2) {
+  const char str[] = "!@#$%^&*()_+{}";
+
+  ASSERT_EQ(
+    hash_str_jenkins_one_at_a_time(str),
+    hash_str_jenkins_one_at_a_time(str)
+  );
+}
+
+TEST(hash_str_jenkins_one_at_a_timeTest, HashSameStringTest3) {
+  const char str[] = "";
+
+  ASSERT_EQ(
+    hash_str_jenkins_one_at_a_time(str),
+    hash_str_jenkins_one_at_a_time(str)
+  );
+}
+
+TEST(hash_str_jenkins_one_at_a_timeTest, HashDifferentStringTest1) {
+  ASSERT_NE(
+    hash_str_jenkins_one_at_a_time("test"),
+    hash_str_jenkins_one_at_a_time("test test test test")
+  );
+}
+
+TEST(hash_str_jenkins_one_at_a_timeTest, HashDifferentStringTest2) {
+  ASSERT_NE(
+    hash_str_jenkins_one_at_a_time(" "),
+    hash_str_jenkins_one_at_a_time("")
+  );
+}
+
+/**********************************************************
+ * Test for:
+ * hash_t hash_robert_jenkin(unsigned int)
+ **********************************************************/
+TEST(hash_robert_jenkinTest, HashSameNumberTest1) {
+  ASSERT_EQ(
+    hash_robert_jenkin(0),
+    hash_robert_jenkin(0)
+  );
+}
+
+TEST(hash_robert_jenkinTest, HashSameNumberTest2) {
+  ASSERT_EQ(
+    hash_robert_jenkin(9999),
+    hash_robert_jenkin(9999)
+  );
+}
+
+TEST(hash_robert_jenkinTest, HashDifferentNumberTest) {
+  int i;
+  for(i = 0; i < 499; i++) {
+    ASSERT_NE(
+      hash_robert_jenkin(i),
+      hash_robert_jenkin(i*i+1)
+    );
+  }
 }
