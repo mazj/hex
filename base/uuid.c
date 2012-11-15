@@ -23,7 +23,7 @@
 #include "rand.h"
 
 
-int uuid_create(hex_uuid_t* id)
+int uuid_create(hex_uuid_t *uuid)
 {
   time_t t;
   char buf[30];
@@ -52,23 +52,27 @@ int uuid_create(hex_uuid_t* id)
   u4 = (unsigned short)hex_rand_top(USHRT_MAX);
   u5 = (unsigned short)hex_rand_top(USHRT_MAX);
 
-  id->time_u = u1;
-  id->time_l = u2;
-  id->time_h = u3;
-  id->rand_1 = u4;
-  id->rand_2 = u5;
+  uuid->time_u = u1;
+  uuid->time_l = u2;
+  uuid->time_h = u3;
+  uuid->rand_1 = u4;
+  uuid->rand_2 = u5;
 
   return 1;
 }
 
-int uuid_compare(hex_uuid_t id1, hex_uuid_t id2)
+int uuid_compare(hex_uuid_t uuid1, hex_uuid_t uuid2)
 {
-  RETURN_VAL_IF_NE(id1.time_u, id2.time_u, 0);
-  RETURN_VAL_IF_NE(id1.time_l, id2.time_l, 0);
-  RETURN_VAL_IF_NE(id1.time_h, id2.time_h, 0);
-  RETURN_VAL_IF_NE(id1.rand_1, id2.rand_1, 0);
-  RETURN_VAL_IF_NE(id1.rand_2, id2.rand_2, 0);
+  RETURN_VAL_IF_NE(uuid1.time_u, uuid2.time_u, 0);
+  RETURN_VAL_IF_NE(uuid1.time_l, uuid2.time_l, 0);
+  RETURN_VAL_IF_NE(uuid1.time_h, uuid2.time_h, 0);
+  RETURN_VAL_IF_NE(uuid1.rand_1, uuid2.rand_1, 0);
+  RETURN_VAL_IF_NE(uuid1.rand_2, uuid2.rand_2, 0);
 
   return 1;
 }
 
+hash_t uuid_to_hash(const hex_uuid_t uuid)
+{
+
+}

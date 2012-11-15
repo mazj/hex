@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#include "hash.h"
+
 
 /* struct __hex_uuid_t
  * A 16-bytes structure
@@ -34,12 +36,16 @@ struct __hex_uuid_t {
   unsigned short rand_2;  /* 2 bytes */
 };
 
-
 typedef struct __hex_uuid_t hex_uuid_t;
+
 
 int uuid_create(hex_uuid_t*);
 
-int uuid_compare(hex_uuid_t id1, hex_uuid_t id2);
+int uuid_compare(hex_uuid_t, hex_uuid_t);
+
+hash_t uuid_to_hash(const hex_uuid_t);
+
+hash_t uuid_create_to_hash();
 
 
 #ifdef __cplusplus
