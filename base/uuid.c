@@ -74,5 +74,30 @@ int uuid_compare(hex_uuid_t uuid1, hex_uuid_t uuid2)
 
 hash_t uuid_to_hash(const hex_uuid_t uuid)
 {
+  hash_t hash = 0;
 
+  hash_t time_u_hash = (hash_t)hash64shift(uuid.time_u);
+  hash_t time_l_hash = (hash_t)hash64shift(uuid.time_l);
+  hash_t time_h_hash = (hash_t)hash64shift(uuid.time_h);
+  hash_t rand_1_hash = (hash_t)hash_robert_jenkin((unsigned int)uuid.rand_1);
+  hash_t rand_2_hash = (hash_t)hash_robert_jenkin((unsigned int)uuid.rand_2);
+
+  time_u_hash &= 0xFF000000;
+  time_l_hash &= 0x00FF0000;
+  time_h_hash &= 0x0000FF00;
+  rand_1_hash &= 0x000000F0;
+  rand_2_hash &= 0x0000000F;
+
+  hash = time_u_hash | time_l_hash | time_h_hash | rand_1_hash | rand_2_hash; 
+
+  return hash;
+}
+
+hash_t uuid_create_and_hash()
+{
+  hex_uuid_t uuid;
+
+  int res = uuid_create(&uuid);
+
+  return uuid_to_hash((const hex_uuid_t)uuid);
 }

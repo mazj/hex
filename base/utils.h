@@ -114,11 +114,7 @@ extern "C" {
  *  None.
  */
 void
-set_nth_bit(int *val, char bit)
-{
-  int b = (1 << (bit-1));
-  *val = *val | b;
-}
+set_nth_bit(int *val, char bit);
 
 /*
  * void
@@ -134,11 +130,7 @@ set_nth_bit(int *val, char bit)
  *  None.
  */
 void
-clear_nth_bit(int *val, char bit)
-{
-  int b = (1 << (bit-1));
-  *val = *val & (~b);
-}
+clear_nth_bit(int *val, char bit);
 
 /*
  * int
@@ -155,13 +147,7 @@ clear_nth_bit(int *val, char bit)
  *  bit of the given is set. Returns 1 if set, 0 otherwise.
  */
 int
-is_bit_set(int val, char bit)
-{
-  unsigned int v = val;
-  int b = (1 << (bit-1));
-  v = v & b;
-  return (v >> (bit-1)) == 1;
-}
+is_bit_set(int val, char bit);
 
 
 //===========================================================================

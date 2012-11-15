@@ -75,11 +75,11 @@ hash_t hash_str(const char * str)
 hash_t hash32shift(unsigned int key)
 {
   key = ~key + (key << 15); // key = (key << 15) - key - 1;
-  key = key ^ (key >>> 12);
+  key = key ^ (key >> 12);
   key = key + (key << 2);
-  key = key ^ (key >>> 4);
+  key = key ^ (key >> 4);
   key = key * 2057; // key = (key + (key << 3)) + (key << 11);
-  key = key ^ (key >>> 16);
+  key = key ^ (key >> 16);
 
   return (hash_t)key;
 }
@@ -87,11 +87,11 @@ hash_t hash32shift(unsigned int key)
 hash_t hash64shift(unsigned long key)
 {
   key = (~key) + (key << 21); // key = (key << 21) - key - 1;
-  key = key ^ (key >>> 24);
+  key = key ^ (key >> 24);
   key = (key + (key << 3)) + (key << 8); // key * 265
-  key = key ^ (key >>> 14);
+  key = key ^ (key >> 14);
   key = (key + (key << 2)) + (key << 4); // key * 21
-  key = key ^ (key >>> 28);
+  key = key ^ (key >> 28);
   key = key + (key << 31);
 
   return (hash_t)key;
@@ -101,12 +101,10 @@ hash_t hash_str_jenkins_one_at_a_time(const char * str)
 {
   RETURN_VAL_IF_NULL(str, 0);
 
-  size_t len = strlen(str);
-
   hash_t hash=0;
 
   int i;
-  for(i = 0; i < strlen(str), i++) {
+  for(i = 0; i < strlen(str); i++) {
     hash += str[i];
     hash += (hash << 10);
     hash ^= (hash >> 6);
@@ -119,7 +117,7 @@ hash_t hash_str_jenkins_one_at_a_time(const char * str)
   return hash;
 }
 
-hash_t hash_robert_jenkin(unsigned int key)
+hash_t hash_robert_jenkin(unsigned int k)
 {
   k = (k + 0x7ed55d16) + (k << 12);
   k = (k ^ 0xc761c23c) ^ (k >> 19);

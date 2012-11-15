@@ -15,41 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UUID_H_
-#define _UUID_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include "hash.h"
-
-
-/* struct __hex_uuid_t
- * A 16-bytes structure
- */
-struct __hex_uuid_t {
-  unsigned long  time_u;  /* 4 bytes */
-  unsigned long  time_l;  /* 4 bytes */
-  unsigned int   time_h;  /* 4 bytes */
-  unsigned short rand_1;  /* 2 bytes */
-  unsigned short rand_2;  /* 2 bytes */
-};
-
-typedef struct __hex_uuid_t hex_uuid_t;
-
-
-int uuid_create(hex_uuid_t*);
-
-int uuid_compare(hex_uuid_t, hex_uuid_t);
-
-hash_t uuid_to_hash(const hex_uuid_t);
-
-hash_t uuid_create_and_hash();
-
-
-#ifdef __cplusplus
+void
+set_nth_bit(int *val, char bit)
+{
+  int b = (1 << (bit-1));
+  *val = *val | b;
 }
-#endif
 
-#endif /* _UUID_H_ */
+void
+clear_nth_bit(int *val, char bit)
+{
+  int b = (1 << (bit-1));
+  *val = *val & (~b);
+}
+
+int
+is_bit_set(int val, char bit)
+{
+  unsigned int v = val;
+  int b = (1 << (bit-1));
+  v = v & b;
+  return (v >> (bit-1)) == 1;
+}
