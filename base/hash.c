@@ -27,9 +27,9 @@
  * O(n) runtime for short string.
  * ************************************/
 static
-unsigned long _hash_str_short(const char * str, size_t len)
+hash_t _hash_str_short(const char * str, size_t len)
 {
-  unsigned long h = 0;
+  hash_t h = 0;
 
   int i;
   for(i = 0; i < len; i++) {
@@ -44,9 +44,9 @@ unsigned long _hash_str_short(const char * str, size_t len)
  * O(ln(n)) runtime for long string.
  * ************************************/
 static
-unsigned long _hash_str_long(const char * str, size_t len)
+hash_t _hash_str_long(const char * str, size_t len)
 {
-  unsigned long h = 0;
+  hash_t h = 0;
 
   int i;
   for(i=1; i <= len; i*=2) {
@@ -56,7 +56,7 @@ unsigned long _hash_str_long(const char * str, size_t len)
   return h;
 }
 
-unsigned long hash_str(const char * str)
+hash_t hash_str(const char * str)
 {
   RETURN_VAL_IF_NULL(str, 0);
 

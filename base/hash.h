@@ -22,7 +22,15 @@
 extern "C" {
 #endif
 
-unsigned long hash_str(const char * str);
+#include "hash.h"
+
+/* hash_t
+ * A unsigned long integer hash number
+ * */
+typedef unsigned long long hash_t;
+
+
+hash_t hash_str(const char * str);
 
 #ifdef __cplusplus
 }

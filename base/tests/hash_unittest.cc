@@ -22,7 +22,7 @@
 
 /********************************************
  * Test for:
- * unsigned long hash_str(const char * str)
+ * hash_t hash_str(const char * str)
  ********************************************/
 TEST(hash_strTest, HashNullStringTest) {
   ASSERT_EQ(hash_str(NULL), hash_str(NULL));
