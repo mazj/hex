@@ -21,12 +21,52 @@
 #include <ctype.h>
 #include <limits.h>
 #include "assert.h"
+#include "memory.h"
 #include "utils.h"
+
+
+static
+char* _itoa_base(int value, char *str, int base)
+{
+  unsigned int v = (unsigned int)value;
+
+  const int buf_size=60;
+  char buf[buf_size];
+  int buf_index = 0;
+
+  unsigned int remainder = 0;
+
+  while(v >= base) {
+    remainder = v % base;
+    v /= base;
+    buf[buf_index++] = remainder + '0';
+  }
+
+  if(v > 0) {
+    buf[buf_index] = v + '0';
+  }
+
+  char *_str = (char*)MALLOC(buf_index+2);
+  memset(_str, 0, buf_index+2);
+
+  int str_index = 0;
+
+  while(buf_index >= 0) {
+    _str[str_index++] = buf[buf_index--];
+  }
+
+  *(&str) = _str;
+
+  return str;
+}
 
 
 char*
 itoa(int value, char *str, int base)
 {
+  if(base != 10 && value >= base)
+    return _itoa_base(value, str, base);
+
   int isNegative = value < (int)0;
 
   int v = abs(value);
