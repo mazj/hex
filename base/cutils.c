@@ -23,7 +23,6 @@
 #include "assert.h"
 #include "utils.h"
 
-#include <stdio.h>
 
 char*
 itoa(int value, char *str, int base)

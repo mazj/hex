@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+
 #include <stdio.h>
 #include <sys/types.h>
 #include <pthread.h>
@@ -181,19 +183,6 @@ void hashmap_free(Hashmap *hashmap)
   *hashmap = NULL;
 }
 
-int hashmap_hash(void *key, size_t key_size)
-{
-  int h = key_size;
-  char *data = (char*)key;
-
-  size_t i;
-  for(i = 0; i < key_size; i++) {
-    h = h * 31 + *data;
-    data++;
-  }
-
-  return h;
-}
 
 static
 HashmapEntry _create_entry(void *key, int hash, void *val)
