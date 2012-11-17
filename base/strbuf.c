@@ -43,7 +43,6 @@ void _strbuf_init(Strbuf *strbuf, size_t min_len)
   Strbuf _strbuf = *strbuf;
 
   RETURN_IF_NULL(_strbuf);
-  RETURN_IF_TRUE(_strbuf->size > 0);
 
   char* _str=NULL;
 
@@ -60,8 +59,10 @@ void _strbuf_init(Strbuf *strbuf, size_t min_len)
   memset(_str, 0, len);
 
   _strbuf->c_str = _str;
-  _strbuf->size = len;
+  _strbuf->size = 0;
   _strbuf->capacity = capacity;
+
+  *strbuf = _strbuf;
 }
 
 static
@@ -85,6 +86,8 @@ void _strbuf_allocate_more(Strbuf *strbuf, size_t len)
 
   _strbuf->c_str = c_str;
   _strbuf->capacity = new_capacity;
+
+  *strbuf = _strbuf;
 }
 
 Strbuf strbuf_create()
@@ -109,9 +112,10 @@ strbuf_free(Strbuf *strbuf)
 {
   Strbuf _strbuf = *strbuf;
 
-  char **_str = &_strbuf->c_str;
-
   HEX_ASSERT(_strbuf);
+
+  char **_str = &_strbuf->c_str;
+  
   HEX_FREE(*_str);
   _strbuf->size = 0;
   _strbuf->capacity = 0;
@@ -126,7 +130,7 @@ strbuf_empty(Strbuf strbuf)
 {
   RETURN_IF_NULL(strbuf);
 
-  HEX_FREE(strbuf);
+  memset(strbuf->c_str, 0, strbuf->size);
   strbuf->size = 0;
   strbuf->capacity = _strbuf_alloc_size;
 }
@@ -158,7 +162,6 @@ strbuf_append(Strbuf strbuf, const char *in_str)
   HEX_ASSERT(strbuf);
   HEX_ASSERT(in_str);
 
-  size_t remaining = 0;
   size_t len = strlen(in_str);
   size_t needed = len + 1;
 
@@ -166,12 +169,9 @@ strbuf_append(Strbuf strbuf, const char *in_str)
     _strbuf_init(&strbuf, MAX(len, _strbuf_alloc_size));
   }
 
-  remaining = strbuf->capacity - strbuf->size;
-
-  if(remaining < needed) {
+  if(len > strbuf->capacity) {
     _strbuf_allocate_more(&strbuf, needed);
   }
-
   strncpy(&strbuf->c_str[strbuf->size], in_str, len);
   strbuf->size += len;
 
