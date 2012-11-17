@@ -15,16 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 #include <stddef.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include "assert.h"
 #include "memory.h"
 #include "utils.h"
 #include "strbuf.h"
 
 
-#define STRBUF_INITIAL_ALLOC 1024
-static size_t strbuf_alloc_size = STRBUF_INITIAL_ALLOC;
+#define DEFAULT_STRBUF_INITIAL_ALLOC 1024
+
+static const size_t _strbuf_alloc_size = DEFAULT_STRBUF_INITIAL_ALLOC;
 
 
 struct HexStrbuf_s {
@@ -35,123 +38,87 @@ struct HexStrbuf_s {
 
 
 static
-void init_strbuf(Strbuf strbuf, size_t min_len)
+void _strbuf_init(Strbuf *strbuf, size_t min_len)
 {
-  RETURN_IF_NULL(strbuf);
-  RETURN_IF_TRUE(strbuf->capacity > 0);
+  Strbuf _strbuf = *strbuf;
 
-  char* d;
+  RETURN_IF_NULL(_strbuf);
+  RETURN_IF_TRUE(_strbuf->size > 0);
 
-  if(min_len < strbuf_alloc_size) {
-    min_len = strbuf_alloc_size;
-  }
+  char* _str=NULL;
 
-  d = (char*)malloc(min_len);
+  size_t len = MAX(min_len, _strbuf_alloc_size);
+  size_t capacity = len;
 
-  if(!d) {
+  _str = (char*)malloc(len);
+
+  if(!_str) {
     errno = ENOMEM;
     exit(5);
   }
 
-  strbuf->c_str = d;
-  strbuf->capacity = min_len;
-  strbuf->c_str[0] = 0;
-  strbuf->size = 0;
+  memset(_str, 0, len);
+
+  _strbuf->c_str = _str;
+  _strbuf->size = len;
+  _strbuf->capacity = capacity;
 }
 
-/*
- * Make more room. Leaving contents unchanged, effectively.
- */
 static
-void _allocate_more(Strbuf strbuf, size_t len)
+void _strbuf_allocate_more(Strbuf *strbuf, size_t len)
 {
-  RETURN_IF_NULL(strbuf);
+  Strbuf _strbuf = *strbuf;
 
-  size_t new_capacity = strbuf->capacity + len;
-  char* c_str = 0;
+  HEX_ASSERT(_strbuf);
 
-  if(new_capacity < strbuf_alloc_size) {
-    new_capacity = strbuf_alloc_size;
-  }
+  size_t new_capacity = _strbuf->capacity + len;
+  char* c_str = NULL;
 
-  c_str = realloc(strbuf->c_str, new_capacity);
+  new_capacity = MAX(new_capacity, _strbuf_alloc_size);
+
+  c_str = realloc(_strbuf->c_str, new_capacity);
 
   if(!c_str) {
-    fprintf(stderr, "string buffer is out of memory re-allocating "
-      "%lu bytes\n", (unsigned long)new_capacity);
+    errno=ENOMEM;
     exit(-5);
   }
 
-  strbuf->c_str = c_str;
-  strbuf->capacity = new_capacity;
+  _strbuf->c_str = c_str;
+  _strbuf->capacity = new_capacity;
 }
 
-static
-void _strbuf_appendn_internal(Strbuf strbuf, const char *in_str, size_t len);
-
-void
-strbuf_appendn(Strbuf strbuf, const char *in_str, size_t len)
+Strbuf strbuf_create()
 {
-  RETURN_IF_NULL(strbuf);
-  RETURN_IF_NULL(in_str);
+  Strbuf strbuf=NULL;
 
-  size_t full_len = strlen(in_str);
+  strbuf = HEX_MALLOC(struct HexStrbuf_s);
 
-  if(full_len < len) {
-    fprintf(
-      stderr,
-      "esb internal error, bad string length %lu  < %lu \n",
-      (unsigned long)full_len,
-      (unsigned long)len
-    );
-
-    len = full_len;
+  if(!strbuf) {
+    errno=ENOMEM;
+    return NULL;
   }
 
-  _strbuf_appendn_internal(strbuf, in_str, len);
+  _strbuf_init(&strbuf, _strbuf_alloc_size);
+
+  HEX_ASSERT(strbuf->c_str);
+  return strbuf;
 }
 
 void
-strbuf_append(Strbuf strbuf, const char *in_str)
+strbuf_free(Strbuf *strbuf)
 {
-  RETURN_IF_NULL(strbuf);
-  RETURN_IF_NULL(in_str);
+  Strbuf _strbuf = *strbuf;
 
-  size_t len = strlen(in_str);
+  char **_str = &_strbuf->c_str;
 
-  _strbuf_appendn_internal(strbuf, in_str, len);
-}
+  HEX_ASSERT(_strbuf);
+  HEX_FREE(*_str);
+  _strbuf->size = 0;
+  _strbuf->capacity = 0;
 
-static
-void _strbuf_appendn_internal(Strbuf strbuf, const char *in_str, size_t len)
-{
-  size_t remaining = 0;
-  size_t needed = len + 1;
+  HEX_FREE(_strbuf);
 
-  if(strbuf->capacity == 0) {
-    size_t maxlen = (len > strbuf_alloc_size) ? len : strbuf_alloc_size;
-    init_strbuf(strbuf, maxlen);
-  }
-
-  remaining = strbuf->capacity - strbuf->size;
-
-  if(remaining < needed) {
-    _allocate_more(strbuf, needed);
-  }
-
-  strncpy(&strbuf->c_str[strbuf->size], in_str, len);
-  strbuf->size += len;
-
-  /* Insist on explicit NUL terminator */
-  strbuf->c_str[strbuf->size] = '\0';
-}
-
-char*
-strbuf_get_string(Strbuf strbuf)
-{
-  HEX_ASSERT(strbuf);
-
-  return strbuf->c_str;
+  *strbuf = _strbuf;
 }
 
 void
@@ -159,12 +126,9 @@ strbuf_empty(Strbuf strbuf)
 {
   RETURN_IF_NULL(strbuf);
 
-  if(strbuf->capacity == 0) {
-    init_strbuf(strbuf, strbuf_alloc_size);
-  }
-
+  HEX_FREE(strbuf);
   strbuf->size = 0;
-  strbuf->c_str[0] = 0;
+  strbuf->capacity = _strbuf_alloc_size;
 }
 
 size_t
@@ -174,86 +138,45 @@ strbuf_len(Strbuf strbuf)
   return strbuf->size;
 }
 
-void
-strbuf_constructor(Strbuf strbuf)
+char*
+strbuf_cstr(Strbuf strbuf)
 {
   HEX_ASSERT(strbuf);
-  memset(strbuf, 0, sizeof(*strbuf));
-}
-
-void
-strbuf_destructor(Strbuf strbuf)
-{
-  HEX_ASSERT(strbuf);
-
-  if(strbuf->c_str) {
-    HEX_FREE(strbuf->c_str);
-    strbuf->size = 0;
-    strbuf->capacity = 0;
-  }
-}
-
-void
-strbuf_reverse(Strbuf strbuf)
-{
-  RETURN_IF_NULL(strbuf);
-
-  char *str = strbuf_get_string(strbuf);
-
-  RETURN_IF_NULL(str);
-
-  int i = 0;
-  int j = strlen(str) - 1;
-
-  while(i < j) {
-    char tmp = str[i];
-    str[i] = str[j];
-    str[j] = tmp;
-    i++;
-    j--;
-  }
-}
-
-void
-strbuf_set_alloc_size(size_t size)
-{
-  strbuf_alloc_size = size;
+  return strbuf->c_str;
 }
 
 size_t
-strbuf_get_allocated_size(Strbuf strbuf)
+strbuf_capacity(Strbuf strbuf)
 {
-  RETURN_IF_NULL(strbuf);
+  HEX_ASSERT(strbuf);
   return strbuf->capacity;
 }
 
-void
-strbuf_append_printf(Strbuf strbuf, const char *in_str, ...)
+int
+strbuf_append(Strbuf strbuf, const char *in_str)
 {
-  #define NULL_DEVICE_FILE "/dev/null"
+  HEX_ASSERT(strbuf);
+  HEX_ASSERT(in_str);
 
-  static FILE *null_file = NULL;
+  size_t remaining = 0;
+  size_t len = strlen(in_str);
+  size_t needed = len + 1;
 
-  int needed_size = 0;
-  int length = 0;
-
-  va_list ap;
-  va_start(ap, in_str);
-
-  if(null_file == NULL) {
-    null_file = fopen(NULL_DEVICE_FILE, "w");
+  if(strbuf->capacity == 0) { 
+    _strbuf_init(&strbuf, MAX(len, _strbuf_alloc_size));
   }
 
-  length = vfprintf(null_file, in_str, ap);
+  remaining = strbuf->capacity - strbuf->size;
 
-  /* Check if we require allocate more space */
-  needed_size = strbuf->size + length;
-
-  if(needed_size > strbuf->capacity) {
-    _allocate_more(strbuf, length);
+  if(remaining < needed) {
+    _strbuf_allocate_more(&strbuf, needed);
   }
 
-  vsprintf(&strbuf->c_str[strbuf->size], in_str, ap);
-  strbuf->size += length;
-  va_end(ap);
+  strncpy(&strbuf->c_str[strbuf->size], in_str, len);
+  strbuf->size += len;
+
+  /* Insist on explicit NULL terminator */
+  strbuf->c_str[strbuf->size] = '\0';
+
+  return 1;
 }

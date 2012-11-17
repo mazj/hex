@@ -15,39 +15,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* String buffer */
+
+/* Generic string buffer */
 
 #ifndef _STRBUF_H_
 #define _STRBUF_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stddef.h>
-#include <stdarg.h>
 
 typedef struct HexStrbuf_s *Strbuf;
 
+Strbuf strbuf_create();
 
-void strbuf_append(Strbuf strbuf, const char *in_str);
-
-void strbuf_appendn(Strbuf strbuf, const char *in_str, size_t len);
-
-char* strbuf_string(Strbuf strbuf);
+void strbuf_free(Strbuf *strbuf);
 
 void strbuf_empty(Strbuf strbuf);
 
 size_t strbuf_len(Strbuf strbuf);
 
-void strbuf_constructor(Strbuf strbuf);
+char* strbuf_cstr(Strbuf strbuf);
 
-void strbuf_destructor(Strbuf strbuf);
+size_t strbuf_capacity(Strbuf strbuf);
 
-void strbuf_reverse(Strbuf strbuf);
+int strbuf_append(Strbuf strbuf, const char *in_str);
 
-void strbuf_set_alloc_size(size_t size);
 
-size_t strbuf_get_allocated_size(Strbuf strbuf);
-
-void strbuf_append_printf(Strbuf strbuf, const char *in_str, ...);
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif /* _STRBUF_H_ */

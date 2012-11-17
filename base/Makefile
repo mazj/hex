@@ -67,6 +67,12 @@ hash.o: hash.h hash.c utils.h
 hash_unittest.test: utils.o hash.o unittest.o tests/hash_unittest.cc
 	$(CXX) $(LIBGTEST) utils.o hash.o unittest.o tests/hash_unittest.cc -o hash_unittest.test
 
+strbuf.o: strbuf.c strbuf.h
+	$(CC) $(CFLAGS) -c strbuf.c strbuf.h
+
+strbuf_unittest.test: strbuf.o unittest.o tests/strbuf_unittest.cc
+	$(CXX) $(LIBGTEST) strbuf.o unittest.o tests/strbuf_unittest.cc -o strbuf_unittest.test
+
 array.o: array.c array.h memory.h assert.h
 	$(CC) $(CFLAGS) array.c array.h memory.h assert.h
 
@@ -76,8 +82,6 @@ bst.o: bst.h bst.c memory.h utils.h
 buffer.o: buffer.c buffer.h memory.h assert.h
 	$(CC) $(CFLAGS) buffer.c buffer.h memory.h assert.h
 
-strbuf.o: strbuf.c strbuf.h
-	$(CC) $(CFLAGS) strbuf.c strbuf.h
 
 queue.o: queue.c queue.h memory.h
 	$(CC) $(CFLAGS) queue.c queue.h memory.h
