@@ -89,6 +89,36 @@ TEST_F(StrbufTest, StrbufAppendTest3) {
   ASSERT_LE(0, strbuf_capacity(_strbuf));
 }
 
+TEST_F(StrbufTest, StrbufAppendTest4) {
+  char text1[2000];
+  int i;
+  for(i = 0; i < 1999; i++) {
+    text1[i] = (char)(i % 26) + '0';
+  }
+
+  strbuf_append(_strbuf, text1);
+  ASSERT_STREQ(text1, strbuf_cstr(_strbuf));
+  ASSERT_EQ(strlen(text1), strbuf_len(_strbuf));
+  size_t capacity1 = strbuf_capacity(_strbuf);
+  ASSERT_LE(0, capacity1);
+
+  char text2[] = "Testing for appending long string for strbuf.";
+
+  size_t size = strlen(text1) + strlen(text2);
+
+  char *text = (char*)malloc(size+1);
+  HEX_ASSERT(text);
+  memset(text, 0 , size+1);
+  strcpy(text, text1);
+  strcpy(text+1999, text2);
+
+  strbuf_append(_strbuf, text2);
+
+  ASSERT_STREQ(text, strbuf_cstr(_strbuf));
+  ASSERT_EQ(size, strbuf_len(_strbuf));
+  ASSERT_LE(capacity1, strbuf_capacity(_strbuf));
+}
+
 TEST_F(StrbufTest, StrbufEmptyTest) {
   char text[] = "Another test for strbuf";
   strbuf_append(_strbuf, text);
@@ -100,5 +130,11 @@ TEST_F(StrbufTest, StrbufEmptyTest) {
 
   ASSERT_EQ(0, strbuf_len(_strbuf));
   ASSERT_LE(0, strbuf_capacity(_strbuf));
-}
 
+  /* append text after empty() */
+  char text2[] = "An apple a day, keep the doctor away.";
+  strbuf_append(_strbuf, text2);
+  ASSERT_STREQ(text2, strbuf_cstr(_strbuf));
+  ASSERT_EQ(strlen(text2), strbuf_len(_strbuf));
+  ASSERT_LE(0, strbuf_capacity(_strbuf));
+}

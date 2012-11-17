@@ -128,11 +128,12 @@ strbuf_free(Strbuf *strbuf)
 void
 strbuf_empty(Strbuf strbuf)
 {
-  RETURN_IF_NULL(strbuf);
+  HEX_ASSERT(strbuf);
 
-  memset(strbuf->c_str, 0, strbuf->size);
+  HEX_FREE(strbuf->c_str);
   strbuf->size = 0;
-  strbuf->capacity = _strbuf_alloc_size;
+  strbuf->capacity = 0;
+  _strbuf_init(&strbuf, _strbuf_alloc_size);
 }
 
 size_t
