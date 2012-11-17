@@ -22,11 +22,14 @@
 
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct HexQueue_s *Queue;
 
 
-Queue create_queue();
+Queue queue_create();
 
 size_t queue_size(Queue queue);
 
@@ -38,5 +41,11 @@ int queue_push(Queue queue, void *val, size_t size);
 
 void* queue_pop(Queue queue);
 
+void queue_free(Queue *queue);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _QUEUE_H_ */
