@@ -115,6 +115,7 @@ TEST_F(StackTest, StackPushPopTest3) {
   for(i = 0; i < 26; i++) {
     char *fruit = (char*)fruits[i];
     stack_push(_stack, fruit, strlen(fruit)+1);
+    ASSERT_EQ(i+1, stack_size(_stack));
   }
 
   ASSERT_EQ(26, stack_size(_stack));
@@ -122,6 +123,7 @@ TEST_F(StackTest, StackPushPopTest3) {
   for(i = 25; i >= 0; i--) {
     char *fruit = (char*)stack_pop(_stack);
     ASSERT_STREQ(fruit, fruits[i]);
+    ASSERT_EQ(i, stack_size(_stack));
   }
 
   ASSERT_EQ(0, stack_size(_stack));
