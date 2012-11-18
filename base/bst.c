@@ -23,11 +23,10 @@
 
 struct HexBst_s {
   BinaryNode root;
-  size_t height;
 };
 
 
-Bst create_bst()
+Bst bst_create()
 {
   Bst bst = HEX_MALLOC(struct HexBst_s);
 
@@ -36,74 +35,113 @@ Bst create_bst()
     return NULL;
   }
 
-  bst->height = 0;
   bst->root = NULL;
 
   return bst;
 }
 
 static
-BinaryNode _bst_left(BinaryNode node)
+inline void _bst_free_node(BinaryNode node)
+{
+  RETURN_IF_NULL(node);
+
+  _bst_free_node(node->left);
+  _bst_free_node(node->right);
+
+  node->left = NULL;
+  node->right = NULL;
+
+  HEX_FREE(node->value);
+  HEX_FREE(node);
+}
+
+void bst_free(Bst *bst)
+{
+  Bst _bst = *bst;
+
+  HEX_ASSERT(_bst);
+
+  _bst_free_node(_bst->root);
+
+  HEX_FREE(_bst);
+
+  *bst = _bst;
+}
+
+static
+inline BinaryNode _bst_left(BinaryNode node)
 {
   RETURN_VAL_IF_NULL(node, NULL);
   return node->left;
 }
 
 static
-BinaryNode _bst_right(BinaryNode node)
+inline BinaryNode _bst_right(BinaryNode node)
 {
   RETURN_VAL_IF_NULL(node, NULL);
   return node->right;
 }
 
 static
-BinaryNode _bst_create_node()
+inline BinaryNode _bst_create_node(size_t size)
 {
   BinaryNode node = NULL;
+  void *val = NULL;
 
-  HEX_MALLOC_OR_ENOMEM(struct HexBinaryNode_s, node);
+  node = HEX_MALLOC(struct HexBinaryNode_s);
 
-  RETURN_VAL_IF_NULL(node, NULL);
+  if(!node) {
+    errno = ENOMEM;
+    return NULL;
+  }
+
+  val = MALLOC(size);
+
+  if(!node->value) {
+    errno = ENOMEM;
+    HEX_FREE(node);
+    return NULL;
+  }
 
   node->left = NULL;
   node->right = NULL;
-  node->value = NULL;
+  node->value = val; 
 
   return node;
 }
 
 static
-void* _bst_node_value(BinaryNode node)
+inline void* _bst_node_value(BinaryNode node)
 {
   RETURN_VAL_IF_NULL(node, NULL);
   return node->value;
 }
 
 static
-int _bst_node_isleafnode(BinaryNode node)
+inline int _bst_node_isleafnode(BinaryNode node)
 {
   RETURN_VAL_IF_NULL(node, 0);
   return (!node->left && !node->right);
 }
 
 static
-int _bst_node_isfullnode(BinaryNode node)
+inline int _bst_node_isfullnode(BinaryNode node)
 {
   RETURN_VAL_IF_NULL(node, 0);
   return (node->left && node->right);
 }
 
 static
-int _bst_node_empty(BinaryNode node)
+inline int _bst_node_empty(BinaryNode node)
 {
-  return node == 0 || (!node->left && !node->right);
+  return node == NULL || (!node->left && !node->right);
 }
 
 /* Gets the size of the subtree starting with the given node. */
 static
-size_t _bst_size(BinaryNode node)
+inline size_t _bst_size(BinaryNode node)
 {
-  return (node == 0) ? 0 :
+  return (node == NULL) ? 0 :
     1 + _bst_size(node->left) 
     + _bst_size(node->right);
 }
@@ -111,14 +149,14 @@ size_t _bst_size(BinaryNode node)
 size_t
 bst_size(Bst bst)
 {
-  HEX_ASSERT(bst != NULL);
+  HEX_ASSERT(bst);
   return bst->root ? _bst_size(bst->root) : 0;
 }
 
 static
-size_t _bst_height(BinaryNode node)
+inline size_t _bst_height(BinaryNode node)
 {
-  return (node == 0) ? -1 : 1+
+  return (node == NULL) ? -1 : 1+
     MAX(
       _bst_height(node->left),
       _bst_height(node->right)
@@ -128,7 +166,7 @@ size_t _bst_height(BinaryNode node)
 size_t
 bst_height(Bst bst)
 {
-  HEX_ASSERT(bst != NULL);
+  HEX_ASSERT(bst);
   return bst->root ? _bst_height(bst->root) : 0;
 }
 
@@ -166,7 +204,7 @@ bst_equal(Bst bst1, Bst bst2, CmpFunc cmpfunc)
 }
 
 static
-void* _bst_front(BinaryNode node)
+inline void* _bst_front(BinaryNode node)
 {
   HEX_ASSERT(node);
   return node->left == 0 ? node->value : _bst_front(node->left);
@@ -175,12 +213,12 @@ void* _bst_front(BinaryNode node)
 void*
 bst_front(Bst bst)
 {
-  HEX_ASSERT(bst != NULL);
+  HEX_ASSERT(bst);
   return _bst_front(bst->root);
 }
 
 static
-void* _bst_back(BinaryNode node)
+inline void* _bst_back(BinaryNode node)
 {
   HEX_ASSERT(node);
   return (node->right == 0) ? node->value : _bst_back(node->right);
@@ -189,7 +227,7 @@ void* _bst_back(BinaryNode node)
 void*
 bst_back(Bst bst)
 {
-  HEX_ASSERT(bst != NULL);
+  HEX_ASSERT(bst);
   return _bst_back(bst->root);
 }
 
@@ -200,8 +238,7 @@ int _bst_insert(BinaryNode node, void *val, size_t size, CmpFunc cmpfunc)
 
   if(res < 0) {
     if(!node->left) {
-      node->left = _bst_create_node();
-      node->left->value = HEX_MALLOC(struct HexBinaryNode_s);
+      node->left = _bst_create_node(size);
       memcpy(node->left->value, val, size);
       return 1;
     } else {
@@ -209,8 +246,7 @@ int _bst_insert(BinaryNode node, void *val, size_t size, CmpFunc cmpfunc)
     }
   } else if(res > 0) {
     if(!node->right) {
-      node->right = _bst_create_node();
-      node->right->value = HEX_MALLOC(struct HexBinaryNode_s);
+      node->right = _bst_create_node(size);
       memcpy(node->right->value, val, size);
       return 1;
     } else {
@@ -228,7 +264,7 @@ bst_insert(Bst bst, void *val, size_t size, CmpFunc cmpfunc)
   HEX_ASSERT(val);
 
   if(!bst->root) {
-    bst->root = _bst_create_node();
+    bst->root = _bst_create_node(size);
     memcpy(bst->root->value, val, size);
     return 1;
   }
@@ -237,7 +273,7 @@ bst_insert(Bst bst, void *val, size_t size, CmpFunc cmpfunc)
 }
 
 static
-void* _bst_find(BinaryNode node, void *val, CmpFunc cmpfunc)
+inline void* _bst_find(BinaryNode node, void *val, CmpFunc cmpfunc)
 {
   RETURN_VAL_IF_NULL(node, NULL);
 

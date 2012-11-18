@@ -15,12 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* Binary search tree. */
+/* Binary search tree abstraction */
 
 #ifndef _BST_H_
 #define _BST_H_
 
 #include <stddef.h>
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct HexBst_s *Bst;
 
@@ -33,7 +38,9 @@ typedef struct HexBst_s *Bst;
 //===========================================================================
 typedef int (*CmpFunc) (void *arg1, void *arg2);
 
-Bst create_bst();
+Bst bst_create();
+
+void bst_free(Bst *bst);
 
 size_t bst_size(Bst bst);
 
@@ -49,6 +56,9 @@ int bst_insert(Bst bst, void *val, size_t size, CmpFunc);
 
 void* bst_find(Bst bst, void *val, CmpFunc);
 
-void* bst_remove(Bst bst, void *val, CmpFunc);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _BST_H_ */

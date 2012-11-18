@@ -23,12 +23,12 @@
 #include <limits.h>
 #include "memory.h"
 #include "assert.h"
-#include "array.h"
 #include "utils.h"
+#include "array.h"
 
+#define DEFAULT_ARRAY_INITIAL_CAPACITY 4
+#define ARRAY_MAX_CAPACITY ((int)UINT_MAX/sizeof(void*))
 
-#define INITIAL_CAPACITY 4
-#define MAX_CAPACITY ((int)UINT_MAX/sizeof(void*))
 
 struct HexArray_s {
   void** content;
@@ -36,29 +36,12 @@ struct HexArray_s {
   size_t capacity;
 };
 
-
-Array
-array_create()
-{
-  Array array = NULL;
-  HEX_MALLOC_OR_ENOMEM(struct HexArray_s, array);
-  return array;
-}
-
-void
-array_free(Array array)
-{
-  HEX_ASSERT(array);
-  HEX_FREE(array->content);
-  HEX_FREE(array);
-}
-
 /*
  * Expand the capacity of the array, if the specified
  * capacity is greater than capacity of the array.
  */
 static int
-_ensure_capacity(Array array, size_t capacity)
+_array_ensure_capacity(Array array, size_t capacity)
 {
   HEX_ASSERT(array);
 
@@ -66,12 +49,12 @@ _ensure_capacity(Array array, size_t capacity)
 
   if(capacity > oldCapacity) {
     size_t newCapcity = (oldCapacity == 0) ?
-      INITIAL_CAPACITY : oldCapacity;
+      DEFAULT_ARRAY_INITIAL_CAPACITY : oldCapacity;
 
     while(newCapcity < capacity) {
-      int newCap = newCapcity * 2;
-      if(newCap < newCapcity || newCap > MAX_CAPACITY) {
-        newCap = MAX_CAPACITY;
+      size_t newCap = newCapcity << 1;
+      if(newCap < newCapcity || newCap > ARRAY_MAX_CAPACITY) {
+        newCap = ARRAY_MAX_CAPACITY;
       }
       newCapcity = newCap;
     }
@@ -80,11 +63,13 @@ _ensure_capacity(Array array, size_t capacity)
     if(!array->content) {
       newContent = malloc(newCapcity * sizeof(void*));
       if(!newContent) {
+        errno = ENOMEM;
         return -1;
       }
     } else {
       newContent = realloc(array->content, sizeof(void*) * newCapcity);
       if(!newContent) {
+        errno = ENOMEM;
         return -1;
       }
     }
@@ -96,15 +81,53 @@ _ensure_capacity(Array array, size_t capacity)
   return 1;
 }
 
+static
+inline void _array_check_bound(Array array, int index)
+{
+  HEX_ASSERT(array);
+  HEX_ASSERT(index >= 0 && index < array->size);
+}
+
+Array array_create()
+{
+  Array array = NULL;
+
+  array = HEX_MALLOC(struct HexArray_s);
+
+  if(!array) {
+    errno = ENOMEM;
+    return NULL;
+  }
+
+  array->content = NULL;
+  array->size = 0;
+  array->capacity = 0;
+
+  _array_ensure_capacity(array, DEFAULT_ARRAY_INITIAL_CAPACITY);
+
+  return array;
+}
+
+void array_free(Array *array)
+{
+  Array _array = *array;
+
+  HEX_ASSERT(_array);
+  HEX_FREE(_array->content);
+  HEX_FREE(_array);
+
+  *array = _array;
+}
+
 int
 array_append(Array array, void* ptr)
 {
   HEX_ASSERT(array);
 
   size_t size = array->size;
-  int res = _ensure_capacity(array, size+1);
+  int res = _array_ensure_capacity(array, size+1);
 
-  RETURN_VAL_IF_FALSE(res, res);
+  RETURN_VAL_IF_FALSE(res, 0);
 
   array->content[size] = ptr;
   array->size++;
@@ -112,14 +135,14 @@ array_append(Array array, void* ptr)
   return 1;
 }
 
-/*
- * Check the specified index is within the bound of the array.
- */
-static
-void _check_bound(Array array, int index)
+void*
+array_get(Array array, int index)
 {
   HEX_ASSERT(array);
-  HEX_ASSERT(index >= 0 && index < array->size);
+
+  _array_check_bound(array, index);
+
+  return array->content[index];
 }
 
 void*
@@ -127,7 +150,7 @@ array_remove(Array array, int index)
 {
   HEX_ASSERT(array);
 
-  _check_bound(array, index);
+  _array_check_bound(array, index);
 
   void *ptr = array->content[index];
 
@@ -151,39 +174,12 @@ array_set(Array array, int index, void* ptr)
 {
   HEX_ASSERT(array);
 
-  _check_bound(array, index);
+  _array_check_bound(array, index);
 
   void* old = array->content[index];
   array->content[index] = ptr;
 
   return old;
-}
-
-int
-array_set_size(Array array, int newSize)
-{
-  HEX_ASSERT(array);
-  HEX_ASSERT(newSize >= 0);
-
-  int oldSize = array->size;
-
-  if(newSize > oldSize) {
-    int res = _ensure_capacity(array, newSize);
-
-    RETURN_VAL_IF_TRUE(res < 0, res);
-
-    memset(
-      array->content + sizeof(void*) * oldSize,
-      0,
-      sizeof(void*) * (newSize - oldSize)
-    );
-
-    array->size = newSize;
-
-    return 1;
-  }
-
-  return 0;
 }
 
 int

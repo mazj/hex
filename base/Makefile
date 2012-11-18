@@ -85,11 +85,17 @@ stack.o: stack.c stack.h
 stack_unittest.test: stack.o unittest.o tests/stack_unittest.cc
 	$(CXX) $(LIBGTEST) stack.o unittest.o tests/stack_unittest.cc -o stack_unittest.test
 
-array.o: array.c array.h memory.h assert.h
-	$(CC) $(CFLAGS) array.c array.h memory.h assert.h
+array.o: array.c array.h
+	$(CC) $(CFLAGS) -c array.c array.h
 
-bst.o: bst.h bst.c memory.h utils.h
-	$(CC) $(CFLAGS) bst.h bst.c memory.h utils.h
+array_unittest.test: array.o unittest.o tests/array_unittest.cc
+	$(CXX) $(LIBGTEST) array.o unittest.o tests/array_unittest.cc -o array_unittest.test
+
+bst.o: bst.h bst.c
+	$(CC) $(CFLAGS) -c bst.h bst.c
+
+bst_unittest.test: bst.o unittest.o tests/bst_unittest.cc
+	$(CXX) $(LIBGTEST) bst.o unittest.o tests/bst_unittest.cc -o bst_unittest.test
 
 buffer.o: buffer.c buffer.h memory.h assert.h
 	$(CC) $(CFLAGS) buffer.c buffer.h memory.h assert.h
