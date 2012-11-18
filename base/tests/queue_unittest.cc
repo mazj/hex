@@ -101,3 +101,31 @@ TEST_F(QueueTest, QueuePushPopTest2) {
   HEX_ASSERT(queue_pop(_queue) == NULL);
   ASSERT_EQ(0, queue_size(_queue));
 }
+
+TEST_F(QueueTest, QueuePushPopTest3) {
+  const char *fruits[26] = {
+    "Apple", "Banana", "Coconut", "Dragonfruit", "Elephant apple",
+    "Finger lime", "Grape", "Honeydrew melon", "Indian prune",
+    "Jasmine", "Kiwi", "Lemon", "Melon", "Nannyberry", "Orange", "Peach",
+    "Quandong", "Raspberry", "Strawberry", "Tangerine", "Uva",
+    "Vanilla", "Watermelon", "Xylocarp", "Yamamomo", "Zucchini"
+  };
+
+  int i;
+  for(i = 0; i < 26; i++) {
+    char *fruit = (char*)fruits[i];
+    queue_push(_queue, fruit, strlen(fruit)+1); 
+    ASSERT_EQ(i+1, queue_size(_queue));
+  }
+
+  ASSERT_EQ(26, queue_size(_queue));
+
+  for(i = 0; i < 26; i++) {
+    char *fruit = (char*)queue_pop(_queue);
+    ASSERT_STREQ(fruit, fruits[i]);
+    ASSERT_EQ(26-i-1, queue_size(_queue));
+  }
+
+  ASSERT_EQ(0, queue_size(_queue));
+  HEX_ASSERT(queue_pop(_queue) == NULL);
+}
