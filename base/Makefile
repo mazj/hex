@@ -97,10 +97,11 @@ bst.o: bst.h bst.c
 bst_unittest.test: bst.o unittest.o tests/bst_unittest.cc
 	$(CXX) $(LIBGTEST) bst.o unittest.o tests/bst_unittest.cc -o bst_unittest.test
 
-buffer.o: buffer.c buffer.h memory.h assert.h
-	$(CC) $(CFLAGS) buffer.c buffer.h memory.h assert.h
+buffer.o: buffer.c buffer.h
+	$(CC) $(CFLAGS) -c buffer.c buffer.h
 
-
+buffer_unittest.test: buffer.o unittest.o tests/buffer_unittest.cc
+	$(CXX) $(LIBGTEST) buffer.o unittest.o tests/buffer_unittest.cc -o buffer_unittest.test
 
 
 clean:
