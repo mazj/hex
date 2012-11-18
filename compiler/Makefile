@@ -18,23 +18,25 @@
 CC=gcc
 CFLAGS=-Wno-implicit
 
-parser: lex.yy.c parser.tab.h ast.o ast.h
-	gcc lex.yy.c parser.tab.h parser.tab.c ast.o
+LEX=lex
+BISON=bison
+
+
+ast.o: ast.c ast.h
+	$(CC) $(CFLAGS) -c ast.h ast.c
 
 lex.yy.c: lexer.l
-	lex lexer.l
-
-lexer.out:
-	make LDLIBS=-ll lexer
-
-preprocessor: esb.o utils.h preprocessor.c
-	$(CC) $(CFLAGS) esb.o preprocessor.c -o preprocessor
+	$(LEX) lexer.l
 
 parser.tab.h: parser.y
-	bison -d -t -v parser.y
+	$(BISON) -y -d -t -v -g parser.y -o parser.tab.h -o parser.tab.c
 
-ast.o: ast.c ast.h ../base/memory.h ../base/assert.h
-	$(CC) $(CFLAGS) -c ast.h ast.c ../base/memory.h ../base/assert.h
+parser: lex.yy.c parser.tab.h ast.o
+	$(CC) $(CFLAGS) lex.yy.c parser.tab.h parser.tab.c ast.o -o parser
+
+lexer.out: parser.tab.h
+	make LDLIBS=-ll lexer
+
 
 clean:
-	rm *.gch *.out *.o *.swp .lexer.l.swp *.output lexer lex.yy.c parser.tab.c parser.tab.h
+	rm *.gch *.out *.o *.swp .lexer.l.swp *.output *.vcg lexer lex.yy.c parser.tab.c parser.tab.h

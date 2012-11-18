@@ -32,62 +32,62 @@ yydebug = 1;
   char* string;
   int integer;
   double floating;
-  Expr hex_expr;
-  ExprList hex_expr_list;
-  Integer hex_integer;
-  Literal hex_literal;
+  struct HexExpr *hex_expr;
+  struct HexExprList *hex_expr_list;
+  struct HexInteger *hex_integer;
+  struct HexLiteral *hex_literal;
   int hex_assign_op;
-  TypeQualifierList hex_type_qualifier_list;
-  Declaration hex_declaration;
-  Parameter hex_parameter;
-  ParameterList hex_parameter_list;
-  ListInitializer hex_list_initializer;
-  ArrayInitializer hex_array_initializer;
-  TupleInitializer hex_tuple_initializer;
-  StructInitializer hex_struct_initializer;
-  SetInitializer hex_set_initializer;
-  MapMultimapInitializerSingle hex_map_multimap_initializer_single;
-  MapMultimapInitializerList hex_map_multimap_initializer_list;
-  MapMultimapInitializer hex_map_multimap_initializer;
-  Initializer hex_initializer;
-  LambdaExpr hex_lambda_expr;
-  Assignment hex_assignment;
-  AssignmentList hex_assignment_list;
-  AssignmentStmt hex_assignment_stmt;
-  AssignmentStmtList hex_assignment_stmt_list;
-  FuncDec hex_func_dec;
-  FuncDef hex_func_def;
-  Attribute hex_attribute;
-  CompilerProperty hex_compiler_property;
-  DecoratorListSingle hex_decorator_list_single;
-  DecoratorList hex_decorator_list;
-  Decorator hex_decorator;
-  ClassDeclaration hex_class_declaration;
-  ClassSection hex_class_section;
-  Module hex_module;
-  ModuleList hex_module_list;
-  DirectImportStmt hex_direct_import_stmt;
-  RelativeImportStmt hex_relative_import_stmt;
-  ImportStmt hex_import_stmt;
-  ElifStmt hex_elif_stmt;
-  ElifGroup hex_elif_group;
-  IfStmt hex_if_stmt;
-  IfStmtSimple hex_if_stmt_simple;
-  Iterable hex_iterable;
-  WhileStmt hex_while_stmt;
-  ForStmt hex_for_stmt;
-  CatchStmt hex_catch_stmt;
-  CatchStmtGroup hex_catch_stmt_group;
-  FinallyStmt hex_finally_stmt;
-  TryStmt hex_try_stmt;
-  CompoundStmt hex_compound_stmt;
-  ReturnStmt hex_return_stmt;
-  ControlSimpleStmt hex_control_simple_stmt;
-  SimpleStmt hex_simple_stmt;
-  SimpleStmtList hex_simple_stmt_list;
-  Stmt hex_stmt;
-  StmtGroup hex_stmt_group;
-  Suite hex_suite;
+  struct HexTypeQualifierList *hex_type_qualifier_list;
+  struct HexDeclaration *hex_declaration;
+  struct HexParameter *hex_parameter;
+  struct HexParameterList *hex_parameter_list;
+  struct HexListInitializer *hex_list_initializer;
+  struct HexArrayInitializer *hex_array_initializer;
+  struct HexTupleInitializer *hex_tuple_initializer;
+  struct HexStructInitializer *hex_struct_initializer;
+  struct HexSetInitializer *hex_set_initializer;
+  struct HexMapMultimapInitializerSingle *hex_map_multimap_initializer_single;
+  struct HexMapMultimapInitializerList *hex_map_multimap_initializer_list;
+  struct HexMapMultimapInitializer *hex_map_multimap_initializer;
+  struct HexInitializer *hex_initializer;
+  struct HexLambdaExpr *hex_lambda_expr;
+  struct HexAssignment *hex_assignment;
+  struct HexAssignmentList *hex_assignment_list;
+  struct HexAssignmentStmt *hex_assignment_stmt;
+  struct HexAssignmentStmtList *hex_assignment_stmt_list;
+  struct HexFuncDec *hex_func_dec;
+  struct HexFuncDef *hex_func_def;
+  struct HexAttribute *hex_attribute;
+  struct HexCompilerProperty *hex_compiler_property;
+  struct HexDecoratorListSingle *hex_decorator_list_single;
+  struct HexDecoratorList *hex_decorator_list;
+  struct HexDecorator *hex_decorator;
+  struct HexClassDeclaration *hex_class_declaration;
+  struct HexClassSection *hex_class_section;
+  struct HexModule *hex_module;
+  struct HexModuleList *hex_module_list;
+  struct HexDirectImportStmt *hex_direct_import_stmt;
+  struct HexRelativeImportStmt *hex_relative_import_stmt;
+  struct HexImportStmt *hex_import_stmt;
+  struct HexElifStmt *hex_elif_stmt;
+  struct HexElifGroup *hex_elif_group;
+  struct HexIfStmt *hex_if_stmt;
+  struct HexIfStmtSimple *hex_if_stmt_simple;
+  struct HexIterable *hex_iterable;
+  struct HexWhileStmt *hex_while_stmt;
+  struct HexForStmt *hex_for_stmt;
+  struct HexCatchStmt *hex_catch_stmt;
+  struct HexCatchStmtGroup *hex_catch_stmt_group;
+  struct HexFinallyStmt *hex_finally_stmt;
+  struct HexTryStmt *hex_try_stmt;
+  struct HexCompoundStmt *hex_compound_stmt;
+  struct HexReturnStmt *hex_return_stmt;
+  struct HexControlSimpleStmt *hex_control_simple_stmt;
+  struct HexSimpleStmt *hex_simple_stmt;
+  struct HexSimpleStmtList *hex_simple_stmt_list;
+  struct HexStmt *hex_stmt;
+  struct HexStmtGroup *hex_stmt_group;
+  struct HexSuite *hex_suite;
 };
 
 %token <string> AND AS
@@ -180,7 +180,7 @@ yydebug = 1;
 %type <integer> type_specifier
 %type <hex_declaration> declaration
 %type <hex_expr> expr
-%type <hex_expr_list> expr_list_
+%type <hex_expr_list> expr_list
 %type <hex_parameter> parameter
 %type <hex_parameter_list> parameter_list_core
 %type <hex_parameter_list> parameter_list
@@ -271,7 +271,7 @@ simple_stmt_list
   ;
 
 simple_stmt
-  : expr_list_                                                                  { $$ = hex_ast_create_simple_stmt(simple_stmt_type_expr_list, $1); }
+  : expr_list                                                                  { $$ = hex_ast_create_simple_stmt(simple_stmt_type_expr_list, $1); }
   | declaration                                                                 { $$ = hex_ast_create_simple_stmt(simple_stmt_type_declaration, $1); }
   | assignment_stmt                                                             { $$ = hex_ast_create_simple_stmt(simple_stmt_type_assignment_stmt, $1); }
   | import_stmt                                                                 { $$ = hex_ast_create_simple_stmt(simple_stmt_type_import_stmt, $1); }
@@ -288,7 +288,7 @@ control_simple_stmt
 
 return_stmt
   : RETURN NEWLINE                                                              { $$ = hex_ast_create_return_stmt(return_stmt_type_none, 0); }
-  | RETURN expr_list_ NEWLINE                                                   { $$ = hex_ast_create_return_stmt(return_stmt_type_none, $2); }
+  | RETURN expr_list NEWLINE                                                   { $$ = hex_ast_create_return_stmt(return_stmt_type_none, $2); }
   ;
 
 compound_stmt
@@ -335,8 +335,8 @@ iterable
   ;
 
 if_stmt_simple
-  : IF expr COLON expr_list_                                                    { $$ = hex_ast_create_if_stmt_simple(if_stmt_simple_type_expr, $2, $4); }
-  | IF expr RETURN expr_list_                                                   { $$ = hex_ast_create_if_stmt_simple(if_stmt_simple_type_return, $2, $4); }
+  : IF expr COLON expr_list                                                    { $$ = hex_ast_create_if_stmt_simple(if_stmt_simple_type_expr, $2, $4); }
+  | IF expr RETURN expr_list                                                   { $$ = hex_ast_create_if_stmt_simple(if_stmt_simple_type_return, $2, $4); }
   ;
 
 if_stmt
@@ -395,7 +395,7 @@ class_access_specifier
 
 class_declaration
   : CLASS IDENTIFIER COLON                                                      { $$ = hex_ast_create_class_declaration($2, 0); }
-  | CLASS IDENTIFIER COLON expr_list_ COLON                                     { $$ = hex_ast_create_class_declaration($2, $4); }
+  | CLASS IDENTIFIER COLON expr_list COLON                                     { $$ = hex_ast_create_class_declaration($2, $4); }
   ;
 
 decorator
@@ -451,7 +451,7 @@ assignment_stmt_list
 
 assignment_stmt
   : declaration assignment_list                                                 { $$ = hex_ast_create_assignment_stmt(assignment_stmt_type_declaration, $1, $2); }
-  | expr_list_ assignment_list                                                  { $$ = hex_ast_create_assignment_stmt(assignment_stmt_type_expr_list, $1, $2); }
+  | expr_list assignment_list                                                  { $$ = hex_ast_create_assignment_stmt(assignment_stmt_type_expr_list, $1, $2); }
   ;
 
 assignment_list
@@ -539,9 +539,9 @@ expr
   | BASE                                                                        { $$ = hex_ast_create_expr(expr_type_base, 0); }
   ;
 
-expr_list_
+expr_list
   : expr                                                                        { $$ = hex_ast_create_expr_list($1, 0); }
-  | expr_list_ COMMA expr                                                       { $$ = hex_ast_create_expr_list($3, $1); }
+  | expr_list COMMA expr                                                       { $$ = hex_ast_create_expr_list($3, $1); }
   ;
 
 initializer
@@ -571,19 +571,19 @@ struct_initializer
   ;
 
 set_initializer
-  : LBRACKET LPAREN expr_list_ RPAREN RBRACKET                                  { $$ = hex_ast_create_set_initializer($3); }
+  : LBRACKET LPAREN expr_list RPAREN RBRACKET                                  { $$ = hex_ast_create_set_initializer($3); }
   ;
 
 array_initializer
-  : LBRACE expr_list_ RBRACE                                                    { $$ = hex_ast_create_array_initializer($2); }
+  : LBRACE expr_list RBRACE                                                    { $$ = hex_ast_create_array_initializer($2); }
   ;
 
 tuple_initializer
-  : LPAREN expr_list_ RPAREN                                                    { $$ = hex_ast_create_tuple_initializer($2); }
+  : LPAREN expr_list RPAREN                                                    { $$ = hex_ast_create_tuple_initializer($2); }
   ;
 
 list_initializer
-  : LBRACKET expr_list_ RBRACKET                                                { $$ = hex_ast_create_list_initializer($2); }
+  : LBRACKET expr_list RBRACKET                                                { $$ = hex_ast_create_list_initializer($2); }
   ;
 
 parameter_list
@@ -620,14 +620,14 @@ parameter
   ;
 
 declaration
-  : type_qualifier_list type_specifier expr_list_                               { $$ = hex_ast_create_declaration($1, $2, 0, $3, 0); }
-  | type_qualifier_list expr_list_                                              { $$ = hex_ast_create_declaration($1, 0, 0, $2, 0); }
-  | type_specifier expr_list_                                                   { $$ = hex_ast_create_declaration(0, $1, 0, $2, 0); }
-  | IDENTIFIER expr_list_                                                       { $$ = hex_ast_create_declaration(0, 0, $1, $2, 0); }
-  | type_qualifier_list type_specifier expr_list_ AS IDENTIFIER                 { $$ = hex_ast_create_declaration($1, $2, 0, $3, $5); }
-  | type_qualifier_list expr_list_ AS IDENTIFIER                                { $$ = hex_ast_create_declaration($1, 0, 0, $2, $4); }
-  | type_specifier expr_list_ AS IDENTIFIER                                     { $$ = hex_ast_create_declaration(0, $1, 0, $2, $4); }
-  | IDENTIFIER expr_list_ AS IDENTIFIER                                         { $$ = hex_ast_create_declaration(0, 0, $1, $2, $4); }
+  : type_qualifier_list type_specifier expr_list                               { $$ = hex_ast_create_declaration($1, $2, 0, $3, 0); }
+  | type_qualifier_list expr_list                                              { $$ = hex_ast_create_declaration($1, 0, 0, $2, 0); }
+  | type_specifier expr_list                                                   { $$ = hex_ast_create_declaration(0, $1, 0, $2, 0); }
+  | IDENTIFIER expr_list                                                       { $$ = hex_ast_create_declaration(0, 0, $1, $2, 0); }
+  | type_qualifier_list type_specifier expr_list AS IDENTIFIER                 { $$ = hex_ast_create_declaration($1, $2, 0, $3, $5); }
+  | type_qualifier_list expr_list AS IDENTIFIER                                { $$ = hex_ast_create_declaration($1, 0, 0, $2, $4); }
+  | type_specifier expr_list AS IDENTIFIER                                     { $$ = hex_ast_create_declaration(0, $1, 0, $2, $4); }
+  | IDENTIFIER expr_list AS IDENTIFIER                                         { $$ = hex_ast_create_declaration(0, 0, $1, $2, $4); }
   ;
 
 type_specifier
