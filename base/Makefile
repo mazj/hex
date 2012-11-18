@@ -79,6 +79,12 @@ queue.o: queue.c queue.h
 queue_unittest.test: queue.o unittest.o tests/queue_unittest.cc
 	$(CXX) $(LIBGTEST) queue.o unittest.o tests/queue_unittest.cc -o queue_unittest.test
 
+stack.o: stack.c stack.h
+	$(CC) $(CFLAGS) -c stack.c stack.h
+
+stack_unittest.test: stack.o unittest.o tests/stack_unittest.cc
+	$(CXX) $(LIBGTEST) stack.o unittest.o tests/stack_unittest.cc -o stack_unittest.test
+
 array.o: array.c array.h memory.h assert.h
 	$(CC) $(CFLAGS) array.c array.h memory.h assert.h
 
@@ -90,8 +96,6 @@ buffer.o: buffer.c buffer.h memory.h assert.h
 
 
 
-stack.o: stack.c stack.h memory.h
-	$(CC) $(CFLAGS) stack.c stack.h memory.h
 
 clean:
 	rm *.gch *.o *.a *.out *.test

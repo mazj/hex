@@ -22,10 +22,14 @@
 
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct HexStack_s *Stack;
 
 
-Stack create_stack();
+Stack stack_create();
 
 size_t stack_size(Stack stack);
 
@@ -35,5 +39,11 @@ int stack_push(Stack stack, void *val, size_t size);
 
 void* stack_pop(Stack stack);
 
+void stack_free(Stack *stack);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _STACK_H_ */
