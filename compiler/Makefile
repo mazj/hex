@@ -40,12 +40,17 @@ parser: lex.yy.c parser.tab.h ast.o
 lexer.out: parser.tab.h
 	make LDLIBS=-ll lexer
 
-vtable.o: vtable.h vtable.h
+vtable.o: vtable.h vtable.c
 	$(CC) $(CFLAGS) -c vtable.h vtable.c
 
 vtable_unittest.test: vtable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o ../base/unittest.o tests/vtable_unittest.cc
 	$(CXX) $(LIBGTEST) vtable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o ../base/unittest.o tests/vtable_unittest.cc -o vtable_unittest.test
 
+ftable.o: ftable.h ftable.c
+	$(CC) $(CFLAGS) -c ftable.h ftable.c
+
+ftable_unittest.test: ftable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o ../base/unittest.o tests/ftable_unittest.cc
+	$(CXX) $(LIBGTEST) ftable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o ../base/unittest.o tests/ftable_unittest.cc -o ftable_unittest.test
 
 clean:
 	rm *.gch *.out *.o *.swp .lexer.l.swp *.output *.vcg lexer lex.yy.c parser.tab.c parser.tab.h
