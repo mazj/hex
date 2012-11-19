@@ -18,6 +18,9 @@
 CC=gcc
 CFLAGS=-Wno-implicit
 
+CXX=g++
+LIBGTEST=/usr/lib/libgtest.a
+
 LEX=lex
 BISON=bison
 
@@ -36,6 +39,12 @@ parser: lex.yy.c parser.tab.h ast.o
 
 lexer.out: parser.tab.h
 	make LDLIBS=-ll lexer
+
+vtable.o: vtable.h vtable.h
+	$(CC) $(CFLAGS) -c vtable.h vtable.c
+
+vtable_unittest.test: vtable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o ../base/unittest.o tests/vtable_unittest.cc
+	$(CXX) $(LIBGTEST) vtable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o ../base/unittest.o tests/vtable_unittest.cc -o vtable_unittest.test
 
 
 clean:

@@ -18,17 +18,21 @@
 #ifndef _SCOPE_H_
 #define _SCOPE_H_
 
-#include "uuid.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#define HEX_VAR_SCOPE_TYPE_GLOBAL     0x00000001
-#define HEX_VAR_SCOPE_TYPE_LOCAL      0x00000002
-#define HEX_VAR_SCOPE_TYPE_MEMBER     0x00000003
 
 /* scope type */
-typedef uuid_t hex_scope_type_t;
+typedef unsigned char hex_scope_type_t;
 
-/* scope identifier */
-typedef uuid_t hex_scope_id_t;
+const hex_scope_type_t HEX_VAR_SCOPE_TYPE_GLOBAL = 0x00000001;
+const hex_scope_type_t HEX_VAR_SCOPE_TYPE_LOCAL  = 0x00000002;
+const hex_scope_type_t HEX_VAR_SCOPE_TYPE_MEMBER = 0x00000003;
 
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _SCOPE_H_ */

@@ -19,34 +19,24 @@
 #ifndef _TYPES_H_
 #define _TYPES_H_
 
-#include "utils.h"
+#include "../base/hash.h"
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 typedef unsigned char hex_type_qualifier_t;
-typedef uuid_t hex_type_id_t;
+typedef hash_t hex_type_t;
 
 const hex_type_qualifier_t HEX_TYPE_QUALIFIER_CONST    = 0x0001;
 const hex_type_qualifier_t HEX_TYPE_QUALIFIER_STATIC   = 0x0002;
 const hex_type_qualifier_t HEX_TYPE_QUALIFIER_VOLATILE = 0x0004;
 
-void
-hex_type_set_qualifier(hex_type_qualifier_t *dst, hex_type_qualifier_t src)
-{
-  HEX_ASSERT(dst);
 
-  char flag = 1;
-  hex_type_qualifier_t s = src;
-
-  while(s != 1) {
-    flag++;
-    s /= 2;
-  }
-
-  if(is_bit_set(*dst, flag)) {
-    // TODO: duplicate type, abort
-  }
-
-  set_nth_bit(dst, flag);
+#ifdef __cplusplus
 }
-
+#endif
 
 #endif /* _TYPES_H_ */

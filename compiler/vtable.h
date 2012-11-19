@@ -20,36 +20,46 @@
 
 #include <stddef.h>
 #include "scope.h"
-#include "token_loc.h"
+#include "types.h"
+#include "../base/hash.h"
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct HexVtableEntry {
-  hex_scope_id_t scope_id;
   hex_scope_type_t scope_type;
-  TokenLoc token_loc;
-  char *var_name;
-  void *var_type;
+  char *name;
+  char *mingled_name;
+  hex_type_t type;
+  hex_type_qualifier_t type_qualifier;
+  unsigned int indent_level;
+  unsigned int var_counter;
+  hash_t hash;
 } *VtableEntry;
+
 
 typedef struct HexVtable *Vtable;
 
+char* vtable_mingle_name(VtableEntry entry);
+
 Vtable vtable_create();
 
-size_t vtable_size();
-
-void* vtable_put(Vtable vtable, hex_scope_type_t scope_type,
-    hex_scope_id_t scope_id, char *var_name, TokenLoc token_loc, void *var_type);
-
-void* vtable_put(Vtable vtable, VtableEntry var);
-
-int vtable_remove(Vtbale vtable, hex_scope_id scope_id);
-
-VtableEntry vtable_lookup(Vtable vtable, char *var_name, hex_scope_id_t scope_id);
-
-VtableEntry vtable_lookup_global(Vtable vtable, char *var_name, hex_scope_id_t scope_id);
-
-size_t vtable_bucketcount(Vtable vtable);
+size_t vtable_size(Vtable vtable);
 
 size_t vtable_capacity(Vtable vtable);
 
+void* vtable_put(Vtable vtable, hex_scope_type_t scope_type,
+  char *name, hex_type_t type, hex_type_qualifier_t type_qualifier,
+  unsigned int indent_level, unsigned int var_counter);
+
+VtableEntry vtable_lookup(Vtable vtable, char *name, unsigned int indent_level);
+
+void vtable_free(Vtable *vtable);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _VTABLE_H_ */

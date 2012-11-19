@@ -15,12 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <errno.h>
-#include "memory.h"
-#include "assert.h"
-#include "utils.h"
+#include "../base/memory.h"
+#include "../base/assert.h"
+#include "../base/utils.h"
+#include "../base/strbuf.h"
+#include "../base/hashmap.h"
 #include "vtable.h"
-#include "hashmap.h"
 
 
 #define VTABLE_DEFAULT_CAPACITY 20
@@ -30,28 +32,68 @@ struct HexVtable {
   Hashmap hashmap;
 };
 
+/*
+ * key is the mingled name of the variable.
+ * hash is the hash of the mingled name.
+ */
 
 static
-inline int vtable_keycmpfunc(void *key1, void *key2)
+inline int _vtable_keycmpfunc(void *key1, void *key2)
 {
-  hex_scope_type_t _key1 = DEREF_VOID(hex_scope_type_t, key1);
-  hex_scope_type_t _key2 = DERFE_VOID(hex_scope_type_t, key2);
+  char* _key1 = (char*)key1; 
+  char* _key2 = (char*)key2; 
 
-  return _key1 == _key2;
+  return strcmp(_key1, _key2);
 }
 
 static
-inline int vtable_hashfunc(void *key)
+inline int _vtable_hashfunc(void *key)
 {
-  return (int)DERFE_VOID(hex_scope_type_t, key);
+  return (hash_t)hash_str((char*)key);
+}
+
+/*
+ * mingled name = 'name' + '_' + type + '_' + 'indent_level' + '_' + 'var_counter' 
+ * */
+char* vtable_mingle_name(VtableEntry entry)
+{
+  HEX_ASSERT(entry);
+  HEX_ASSERT(entry->name);
+
+  Strbuf strbuf = strbuf_create();
+  HEX_ASSERT(strbuf);
+
+  char type_str[2];
+  char indent_level_str[5];
+  char var_counter_str[5];
+  
+  snprintf(type_str, sizeof(type_str), "%u", (unsigned int)entry->type);
+  snprintf(indent_level_str, sizeof(indent_level_str), "%u", entry->indent_level);
+  snprintf(var_counter_str, sizeof(var_counter_str), "%u", entry->var_counter);
+
+  strbuf_append(strbuf, (const char*)entry->name);
+  strbuf_append(strbuf, "_");
+  strbuf_append(strbuf, (const char*)type_str);
+  strbuf_append(strbuf, "_");
+  strbuf_append(strbuf, (const char*)indent_level_str);
+  strbuf_append(strbuf, "_");
+  strbuf_append(strbuf, (const char*)var_counter_str);
+
+  char *mingled_name = strbuf_cstr(strbuf);
+
+  HEX_ASSERT(mingled_name);
+
+  HEX_FREE(strbuf);
+
+  return mingled_name;
 }
 
 Vtable vtable_create()
 {
   Hashmap hashmap = hashmap_create(
     VTABLE_DEFAULT_CAPACITY,
-    vtable_keycmpfunc,
-    vtable_hashfunc
+    _vtable_hashfunc,
+    _vtable_keycmpfunc
   );
 
   if(!hashmap) {
@@ -77,88 +119,83 @@ size_t vtable_size(Vtable vtable)
   return hashmap_size(vtable->hashmap);
 }
 
-void* vtable_put(Vtable vtable, hex_scope_type_t scope_type,
-    hex_scope_id_t scope_it, char *var_name, TokenLoc token_loc, void *var_type)
-{
-  HEX_ASSERT(vtable);
-  HEX_ASSERT(var_name);
-
-  VtableEntry entry = HEX_MALLOC(struct HexVtableEntry);  
-
-  RETURN_VAL_IF_NULL(entry, NULL);
-
-  entry->scope_id = scope_id;
-  entry->scope_type = scope_type;
-  entry->var_name = var_name;
-  entry->token_loc = token_loc;
-  entry->var_type = var_type;
-
-  return vtable_put(Vtable vtable, entry);
-}
-
-void* vtable_put(Vtable vtable, VtableEntry var)
-{
-  HEX_ASSERT(vtable);
-  HEX_ASSERT(var);
-
-  return hashmap_put(vtable->hashmap, var->scope_id, var);
-}
-
-int vtable_remove(Vtbale vtable, hex_scope_id scope_id)
-{
-  HEX_ASSERT(vtable);
-  return hashmap_remove_bucket(vtable->hashmap, scope_id);
-}
-
-typedef struct HexVtableLookupArg {
-  hex_scope_id_t scope_id;
-  char *var_name;
-} *VTableLookupArg;
-
-static
-VtableEntry _vtable_lookup(void *key, void *value, void *arg)
-{
-  RETURN_VAL_IF_NULL(value, NULL);
-  RETURN_VAL_IF_NULL(arg, NULL);
-
-  VtableLookupArg arg = (VtableLookupArg)arg;
-  VtableEntry entry = (VtableEntry)value;
-
-  return entry->var_name == arg->var_name &&
-    entry->scope_id == arg->scope_id ? entry : NULL; 
-}
-
-VtableEntry vtable_lookup(Vtable vtable, char *var_name, hex_scope_id_t scope_id)
-{
-  HEX_ASSERT(vtable);
-
-  struct HexVtableLookupArg arg = {
-    .scope_id = scope_id,
-    .var_name = var_name
-  };
-
-  void *ptr = hashmap_lookup(vtable->hashmap, _vtable_lookup, &arg);
-
-  return (VtableEntry)ptr;
-}
-
-VtableEntry vtable_lookup_global(Vtable vtable, char *var_name, hex_scope_id_t scope_id)
-{
-  HEX_ASSERT(vtable);
-
-  VtableEntry entry = vtable_lookup(vtable, var_name, scope_id);
-
-  return entry->scope_type == HEX_VAR_SCOPE_TYPE_GLOBAL ? entry : NULL;
-}
-
-size_t vtable_bucketcount(Vtable vtable)
-{
-  HEX_ASSERT(vtable);
-  return hashmap_bucketcount(vtable->hashmap);
-}
-
 size_t vtable_capacity(Vtable vtable)
 {
   HEX_ASSERT(vtable);
   return hashmap_capacity(vtable->hashmap);
+}
+
+void* vtable_put(
+  Vtable vtable,
+  hex_scope_type_t scope_type,
+  char *name,
+  hex_type_t type,
+  hex_type_qualifier_t type_qualifier,
+  unsigned int indent_level,
+  unsigned int var_counter)
+{
+  HEX_ASSERT(vtable);
+  HEX_ASSERT(name);
+
+  VtableEntry entry = HEX_MALLOC(struct HexVtableEntry);  
+  RETURN_VAL_IF_NULL(entry, NULL);
+
+  memset(entry, 0, sizeof(struct HexVtableEntry));
+
+  entry->scope_type = scope_type;
+  entry->name = name;
+  entry->type = type;
+  entry->type_qualifier = type_qualifier;
+  entry->indent_level = indent_level;
+  entry->var_counter = var_counter;
+
+  entry->mingled_name = vtable_mingle_name(entry);
+
+  return hashmap_put(vtable->hashmap, entry->mingled_name, entry);
+}
+
+typedef struct HexVtableLookupArg {
+  char *name;
+  unsigned int indent_level;
+} *VtableLookupArg;
+
+static
+int _vtable_lookup(void *key, void *value, void *arg)
+{
+  HEX_ASSERT(value);
+  HEX_ASSERT(arg);
+
+  VtableLookupArg _arg = (VtableLookupArg)arg;
+  VtableEntry _entry = (VtableEntry)value;
+
+  return strcmp(_entry->name, _arg->name) == 0 &&
+    _entry->indent_level == _arg->indent_level; 
+}
+
+VtableEntry vtable_lookup(Vtable vtable, char *name, unsigned int indent_level)
+{
+  HEX_ASSERT(vtable);
+  HEX_ASSERT(name);
+
+  struct HexVtableLookupArg arg = {
+    .name = name,
+    .indent_level = indent_level
+  };
+
+  VtableEntry entry = (VtableEntry)hashmap_lookup(vtable->hashmap, _vtable_lookup, &arg);
+
+  return entry;
+}
+
+void vtable_free(Vtable *vtable)
+{
+  Vtable _vtable = *vtable;
+
+  HEX_ASSERT(_vtable);
+
+  hashmap_free(&_vtable->hashmap);
+
+  HEX_FREE(_vtable);
+
+  *vtable = _vtable;
 }
