@@ -36,7 +36,6 @@ typedef struct HexVtableEntry {
   hex_type_qualifier_t type_qualifier;
   unsigned int indent_level;
   unsigned int var_counter;
-  hash_t hash;
 } *VtableEntry;
 
 

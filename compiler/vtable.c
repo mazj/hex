@@ -43,7 +43,7 @@ inline int _vtable_keycmpfunc(void *key1, void *key2)
   char* _key1 = (char*)key1; 
   char* _key2 = (char*)key2; 
 
-  return strcmp(_key1, _key2);
+  return strcmp(_key1, _key2) == 0;
 }
 
 static
