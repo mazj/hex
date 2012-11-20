@@ -53,7 +53,7 @@ inline int _vtable_hashfunc(void *key)
 }
 
 /*
- * mingled name = 'name' + '_' + type + '_' + 'indent_level' + '_' + 'var_counter' 
+ * mingled name = 'name' + '_' + type + '_' + 'indent_level' 
  * */
 char* vtable_mingle_name(VtableEntry entry)
 {
@@ -65,19 +65,15 @@ char* vtable_mingle_name(VtableEntry entry)
 
   char type_str[2];
   char indent_level_str[5];
-  char var_counter_str[5];
   
   snprintf(type_str, sizeof(type_str), "%u", (unsigned int)entry->type);
   snprintf(indent_level_str, sizeof(indent_level_str), "%u", entry->indent_level);
-  snprintf(var_counter_str, sizeof(var_counter_str), "%u", entry->var_counter);
 
   strbuf_append(strbuf, (const char*)entry->name);
   strbuf_append(strbuf, "_");
   strbuf_append(strbuf, (const char*)type_str);
   strbuf_append(strbuf, "_");
   strbuf_append(strbuf, (const char*)indent_level_str);
-  strbuf_append(strbuf, "_");
-  strbuf_append(strbuf, (const char*)var_counter_str);
 
   char *mingled_name = strbuf_cstr(strbuf);
 
@@ -131,8 +127,7 @@ void* vtable_put(
   char *name,
   hex_type_t type,
   hex_type_qualifier_t type_qualifier,
-  unsigned int indent_level,
-  unsigned int var_counter)
+  unsigned int indent_level)
 {
   HEX_ASSERT(vtable);
   HEX_ASSERT(name);
@@ -147,7 +142,6 @@ void* vtable_put(
   entry->type = type;
   entry->type_qualifier = type_qualifier;
   entry->indent_level = indent_level;
-  entry->var_counter = var_counter;
 
   entry->mingled_name = vtable_mingle_name(entry);
 
@@ -169,7 +163,7 @@ int _vtable_lookup(void *key, void *value, void *arg)
   VtableEntry _entry = (VtableEntry)value;
 
   return strcmp(_entry->name, _arg->name) == 0 &&
-    _entry->indent_level == _arg->indent_level; 
+    _entry->indent_level <= _arg->indent_level; 
 }
 
 VtableEntry vtable_lookup(Vtable vtable, char *name, unsigned int indent_level)

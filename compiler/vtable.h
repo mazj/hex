@@ -35,7 +35,6 @@ typedef struct HexVtableEntry {
   hex_type_t type;
   hex_type_qualifier_t type_qualifier;
   unsigned int indent_level;
-  unsigned int var_counter;
 } *VtableEntry;
 
 
@@ -49,9 +48,8 @@ size_t vtable_size(Vtable vtable);
 
 size_t vtable_capacity(Vtable vtable);
 
-void* vtable_put(Vtable vtable, hex_scope_type_t scope_type,
-  char *name, hex_type_t type, hex_type_qualifier_t type_qualifier,
-  unsigned int indent_level, unsigned int var_counter);
+void* vtable_put(Vtable vtable, hex_scope_type_t scope_type, char *name,
+  hex_type_t type, hex_type_qualifier_t type_qualifier, unsigned int indent_level);
 
 VtableEntry vtable_lookup(Vtable vtable, char *name, unsigned int indent_level);
 
