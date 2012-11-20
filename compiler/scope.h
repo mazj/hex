@@ -26,9 +26,9 @@ extern "C" {
 /* scope type */
 typedef unsigned char hex_scope_type_t;
 
-const hex_scope_type_t HEX_VAR_SCOPE_TYPE_GLOBAL = 0x00000001;
-const hex_scope_type_t HEX_VAR_SCOPE_TYPE_LOCAL  = 0x00000002;
-const hex_scope_type_t HEX_VAR_SCOPE_TYPE_MEMBER = 0x00000003;
+const hex_scope_type_t HEX_VAR_SCOPE_TYPE_GLOBAL = 0x0001;
+const hex_scope_type_t HEX_VAR_SCOPE_TYPE_LOCAL  = 0x0002;
+const hex_scope_type_t HEX_VAR_SCOPE_TYPE_MEMBER = 0x0004;
 
 
 #ifdef __cplusplus

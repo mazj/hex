@@ -19,7 +19,10 @@
 #include <stdio.h>
 #include "parser.h"
 #include "ast.h"
+#include "semantics.h"
+#include "vtable.h"
 #include "../base/assert.h"
+#include "../base/utils.h"
 
 
 int
@@ -46,6 +49,18 @@ main(int argc, char **argv)
   HEX_ASSERT(root_type);
 
   /* semantics analysis... */
+
+  RETURN_VAL_IF_NE(root_type, HEX_PARSE_TREE_ROOT_TYPE_STMT_GROUP, 0);
+
+  Vtable vtable = vtable_create();
+  StmtGroup stmt_group = (StmtGroup)root;
+  hex_scope_type_t scope_type = HEX_VAR_SCOPE_TYPE_LOCAL;
+  unsigned int indent_level = 1;
+
+  HEX_ASSERT(vtable);
+  HEX_ASSERT(stmt_group);
+
+  hex_semantics_check_stmt_group(vtable, stmt_group, scope_type, indent_level);
 
   return 0;
 }

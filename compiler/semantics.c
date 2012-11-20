@@ -15,16 +15,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
+#include "../base/assert.h"
 #include "../base/utils.h"
 #include "ast.h"
 #include "vtable.h"
 #include "ftable.h"
-#include "ttable.h"
+// #include "ttable.h"
 #include "scope.h"
 #include "types.h"
 
 
+void
+hex_semantics_check_stmt_group(Vtable vtable, StmtGroup stmt_group,
+  hex_scope_type_t scope, unsigned int indent_leve)
+{
+  HEX_ASSERT(vtable);
+  // HEX_ASSERT(ttable);
+  HEX_ASSERT(stmt_group);
+
+  while(stmt_group) {
+    Stmt stmt = stmt_group->stmt;
+    HEX_ASSERT(stmt);
+    // hex_semantics_check_stmt(vtable, ttable, stmt, scope, indent_level, var_counter);
+    stmt_group = stmt_group->next;
+  }
+}
+
+/*
 hex_type_qualifier_t
 hex_semantics_translate_type_qualifier_list(TypeQualifierList list)
 {
@@ -67,9 +84,6 @@ hex_semantics_check_declaration(
     type_qualifier = hex_semantics_translate_type_qualifier_list(declaration->type_qualifier_list);
   }
 
-  /*
-   * TODO: check declaration type from ttable
-   */
 
   ExprList exprlist = declaration->expr_list;
   
@@ -90,7 +104,6 @@ hex_semantics_check_declaration(
     VtableEntry entry = (VtableEntry)vtable_lookup(vtable, identifier, indent_level);
 
     if(entry) {
-      // abort
     }
 
     (*var_counter)++;
@@ -102,7 +115,7 @@ hex_semantics_check_declaration(
     HEX_ASSERT(entry);
 
     exprlist = exprlist->next;
-  } /* end of while(exprlist) */
+  }
 }
 
 void
@@ -121,13 +134,11 @@ hex_semantics_check_parameter_list(Vtable vtable, Ftable ftable,
     HEX_ASSERT(param);
     HEX_ASSERT(parameter->name);
 
-    /* TODO: check for type */
     hex_type_t param_type = 0;
 
     VtableEntry entry = (VtableEntry)vtable_lookup(vtable, parameter_name, indent_level);
 
     if(entry) {
-      /* abort */
     }
 
     hex_type_qualifier_t type_qualifier = 0;
@@ -145,7 +156,7 @@ hex_semantics_check_parameter_list(Vtable vtable, Ftable ftable,
     HEX_ASSERT(entry);
 
     paramlist = paramlist->next;
-  } /* end of while(paramlist) */
+  }
 }
 
 void
@@ -159,7 +170,6 @@ hex_semantics_check_assignment_stmt(Vtable vtable, Ttable ttable, AssignmentStmt
 
   HEX_ASSERT(assignemnt_list);
 
-  /* check the assignment targets */
   int assignment_stmt_type = assignment_stmt->assignment_stmt_type;
   if(assignment_stmt_type == assignment_stmt_type_declaration) {
     Declaration declaration = assignment_stmt->assignment_stmt_declaration;
@@ -171,7 +181,6 @@ hex_semantics_check_assignment_stmt(Vtable vtable, Ttable ttable, AssignmentStmt
     hex_semantics_check_expr_list(vtable, exprlist);
   }
 
-  /* check the assignment list */
   while(assignment_list) {
     Assignment assignment = assingment_list->assignment;
 
@@ -184,26 +193,22 @@ hex_semantics_check_assignment_stmt(Vtable vtable, Ttable ttable, AssignmentStmt
       case assignment_type_expr:
         {
           Expr expr = assignment->assignment_expr;
-          /* TODO: check expr */
         }
         break;
       case assignment_type_initializer:
         {
-          /* TODO: check initializer */
         }
         break;
       case assignment_type_lambda:
         {
-          /* TODO: check lambda */
         }
         break;
       default:
-        /* abort */
         break;
     }
 
     assignment_list = assignment_list->next;
-  } /* end of while(assignment_list) */
+  }
 }
 
 void
@@ -254,10 +259,9 @@ hex_semantics_check_func_dec(Vtable vtable, Ftable ftable, Ttable ttable,
   FuncEntry entry = ftable_lookup(ftable, func_name, paramlist);
 
   if(entry) {
-    /* TODO: abort */
   }
 
-  entry = ftable_put(ftable, func_name, /* return_type */, paramlist);
+  // entry = ftable_put(ftable, func_name, return_type , paramlist);
 
   HEX_ASSERT(entry);
 }
@@ -276,22 +280,6 @@ hex_semantics_check_func_body(Vtable vtable, Ttable ttable, Suite func_suite,
   HEX_ASSERT(stmt_group);
 
   hex_semantics_check_stmt_group(vtable, ttable, stmt_group, scope, indent_level, var_counter);
-}
-
-void
-hex_semantics_check_stmt_group(Vtable vtable, Tttable ttable, StmtGroup stmt_group,
-  hex_scope_t scope, unsigned int indent_level, unsigned int *var_counter)
-{
-  HEX_ASSERT(vtable);
-  HEX_ASSERT(ttable);
-  HEX_ASSERT(stmt_group);
-
-  while(stmt_group) {
-    Stmt stmt = stmt_group->stmt;
-    HEX_ASSERT(stmt);
-    hex_semantics_check_stmt(vtable, ttable, stmt, scope, indent_level, var_counter);
-    stmt_group = stmt_group->next;
-  }
 }
 
 void
@@ -335,7 +323,6 @@ hex_semantics_check_stmt(Vtable vtable, Ttable ttable, Stmt stmt,
       }
       break;
     default:
-      /* TODO: abort */
       break;
   }
 }
@@ -398,12 +385,10 @@ hex_semantics_check_simple_stmt(Vtable vtable, Ttable ttable, SimpleStmt simple_
       break;
     case simple_stmt_type_import_stmt:
       {
-        /* TODO: to be implemented */
       }
       break;
     case simple_stmt_type_if_stmt_simple:
       {
-        /* TODO: to be implemented */
       }
       break;
     case simple_stmt_type_func_declaration:
@@ -416,11 +401,11 @@ hex_semantics_check_simple_stmt(Vtable vtable, Ttable ttable, SimpleStmt simple_
       break;
     case simple_stmt_type_decorator:
       {
-        /* TODO: to be implemented */
       }
       break;
     default:
-      /* TODO: abort */
       break;
-  } /* end of switch(type) */
+  }
 }
+
+*/

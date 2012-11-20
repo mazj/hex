@@ -37,8 +37,11 @@ parser.tab.h: parser.y
 parser.o: parser.tab.h parser.c
 	$(CC) $(CFLAGS) -c parser.c parser.tab.h parser.tab.c 
 
-compiler.out: parser.o ast.o compiler.c lex.yy.c
-	$(CC) $(CFLAGS) parser.o lex.yy.c parser.tab.c ast.o compiler.c -o compiler.out
+semantics.o: semantics.c semantics.h
+	$(CC) $(CFLAGS) -c semantics.c semantics.h
+
+compiler.out: parser.o ast.o semantics.o vtable.o compiler.c lex.yy.c
+	$(CC) $(CFLAGS) parser.o lex.yy.c parser.tab.c ast.o semantics.o vtable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o  compiler.c -o compiler.out
 
 lexer.out: parser.tab.h
 	make LDLIBS=-ll lexer

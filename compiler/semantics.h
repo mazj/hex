@@ -18,10 +18,9 @@
 #ifndef _SEMANTICS_H_
 #define _SEMANTICS_H_
 
-#include "ash.h"
+#include "ast.h"
 #include "vtable.h"
 #include "ftable.h"
-#include "ttable.h"
 #include "types.h"
 #include "scope.h"
 
@@ -30,6 +29,11 @@
 extern "C" {
 #endif
 
+void
+hex_semantics_check_stmt_group(Vtable vtable, StmtGroup stmt_group,
+  hex_scope_type_t scope_type, unsigned int indent_level);
+
+/*
 hex_type_qualifier_t 
 hex_semantics_translate_type_qualifier_list(TypeQualifierList list);
 
@@ -57,9 +61,6 @@ void
 hex_semantics_check_func_body(Vtable vtable, Ttable ttable, Suite func_suite,
   hex_scope_t scope, unsigned int indent_level, unsigned int *var_counter);
 
-void
-hex_semantics_check_stmt_group(Vtable vtable, Tttable ttable, StmtGroup stmt_group,
-  hex_scope_t scope, unsigned int indent_level, unsigned int *var_counter);
 
 void
 hex_semantics_check_stmt(Vtable vtable, Tttable ttable, Stmt stmt,
@@ -74,6 +75,7 @@ void
 hex_semantics_check_simple_stmt(Vtable vtable, Ttable ttable, SimpleStmt simple_stmt,
   hex_scope_t scope, unsigned int indent_level, unsigned int *var_counter);
 
+*/
 
 #ifdef __cplusplus
 }
