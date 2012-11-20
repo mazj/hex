@@ -62,7 +62,7 @@ char* ftable_mingle_name(FtableEntry entry)
 
   strbuf_append(strbuf, (const char*)entry->name);
 
-  ParameterList paramlist = entry->paramlist;
+  ParameterList paramlist = (ParameterList)entry->paramlist;
   while(paramlist) {
     Parameter param = paramlist->parameter;
 
@@ -135,7 +135,7 @@ FtableEntry ftable_put(
   Ftable ftable,
   char *name,
   hex_type_t return_type,
-  ParameterList paramlist)
+  void *paramlist)
 {
   HEX_ASSERT(ftable);
   HEX_ASSERT(name);
@@ -170,7 +170,7 @@ int _ftable_lookup(void *key, void *value, void *arg)
   return strcmp(_key, _arg->mingled_name) == 0;
 }
 
-FtableEntry ftable_lookup(Ftable ftable, char *name, ParameterList paramlist)
+FtableEntry ftable_lookup(Ftable ftable, char *name, void *paramlist)
 {
   HEX_ASSERT(ftable);
   HEX_ASSERT(name);

@@ -31,7 +31,7 @@ extern "C" {
 typedef struct HexFtableEntry {
   char *name;
   hex_type_t return_type;
-  ParameterList paramlist;
+  void *paramlist;
   char *mingled_name;
 } *FtableEntry;
 
@@ -46,9 +46,9 @@ size_t ftable_size(Ftable ftable);
 size_t ftable_capacity(Ftable ftable);
 
 FtableEntry ftable_put(Ftable ftable, char *name, hex_type_t return_type,
-  ParameterList paramlist);
+  void *paramlist);
 
-FtableEntry ftable_lookup(Ftable ftable, char *name, ParameterList paramlist);
+FtableEntry ftable_lookup(Ftable ftable, char *name, void *paramlist);
 
 void ftable_free(Ftable *ftable);
 
