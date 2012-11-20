@@ -5,3 +5,9 @@
 *.swp
 *.out
 *.test
+*.output
+*.vcg
+
+*.tab.c
+*.tab.h
+*.yy.c

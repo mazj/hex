@@ -244,9 +244,9 @@ yydebug = 1;
 
 input/* empty line */
   : NEWLINE
-  | stmt_group
-  | class
-  | class_section
+  | stmt_group                                                                  { hex_ast_set_parse_tree_root($1, HEX_PARSE_TREE_ROOT_TYPE_STMT_GROUP);   }
+  | class                                                                       { /* hex_ast_set_parse_tree_root($1, HEX_PARSE_TREE_ROOT_TYPE_CLASS); */   }
+  | class_section                                                               { /* hex_ast_set_parse_tree_root($1, HEX_PARSE_TREE_ROOT_TYPE_CLASS_SECTION); */ }
   ;
 
 suite

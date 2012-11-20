@@ -98,6 +98,15 @@ typedef struct HexSuite *Suite;
 // global typedefs
 //===========================================================================
 
+
+#define HEX_PARSE_TREE_ROOT_TYPE_STMT_GROUP     0x0001
+#define HEX_PARSE_TREE_ROOT_TYPE_CLASS          0x0002
+#define HEX_PARSE_TREE_ROOT_TYPE_CLASS_SECTION  0x0004
+
+void* hex_ast_get_parse_tree_root(int *root_type);
+void hex_ast_set_parse_tree_root(void *p, int root_type);
+
+
 /*
  * Integer
  */

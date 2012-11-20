@@ -34,8 +34,11 @@ lex.yy.c: lexer.l
 parser.tab.h: parser.y
 	$(BISON) -y -d -t -v -g parser.y -o parser.tab.h -o parser.tab.c
 
-parser: lex.yy.c parser.tab.h ast.o
-	$(CC) $(CFLAGS) lex.yy.c parser.tab.h parser.tab.c ast.o -o parser
+parser.o: parser.tab.h parser.c
+	$(CC) $(CFLAGS) -c parser.c parser.tab.h parser.tab.c 
+
+compiler.out: parser.o ast.o compiler.c lex.yy.c
+	$(CC) $(CFLAGS) parser.o lex.yy.c parser.tab.c ast.o compiler.c -o compiler.out
 
 lexer.out: parser.tab.h
 	make LDLIBS=-ll lexer

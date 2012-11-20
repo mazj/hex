@@ -21,6 +21,23 @@
 #include "../base/assert.h"
 #include "../base/memory.h"
 
+void *_ast_root=NULL;
+int _root_type=0;
+
+void* hex_ast_get_parse_tree_root(int *root_type)
+{
+  HEX_ASSERT(root_type);
+  *root_type = _root_type;
+  return _ast_root;
+}
+
+void hex_ast_set_parse_tree_root(void *p, int root_type)
+{
+  HEX_ASSERT(p);
+  HEX_ASSERT(root_type);
+  _ast_root=p;
+  _root_type=root_type;
+}
 
 Integer
 hex_ast_create_integer(int type, int is_signed, int value)
