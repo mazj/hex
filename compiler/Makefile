@@ -58,5 +58,11 @@ ftable.o: ftable.h ftable.c
 ftable_unittest.test: ftable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o ../base/unittest.o tests/ftable_unittest.cc
 	$(CXX) $(LIBGTEST) ftable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o ../base/unittest.o tests/ftable_unittest.cc -o ftable_unittest.test
 
+ttable.o: ttable.h ttable.c
+	$(CC) $(CFLAGS) -c ttable.c ttable.h
+
+ttable_unittest.test: ttable.o vtable.o ftable.o tests/ttable_unittest.cc
+	$(CXX) $(LIBGTEST) ttable.o vtable.o ftable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o ../base/unittest.o tests/ttable_unittest.cc -o ttable_unittest.test
+
 clean:
 	rm *.gch *.out *.o *.swp .lexer.l.swp *.output *.vcg lexer lex.yy.c parser.tab.c parser.tab.h
