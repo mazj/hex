@@ -17,12 +17,7 @@
 
 #include "../base/assert.h"
 #include "../base/utils.h"
-#include "ast.h"
-#include "vtable.h"
-#include "ftable.h"
-// #include "ttable.h"
-#include "scope.h"
-#include "types.h"
+#include "semantics.h"
 
 
 void

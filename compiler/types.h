@@ -30,9 +30,9 @@ extern "C" {
 typedef unsigned char hex_type_qualifier_t;
 typedef hash_t hex_type_t;
 
-const hex_type_qualifier_t HEX_TYPE_QUALIFIER_CONST    = 0x0001;
-const hex_type_qualifier_t HEX_TYPE_QUALIFIER_STATIC   = 0x0002;
-const hex_type_qualifier_t HEX_TYPE_QUALIFIER_VOLATILE = 0x0004;
+#define HEX_TYPE_QUALIFIER_CONST    (hex_type_qualifier_t)0x0001
+#define HEX_TYPE_QUALIFIER_STATIC   (hex_type_qualifier_t)0x0002
+#define HEX_TYPE_QUALIFIER_VOLATILE (hex_type_qualifier_t)0x0004
 
 
 #ifdef __cplusplus

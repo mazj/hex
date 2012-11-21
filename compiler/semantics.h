@@ -20,7 +20,6 @@
 
 #include "ast.h"
 #include "vtable.h"
-#include "ftable.h"
 #include "types.h"
 #include "scope.h"
 
