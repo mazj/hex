@@ -1,0 +1,3 @@
+
+myObj = lock yourObj
+myObj = unlock yourObj

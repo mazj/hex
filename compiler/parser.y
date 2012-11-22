@@ -21,10 +21,10 @@
 #include <stdio.h>
 #include "ast.h"
 
-#define YYDEBUG 1
-#define YYERROR_VERBOSE
+//#define YYDEBUG 1
+//#define YYERROR_VERBOSE
 
-yydebug = 1;
+//yydebug = 1;
 %}
 
 %union {
@@ -515,8 +515,8 @@ expr
   | expr LESS_OP expr                                                           { $$ = hex_ast_create_equality_expr(equality_expr_type_less, $1, $3); }
   | expr GREATER_OP expr                                                        { $$ = hex_ast_create_equality_expr(equality_expr_type_greater, $1, $3); }
   | expr LEQ_OP expr                                                            { $$ = hex_ast_create_equality_expr(equality_expr_type_le, $1, $3); }
-  | expr GEQ_OP expr                                                            { $$ = hex_ast_create_equality_expr(equality_expr_type_is, $1, $3); }
-  | expr IS expr                                                                { $$ = hex_ast_create_equality_expr(equality_expr_type_le, $1, $3); }
+  | expr GEQ_OP expr                                                            { $$ = hex_ast_create_equality_expr(equality_expr_type_ge, $1, $3); }
+  | expr IS expr                                                                { $$ = hex_ast_create_equality_expr(equality_expr_type_is, $1, $3); }
   | expr IS_NOT expr                                                            { $$ = hex_ast_create_equality_expr(equality_expr_type_is_not, $1, $3); }
   | expr EQ_OP expr                                                             { $$ = hex_ast_create_equality_expr(equality_expr_type_eq, $1, $3); }    
   | expr NEQ_OP expr                                                            { $$ = hex_ast_create_equality_expr(equality_expr_type_neq, $1, $3); }

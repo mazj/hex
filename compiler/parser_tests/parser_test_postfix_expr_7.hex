@@ -1,0 +1,5 @@
+
+a = my_array[1]
+b = my_array[index]
+c = get_array()[i]
+d = get_value().get_array()[i++]

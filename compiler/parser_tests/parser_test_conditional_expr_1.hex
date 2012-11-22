@@ -1,0 +1,2 @@
+
+int dinner = if thanksgiving then eat_turkey() else eat_hotpot()

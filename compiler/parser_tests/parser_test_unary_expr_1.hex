@@ -1,0 +1,6 @@
+
+int i = ++b
+int c = --b
+int n = -m
+myobj = not yourobj++
+him = ~her

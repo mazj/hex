@@ -1,0 +1,4 @@
+
+int a = (int)obj
+double d = (double)a
+myobj = (MyObj)obj

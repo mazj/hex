@@ -64,5 +64,14 @@ ttable.o: ttable.h ttable.c
 ttable_unittest.test: ttable.o vtable.o ftable.o tests/ttable_unittest.cc
 	$(CXX) $(LIBGTEST) ttable.o vtable.o ftable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o ../base/unittest.o tests/ttable_unittest.cc -o ttable_unittest.test
 
+ast_to_text.o: ast_to_text.c ast_to_text.h
+	$(CC) $(CFLAGS) -c ast_to_text.c ast_to_text.h
+
+ast_unittest.test: ast_to_text.o ast.o parser.o lex.yy.c tests/ast_unittest.cc
+	$(CXX) $(LIBGTEST) parser.o lex.yy.c parser.tab.c ast.o ast_to_text.o ../base/strbuf.o ../base/unittest.o tests/ast_unittest.cc -o ast_unittest.test
+
+ast_unittest2.test: ast_to_text.o ast.o parser.o lex.yy.c tests/ast_unittest2.c
+	$(CC) $(CLFAGS) parser.o lex.yy.c parser.tab.c ast.o ast_to_text.o ../base/strbuf.o ../base/cutils.o tests/ast_unittest2.c -o ast_unittest2.test
+
 clean:
-	rm *.gch *.out *.o *.swp .lexer.l.swp *.output *.vcg lexer lex.yy.c parser.tab.c parser.tab.h
+	rm *.gch *.out *.o *.swp .lexer.l.swp *.output *.vcg *.test lexer lex.yy.c parser.tab.c parser.tab.h
