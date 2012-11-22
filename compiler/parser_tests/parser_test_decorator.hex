@@ -1,0 +1,6 @@
+
+[#Optimize=yes]
+[#getter=yes, #setter=yes]
+[@ValidateElement(element), @SetContract(element)]
+[#Optimize=yes, @ApplyContract(model), #getter=no, #setter=yes]
+[#getter=yes, #setter=yes, @Retry(3)]

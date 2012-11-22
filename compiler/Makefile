@@ -34,8 +34,8 @@ lex.yy.c: lexer.l
 parser.tab.h: parser.y
 	$(BISON) -y -d -t -v -g parser.y -o parser.tab.h -o parser.tab.c
 
-parser.o: parser.tab.h parser.c
-	$(CC) $(CFLAGS) -c parser.c parser.tab.h parser.tab.c 
+parser.o: parser.tab.h parser.c lex.yy.c
+	$(CC) $(CFLAGS) -c lex.yy.c parser.c parser.tab.h parser.tab.c 
 
 semantics.o: semantics.c semantics.h
 	$(CC) $(CFLAGS) -c semantics.c semantics.h
@@ -64,5 +64,11 @@ ttable.o: ttable.h ttable.c
 ttable_unittest.test: ttable.o vtable.o ftable.o tests/ttable_unittest.cc
 	$(CXX) $(LIBGTEST) ttable.o vtable.o ftable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o ../base/unittest.o tests/ttable_unittest.cc -o ttable_unittest.test
 
+ast_to_text.o: ast_to_text.c ast_to_text.h
+	$(CC) $(CFLAGS) -c ast_to_text.c ast_to_text.h
+
+ast_unittest.test: ast_to_text.o ast.o parser.o lex.yy.c tests/ast_unittest.c
+	$(CC) $(CLFAGS) parser.o lex.yy.c parser.tab.c ast.o ast_to_text.o ../base/strbuf.o ../base/cutils.o tests/ast_unittest.c -o ast_unittest.test
+
 clean:
-	rm *.gch *.out *.o *.swp .lexer.l.swp *.output *.vcg lexer lex.yy.c parser.tab.c parser.tab.h
+	rm *.gch *.out *.o *.swp .lexer.l.swp *.output *.vcg *.test lexer lex.yy.c parser.tab.c parser.tab.h

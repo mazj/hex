@@ -1,9 +1,0 @@
-
-~a + -d * c.e().f - not g        /* ~a => BITWISE_NOT expr => expr
-                                  * c.e => expr DOT IDENTIFIER => expr
-                                  * c.e() => expr LPAREN RPAREN => expr
-                                  * c.e().f => expr DOT IDENTIFIER => expr
-                                  * -d * c.e().f => expr MUL_OP expr => expr
-                                  * ~a + (-d * c.e().f) => expr PLUS_OP expr => expr
-                                  * not g => NOT expr => expr
-                                  * (~a + -d * c.e().f) - (not g) => expr => expr_list_ => simple_stmt */ 

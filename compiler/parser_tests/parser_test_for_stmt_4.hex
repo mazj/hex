@@ -1,0 +1,3 @@
+
+for a in (10, 3, 18, 'c', "s", 5, myobj) where a < 10 and a > 1:
+  a += 1

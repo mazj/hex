@@ -1,4 +1,0 @@
-
-[@Mode("Debug"), #CompilerOptimize=false]
-def static init():
-  app.init()

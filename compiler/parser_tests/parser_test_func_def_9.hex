@@ -1,0 +1,3 @@
+
+def static const int sum():
+  int v = 1 + 2 * 3

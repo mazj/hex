@@ -1,6 +1,0 @@
-
-a = {1,2,3++}      /* a => IDENTIFIER => expr => expr_list_
-                    * 1,2,3++ => expr_list_
-                    * {1,2,3++} => LBRACE expr_list_ RBRACE => array_initializer
-                    * a = {1,2,3++} => assignment_stmt => simple_stmt
-                    */

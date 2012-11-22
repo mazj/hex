@@ -1,5 +1,0 @@
-
-def static const MyObject getMyObject(MyObject a, int b):
-  MyObject obj = new MyObject()
-  return obj
-

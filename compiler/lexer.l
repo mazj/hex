@@ -48,8 +48,12 @@
       return CHARACTER_LITERAL;                     \
       break;                                        \
     case STRING_LITERAL:                            \
-      yylval.string = yytext;                       \
+      yylval.string = strdup(yytext);               \
       return STRING_LITERAL;                        \
+      break;                                        \
+    case IDENTIFIER:                                \
+      yylval.string = strdup(yytext);               \
+      return IDENTIFIER;                            \
       break;                                        \
     default:                                        \
       yylval.string = yytext;                       \
@@ -153,11 +157,10 @@ L?'(\\.|[^\\'])+'           LEXER_TOKEN("CHARACTER_LITERAL", yytext, CHARACTER_L
 L?\"(\\.|[^\\"])*\"         LEXER_TOKEN("STRING_LITERAL", yytext, STRING_LITERAL);
 
 #inline_comment
-\/\/.*                      LEXER_TOKEN("COMMENT", yytext, COMMENT);
+\/\/.*                      //LEXER_TOKEN("COMMENT", yytext, COMMENT);
 
 #integer
 ([0]|[0-9]*)[lL]?           LEXER_TOKEN("INTEGER", yytext, DECIMALINTEGER);
-
 
 #binary_integer
 0[bB][0-1]+                 LEXER_TOKEN("BININTEGER", yytext, BININTEGER);
@@ -170,7 +173,6 @@ L?\"(\\.|[^\\"])*\"         LEXER_TOKEN("STRING_LITERAL", yytext, STRING_LITERAL
 
 #floating_number
 [0-9]*\.[0-9]+([eE][-+]?[0-9]+)?  LEXER_TOKEN("FLOATINGNUM", yytext, FLOATINGNUM);
-
 
 #arithmetic_operator
 "+"                         LEXER_TOKEN("ARITHMETIC OPERATOR", yytext, PLUS_OP);
@@ -216,7 +218,6 @@ L?\"(\\.|[^\\"])*\"         LEXER_TOKEN("STRING_LITERAL", yytext, STRING_LITERAL
 #lambda_operator
 "=>"                        LEXER_TOKEN("LAMBDA OPERATOR", yytext, LAMBDA_OP);
 
-
 #dot
 "."                         LEXER_TOKEN("DOT", yytext, DOT);
 
@@ -233,11 +234,9 @@ L?\"(\\.|[^\\"])*\"         LEXER_TOKEN("STRING_LITERAL", yytext, STRING_LITERAL
 "("                         LEXER_TOKEN("PARENTHESIS", yytext, LPAREN);
 ")"                         LEXER_TOKEN("PARENTHESIS", yytext, RPAREN);
 
-
 #sqaure_bracket
 "["                         LEXER_TOKEN("SQUARE_BRACKET", yytext, LBRACKET);
 "]"                         LEXER_TOKEN("SQUARE_BRACKET", yytext, RBRACKET);
-
 
 #curly_braces
 "{"                         LEXER_TOKEN("CURLY_BRACE", yytext, LBRACE);
@@ -267,7 +266,6 @@ L?\"(\\.|[^\\"])*\"         LEXER_TOKEN("STRING_LITERAL", yytext, STRING_LITERAL
 <INITIAL>\n                 {
                               current_line_indent = 0;
                               yy_push_state(IN_INDENT); /* this solves the "return NEWLINE before BEGIN(IN_INDENT)" issue */
-                              printf("NEWLINE\n");
                               return NEWLINE;
                             }
 
@@ -278,16 +276,10 @@ L?\"(\\.|[^\\"])*\"         LEXER_TOKEN("STRING_LITERAL", yytext, STRING_LITERAL
 
 <IN_INDENT>\t               {
                               /* tab */
-                              #ifdef DEBUG
-                              printf("TAB\n");
-                              #endif
                             }
 
 <IN_INDENT>\n               {
                               current_line_indent = 0; /* ignore blank line*/
-                              #ifdef DEBUG
-                              printf("NEWLINE\n");
-                              #endif
                               return NEWLINE;
                             }
 
@@ -296,15 +288,9 @@ L?\"(\\.|[^\\"])*\"         LEXER_TOKEN("STRING_LITERAL", yytext, STRING_LITERAL
                               /* puts the character back to input stream and scans next character */
                               if(current_line_indent > indent_level) {
                                 indent_level++;
-                                #ifdef DEBUG
-                                printf("INDENT\n");
-                                #endif
                                 return INDENT;
                               } else if(current_line_indent < indent_level) {
                                 indent_level--;
-                                #ifdef DEBUG
-                                printf("DEDENT\n");
-                                #endif
                                 return DEDENT;
                               } else {
                                 BEGIN(INITIAL);

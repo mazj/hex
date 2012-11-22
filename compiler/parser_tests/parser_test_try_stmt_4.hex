@@ -1,0 +1,15 @@
+
+try:
+  a = b
+catch (WeirdException):
+  a = c
+catch (SomeRandomException):
+  int i = 10 / 0
+catch (DivideByZeroException):
+  a = d
+catch (AnotherException e):
+  a = e
+catch (TheBestException f):
+  a = f
+finally:
+  a = 0

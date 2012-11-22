@@ -15,7 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* HEX parser */
+/*
+ * Front-end parser for HEX.
+ *
+ * NOTE: when parser.y gets compiled, it will overwrite parser.c,
+ * which is not the desired behavior.
+ * To reset the override, do 'git checkout -- compiler/parser.c'.
+ */
+
 
 #ifndef _PARSER_H_
 #define _PARSER_H_

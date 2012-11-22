@@ -1,0 +1,4 @@
+
+int a, b, c = 1 + 2
+MyObject obj = your_obj - his_object++
+double num = a + b - c + d

@@ -1,0 +1,5 @@
+
+if 2 > 1:
+  s = "2 > 1 is indeed true"
+else:
+  s = "go back to do grade school math!"

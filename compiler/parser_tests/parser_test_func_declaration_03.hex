@@ -1,7 +1,0 @@
-
-def MyObject getMyObject(const volatile a, int b)    /* def => DEF
-                                                      * MyObject => IDENTIFIER
-                                                      * getMyObject => IDENTIFIER
-                                                      * (const volatile a, int b) => parameter_list
-                                                      * DEF IDENTIFIER IDENTIFIER parameter_list => func_declaration
-                                                      */

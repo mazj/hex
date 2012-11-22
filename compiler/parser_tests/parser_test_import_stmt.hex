@@ -1,0 +1,9 @@
+
+import universe
+import universe.galaxy.solar_system.earth
+from universe import galaxy
+from universe.galaxy.solar_system import earth
+import universe as Universe
+import universe.galaxy.solar_system.earth as Earth
+from universe import galaxy as Galaxy
+from universe.galaxy.solar_system import earth as Earth

@@ -1,0 +1,7 @@
+
+def init():
+  try:
+    var = 3
+  catch:
+    var = 5
+

@@ -33,9 +33,7 @@
       __LINE__                          \
     );                                  \
                                         \
-    if(level == -1) {                   \
-      exit(EXIT_FAILURE);               \
-    }                                   \
+    exit(EXIT_FAILURE);                 \
   } while(0)
 
 
@@ -54,6 +52,10 @@ typedef struct HexExpr *Expr;
  */
 typedef struct HexExprList *ExprList;
 
+/*
+ * Tuple initializer
+ */
+typedef struct HexTupleInitializer *TupleInitializer;
 
 /*
  * List initializer
@@ -196,7 +198,7 @@ typedef struct HexPostfixIndexExpr {
     char *identifier;
     Expr index_expr;
   };
-  ListInitializer indeces;
+  ExprList indeces_list;
 } *PostfixIndexExpr;
 
 
@@ -205,7 +207,7 @@ typedef struct HexPostfixIndexExpr {
 // construct an AST node of type HexPostfixIndexExpr.
 //===========================================================================
 PostfixIndexExpr
-hex_ast_create_postfix_index_expr(int type, void *value, ListInitializer indeces);
+hex_ast_create_postfix_index_expr(int type, void *value, ExprList indeces_list); 
 
 
 /*
@@ -222,7 +224,7 @@ typedef struct HexPostfixAccessorExpr {
 // construct an AST node of type HexPostfixAccessorExpr.
 //===========================================================================
 PostfixAccessorExpr
-hex_ast_create_postfix_accessor_expr(Expr caller, Expr accessor);
+hex_ast_create_postfix_accessor_expr(Expr caller, char *accessor);
 
 
 /*
@@ -269,7 +271,7 @@ typedef struct HexPostfixInvocationWithArgsExpr {
 // construct an AST node of type HexPostfixInvocationWithArgsExpr.
 //===========================================================================
 PostfixInvocationWithArgsExpr
-hex_ast_create_postfix_invocation_with_args_expr(int type, void *value, ExprList arg_list);
+hex_ast_create_postfix_invocation_with_args_expr(int type, void *value, TupleInitializer arg_list_tuple);
 
 
 /*
@@ -565,7 +567,7 @@ hex_ast_create_bitwise_expr(int type, Expr left_expr, Expr right_expr);
  * Conditional expression 
  *  
  * Syntax:
- *  target_expr = if predicate then alternative else consequent
+ *  target_expr = if predicate then consequent else alternative
  */
 typedef struct HexConditionalExpr {
   Expr predicate_expr;
@@ -856,9 +858,9 @@ hex_ast_create_array_initializer(ExprList expr_list);
 /*
  * Tuple initializer
  */
-typedef struct HexTupleInitializer {
+struct HexTupleInitializer {
   ExprList expr_list;
-} *TupleInitializer;
+};
 
 
 //===========================================================================
@@ -902,54 +904,54 @@ hex_ast_create_set_initializer(ExprList expr_list);
 
 
 /*
- *  MapMultimapSingle
+ *  MapInitializerSingle
  */
-typedef struct HexMapMultimapInitializerSingle {
+typedef struct HexMapInitializerSingle {
   Expr key;
   Expr value;
-} *MapMultimapInitializerSingle;
+} *MapInitializerSingle;
 
 
 //===========================================================================
-// hex_ast_create_map_multimap_initializer_single()
-// construct an AST node of type HexMapMultimapInitializerSingle.
+// hex_ast_create_map_initializer_single()
+// construct an AST node of type HexMapInitializerSingle.
 //===========================================================================
-MapMultimapInitializerSingle
-hex_ast_create_map_multimap_initializer_single(Expr key, Expr value);
+MapInitializerSingle
+hex_ast_create_map_initializer_single(Expr key, Expr value);
 
 
 /*
- * MapMultimapInitializerList
+ * MapInitializerList
  */
-typedef struct HexMapMultimapInitializerList {
-  MapMultimapInitializerSingle map_initializer_single;
-  struct HexMapMultimapInitializerList *next;
-} *MapMultimapInitializerList;
+typedef struct HexMapInitializerList {
+  MapInitializerSingle map_initializer_single;
+  struct HexMapInitializerList *next;
+} *MapInitializerList;
 
 
 //===========================================================================
-// hex_ast_create_map_multimap_initializer_list()
-// construct an AST node of type HexMapMultimapInitializerList.
+// hex_ast_create_map_initializer_list()
+// construct an AST node of type HexMapInitializerList.
 //===========================================================================
-MapMultimapInitializerList
-hex_ast_create_map_multimap_initializer_list(
-  MapMultimapInitializerSingle map_initializer_single, MapMultimapInitializerList parent_list);
+MapInitializerList
+hex_ast_create_map_initializer_list(
+  MapInitializerSingle map_initializer_single, MapInitializerList parent_list);
 
 
 /*
- * MapMultimapInitializer
+ * MapInitializer
  */
-typedef struct HexMapMultimapInitializer {
-  MapMultimapInitializerList map_initializer_list;
-} *MapMultimapInitializer;
+typedef struct HexMapInitializer {
+  MapInitializerList map_initializer_list;
+} *MapInitializer;
 
 
 //===========================================================================
-// hex_ast_create_map_multimap_initializer()
-// construct an AST node of type HexMapMultimapInitializer.
+// hex_ast_create_map_initializer()
+// construct an AST node of type HexMapInitializer.
 //===========================================================================
-MapMultimapInitializer
-hex_ast_create_map_multimap_initializer(MapMultimapInitializerList map_initializer_list);
+MapInitializer
+hex_ast_create_map_initializer(MapInitializerList map_initializer_list);
 
 
 /*
@@ -957,20 +959,20 @@ hex_ast_create_map_multimap_initializer(MapMultimapInitializerList map_initializ
  */
 typedef struct HexInitializer {
   enum {
-    initializer_type_list,                              /* list initializer */
-    initializer_type_array,                             /* array initializer */
-    initializer_type_tuple,                             /* tuple initializer */
-    initializer_type_struct,                            /* struct initializer */
-    initializer_type_set,                               /* set initializer */
-    initializer_type_mapmultimap                        /* map & multimap initializer */
+    initializer_type_list,                              /* list initializer    */
+    initializer_type_array,                             /* array initializer   */
+    initializer_type_tuple,                             /* tuple initializer   */
+    initializer_type_struct,                            /* struct initializer  */
+    initializer_type_set,                               /* set initializer     */
+    initializer_type_map                                /* map initializer     */
   } initializer_type;
   union {
-    ListInitializer list_initializer;                   /* list initializer */
-    ArrayInitializer array_initializer;                 /* array initializer */
-    TupleInitializer tuple_initializer;                 /* tuple initializer */
-    StructInitializer struct_initializer;               /* struct initializer */
-    SetInitializer set_initialier;                      /* set initializer */
-    MapMultimapInitializer map_multimap_initializer;    /* map & multimap initializer */
+    ListInitializer list_initializer;                   /* list initializer    */
+    ArrayInitializer array_initializer;                 /* array initializer   */
+    TupleInitializer tuple_initializer;                 /* tuple initializer   */
+    StructInitializer struct_initializer;               /* struct initializer  */
+    SetInitializer set_initializer;                     /* set initializer     */
+    MapInitializer map_initializer;                     /* map initializer     */
     };
 } *Initializer;
 

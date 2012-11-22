@@ -1,9 +1,0 @@
-
-char c,d,e = f =1   /* char => CHAR => type_specifier
-                  	* c,d,e => expr_list_
-                  	* char c,d,e => type_specifier expr_list_ => declaration
-                  	* =f => assignment_op expr => assignment => assignment_list
-                  	* =1 => assignment_op expr => assignment
-                  	* =f=1 => assignment_list assignment => assignment_list
-                  	* char c,d,e =f=1 => declaration assignment_list => assignemnt_stmt => simple_stmt
-                  	*/

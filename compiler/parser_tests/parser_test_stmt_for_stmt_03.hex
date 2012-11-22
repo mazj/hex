@@ -1,3 +1,0 @@
-
-for (k,v) in dictionary where k is not "default key":
-  printf("[%s]: %s\n", key, value)

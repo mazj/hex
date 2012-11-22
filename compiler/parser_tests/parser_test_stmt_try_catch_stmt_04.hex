@@ -1,9 +1,0 @@
-
-try:
-  doSomethingThatMightBreak()
-catch(Exception e):
-  doSomethingToRecover()
-catch(ee):
-  doSomethingToKill()
-finally:
-  cleanUpData()

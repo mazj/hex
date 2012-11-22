@@ -1,0 +1,5 @@
+
+def static const MyObj sum(Myobj myobj, MyObj yourobj):
+  myobj += yourobj
+  doSomething()
+  doAnotherThing(myobj)

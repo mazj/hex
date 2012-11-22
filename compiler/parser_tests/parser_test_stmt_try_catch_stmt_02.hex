@@ -1,5 +1,0 @@
-
-try:
-  doSomethingThatMightBreak()
-catch(Exception e):
-  doSomethingToRecover()

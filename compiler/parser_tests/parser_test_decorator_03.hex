@@ -1,4 +1,0 @@
-
-[#GenerateOpCode=yes, #CompilerOptimize=false]
-def static init():
-  app.init()

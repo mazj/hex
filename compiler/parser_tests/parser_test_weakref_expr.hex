@@ -1,0 +1,2 @@
+
+MyObj obj = _weakref yourObj

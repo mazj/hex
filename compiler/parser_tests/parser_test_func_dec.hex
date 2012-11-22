@@ -1,0 +1,13 @@
+
+def init()
+def init(int a, int b, int c)
+def MyObj get_value()
+def MyObj do_something(MyObj myobj)
+def int factorial(int n)
+def float sum_f(float a, float b, float c)
+def const init()
+def static init(int a, int b, int c)
+def volatile MyObj get_value()
+def const MyObj do_something(MyObj myobj)
+def static int factorial(int n)
+def const float sum_f(float a, float b, float c)

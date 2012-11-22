@@ -1,6 +1,0 @@
-
-class MyClass:
-  public:
-    def __init__():
-      int a = 1
-

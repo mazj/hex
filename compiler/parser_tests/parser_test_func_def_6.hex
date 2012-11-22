@@ -1,0 +1,3 @@
+
+def int golden_ratio():
+  int v = 3000
