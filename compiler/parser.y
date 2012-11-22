@@ -460,9 +460,9 @@ assignment_list
   ;
 
 assignment
-  : assignment_operator expr                                                    { $$ = hex_ast_create_assignment($1, $2); }
-  | assignment_operator initializer                                             { $$ = hex_ast_create_assignment($1, $2); }
-  | assignment_operator lambda_expr                                             { $$ = hex_ast_create_assignment($1, $2); }
+  : assignment_operator expr                                                    { $$ = hex_ast_create_assignment($1, assignment_type_expr, $2); }
+  | assignment_operator initializer                                             { $$ = hex_ast_create_assignment($1, assignment_type_initializer, $2); }
+  | assignment_operator lambda_expr                                             { $$ = hex_ast_create_assignment($1, assignment_type_lambda, $2); }
   ;
 
 expr

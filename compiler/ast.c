@@ -997,7 +997,7 @@ hex_ast_create_initializer(int type, void *value)
 }
 
 Assignment
-hex_ast_create_assignment(int type, void *target)
+hex_ast_create_assignment(AssignmentOp assignment_op, int type, void *target)
 {
   HEX_ASSERT(target != NULL);
 
@@ -1027,6 +1027,8 @@ hex_ast_create_assignment(int type, void *target)
       AST_ERROR(0, "Unknown assignment type");
       break;
   }
+
+  assignment->assignment_op = assignment_op;
 
   return assignment;
 }

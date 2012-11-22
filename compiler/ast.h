@@ -699,7 +699,7 @@ typedef enum HexAssignmentOp {
   assign_op_bitwise_and,      /* &= */
   assign_op_bitwise_or,       /* |= */
   assign_op_bitwise_xor       /* ^= */
-} *AssignmentOp;
+} AssignmentOp;
 
 
 /*
@@ -991,6 +991,7 @@ hex_ast_create_initializer(int type, void *value);
  * Assignment
  */
 typedef struct HexAssignment {
+  AssignmentOp assignment_op;
   enum {
     assignment_type_expr,
     assignment_type_initializer,
@@ -1009,7 +1010,7 @@ typedef struct HexAssignment {
 // construct an AST node of type HexAssignment.
 //===========================================================================
 Assignment
-hex_ast_create_assignment(int type, void *target);
+hex_ast_create_assignment(AssignmentOp assignment_op, int type, void *target);
 
 
 /*
