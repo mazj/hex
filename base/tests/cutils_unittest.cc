@@ -828,6 +828,103 @@ TEST(itoaTest, Base10_TenDigitNegativeIntegerTest10) {
   HEX_FREE(str);
 }
 
+/***********************************
+ * itoa Base 2
+ * *********************************/
+
+TEST(itoaTest, Base2_PositiveIntegerTest1) {
+  char *str=NULL;
+  str = itoa((int)0, str, 2);
+  ASSERT_STREQ("0", str);
+  HEX_FREE(str);
+}
+
+TEST(itoaTest, Base2_PositiveIntegerTest2) {
+  char *str=NULL;
+  str = itoa((int)1, str, 2);
+  ASSERT_STREQ("1", str);
+  HEX_FREE(str);
+}
+
+TEST(itoaTest, Base2_PositiveIntegerTest3) {
+  char *str=NULL;
+  str = itoa((int)2, str, 2);
+  ASSERT_STREQ("10", str);
+  HEX_FREE(str);
+}
+
+TEST(itoaTest, Base2_PositiveIntegerTest4) {
+  char *str=NULL;
+  str = itoa((int)4, str, 2);
+  ASSERT_STREQ("100", str);
+  HEX_FREE(str);
+}
+
+TEST(itoaTest, Base2_PositiveIntegerTest5) {
+  char *str=NULL;
+  str = itoa((int)7, str, 2);
+  ASSERT_STREQ("111", str);
+  HEX_FREE(str);
+}
+
+TEST(itoaTest, Base2_PositiveIntegerTest6) {
+  char *str=NULL;
+  str = itoa((int)512, str, 2);
+  ASSERT_STREQ("1000000000", str);
+  HEX_FREE(str);
+}
+
+TEST(itoaTest, Base2_PositiveIntegerTest7) {
+  char *str=NULL;
+  str = itoa((int)1024, str, 2);
+  ASSERT_STREQ("10000000000", str);
+  HEX_FREE(str);
+}
+
+TEST(itoaTest, Base2_PositiveIntegerTest8) {
+  char *str=NULL;
+  str = itoa((int)(1024+512), str, 2);
+  ASSERT_STREQ("11000000000", str);
+  HEX_FREE(str);
+}
+
+/***********************************
+ * itoa Base 8
+ * *********************************/
+TEST(itoaTest, Base8_PositiveIntegerTest1) {
+  char *str=NULL;
+  str = itoa((int)7, str, 8);
+  ASSERT_STREQ("7", str);
+  HEX_FREE(str);
+}
+
+TEST(itoaTest, Base8_PositiveIntegerTest2) {
+  char *str=NULL;
+  str = itoa((int)8, str, 8);
+  ASSERT_STREQ("10", str);
+  HEX_FREE(str);
+}
+
+TEST(itoaTest, Base8_PositiveIntegerTest3) {
+  char *str=NULL;
+  str = itoa((int)15, str, 8);
+  ASSERT_STREQ("17", str);
+  HEX_FREE(str);
+}
+
+TEST(itoaTest, Base8_PositiveIntegerTest4) {
+  char *str=NULL;
+  str = itoa((int)16, str, 8);
+  ASSERT_STREQ("20", str);
+  HEX_FREE(str);
+}
+
+TEST(itoaTest, Base8_PositiveIntegerTest5) {
+  char *str=NULL;
+  str = itoa((int)64, str, 8);
+  ASSERT_STREQ("100", str);
+  HEX_FREE(str);
+}
 
 /*******************************************************************************
  * Test for:

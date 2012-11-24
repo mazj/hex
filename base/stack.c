@@ -28,7 +28,7 @@ struct HexStack_s {
 };
 
 
-Stack create_stack()
+Stack stack_create()
 {
   Stack stack = HEX_MALLOC(struct HexStack_s);
 
@@ -52,9 +52,7 @@ size_t stack_size(Stack stack)
 void* stack_top(Stack stack)
 {
   HEX_ASSERT(stack);
-
   RETURN_VAL_IF_NULL(stack->top, NULL);
-
   return stack->top->value;
 }
 
@@ -71,15 +69,18 @@ int stack_push(Stack stack, void *val, size_t size)
     return -1;
   }
 
-  if(!node->value) {
-    node->value = MALLOC(size);
-    RETURN_VAL_IF_NULL(node->value, -1);
-  }
+  memset(node, 0, sizeof(struct HexNode_s));
+
+  node->value = MALLOC(size);
+  RETURN_VAL_IF_NULL(node->value, -1);
 
   memcpy(node->value, val, size);
   node->next = NULL;
 
-  if(stack->top) node->next = stack->top;
+  if(stack->top) {
+    node->next = stack->top;
+  }
+
   stack->top = node;
   stack->size++;
 
@@ -92,16 +93,32 @@ void* stack_pop(Stack stack)
 
   RETURN_VAL_IF_NULL(stack->top, NULL);
 
-  Node node = stack->top;
+  Node top = stack->top;
 
-  stack->top = stack->top->next;
+  HEX_ASSERT(top);
+  stack->top = top->next;
 
-  if(node) {
-    void* val = node->value;
-    HEX_FREE(node);
-    stack->size--;
-    return val;
+  void* val = top->value;
+
+  HEX_FREE(top);
+  stack->size--;
+
+  return val;
+}
+
+void stack_free(Stack *stack)
+{
+  Stack _stack = *stack;
+  HEX_ASSERT(_stack);
+
+  while(stack_size(_stack) > 0) {
+    stack_pop(_stack);
   }
 
-  return NULL;
+  HEX_ASSERT(_stack->top == NULL);
+  HEX_ASSERT(_stack->size == 0);
+
+  HEX_FREE(_stack);
+
+  *stack = _stack;
 }

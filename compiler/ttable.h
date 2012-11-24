@@ -15,32 +15,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef _TTable_H_
-#define _TTable_H_
+#ifndef _TTABLE_H_
+#define _TTABLE_H_
 
 #include <stddef.h>
-#include "uuid.h"
+#include "scope.h"
+#include "types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-typedef struct HexTtableEntry {
-  hex_type_id_t type_id;
-  struct HexType type;
-} *TtableEntry;
+typedef struct HexTtableEntry *TtableEntry;
+
+typedef struct HexTtable *Ttable;
 
 Ttable ttable_create();
 
-size_t ttable_size();
+void ttable_free(Ttable *ttable);
 
-void* ttable_put(Ttale ttable, TtableEntry entry);
+size_t ttable_size(Ttable ttable);
 
-int ttable_remove(Ttable ttable, hex_type_id_t type_id);
+size_t ttable_capacity(Ttable ttable);
 
-TtableEntry ttable_lookup(Ttable ttable, char *type_name);
+void* ttable_put(Ttable ttable, char *name);
 
-size_t ttable_bucketcount(Ttable ttable);
+TtableEntry ttable_lookup(Ttable ttable, char *name); 
 
-int ttable_capacity(Ttable ttable);
+void* ttable_put_member_var(Ttable ttable, char *name, char *member_name,
+  hex_type_t type, hex_type_qualifier_t type_qualifier);
+
+void* ttable_put_member_func(Ttable ttable, char *name, char *member_name,
+  hex_type_t return_type, void* paramlist);
+
+int ttable_lookup_member_var(Ttable ttable, char *name, char *member_name);
+
+int ttable_lookup_member_func(Ttable ttable, char *name, char *member_name,
+  void* paramlist);
 
 
-#endif /* _TTable_H_ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* _TTABLE_H_ */

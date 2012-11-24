@@ -21,7 +21,11 @@
 #define _BUFFER_H_
 
 #include <stddef.h>
-#include <stdlib.h>
+#include <unistd.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 /*
@@ -40,30 +44,13 @@ typedef struct HexBuffer_s *Buffer;
  */
 #define buffer_write_complete(buffer) ((buffer)->remaining == 0)
 
-/*
- * Creates a new buffer with the given initial capacity.
- */
-Buffer
-buffer_create(size_t capacity);
+Buffer buffer_create(size_t capacity);
 
-/*
- * Frees the data in the buffer.
- */
-void
-buffer_free(Buffer buffer);
+void buffer_free(Buffer *buffer);
 
-/*
- * Wraps an existing byte array.
- */
-Buffer
-buffer_wrap(char *data, size_t capacity, size_t size);
+char* buffer_get(Buffer buffer);
 
-/*
- * Prepares buffer to read 'expected' number of bytes.
- * Expands capacity if necessary.
- */
-int
-buffer_prepare_for_read(Buffer buffer, size_t expected);
+int buffer_prepare_for_read(Buffer buffer, size_t expected);
 
 /*
  * Reads some data into a buffer. Returns -1 in case of an error and sets 
@@ -72,14 +59,9 @@ buffer_prepare_for_read(Buffer buffer, size_t expected);
  *
  * Precondition: buffer->size <= buffer->expected
  */
-ssize_t
-buffer_read(Buffer buffer, int fd);
+ssize_t buffer_read(Buffer buffer, int fd);
 
-/*
- * Prepares a buffer to be written.
- */
-int
-buffer_prepare_for_write(Buffer buffer);
+void buffer_prepare_for_write(Buffer buffer);
 
 /*
  * Writes data from buffer to the given fd. Returns -1 and sets errno in case
@@ -88,8 +70,12 @@ buffer_prepare_for_write(Buffer buffer);
  *
  * Precondition: buffer->remaining > 0
  */
-ssize_t
-buffer_write(Buffer buffer, int fd);
+ssize_t buffer_write(Buffer buffer, int fd);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif /* _BUFFER_H_ */

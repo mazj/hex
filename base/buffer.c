@@ -17,13 +17,14 @@
 
 #include <errno.h>
 #include <stddef.h>
+#include <stdlib.h>
 #include "memory.h"
 #include "assert.h"
-#include "buffer.h"
 #include "utils.h"
+#include "buffer.h"
 
 
-typedef struct HexBuffer_s {
+struct HexBuffer_s {
   char *data;                   /* byte array */
   union {
     size_t expected;            /* for reader, # of bytes expected */
@@ -31,7 +32,7 @@ typedef struct HexBuffer_s {
   };
   size_t size;                  /* actual size of buffer */
   size_t capacity;              /* amount of memory allocated for the buffer */
-} *Buffer;
+};
 
 
 Buffer
@@ -39,47 +40,40 @@ buffer_create(size_t capacity)
 {
   Buffer buffer = NULL;
 
-  HEX_MALLOC_OR_ENOMEM(struct HexBuffer_s, buffer);
+  buffer = HEX_MALLOC(struct HexBuffer_s);
 
-  RETURN_VAL_IF_NULL(buffer, NULL);
+  if(!buffer) {
+    errno = ENOMEM;
+    return NULL;
+  }
 
   buffer->data = malloc(capacity * sizeof(char));
   buffer->size = 0;
   buffer->capacity = capacity;
   buffer->expected = 0;
 
-  FREE_IF_NULL(buffer->data, buffer);
+  memset(buffer->data, 0, buffer->capacity);
 
   return buffer;
 }
 
 void
-buffer_free(Buffer buffer)
+buffer_free(Buffer *buffer)
 {
-  HEX_ASSERT(buffer);
-  HEX_FREE(buffer->data);
-  HEX_FREE(buffer);
+  Buffer _buffer = *buffer;
+
+  HEX_ASSERT(_buffer);
+  HEX_FREE(_buffer->data);
+  HEX_FREE(_buffer);
+
+  *buffer = _buffer;
 }
 
-Buffer
-buffer_wrap(char *data, size_t capacity, size_t size)
+char*
+buffer_get(Buffer buffer)
 {
-  RETURN_VAL_IF_NULL(data, NULL);
-
-  HEX_ASSERT(size <= capacity);
-
-  Buffer buffer = NULL;
-
-  HEX_MALLOC_OR_ENOMEM(struct HexBuffer_s, buffer);
-
-  RETURN_VAL_IF_NULL(buffer, NULL);
-
-  buffer->data = data;
-  buffer->size = size;
-  buffer->capacity = capacity;
-  buffer->expected = 0;
-
-  return buffer;
+  HEX_ASSERT(buffer);
+  return buffer->data;
 }
 
 int
@@ -123,7 +117,7 @@ buffer_read(Buffer buffer, int fd)
   return bytesRead;
 }
 
-int
+void
 buffer_prepare_for_write(Buffer buffer)
 {
   HEX_ASSERT(buffer);

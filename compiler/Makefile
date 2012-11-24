@@ -18,23 +18,60 @@
 CC=gcc
 CFLAGS=-Wno-implicit
 
-parser: lex.yy.c parser.tab.h ast.o ast.h
-	gcc lex.yy.c parser.tab.h parser.tab.c ast.o
+CXX=g++
+LIBGTEST=/usr/lib/libgtest.a
+
+LEX=lex
+BISON=bison
+
+
+ast.o: ast.c ast.h
+	$(CC) $(CFLAGS) -c ast.h ast.c
 
 lex.yy.c: lexer.l
-	lex lexer.l
-
-lexer.out:
-	make LDLIBS=-ll lexer
-
-preprocessor: esb.o utils.h preprocessor.c
-	$(CC) $(CFLAGS) esb.o preprocessor.c -o preprocessor
+	$(LEX) lexer.l
 
 parser.tab.h: parser.y
-	bison -d -t -v parser.y
+	$(BISON) -y -d -t -v -g parser.y -o parser.tab.h -o parser.tab.c
 
-ast.o: ast.c ast.h ../base/memory.h ../base/assert.h
-	$(CC) $(CFLAGS) -c ast.h ast.c ../base/memory.h ../base/assert.h
+parser.o: parser.tab.h parser.c
+	$(CC) $(CFLAGS) -c parser.c parser.tab.h parser.tab.c 
+
+semantics.o: semantics.c semantics.h
+	$(CC) $(CFLAGS) -c semantics.c semantics.h
+
+compiler.out: parser.o ast.o semantics.o vtable.o compiler.c lex.yy.c
+	$(CC) $(CFLAGS) parser.o lex.yy.c parser.tab.c ast.o semantics.o vtable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o  compiler.c -o compiler.out
+
+lexer.out: parser.tab.h
+	make LDLIBS=-ll lexer
+
+vtable.o: vtable.h vtable.c
+	$(CC) $(CFLAGS) -c vtable.h vtable.c
+
+vtable_unittest.test: vtable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o ../base/unittest.o tests/vtable_unittest.cc
+	$(CXX) $(LIBGTEST) vtable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o ../base/unittest.o tests/vtable_unittest.cc -o vtable_unittest.test
+
+ftable.o: ftable.h ftable.c
+	$(CC) $(CFLAGS) -c ftable.h ftable.c
+
+ftable_unittest.test: ftable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o ../base/unittest.o tests/ftable_unittest.cc
+	$(CXX) $(LIBGTEST) ftable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o ../base/unittest.o tests/ftable_unittest.cc -o ftable_unittest.test
+
+ttable.o: ttable.h ttable.c
+	$(CC) $(CFLAGS) -c ttable.c ttable.h
+
+ttable_unittest.test: ttable.o vtable.o ftable.o tests/ttable_unittest.cc
+	$(CXX) $(LIBGTEST) ttable.o vtable.o ftable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o ../base/unittest.o tests/ttable_unittest.cc -o ttable_unittest.test
+
+ast_to_text.o: ast_to_text.c ast_to_text.h
+	$(CC) $(CFLAGS) -c ast_to_text.c ast_to_text.h
+
+ast_unittest.test: ast_to_text.o ast.o parser.o lex.yy.c tests/ast_unittest.cc
+	$(CXX) $(LIBGTEST) parser.o lex.yy.c parser.tab.c ast.o ast_to_text.o ../base/strbuf.o ../base/unittest.o tests/ast_unittest.cc -o ast_unittest.test
+
+ast_unittest2.test: ast_to_text.o ast.o parser.o lex.yy.c tests/ast_unittest2.c
+	$(CC) $(CLFAGS) parser.o lex.yy.c parser.tab.c ast.o ast_to_text.o ../base/strbuf.o ../base/cutils.o tests/ast_unittest2.c -o ast_unittest2.test
 
 clean:
-	rm *.gch *.out *.o *.swp .lexer.l.swp *.output lexer lex.yy.c parser.tab.c parser.tab.h
+	rm *.gch *.out *.o *.swp .lexer.l.swp *.output *.vcg *.test lexer lex.yy.c parser.tab.c parser.tab.h

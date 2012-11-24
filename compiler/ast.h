@@ -33,9 +33,7 @@
       __LINE__                          \
     );                                  \
                                         \
-    if(level == -1) {                   \
-      exit(EXIT_FAILURE);               \
-    }                                   \
+    exit(EXIT_FAILURE);                 \
   } while(0)
 
 
@@ -54,6 +52,10 @@ typedef struct HexExpr *Expr;
  */
 typedef struct HexExprList *ExprList;
 
+/*
+ * Tuple initializer
+ */
+typedef struct HexTupleInitializer *TupleInitializer;
 
 /*
  * List initializer
@@ -97,6 +99,15 @@ typedef struct HexSuite *Suite;
 //===========================================================================
 // global typedefs
 //===========================================================================
+
+
+#define HEX_PARSE_TREE_ROOT_TYPE_STMT_GROUP     0x0001
+#define HEX_PARSE_TREE_ROOT_TYPE_CLASS          0x0002
+#define HEX_PARSE_TREE_ROOT_TYPE_CLASS_SECTION  0x0004
+
+void* hex_ast_get_parse_tree_root(int *root_type);
+void hex_ast_set_parse_tree_root(void *p, int root_type);
+
 
 /*
  * Integer
@@ -187,7 +198,7 @@ typedef struct HexPostfixIndexExpr {
     char *identifier;
     Expr index_expr;
   };
-  ListInitializer indeces;
+  ExprList indeces_list;
 } *PostfixIndexExpr;
 
 
@@ -196,7 +207,7 @@ typedef struct HexPostfixIndexExpr {
 // construct an AST node of type HexPostfixIndexExpr.
 //===========================================================================
 PostfixIndexExpr
-hex_ast_create_postfix_index_expr(int type, void *value, ListInitializer indeces);
+hex_ast_create_postfix_index_expr(int type, void *value, ExprList indeces_list); 
 
 
 /*
@@ -213,7 +224,7 @@ typedef struct HexPostfixAccessorExpr {
 // construct an AST node of type HexPostfixAccessorExpr.
 //===========================================================================
 PostfixAccessorExpr
-hex_ast_create_postfix_accessor_expr(Expr caller, Expr accessor);
+hex_ast_create_postfix_accessor_expr(Expr caller, char *accessor);
 
 
 /*
@@ -260,7 +271,7 @@ typedef struct HexPostfixInvocationWithArgsExpr {
 // construct an AST node of type HexPostfixInvocationWithArgsExpr.
 //===========================================================================
 PostfixInvocationWithArgsExpr
-hex_ast_create_postfix_invocation_with_args_expr(int type, void *value, ExprList arg_list);
+hex_ast_create_postfix_invocation_with_args_expr(int type, void *value, TupleInitializer arg_list_tuple);
 
 
 /*
@@ -556,7 +567,7 @@ hex_ast_create_bitwise_expr(int type, Expr left_expr, Expr right_expr);
  * Conditional expression 
  *  
  * Syntax:
- *  target_expr = if predicate then alternative else consequent
+ *  target_expr = if predicate then consequent else alternative
  */
 typedef struct HexConditionalExpr {
   Expr predicate_expr;
@@ -690,7 +701,7 @@ typedef enum HexAssignmentOp {
   assign_op_bitwise_and,      /* &= */
   assign_op_bitwise_or,       /* |= */
   assign_op_bitwise_xor       /* ^= */
-} *AssignmentOp;
+} AssignmentOp;
 
 
 /*
@@ -847,9 +858,9 @@ hex_ast_create_array_initializer(ExprList expr_list);
 /*
  * Tuple initializer
  */
-typedef struct HexTupleInitializer {
+struct HexTupleInitializer {
   ExprList expr_list;
-} *TupleInitializer;
+};
 
 
 //===========================================================================
@@ -960,7 +971,7 @@ typedef struct HexInitializer {
     ArrayInitializer array_initializer;                 /* array initializer */
     TupleInitializer tuple_initializer;                 /* tuple initializer */
     StructInitializer struct_initializer;               /* struct initializer */
-    SetInitializer set_initialier;                      /* set initializer */
+    SetInitializer set_initializer;                     /* set initializer */
     MapMultimapInitializer map_multimap_initializer;    /* map & multimap initializer */
     };
 } *Initializer;
@@ -982,6 +993,7 @@ hex_ast_create_initializer(int type, void *value);
  * Assignment
  */
 typedef struct HexAssignment {
+  AssignmentOp assignment_op;
   enum {
     assignment_type_expr,
     assignment_type_initializer,
@@ -1000,7 +1012,7 @@ typedef struct HexAssignment {
 // construct an AST node of type HexAssignment.
 //===========================================================================
 Assignment
-hex_ast_create_assignment(int type, void *target);
+hex_ast_create_assignment(AssignmentOp assignment_op, int type, void *target);
 
 
 /*

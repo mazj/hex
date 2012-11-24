@@ -17,10 +17,29 @@
 
 /* Abstract Syntax Tree */
 
+#include <string.h>
 #include "ast.h"
 #include "../base/assert.h"
 #include "../base/memory.h"
+#include "../base/utils.h"
 
+static void *_ast_root_=NULL;
+static int _root_type_=0;
+
+void* hex_ast_get_parse_tree_root(int *root_type)
+{
+  HEX_ASSERT(root_type);
+  *root_type = _root_type_;
+  return _ast_root_;
+}
+
+void hex_ast_set_parse_tree_root(void *p, int root_type)
+{
+  HEX_ASSERT(p);
+  HEX_ASSERT(root_type);
+  _ast_root_=p;
+  _root_type_=root_type;
+}
 
 Integer
 hex_ast_create_integer(int type, int is_signed, int value)
@@ -57,7 +76,7 @@ hex_ast_create_literal(int type, void *value)
     case literal_type_string:
       {
         literal->literal_type = literal_type_string;
-        literal->literal_string = (char*)value;
+        literal->literal_string = strdup((char*)value);
       }
       break;
     case literal_type_integer:
@@ -83,7 +102,7 @@ hex_ast_create_literal(int type, void *value)
 Expr
 hex_ast_create_primary_expr(int type, void *value)
 {
-  HEX_ASSERT(value != NULL);
+  HEX_ASSERT(value);
 
   PrimaryExpr primary_expr = HEX_MALLOC(struct HexPrimaryExpr);
 
@@ -92,7 +111,7 @@ hex_ast_create_primary_expr(int type, void *value)
     case primary_expr_type_identifier:
       {
         primary_expr->primary_expr_type = primary_expr_type_identifier;
-        primary_expr->primary_expr_identifier = (char*)value;
+        primary_expr->primary_expr_identifier = strdup((char*)value);
       }
       break;
     case primary_expr_type_literal:
@@ -112,10 +131,10 @@ hex_ast_create_primary_expr(int type, void *value)
 }
 
 PostfixIndexExpr
-hex_ast_create_postfix_index_expr(int type, void *value, ListInitializer indeces)
+hex_ast_create_postfix_index_expr(int type, void *value, ExprList indeces_list) 
 {
-  HEX_ASSERT(value != NULL);
-  HEX_ASSERT(indeces != NULL);
+  HEX_ASSERT(value);
+  HEX_ASSERT(indeces_list);
 
   PostfixIndexExpr postfix_index_expr = HEX_MALLOC(struct HexPostfixIndexExpr);
 
@@ -124,15 +143,15 @@ hex_ast_create_postfix_index_expr(int type, void *value, ListInitializer indeces
     case postfix_index_expr_type_identifier:
       {
         postfix_index_expr->postfix_index_expr_type = postfix_index_expr_type_identifier;
-        postfix_index_expr->identifier = (char*)value;
-        postfix_index_expr->indeces = indeces;
+        postfix_index_expr->identifier = strdup((char*)value);
+        postfix_index_expr->indeces_list = indeces_list;
       }
       break;
     case postfix_index_expr_type_expr:
       {
         postfix_index_expr->postfix_index_expr_type = postfix_index_expr_type_expr;
         postfix_index_expr->index_expr = (Expr)value;
-        postfix_index_expr->indeces = indeces;
+        postfix_index_expr->indeces_list = indeces_list;
       }
       break;
     default:
@@ -144,24 +163,24 @@ hex_ast_create_postfix_index_expr(int type, void *value, ListInitializer indeces
 }
 
 PostfixAccessorExpr
-hex_ast_create_postfix_accessor_expr(Expr caller, Expr accessor)
+hex_ast_create_postfix_accessor_expr(Expr caller, char *accessor)
 {
-  HEX_ASSERT(caller != NULL);
-  HEX_ASSERT(accessor != NULL);
+  HEX_ASSERT(caller);
+  HEX_ASSERT(accessor);
 
   PostfixAccessorExpr postfix_accessor_expr = HEX_MALLOC(struct HexPostfixAccessorExpr);
 
   postfix_accessor_expr->caller = caller;
-  postfix_accessor_expr->accessor = accessor;
+  postfix_accessor_expr->accessor = strdup(accessor);
 
   return postfix_accessor_expr;
 }
 
 PostfixInvocationWithArgsExpr
-hex_ast_create_postfix_invocation_with_args_expr(int type, void *value, ExprList arg_list)
+hex_ast_create_postfix_invocation_with_args_expr(int type, void *value, TupleInitializer arg_list_tuple)
 {
-  HEX_ASSERT(value != NULL);
-  HEX_ASSERT(arg_list != NULL);
+  HEX_ASSERT(value);
+  HEX_ASSERT(arg_list_tuple);
 
   PostfixInvocationWithArgsExpr postfix_invocation_with_args_expr = HEX_MALLOC(struct HexPostfixInvocationWithArgsExpr);
 
@@ -170,7 +189,7 @@ hex_ast_create_postfix_invocation_with_args_expr(int type, void *value, ExprList
     case postfix_invocation_expr_with_args_type_identifier:
       {
         postfix_invocation_with_args_expr->postfix_invocation_expr_with_args_type = postfix_invocation_expr_with_args_type_identifier;
-        postfix_invocation_with_args_expr->invocation_name = (char*)value;
+        postfix_invocation_with_args_expr->invocation_name = strdup((char*)value);
       }
       break;
     case postfix_invocation_expr_with_args_type_expr:
@@ -184,7 +203,7 @@ hex_ast_create_postfix_invocation_with_args_expr(int type, void *value, ExprList
       break;
   }
 
-  postfix_invocation_with_args_expr->arg_list = arg_list;
+  postfix_invocation_with_args_expr->arg_list = arg_list_tuple->expr_list;
 
   return postfix_invocation_with_args_expr;
 }
@@ -201,7 +220,7 @@ hex_ast_create_postfix_invocation_expr(int type, void *invocation_src)
     case postfix_invocation_expr_type_identifier:
       {
         postfix_invocation_expr->postfix_invocation_expr_type = postfix_invocation_expr_type_identifier;
-        postfix_invocation_expr->invocation_name = (char*)invocation_src;
+        postfix_invocation_expr->invocation_name = strdup((char*)invocation_src);
       }
       break;
     case postfix_invocation_expr_type_expr:
@@ -230,7 +249,9 @@ hex_ast_create_postfix_expr(int type, int type2, void *value, void *value1)
     case postfix_expr_type_index:
       {
         postfix_expr->postfix_expr_type = postfix_expr_type_index;
-        PostfixIndexExpr postfix_index_expr = hex_ast_create_postfix_index_expr(type2, value, (ListInitializer)value1);
+        ListInitializer list_initializer = (ListInitializer)value1;
+        HEX_ASSERT(list_initializer);
+        PostfixIndexExpr postfix_index_expr = hex_ast_create_postfix_index_expr(type2, value, list_initializer->expr_list); 
         postfix_expr->postfix_expr_index_expr = postfix_index_expr;
       }
       break;
@@ -249,7 +270,7 @@ hex_ast_create_postfix_expr(int type, int type2, void *value, void *value1)
     case postfix_expr_type_accessor:
       {
         postfix_expr->postfix_expr_type = postfix_expr_type_accessor;
-        PostfixAccessorExpr postfix_accessor_expr = hex_ast_create_postfix_accessor_expr((Expr)value, (Expr)value1);
+        PostfixAccessorExpr postfix_accessor_expr = hex_ast_create_postfix_accessor_expr((Expr)value, (char*)value1);
         postfix_expr->postfix_expr_accessor_expr = postfix_accessor_expr;
       }
       break;
@@ -263,7 +284,7 @@ hex_ast_create_postfix_expr(int type, int type2, void *value, void *value1)
     case postfix_expr_type_invocation_with_args:
       {
         postfix_expr->postfix_expr_type = postfix_expr_type_invocation_with_args;
-        PostfixInvocationWithArgsExpr postfix_invocation_with_args_expr = hex_ast_create_postfix_invocation_with_args_expr(type2, value, (ExprList)value1);
+        PostfixInvocationWithArgsExpr postfix_invocation_with_args_expr = hex_ast_create_postfix_invocation_with_args_expr(type2, value, value1);
         postfix_expr->postfix_expr_invocation_with_args_expr = postfix_invocation_with_args_expr;
       }
       break;
@@ -280,9 +301,11 @@ hex_ast_create_postfix_expr(int type, int type2, void *value, void *value1)
 Expr
 hex_ast_create_unary_expr(int type, Expr expr)
 {
-  HEX_ASSERT(expr != NULL);
+  HEX_ASSERT(expr);
 
   UnaryExpr unary_expr = HEX_MALLOC(struct HexUnaryExpr);
+  HEX_ASSERT(unary_expr);
+  memset(unary_expr, 0, sizeof(struct HexUnaryExpr));
 
   switch(type)
   {
@@ -301,6 +324,12 @@ hex_ast_create_unary_expr(int type, Expr expr)
     case unary_expr_type_unary_minus:
       {
         unary_expr->unary_expr_type = unary_expr_type_unary_minus;
+        unary_expr->unary_expr_unary_expr = expr;
+      }
+      break;
+    case unary_expr_type_not:
+      {
+        unary_expr->unary_expr_type = unary_expr_type_not;
         unary_expr->unary_expr_unary_expr = expr;
       }
       break;
@@ -340,7 +369,7 @@ hex_ast_create_cast_expr(int type, void *value, Expr expr)
     case cast_expr_type_custom_type:
       {
         cast_expr->cast_expr_type = cast_expr_type_custom_type;
-        cast_expr->identifier = (char*)value;
+        cast_expr->identifier = strdup((char*)value);
         cast_expr->expr = expr;
       }
       break;
@@ -357,10 +386,12 @@ hex_ast_create_cast_expr(int type, void *value, Expr expr)
 Expr
 hex_ast_create_multiplicative_expr(int type, Expr left_expr, Expr right_expr)
 {
-  HEX_ASSERT(left_expr != NULL);
-  HEX_ASSERT(right_expr != NULL);
+  HEX_ASSERT(left_expr);
+  HEX_ASSERT(right_expr);
 
   MultiplicativeExpr multi_expr = HEX_MALLOC(struct HexMultiplicativeExpr);
+  HEX_ASSERT(multi_expr);
+  memset(multi_expr, 0, sizeof(struct HexMultiplicativeExpr));
 
   switch(type)
   {
@@ -461,10 +492,12 @@ hex_ast_create_arithmetic_expr(int type, void *expr)
 Expr
 hex_ast_create_equality_expr(int type, Expr left_expr, Expr right_expr)
 {
-  HEX_ASSERT(left_expr != NULL);
-  HEX_ASSERT(right_expr != NULL);
+  HEX_ASSERT(left_expr);
+  HEX_ASSERT(right_expr);
 
   EqualityExpr equality_expr = HEX_MALLOC(struct HexEqualityExpr);
+  HEX_ASSERT(equality_expr);
+  memset(equality_expr, 0, sizeof(struct HexEqualityExpr));
 
   switch(type)
   {
@@ -669,6 +702,7 @@ Expr
 hex_ast_create_expr(int type, void *value)
 {
   Expr expr = HEX_MALLOC(struct HexExpr);
+  memset(expr, 0, sizeof(struct HexExpr));
 
   switch(type)
   {
@@ -755,17 +789,25 @@ hex_ast_create_expr(int type, void *value)
 ExprList
 hex_ast_create_expr_list(Expr expr, ExprList parent_list)
 {
-  HEX_ASSERT(expr != NULL);
+  HEX_ASSERT(expr);
 
   ExprList expr_list = HEX_MALLOC(struct HexExprList);
-  expr_list->expr = expr;
+  memset(expr_list, 0, sizeof(struct HexExprList));
 
-  if(parent_list) {
-    parent_list->next = expr_list;
-    return parent_list;
-  } else {
-    return expr_list;
+  expr_list->expr = expr;
+  expr_list->next = NULL;
+
+  RETURN_VAL_IF_NULL(parent_list, expr_list);
+
+  ExprList _p = parent_list;
+
+  while(_p->next) {
+    _p = _p->next;
   }
+
+  _p->next = expr_list;
+
+  return parent_list;
 }
 
 TypeQualifierList
@@ -791,9 +833,9 @@ hex_ast_create_declaration(TypeQualifierList type_qualifier_list,
 
   declaration->type_qualifier_list = type_qualifier_list;
   declaration->type_specifier = type_specifier;
-  declaration->custom_type = custom_type;
+  declaration->custom_type = custom_type ? strdup(custom_type) : NULL;
   declaration->expr_list = expr_list;
-  declaration->alias = alias;
+  declaration->alias = alias ? strdup(alias) : NULL;
 
   return declaration;
 }
@@ -806,8 +848,8 @@ hex_ast_create_parameter(TypeQualifierList type_qualifier_list, int type_specifi
 
   parameter->type_qualifier_list = type_qualifier_list;
   parameter->type_specifier = type_specifier;
-  parameter->custom_type = custom_type;
-  parameter->parameter_name = parameter_name;
+  parameter->custom_type = custom_type ? strdup(custom_type) : NULL;
+  parameter->parameter_name = parameter_name ? strdup(parameter_name) : NULL;
   parameter->is_ref = is_ref;
 
   return parameter;
@@ -962,7 +1004,7 @@ hex_ast_create_initializer(int type, void *value)
     case initializer_type_set:
       {
         initializer->initializer_type = initializer_type_set;
-        initializer->set_initialier = (SetInitializer)value;
+        initializer->set_initializer = (SetInitializer)value;
       }
       break;
     case initializer_type_mapmultimap:
@@ -980,7 +1022,7 @@ hex_ast_create_initializer(int type, void *value)
 }
 
 Assignment
-hex_ast_create_assignment(int type, void *target)
+hex_ast_create_assignment(AssignmentOp assignment_op, int type, void *target)
 {
   HEX_ASSERT(target != NULL);
 
@@ -1010,6 +1052,8 @@ hex_ast_create_assignment(int type, void *target)
       AST_ERROR(0, "Unknown assignment type");
       break;
   }
+
+  assignment->assignment_op = assignment_op;
 
   return assignment;
 }
@@ -1069,15 +1113,23 @@ hex_ast_create_assignment_stmt_list(AssignmentStmt assignment_stmt, AssignmentSt
   HEX_ASSERT(assignment_stmt != NULL);
 
   AssignmentStmtList assignment_stmt_list = HEX_MALLOC(struct HexAssignmentStmtList);
+  HEX_ASSERT(assignment_stmt_list);
+  memset(assignment_stmt_list, 0, sizeof(struct HexAssignmentStmtList));
+
   assignment_stmt_list->assignment_stmt = assignment_stmt;
   assignment_stmt_list->next = 0;
 
-  if(parent_list) {
-    parent_list->next = assignment_stmt_list;
-    return parent_list;
-  } else {
-    return assignment_stmt_list;
+  RETURN_VAL_IF_NULL(parent_list, assignment_stmt_list);
+
+  AssignmentStmtList _p = parent_list;
+
+  while(_p->next) {
+    _p = _p->next;
   }
+
+  _p->next = assignment_stmt_list;
+
+  return parent_list;
 }
 
 FuncDec
@@ -1088,8 +1140,8 @@ hex_ast_create_func_dec(TypeQualifierList type_qualifier_list,
   FuncDec func_declaration = HEX_MALLOC(struct HexFuncDec);
   func_declaration->return_type_qualifier_list = type_qualifier_list;
   func_declaration->return_type_specifier = type_specifier;
-  func_declaration->custom_return_type = custom_return_type;
-  func_declaration->func_name = func_name;
+  func_declaration->custom_return_type = strdup(custom_return_type);
+  func_declaration->func_name = strdup(func_name);
   func_declaration->parameter_list = parameter_list;
 
   return func_declaration;
@@ -1159,8 +1211,8 @@ hex_ast_create_compiler_property(char *compiler_property_name, char *compiler_pr
 
   CompilerProperty compiler_property = HEX_MALLOC(struct HexCompilerProperty);
 
-  compiler_property->compiler_property_name = compiler_property_name;
-  compiler_property->compiler_property_value = compiler_property_value;
+  compiler_property->compiler_property_name = strdup(compiler_property_name);
+  compiler_property->compiler_property_value = strdup(compiler_property_value);
 
   return compiler_property;
 }
@@ -1228,7 +1280,7 @@ hex_ast_create_class_declaration(char *name, ExprList expr_list)
   HEX_ASSERT(name != NULL);
 
   ClassDeclaration class_declaration = HEX_MALLOC(struct HexClassDeclaration);
-  class_declaration->name = name;
+  class_declaration->name = strdup(name);
   class_declaration->expr_list = expr_list;
 
   return class_declaration;
@@ -1252,7 +1304,7 @@ hex_ast_create_module(char *module_identifier)
   HEX_ASSERT(module_identifier != NULL);
 
   Module module = HEX_MALLOC(struct HexModule);
-  module->module_identifier = module_identifier;
+  module->module_identifier = strdup(module_identifier);
 
   return module;
 }
@@ -1281,7 +1333,7 @@ hex_ast_create_direct_import_stmt(ModuleList module_list, char *alias)
 
   DirectImportStmt direct_import_stmt = HEX_MALLOC(struct HexDirectImportStmt);
   direct_import_stmt->module_list = module_list;
-  direct_import_stmt->alias = alias;
+  direct_import_stmt->alias = strdup(alias);
 
   return direct_import_stmt;
 }
@@ -1295,7 +1347,7 @@ hex_ast_create_relative_import_stmt(ModuleList module_list, Module module, char 
   RelativeImportStmt relative_import_stmt = HEX_MALLOC(struct HexRelativeImportStmt);
   relative_import_stmt->module_list = module_list;
   relative_import_stmt->module = module;
-  relative_import_stmt->alias = alias;
+  relative_import_stmt->alias = strdup(alias);
 
   return relative_import_stmt;
 }
@@ -1761,15 +1813,22 @@ hex_ast_create_stmt_group(Stmt stmt, StmtGroup parent_group)
   HEX_ASSERT(stmt != NULL);
 
   StmtGroup stmt_group = HEX_MALLOC(struct HexStmtGroup);
+  memset(stmt_group, 0, sizeof(struct HexStmtGroup));
+
   stmt_group->stmt = stmt;
   stmt_group->next = 0;
 
-  if(parent_group) {
-    parent_group->next = stmt_group;
-    return parent_group;
-  } else {
-    return stmt_group;
+  RETURN_VAL_IF_NULL(parent_group, stmt_group);
+
+  StmtGroup _p = parent_group;
+
+  while(_p->next) {
+    _p = _p->next;
   }
+
+  _p->next = stmt_group;
+
+  return parent_group;
 }
 
 Suite

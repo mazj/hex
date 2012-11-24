@@ -29,7 +29,7 @@ struct HexQueue_s {
 };
 
 
-Queue create_queue()
+Queue queue_create()
 {
   Queue queue = HEX_MALLOC(struct HexQueue_s);
 
@@ -78,10 +78,10 @@ int queue_push(Queue queue, void *val, size_t size)
     return -1;
   }
 
-  if(!node->value) {
-    node->value = MALLOC(size);
-    RETURN_VAL_IF_NULL(node->value, -1);
-  }
+  memset(node, 0, sizeof(struct HexNode_s));
+
+  node->value = MALLOC(size);
+  RETURN_VAL_IF_NULL(node->value, -1);
 
   memcpy(node->value, val, size);
   node->next = NULL;
@@ -95,6 +95,8 @@ int queue_push(Queue queue, void *val, size_t size)
     queue->head = queue->tail;
   }
 
+  queue->size++;
+
   return 1;
 }
 
@@ -102,7 +104,7 @@ void* queue_pop(Queue queue)
 {
   HEX_ASSERT(queue);
 
-  RETURN_VAL_IF_EQUALS(queue->size, 0, NULL);
+  RETURN_VAL_IF_EQ(queue->size, 0, NULL);
 
   HEX_ASSERT(queue->head);
 
@@ -111,6 +113,7 @@ void* queue_pop(Queue queue)
   Node next = queue->head->next;
 
   HEX_FREE(queue->head);
+  queue->head = next;
   queue->size--;
 
   if(queue->size == 0) {
@@ -119,4 +122,22 @@ void* queue_pop(Queue queue)
   }
 
   return val;
+}
+
+void queue_free(Queue *queue)
+{
+  Queue _queue = *queue;
+  HEX_ASSERT(_queue);
+
+  while(queue_size(_queue) > 0) {
+    queue_pop(_queue);
+  }
+
+  HEX_ASSERT(_queue->head == NULL);
+  HEX_ASSERT(_queue->tail == NULL);
+  HEX_ASSERT(_queue->size == 0);
+
+  HEX_FREE(_queue);
+
+  *queue = _queue;
 }

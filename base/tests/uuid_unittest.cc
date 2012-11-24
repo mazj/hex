@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <limits.h>
 #include "../unittest.h"
 #include "../uuid.h"
 #include "../assert.h"
@@ -96,9 +97,9 @@ TEST(uuid_to_hashTest, HashOnDifferentUUIDTest1) {
   ASSERT_NE(hash1, hash2);
 }
 
-TEST(uuid_to_hashTest, HashOnDifferentUUID_STRESSTest) {
+TEST(uuid_to_hashTest, HashOnDifferentUUID_Test) {
   int i;
-  for(i = 0; i < 9999; i++) {
+  for(i = 0; i < 100000; i++) {
     hex_uuid_t uuid1;
     hex_uuid_t uuid2;
 
@@ -114,9 +115,9 @@ TEST(uuid_to_hashTest, HashOnDifferentUUID_STRESSTest) {
   }
 }
 
-TEST(uuid_create_and_hashTest, UUIDCreateAndHash_STRESSTest) {
+TEST(uuid_create_and_hashTest, UUIDCreateAndHash_Test) {
   int i;
-  for(i = 0; i < 9999; i++) {
+  for(i = 0; i < 100000; i++) {
     ASSERT_NE(
       uuid_create_and_hash(),
       uuid_create_and_hash()

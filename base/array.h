@@ -23,38 +23,32 @@
 #include <stddef.h>
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 typedef struct HexArray_s *Array;
 
-Array
-array_create();
+Array array_create();
 
-void
-array_free(Array array);
+void array_free(Array *array);
 
-/*
- * Append the specified item to the end of the array.
- */
-int
-array_append(Array array, void* ptr);
+int array_append(Array array, void* ptr);
 
-/*
- * Remove an item in the array at the specified index, if found.
- * Returns the removed item.
- */
-void*
-array_remove(Array array, int index);
+void* array_get(Array array, int index);
 
-void*
-array_set(Array array, int index, void* ptr);
+void* array_remove(Array array, int index);
 
-int
-array_set_size(Array array, int newSize);
+void* array_set(Array array, int index, void* ptr);
 
-int
-array_size(Array array);
+int array_size(Array array);
 
-const void**
-array_content(Array array);
+const void** array_content(Array array);
 
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _ARRAY_H_ */

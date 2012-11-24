@@ -21,6 +21,7 @@
 #include <time.h>
 #include "uuid.h"
 #include "rand.h"
+#include "hash.h"
 
 
 int uuid_create(hex_uuid_t *uuid)
@@ -39,16 +40,9 @@ int uuid_create(hex_uuid_t *uuid)
   snprintf(buf, sizeof(buf), "%lld", (unsigned long long)t);
   ll = (unsigned long long)t;
 
-  char *s = buf;
-  unsigned int sum=0;
-  while(*s) {
-    sum += *s;
-    s++;
-  }
-
   u1 = (ll & 0xFFFF0000) >> 16;
   u2 = ll & 0xFFFF;
-  u3 = sum;
+  u3 = hash_str(buf);
   u4 = (unsigned short)hex_rand_top(USHRT_MAX);
   u5 = (unsigned short)hex_rand_top(USHRT_MAX);
 
@@ -81,16 +75,6 @@ hash_t uuid_to_hash(const hex_uuid_t uuid)
   hash_t time_h_hash = (hash_t)hash64shift(uuid.time_h);
   hash_t rand_1_hash = (hash_t)hash_robert_jenkin((unsigned int)uuid.rand_1);
   hash_t rand_2_hash = (hash_t)hash_robert_jenkin((unsigned int)uuid.rand_2);
-
-  /*
-  time_u_hash &= 0xFF000000;
-  time_l_hash &= 0x00FF0000;
-  time_h_hash &= 0x0000FF00;
-  rand_1_hash &= 0x000000F0;
-  rand_2_hash &= 0x0000000F;
-
-  hash = time_u_hash | time_l_hash | time_h_hash | rand_1_hash | rand_2_hash; 
-  */
 
 #ifndef GOLDEN_PRIME
 #define GOLDEN_PRIME 37

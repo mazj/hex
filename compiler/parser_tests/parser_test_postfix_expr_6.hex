@@ -1,0 +1,4 @@
+
+i = sort(1, 3, 4, 2)
+sum = sum(1, 2, 3, 4, 5)
+value = get_value(sum, i, my_obj, counter++)

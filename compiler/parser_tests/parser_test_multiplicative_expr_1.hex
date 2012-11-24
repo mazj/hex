@@ -1,0 +1,4 @@
+
+float num = 1000 / 5 * 2
+uint mod = 999 % 3
+uchar c = 3 + 3 % 3

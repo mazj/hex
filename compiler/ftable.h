@@ -19,43 +19,42 @@
 #define _FTABLE_H_
 
 #include <stddef.h>
-#include "token_loc.h"
 #include "ast.h"
-#include "uuid.h"
+#include "types.h"
 
-typedef uuid_t hex_func_id_t;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 typedef struct HexFtableEntry {
-  hex_func_id_t func_id;
-  char *func_name;
-  hex_type_id_t return_type;
-  ParameterList params;
-  TokenLoc token_loc;
-  int flag;
+  char *name;
+  hex_type_t return_type;
+  void *paramlist;
+  char *mingled_name;
 } *FtableEntry;
 
 typedef struct HexFtable *Ftable;
 
+char* ftable_mingle_name(FtableEntry);
+
 Ftable ftable_create();
 
-FtableEntry ftable_create_entry(char *func_name,
-  ParameterList params, hex_type_id_t return_type, TokenLoc token_loc);
-
-size_t ftable_size();
-
-void* ftable_put(Ftable ftable, FtableEntry func);
-
-int ftable_remove(Ftbale ftable, hex_func_id_t func_id);
-
-FtableEntry ftable_lookup_by_id(Ftable ftable, hex_func_id_t fund_id);
-
-FtableEntry ftable_lookup_by_name(Ftable ftable, char *func_name);
-
-FtableEntry ftable_lookup_by_signature(Ftable ftable, char *func_name, ParameterList params);
-
-size_t ftable_bucketcount(Ftable ftable);
+size_t ftable_size(Ftable ftable);
 
 size_t ftable_capacity(Ftable ftable);
 
+FtableEntry ftable_put(Ftable ftable, char *name, hex_type_t return_type,
+  void *paramlist);
+
+FtableEntry ftable_lookup(Ftable ftable, char *name, void *paramlist);
+
+void ftable_free(Ftable *ftable);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _FTABLE_H_ */

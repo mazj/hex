@@ -67,23 +67,42 @@ hash.o: hash.h hash.c utils.h
 hash_unittest.test: utils.o hash.o unittest.o tests/hash_unittest.cc
 	$(CXX) $(LIBGTEST) utils.o hash.o unittest.o tests/hash_unittest.cc -o hash_unittest.test
 
-array.o: array.c array.h memory.h assert.h
-	$(CC) $(CFLAGS) array.c array.h memory.h assert.h
-
-bst.o: bst.h bst.c memory.h utils.h
-	$(CC) $(CFLAGS) bst.h bst.c memory.h utils.h
-
-buffer.o: buffer.c buffer.h memory.h assert.h
-	$(CC) $(CFLAGS) buffer.c buffer.h memory.h assert.h
-
 strbuf.o: strbuf.c strbuf.h
-	$(CC) $(CFLAGS) strbuf.c strbuf.h
+	$(CC) $(CFLAGS) -c strbuf.c strbuf.h
 
-queue.o: queue.c queue.h memory.h
-	$(CC) $(CFLAGS) queue.c queue.h memory.h
+strbuf_unittest.test: strbuf.o unittest.o tests/strbuf_unittest.cc
+	$(CXX) $(LIBGTEST) strbuf.o unittest.o tests/strbuf_unittest.cc -o strbuf_unittest.test
 
-stack.o: stack.c stack.h memory.h
-	$(CC) $(CFLAGS) stack.c stack.h memory.h
+queue.o: queue.c queue.h
+	$(CC) $(CFLAGS) -c queue.c queue.h
+
+queue_unittest.test: queue.o unittest.o tests/queue_unittest.cc
+	$(CXX) $(LIBGTEST) queue.o unittest.o tests/queue_unittest.cc -o queue_unittest.test
+
+stack.o: stack.c stack.h
+	$(CC) $(CFLAGS) -c stack.c stack.h
+
+stack_unittest.test: stack.o unittest.o tests/stack_unittest.cc
+	$(CXX) $(LIBGTEST) stack.o unittest.o tests/stack_unittest.cc -o stack_unittest.test
+
+array.o: array.c array.h
+	$(CC) $(CFLAGS) -c array.c array.h
+
+array_unittest.test: array.o unittest.o tests/array_unittest.cc
+	$(CXX) $(LIBGTEST) array.o unittest.o tests/array_unittest.cc -o array_unittest.test
+
+bst.o: bst.h bst.c
+	$(CC) $(CFLAGS) -c bst.h bst.c
+
+bst_unittest.test: bst.o unittest.o tests/bst_unittest.cc
+	$(CXX) $(LIBGTEST) bst.o unittest.o tests/bst_unittest.cc -o bst_unittest.test
+
+buffer.o: buffer.c buffer.h
+	$(CC) $(CFLAGS) -c buffer.c buffer.h
+
+buffer_unittest.test: buffer.o unittest.o tests/buffer_unittest.cc
+	$(CXX) $(LIBGTEST) buffer.o unittest.o tests/buffer_unittest.cc -o buffer_unittest.test
+
 
 clean:
 	rm *.gch *.o *.a *.out *.test
