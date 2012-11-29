@@ -40,8 +40,8 @@ parser.o: parser.tab.h parser.c lex.yy.c
 semantics.o: semantics.c semantics.h
 	$(CC) $(CFLAGS) -c semantics.c semantics.h
 
-compiler.out: parser.o ast.o semantics.o vtable.o compiler.c lex.yy.c
-	$(CC) $(CFLAGS) parser.o lex.yy.c parser.tab.c ast.o semantics.o vtable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o  compiler.c -o compiler.out
+compiler.out: parser.o lex.yy.c ast.o semantics.o vtable.o ftable.o ttable.o compiler.c
+	$(CC) $(CFLAGS) parser.o lex.yy.c parser.tab.c ast.o semantics.o vtable.o ftable.o ttable.o ../base/hashmap.o ../base/strbuf.o ../base/hash.o  compiler.c -o compiler.out
 
 lexer.out: parser.tab.h
 	make LDLIBS=-ll lexer
@@ -69,6 +69,9 @@ ast_to_text.o: ast_to_text.c ast_to_text.h
 
 ast_unittest.test: ast_to_text.o ast.o parser.o lex.yy.c tests/ast_unittest.c
 	$(CC) $(CLFAGS) parser.o lex.yy.c parser.tab.c ast.o ast_to_text.o ../base/strbuf.o ../base/cutils.o tests/ast_unittest.c -o ast_unittest.test
+
+semantics_unittest.test: ../base/hashmap.o ../base/hash.o ../base/strbuf.o lex.yy.c semantics.o ast.o parser.o vtable.o ftable.o ttable.o tests/semantics_unittest.c 
+	$(CC) $(CFLAGS) ../base/hashmap.o ../base/hash.o ../base/strbuf.o lex.yy.c parser.tab.c semantics.o ast.o parser.o vtable.o ftable.o ttable.o tests/semantics_unittest.c -o semantics_unittest.test
 
 clean:
 	rm *.gch *.out *.o *.swp .lexer.l.swp *.output *.vcg *.test lexer lex.yy.c parser.tab.c parser.tab.h

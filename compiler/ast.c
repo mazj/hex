@@ -731,6 +731,38 @@ hex_ast_create_weakref_expr(Expr expr)
 }
 
 Expr
+hex_ast_create_this_expr(Expr expr)
+{
+  HEX_ASSERT(expr);
+
+  ThisExpr this_expr = HEX_MALLOC(struct HexThisExpr);
+  HEX_ASSERT(this_expr);
+  memset(this_expr, 0, sizeof(struct HexThisExpr));
+
+  this_expr->expr = expr;
+
+  Expr _expr = hex_ast_create_expr(expr_type_this, this_expr);
+
+  return _expr;
+}
+
+Expr
+hex_ast_create_base_expr(Expr expr)
+{
+  HEX_ASSERT(expr);
+
+  BaseExpr base_expr = HEX_MALLOC(struct HexBaseExpr);
+  HEX_ASSERT(base_expr);
+  memset(base_expr, 0, sizeof(struct HexBaseExpr));
+
+  base_expr->expr = expr;
+
+  Expr _expr = hex_ast_create_expr(expr_type_base, base_expr);
+
+  return _expr;
+}
+
+Expr
 hex_ast_create_expr(int type, void *value)
 {
   Expr expr = HEX_MALLOC(struct HexExpr);
@@ -808,6 +840,18 @@ hex_ast_create_expr(int type, void *value)
       {
         expr->expr_type = expr_type_weakref;
         expr->weakref_expr = (WeakrefExpr)value;
+      }
+      break;
+    case expr_type_this:
+      {
+        expr->expr_type = expr_type_this;
+        expr->this_expr = (ThisExpr)value;
+      }
+      break;
+    case expr_type_base:
+      {
+        expr->expr_type = expr_type_base;
+        expr->base_expr = (BaseExpr)value;
       }
       break;
     default:

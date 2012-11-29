@@ -23,14 +23,24 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#define HEX_ASSERT(expr)                                          \
-  do {                                                            \
-    if(expr == 0) {                                               \
-      fprintf(stderr, "Assertion %s failed, "                     \
-        "at %s[line %d]\n", #expr, __FILE__, __LINE__);           \
-      abort();                                                    \
-    }                                                             \
+#define HEX_ASSERT(expr)                                                        \
+  do {                                                                          \
+    if(expr == 0) {                                                             \
+      fprintf(stderr, "Assertion %s failed, "                                   \
+        "at %s[line %d]\n", #expr, __FILE__, __LINE__);                         \
+      abort();                                                                  \
+    }                                                                           \
+  } while(0)
+
+#define HEX_ASSERT_STREQ(str1, str2)                                            \
+  do {                                                                          \
+    if(strcmp((str1), (str2)) != 0) {                                           \
+      fprintf(stderr, "Assertion of \"%s\" == \"%s\" failed, "                  \
+        "at %s[line %d]\n", (str1), (str2), __FILE__, __LINE__);                \
+      abort();                                                                  \
+    }                                                                           \
   } while(0)
 
 

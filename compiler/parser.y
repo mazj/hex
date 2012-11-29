@@ -535,8 +535,8 @@ expr
   | UNLOCK expr                                                                 { $$ = hex_ast_create_lock_expr(0, $2); }
   | LPAREN IDENTIFIER RPAREN expr                                               { $$ = hex_ast_create_cast_expr(cast_expr_type_custom_type, $2, $4); }
   | LPAREN type_specifier RPAREN expr                                           { $$ = hex_ast_create_cast_expr(cast_expr_type_type_specifier, &$2, $4); }                  
-  | THIS                                                                        { $$ = hex_ast_create_expr(expr_type_this, 0); }
-  | BASE                                                                        { $$ = hex_ast_create_expr(expr_type_base, 0); }
+  | THIS DOT expr                                                               { $$ = hex_ast_create_this_expr($3); }
+  | BASE DOT expr                                                               { $$ = hex_ast_create_base_expr($3); }
   ;
 
 expr_list

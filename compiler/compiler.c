@@ -60,7 +60,7 @@ main(int argc, char **argv)
   HEX_ASSERT(vtable);
   HEX_ASSERT(stmt_group);
 
-  hex_semantics_check_stmt_group(vtable, stmt_group, scope_type, indent_level);
+  //hex_semantics_check_stmt_group(vtable, stmt_group, scope_type, indent_level);
 
   return 0;
 }

@@ -638,6 +638,38 @@ hex_ast_create_weakref_expr(Expr expr);
 
 
 /*
+ * This expression
+ */
+typedef struct HexThisExpr {
+  Expr expr;
+} *ThisExpr;
+
+
+//===========================================================================
+// hex_ast_create_this_expr()
+// construct an AST node of type HexThisExpr.
+//===========================================================================
+Expr
+hex_ast_create_this_expr(Expr expr);
+
+
+/*
+ * 'Base' expression
+ */
+typedef struct HexBaseExpr {
+  Expr expr;
+} *BaseExpr;
+
+
+//===========================================================================
+// hex_ast_create_base_expr()
+// construct an AST node of type HexBaseExpr.
+//===========================================================================
+Expr
+hex_ast_create_base_expr(Expr expr);
+
+
+/*
  * HEX expression
  */
 struct HexExpr {
@@ -670,6 +702,8 @@ struct HexExpr {
     RangeExpr range_expr;
     LockExpr lock_expr;
     WeakrefExpr weakref_expr;
+    ThisExpr this_expr;
+    BaseExpr base_expr;
   };
 };
 
