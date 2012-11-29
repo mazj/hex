@@ -70,5 +70,8 @@ ast_to_text.o: ast_to_text.c ast_to_text.h
 ast_unittest.test: ast_to_text.o ast.o parser.o lex.yy.c tests/ast_unittest.c
 	$(CC) $(CLFAGS) parser.o lex.yy.c parser.tab.c ast.o ast_to_text.o ../base/strbuf.o ../base/cutils.o tests/ast_unittest.c -o ast_unittest.test
 
+semantics_unittest.test: ../base/hashmap.o ../base/hash.o ../base/strbuf.o lex.yy.c semantics.o ast.o parser.o vtable.o ftable.o ttable.o tests/semantics_unittest.c 
+	$(CC) $(CFLAGS) ../base/hashmap.o ../base/hash.o ../base/strbuf.o lex.yy.c parser.tab.c semantics.o ast.o parser.o vtable.o ftable.o ttable.o tests/semantics_unittest.c -o semantics_unittest.test
+
 clean:
 	rm *.gch *.out *.o *.swp .lexer.l.swp *.output *.vcg *.test lexer lex.yy.c parser.tab.c parser.tab.h

@@ -19,65 +19,103 @@
 #define _SEMANTICS_H_
 
 #include "ast.h"
-#include "vtable.h"
-#include "types.h"
-#include "scope.h"
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+typedef struct HexSemantics *Semantics;
 
-void
-hex_semantics_check_stmt_group(Vtable vtable, StmtGroup stmt_group,
-  hex_scope_type_t scope_type, unsigned int indent_level);
+Semantics semantics_create();
+void semantics_free(Semantics *semantics);
+unsigned int semantics_get_errcode(Semantics semantics);
+char* semantics_get_errmsg(Semantics semantics);
 
-/*
-hex_type_qualifier_t 
-hex_semantics_translate_type_qualifier_list(TypeQualifierList list);
 
-void
+int
+hex_semantics_check_stmt_group(
+  StmtGroup stmt_group, unsigned int indent_level, Semantics semantics);
+
+int
+hex_semantics_check_stmt(
+  Stmt stmt, unsigned int indent_level, Semantics semantics);
+
+int
+hex_semantics_check_simple_stmt_list(
+  SimpleStmtList stmt_list, unsigned int indent_level, Semantics semantics);
+
+int
+hex_semantics_check_compound_stmt(
+  CompoundStmt compound_stmt, unsigned int indent_level, Semantics semantics);
+
+int
+hex_semantics_check_control_simple_stmt(
+  ControlSimpleStmt stmt, unsigned int indent_level, Semantics semantics);
+
+int
+hex_semantics_check_simple_stmt(
+  SimpleStmt simple_stmt, unsigned int indent_level, Semantics semantics);
+
+int
+hex_semantics_check_assginment_stmt(
+  AssignmentStmt assigment_stmt, unsigned int indent_level, Semantics semantics);
+
+int
 hex_semantics_check_declaration(
-    Vtable vtable, Ttable ttable, Declaration declaration,
-    hex_scope_type_t scope_type, unsigned int indent_level, unsigned int *var_counter);
+  Declaration declaration, unsigned int indent_level, Semantics semantics);
 
-void
-hex_semantics_check_parameter_list(Vtable vtable, Ftable ftable,
-  Ttable ttable, hex_scope_type_t scope_type,
-  unsigned int indent_level, unsigned int *var_counter, ParameterList paramlist);
+int
+hex_semantics_check_decorator(
+  Decorator decorator, unsigned int indent_level, Semantics semantics);
 
-void
-hex_semantics_check_assignment_stmt(Vtable vtable, Ttable ttable,
-  AssignmentStmt assignment_stmt, hex_scope_type_t scope_type,
-  unsigned int indent_level, unsigned int *var_counter);
+int
+hex_semantics_check_expr_list(
+  ExprList exprlist, unsigned int indent_level, Semantics semantics);
 
-void
-hex_semantics_check_function(
-  Vtable vtable, Ftable ftable, Ttable ttable, FuncDef func,
-  unsigned int indent_level, unsigned int *var_counter);
+int
+hex_semantics_check_func_dec(
+  FuncDec func_dec, unsigned int indent_level, Semantics semantics);
 
-void
-hex_semantics_check_func_body(Vtable vtable, Ttable ttable, Suite func_suite,
-  hex_scope_t scope, unsigned int indent_level, unsigned int *var_counter);
+int
+hex_semantics_check_import_stmt(
+  ImportStmt import_stmt, unsigned int indent_level, Semantics semantics);
+
+int
+hex_semantics_check_type_qualifier_list(
+  TypeQualifierList qualifier_list, unsigned int indent_level, Semantics semantics);
+
+int
+hex_semantics_check_parameter_list(
+  ParameterList paramlist, char *func_name, Semantics semantics);
+
+int
+hex_semantics_check_expr(
+  Expr expr, unsigned int indent_level, Semantics semantics);
+
+int
+hex_semantics_check_primary_expr(
+  PrimaryExpr primary_expr, unsigned int indent_level, Semantics semantics);
+
+int
+hex_semantics_check_postfix_expr(
+  PostfixExpr postfix_expr, unsigned int indent_level, Semantics semantics);
+
+int
+hex_semantics_check_postfix_index_expr(
+  PostfixIndexExpr index_expr, unsigned int indent_level, Semantics semantics);
+
+int
+hex_semantics_check_postfix_inc_dec_expr(
+  Expr expr, unsigned int indent_level, Semantics semantics);
+
+int
+hex_semantics_check_postfix_acessor_expr(
+  PostfixAccessorExpr accessor_expr, unsigned int indent_level, Semantics semantics);
+
+int
+hex_semantics_check_postfix_invocation_expr(
+  PostfixInvocationExpr invocation_expr, unsigned int indent_level, Semantics semantics);
+
+int
+hex_semantics_check_postfix_invocation_with_args_expr(
+  PostfixInvocationWithArgsExpr invocation_expr, unsigned int indent_level, Semantics semantics);
 
 
-void
-hex_semantics_check_stmt(Vtable vtable, Tttable ttable, Stmt stmt,
-  hex_scope_t scope, unsigned int indent_level, unsigned int *var_counter);
-
-void
-hex_semantics_check_simple_stmt_list(Vtable vtable, Ttable ttable,
-  SimpleStmtList simple_stmt_list, hex_scope_t scope,
-  unsigned int indent_level, unsigned int *var_counter);
-
-void
-hex_semantics_check_simple_stmt(Vtable vtable, Ttable ttable, SimpleStmt simple_stmt,
-  hex_scope_t scope, unsigned int indent_level, unsigned int *var_counter);
-
-*/
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* _SEMENTICS_H_ */
+#endif /* _SEMANTICS_H_ */

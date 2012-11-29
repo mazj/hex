@@ -84,7 +84,7 @@ char* ftable_mingle_name(FtableEntry entry)
     paramlist = paramlist->next;
   }
 
-  char *mingled_name = strbuf_cstr(strbuf);
+  char *mingled_name = strdup(strbuf_cstr(strbuf));
 
   HEX_ASSERT(mingled_name);
 
@@ -166,6 +166,9 @@ int _ftable_lookup(void *key, void *value, void *arg)
 
   FtableLookupArg _arg = (FtableLookupArg)arg;
   char *_key = (char*)key;
+ 
+  HEX_ASSERT(_key);
+  HEX_ASSERT(_arg->mingled_name);
 
   return strcmp(_key, _arg->mingled_name) == 0;
 }
@@ -191,6 +194,32 @@ FtableEntry ftable_lookup(Ftable ftable, char *name, void *paramlist)
   FtableEntry entry = (FtableEntry)hashmap_lookup(ftable->hashmap, _ftable_lookup, &arg);
 
   HEX_FREE(mingled_name);
+
+  return entry;
+}
+
+static
+int _ftable_lookup_by_name(void *key, void *value, void *arg)
+{
+  HEX_ASSERT(key);
+  HEX_ASSERT(arg);
+
+  char *_name = (char*)arg;
+  FtableEntry _entry = (FtableEntry)value;
+
+  return strcmp(_name, _entry->name) == 0;
+}
+
+FtableEntry ftable_lookup_by_name(Ftable ftable, char *name)
+{
+  HEX_ASSERT(ftable);
+  HEX_ASSERT(name);
+
+  FtableEntry entry = (FtableEntry)hashmap_lookup(
+    ftable->hashmap,
+    _ftable_lookup_by_name,
+    name
+  );
 
   return entry;
 }

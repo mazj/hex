@@ -99,6 +99,27 @@ extern "C" {
     }                                                 \
   } while(0)
 
+#define GOTO_IF_NULL(val, goto_target)                \
+  do {                                                \
+    if( (val) == NULL ) {                             \
+      goto goto_target;                               \
+    }                                                 \
+  } while(0)
+
+#define GOTO_IF_TRUE(boolval, goto_target)            \
+  do {                                                \
+    if( (boolval) ) {                                 \
+      goto goto_target;                               \
+    }                                                 \
+  } while(0)
+
+#define GOTO_IF_FALSE(boolval, goto_target)           \
+  do {                                                \
+    if( !(boolval) ) {                                \
+      goto goto_target;                               \
+    }                                                 \
+  } while(0)
+
 
 /*
  * void

@@ -219,3 +219,29 @@ TEST_F(FtableTest, ftable_putTest4) {
   HEX_FREE(mingled_name1);
   HEX_FREE(mingled_name2);
 }
+
+TEST_F(FtableTest, ftable_lookup_by_nameTest) {
+  char func_name[] = "calculate_mass_of_sun";
+
+  FtableEntry entry=NULL;
+
+  entry = ftable_put(
+    _ftable, func_name, 0, NULL);
+
+  HEX_ASSERT(entry);
+  ASSERT_STREQ(func_name, entry->name);
+
+  entry = ftable_lookup_by_name(
+    _ftable,
+    func_name);
+
+  HEX_ASSERT(entry);
+  ASSERT_STREQ(func_name, entry->name);
+
+  entry = ftable_lookup_by_name(
+    _ftable,
+    (char*)"_some_random_function"
+  );
+
+  HEX_ASSERT(entry == NULL);
+}
