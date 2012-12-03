@@ -46,9 +46,9 @@
   struct HexTupleInitializer *hex_tuple_initializer;
   struct HexStructInitializer *hex_struct_initializer;
   struct HexSetInitializer *hex_set_initializer;
-  struct HexMapMultimapInitializerSingle *hex_map_multimap_initializer_single;
-  struct HexMapMultimapInitializerList *hex_map_multimap_initializer_list;
-  struct HexMapMultimapInitializer *hex_map_multimap_initializer;
+  struct HexMapInitializerSingle *hex_map_initializer_single;
+  struct HexMapInitializerList *hex_map_initializer_list;
+  struct HexMapInitializer *hex_map_initializer;
   struct HexInitializer *hex_initializer;
   struct HexLambdaExpr *hex_lambda_expr;
   struct HexAssignment *hex_assignment;
@@ -189,9 +189,9 @@
 %type <hex_tuple_initializer> tuple_initializer
 %type <hex_struct_initializer> struct_initializer
 %type <hex_set_initializer> set_initializer
-%type <hex_map_multimap_initializer_single> map_multimap_initializer_single
-%type <hex_map_multimap_initializer_list> map_multimap_initializer_list 
-%type <hex_map_multimap_initializer> map_multimap_initializer
+%type <hex_map_initializer_single> map_initializer_single
+%type <hex_map_initializer_list> map_initializer_list 
+%type <hex_map_initializer> map_initializer
 %type <hex_initializer> initializer
 %type <hex_lambda_expr> lambda_expr
 %type <hex_assignment> assignment
@@ -271,7 +271,7 @@ simple_stmt_list
   ;
 
 simple_stmt
-  : expr_list                                                                  { $$ = hex_ast_create_simple_stmt(simple_stmt_type_expr_list, $1); }
+  : expr_list                                                                   { $$ = hex_ast_create_simple_stmt(simple_stmt_type_expr_list, $1); }
   | declaration                                                                 { $$ = hex_ast_create_simple_stmt(simple_stmt_type_declaration, $1); }
   | assignment_stmt                                                             { $$ = hex_ast_create_simple_stmt(simple_stmt_type_assignment_stmt, $1); }
   | import_stmt                                                                 { $$ = hex_ast_create_simple_stmt(simple_stmt_type_import_stmt, $1); }
@@ -282,13 +282,13 @@ simple_stmt
 
 control_simple_stmt
   : return_stmt                                                                 { $$ = hex_ast_create_control_simple_stmt(control_simple_stmt_return, $1); }
-  | BREAK NEWLINE                                                               { $$ = hex_ast_create_control_simple_stmt(control_simple_stmt_break, 0); }
-  | CONTINUE NEWLINE                                                            { $$ = hex_ast_create_control_simple_stmt(control_simple_stmt_continue, 0); }
+  | BREAK                                                                       { $$ = hex_ast_create_control_simple_stmt(control_simple_stmt_break, 0); }
+  | CONTINUE                                                                    { $$ = hex_ast_create_control_simple_stmt(control_simple_stmt_continue, 0); }
   ;
 
 return_stmt
-  : RETURN NEWLINE                                                              { $$ = hex_ast_create_return_stmt(return_stmt_type_none, 0); }
-  | RETURN expr_list NEWLINE                                                   { $$ = hex_ast_create_return_stmt(return_stmt_type_none, $2); }
+  : RETURN                                                                      { $$ = hex_ast_create_return_stmt(return_stmt_type_none, 0); }
+  | RETURN expr_list                                                            { $$ = hex_ast_create_return_stmt(return_stmt_type_expr_list, $2); }
   ;
 
 compound_stmt
@@ -430,18 +430,18 @@ func_definition
   ;
 
 func_declaration
-  : DEF IDENTIFIER parameter_list                                               { $$ = hex_ast_create_func_dec(0, 0, 0, $2, $3); }
-  | DEF IDENTIFIER LPAREN RPAREN                                                { $$ = hex_ast_create_func_dec(0, 0, 0, $2, 0); }
-  | DEF IDENTIFIER IDENTIFIER parameter_list                                    { $$ = hex_ast_create_func_dec(0, 0, $2, $3, $4); }
-  | DEF IDENTIFIER IDENTIFIER LPAREN RPAREN                                     { $$ = hex_ast_create_func_dec(0, 0, $2, $3, 0); }
+  : DEF IDENTIFIER parameter_list                                               { $$ = hex_ast_create_func_dec(0, -1, 0, $2, $3); }
+  | DEF IDENTIFIER LPAREN RPAREN                                                { $$ = hex_ast_create_func_dec(0, -1, 0, $2, 0); }
+  | DEF IDENTIFIER IDENTIFIER parameter_list                                    { $$ = hex_ast_create_func_dec(0, -1, $2, $3, $4); }
+  | DEF IDENTIFIER IDENTIFIER LPAREN RPAREN                                     { $$ = hex_ast_create_func_dec(0, -1, $2, $3, 0); }
   | DEF type_specifier IDENTIFIER parameter_list                                { $$ = hex_ast_create_func_dec(0, $2, 0, $3, $4); }
   | DEF type_specifier IDENTIFIER LPAREN RPAREN                                 { $$ = hex_ast_create_func_dec(0, $2, 0, $3, 0); }
-  | DEF type_qualifier_list IDENTIFIER parameter_list                           { $$ = hex_ast_create_func_dec($2, 0, 0, $3, $4); }
-  | DEF type_qualifier_list IDENTIFIER LPAREN RPAREN                            { $$ = hex_ast_create_func_dec($2, 0, 0, $3, 0); }
+  | DEF type_qualifier_list IDENTIFIER parameter_list                           { $$ = hex_ast_create_func_dec($2, -1, 0, $3, $4); }
+  | DEF type_qualifier_list IDENTIFIER LPAREN RPAREN                            { $$ = hex_ast_create_func_dec($2, -1, 0, $3, 0); }
   | DEF type_qualifier_list type_specifier IDENTIFIER parameter_list            { $$ = hex_ast_create_func_dec($2, $3, 0, $4, $5); }
   | DEF type_qualifier_list type_specifier IDENTIFIER LPAREN RPAREN             { $$ = hex_ast_create_func_dec($2, $3, 0, $4, 0); }
-  | DEF type_qualifier_list IDENTIFIER IDENTIFIER parameter_list                { $$ = hex_ast_create_func_dec($2, 0, $3, $4, $5); }
-  | DEF type_qualifier_list IDENTIFIER IDENTIFIER LPAREN RPAREN                 { $$ = hex_ast_create_func_dec($2, 0, $3, $4, 0); }
+  | DEF type_qualifier_list IDENTIFIER IDENTIFIER parameter_list                { $$ = hex_ast_create_func_dec($2, -1, $3, $4, $5); }
+  | DEF type_qualifier_list IDENTIFIER IDENTIFIER LPAREN RPAREN                 { $$ = hex_ast_create_func_dec($2, -1, $3, $4, 0); }
   ;
 
 assignment_stmt_list
@@ -541,7 +541,7 @@ expr
 
 expr_list
   : expr                                                                        { $$ = hex_ast_create_expr_list($1, 0); }
-  | expr_list COMMA expr                                                       { $$ = hex_ast_create_expr_list($3, $1); }
+  | expr_list COMMA expr                                                        { $$ = hex_ast_create_expr_list($3, $1); }
   ;
 
 initializer
@@ -550,20 +550,20 @@ initializer
   | struct_initializer                                                          { $$ = hex_ast_create_initializer(initializer_type_struct, $1); }
   | tuple_initializer                                                           { $$ = hex_ast_create_initializer(initializer_type_tuple, $1); }  
   | set_initializer                                                             { $$ = hex_ast_create_initializer(initializer_type_set, $1); }
-  | map_multimap_initializer                                                    { $$ = hex_ast_create_initializer(initializer_type_mapmultimap, $1); }
+  | map_initializer                                                             { $$ = hex_ast_create_initializer(initializer_type_map, $1); }
   ;
 
-map_multimap_initializer
-  : LBRACE map_multimap_initializer_list RBRACE                                 { $$ = hex_ast_create_map_multimap_initializer($2); }
+map_initializer
+  : LBRACE map_initializer_list RBRACE                                          { $$ = hex_ast_create_map_initializer($2); }
   ;
 
-map_multimap_initializer_list
-  : map_multimap_initializer_single                                             { $$ = hex_ast_create_map_multimap_initializer_list($1, 0); }
-  | map_multimap_initializer_list COMMA map_multimap_initializer_single         { $$ = hex_ast_create_map_multimap_initializer_list($3, $1); }
+map_initializer_list
+  : map_initializer_single                                                      { $$ = hex_ast_create_map_initializer_list($1, 0); }
+  | map_initializer_list COMMA map_initializer_single                           { $$ = hex_ast_create_map_initializer_list($3, $1); }
   ;
 
-map_multimap_initializer_single
-  : expr COLON expr                                                             { $$ = hex_ast_create_map_multimap_initializer_single($1, $3); }
+map_initializer_single
+  : expr COLON expr                                                             { $$ = hex_ast_create_map_initializer_single($1, $3); }
   ;
 
 struct_initializer
@@ -599,35 +599,35 @@ parameter_list_core
 parameter
   : type_qualifier_list type_specifier IDENTIFIER                               { $$ = hex_ast_create_parameter($1, $2, 0, $3, 0, 0); }
   | type_qualifier_list type_specifier IDENTIFIER AS IDENTIFIER                 { $$ = hex_ast_create_parameter($1, $2, 0, $3, $5, 0); }
-  | type_qualifier_list IDENTIFIER                                              { $$ = hex_ast_create_parameter($1, 0, 0, $2, 0, 0); }
-  | type_qualifier_list IDENTIFIER AS IDENTIFIER                                { $$ = hex_ast_create_parameter($1, 0, 0, $3, $4, 0); }
+  | type_qualifier_list IDENTIFIER                                              { $$ = hex_ast_create_parameter($1, -1, 0, $2, 0, 0); }
+  | type_qualifier_list IDENTIFIER AS IDENTIFIER                                { $$ = hex_ast_create_parameter($1, -1, 0, $2, $4, 0); }
   | type_specifier IDENTIFIER                                                   { $$ = hex_ast_create_parameter(0, $1, 0, $2, 0, 0); }
   | type_specifier IDENTIFIER AS IDENTIFIER                                     { $$ = hex_ast_create_parameter(0, $1, 0, $2, $4, 0); }
-  | IDENTIFIER                                                                  { $$ = hex_ast_create_parameter(0, 0, $1, 0, 0, 0); }
-  | IDENTIFIER IDENTIFIER                                                       { $$ = hex_ast_create_parameter(0, 0, $1, $2, 0, 0); }
-  | IDENTIFIER AS IDENTIFIER                                                    { $$ = hex_ast_create_parameter(0, 0, 0, $1, $2, 0); }
-  | IDENTIFIER IDENTIFIER AS IDENTIFIER                                         { $$ = hex_ast_create_parameter(0, 0, $1, $2, $4, 0); }
+  | IDENTIFIER                                                                  { $$ = hex_ast_create_parameter(0, -1, $1, 0, 0, 0); }
+  | IDENTIFIER IDENTIFIER                                                       { $$ = hex_ast_create_parameter(0, -1, $1, $2, 0, 0); }
+  | IDENTIFIER AS IDENTIFIER                                                    { $$ = hex_ast_create_parameter(0, -1, 0, $1, $2, 0); }
+  | IDENTIFIER IDENTIFIER AS IDENTIFIER                                         { $$ = hex_ast_create_parameter(0, -1, $1, $2, $4, 0); }
   | REF type_qualifier_list type_specifier IDENTIFIER                           { $$ = hex_ast_create_parameter($2, $3, 0, $4, 0, 1); }
   | REF type_qualifier_list type_specifier IDENTIFIER AS IDENTIFIER             { $$ = hex_ast_create_parameter($2, $3, 0, $4, $6, 1); }
-  | REF type_qualifier_list IDENTIFIER                                          { $$ = hex_ast_create_parameter($2, 0, 0, $3, 0, 1); }
-  | REF type_qualifier_list IDENTIFIER AS IDENTIFIER                            { $$ = hex_ast_create_parameter($2, 0, 0, $3, $5, 1); }
+  | REF type_qualifier_list IDENTIFIER                                          { $$ = hex_ast_create_parameter($2, -1, 0, $3, 0, 1); }
+  | REF type_qualifier_list IDENTIFIER AS IDENTIFIER                            { $$ = hex_ast_create_parameter($2, -1, 0, $3, $5, 1); }
   | REF type_specifier IDENTIFIER                                               { $$ = hex_ast_create_parameter(0, $2, 0, $3, 0, 1); }
   | REF type_specifier IDENTIFIER AS IDENTIFIER                                 { $$ = hex_ast_create_parameter(0, $2, 0, $3, $5, 1); }
-  | REF IDENTIFIER                                                              { $$ = hex_ast_create_parameter(0, 0, $2, 0, 0, 1); }
-  | REF IDENTIFIER IDENTIFIER                                                   { $$ = hex_ast_create_parameter(0, 0, $2, $3, 0, 1); }
-  | REF IDENTIFIER AS IDENTIFIER                                                { $$ = hex_ast_create_parameter(0, 0, 0, $2, $3, 1); }
-  | REF IDENTIFIER IDENTIFIER AS IDENTIFIER                                     { $$ = hex_ast_create_parameter(0, 0, $2, $3, $5, 1); }
+  | REF IDENTIFIER                                                              { $$ = hex_ast_create_parameter(0, -1, $2, 0, 0, 1); }
+  | REF IDENTIFIER IDENTIFIER                                                   { $$ = hex_ast_create_parameter(0, -1, $2, $3, 0, 1); }
+  | REF IDENTIFIER AS IDENTIFIER                                                { $$ = hex_ast_create_parameter(0, -1, 0, $2, $3, 1); }
+  | REF IDENTIFIER IDENTIFIER AS IDENTIFIER                                     { $$ = hex_ast_create_parameter(0, -1, $2, $3, $5, 1); }
   ;
 
 declaration
-  : type_qualifier_list type_specifier expr_list                               { $$ = hex_ast_create_declaration($1, $2, 0, $3, 0); }
-  | type_qualifier_list expr_list                                              { $$ = hex_ast_create_declaration($1, 0, 0, $2, 0); }
-  | type_specifier expr_list                                                   { $$ = hex_ast_create_declaration(0, $1, 0, $2, 0); }
-  | IDENTIFIER expr_list                                                       { $$ = hex_ast_create_declaration(0, 0, $1, $2, 0); }
-  | type_qualifier_list type_specifier expr_list AS IDENTIFIER                 { $$ = hex_ast_create_declaration($1, $2, 0, $3, $5); }
-  | type_qualifier_list expr_list AS IDENTIFIER                                { $$ = hex_ast_create_declaration($1, 0, 0, $2, $4); }
-  | type_specifier expr_list AS IDENTIFIER                                     { $$ = hex_ast_create_declaration(0, $1, 0, $2, $4); }
-  | IDENTIFIER expr_list AS IDENTIFIER                                         { $$ = hex_ast_create_declaration(0, 0, $1, $2, $4); }
+  : type_qualifier_list type_specifier expr_list                                { $$ = hex_ast_create_declaration($1, $2, 0, $3, 0); }
+  | type_qualifier_list expr_list                                               { $$ = hex_ast_create_declaration($1, -1, 0, $2, 0); }
+  | type_specifier expr_list                                                    { $$ = hex_ast_create_declaration(0, $1, 0, $2, 0); }
+  | IDENTIFIER expr_list                                                        { $$ = hex_ast_create_declaration(0, -1, $1, $2, 0); }
+  | type_qualifier_list type_specifier expr_list AS IDENTIFIER                  { $$ = hex_ast_create_declaration($1, $2, 0, $3, $5); }
+  | type_qualifier_list expr_list AS IDENTIFIER                                 { $$ = hex_ast_create_declaration($1, -1, 0, $2, $4); }
+  | type_specifier expr_list AS IDENTIFIER                                      { $$ = hex_ast_create_declaration(0, $1, 0, $2, $4); }
+  | IDENTIFIER expr_list AS IDENTIFIER                                          { $$ = hex_ast_create_declaration(0, -1, $1, $2, $4); }
   ;
 
 type_specifier

@@ -1,0 +1,3 @@
+
+func = (int a, int b) => [a = sum(a, b)]
+func2 = (MyObj myobj) => [myobj += 2; myobj *= 2]

@@ -50,6 +50,8 @@ FtableEntry ftable_put(Ftable ftable, char *name, hex_type_t return_type,
 
 FtableEntry ftable_lookup(Ftable ftable, char *name, void *paramlist);
 
+FtableEntry ftable_lookup_by_name(Ftable ftable, char *name);
+
 void ftable_free(Ftable *ftable);
 
 

@@ -1,0 +1,7 @@
+
+try:
+  a = b
+catch:
+  a = c
+finally:
+  a = e + f

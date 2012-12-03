@@ -1,4 +1,0 @@
-
-[@Mode("Debug"), @Condition(count < 10)]
-def static init():
-  app.init()

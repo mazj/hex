@@ -1,7 +1,0 @@
-
-t = (1,2,3)     /* t => IDENTIFIER => expr => expr_list_
-                 * 1,2,3 => expr_list_
-                 * (1,2,3) => LPAREN expr_list_ RPAREN => tuple_initializer => initializer
-                 * = (1,2,3) => assignment_operator initializer => assignment => assignment_list
-                 * t= (1,2,3) => expr_list_ assignment_list => assignment_stmt => simple_stmt
-                 */

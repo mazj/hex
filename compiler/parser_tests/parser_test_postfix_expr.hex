@@ -1,0 +1,15 @@
+
+i = obj++
+MyObject obj2 = obj--
+i = obj.get_value
+i = obj.do_something()
+i = do_something()
+i = sort(1, 3, 4, 2)
+doSomething()
+doSomething(myobj, i)
+sum = sum(1, 2, 3, 4, 5)
+value = get_value(sum, i, my_obj, counter++)
+a = my_array[1]
+b = my_array[index]
+c = get_array()[i]
+d = get_value().get_array()[i++]

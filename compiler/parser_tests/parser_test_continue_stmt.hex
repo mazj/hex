@@ -1,0 +1,8 @@
+
+def break_loop():
+  for i in 1...100:
+    e = do_something()
+    if e:
+      continue
+
+

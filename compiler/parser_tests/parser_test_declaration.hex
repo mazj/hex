@@ -1,0 +1,5 @@
+
+const int i
+const static volatile char c, d, e
+double c, d, e
+MyObj myobj, yourobj, hisobj, herobj

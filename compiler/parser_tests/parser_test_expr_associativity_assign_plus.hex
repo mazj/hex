@@ -1,6 +1,0 @@
-
-a += b += c  /* a => IDENTIFIER => expr => expr_list_
-              * += b => ASSIGN_PLUS expr => assignment => assignment_list
-              * += c => ASSIGN_PLUS expr => assignment
-              * assignment_list assignment => assignment_list
-              * expr_list_ assignment_list => assignment_stmt => simple_stmt */

@@ -16,7 +16,7 @@
  */
 
 #ifndef _AST_TO_TEXT_H_
-#define _AST_TO_TEXT_H
+#define _AST_TO_TEXT_H_
 
 #include "../base/strbuf.h"
 #include "ast.h"
@@ -24,6 +24,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+void hex_ast_type_qualifier_list_to_text(TypeQualifierList type_qualifier_list, Strbuf strbuf);
 
 void hex_ast_literal_to_text(Literal literal, Strbuf strbuf);
 
@@ -77,9 +79,27 @@ void hex_ast_struct_initializer_to_text(StructInitializer struct_initializer, St
 
 void hex_ast_set_initializer_to_text(SetInitializer set, Strbuf strbuf);
 
+void hex_ast_map_initializer_to_text(MapInitializer map, Strbuf strbuf);
+
 void hex_ast_initializer_to_text(Initializer initializer, Strbuf strbuf);
 
 void hex_ast_declaration_to_text(Declaration declaration, Strbuf strbuf);
+
+void hex_ast_parameter_to_text(Parameter parameter, Strbuf strbuf);
+
+void hex_ast_parameter_list_to_text(ParameterList paramlist, Strbuf strbuf);
+
+void hex_ast_lambda_expr_to_text(LambdaExpr lambda, Strbuf strbuf);
+
+void hex_ast_func_declaration_to_text(FuncDec func_dec, Strbuf strbuf);
+
+void hex_ast_module_list_to_text(ModuleList module_list, Strbuf strbuf);
+
+void hex_ast_direct_import_stmt_to_text(DirectImportStmt stmt, Strbuf strbuf);
+
+void hex_ast_relative_import_stmt_to_text(RelativeImportStmt stmt, Strbuf strbuf);
+
+void hex_ast_import_stmt_to_text(ImportStmt import_stmt, Strbuf strbuf);
 
 void hex_ast_assignment_to_text(Assignment assignment, Strbuf strbuf);
 
@@ -89,13 +109,44 @@ void hex_ast_assignment_stmt_to_text(AssignmentStmt stmt, Strbuf strbuf);
 
 void hex_ast_assignment_stmt_list_to_text(AssignmentStmtList stmt_list, Strbuf strbuf);
 
+void hex_ast_compiler_property_to_text(CompilerProperty compiler_property, Strbuf strbuf);
+
+void hex_ast_attribute_to_text(Attribute attribute, Strbuf strbuf);
+
+void hex_ast_decorator_to_text(Decorator decorator, Strbuf strbuf);
+
 void hex_ast_simple_stmt_to_text(SimpleStmt stmt, Strbuf strbruf);
 
 void hex_ast_simple_stmt_list_to_text(SimpleStmtList list, Strbuf strbuf);
 
-void hex_ast_stmt_to_text(Stmt stmt, Strbuf strbuf);
+void hex_ast_if_stmt_to_text(IfStmt if_stmt, unsigned char indent_level, Strbuf strbuf);
 
-void hex_ast_stmt_group_to_text(StmtGroup group, Strbuf strbuf);
+void hex_ast_elif_group_to_text(ElifGroup elif_group, unsigned char indent_level, Strbuf strbuf);
+
+void hex_ast_while_stmt_to_text(WhileStmt while_stmt, unsigned char indent_level, Strbuf strbuf);
+
+void hex_ast_iterable_to_text(Iterable iterable, Strbuf strbuf);
+
+void hex_ast_for_stmt_to_text(ForStmt for_stmt, unsigned char indent_level, Strbuf strbuf);
+
+void hex_ast_catch_stmt_to_text(CatchStmt catch_stmt, unsigned char indent_level, Strbuf strbuf);
+
+void hex_ast_try_stmt_to_text(TryStmt try_stmt, unsigned char indent_level, Strbuf strbuf);
+
+void hex_ast_func_def_to_text(FuncDef func_def, Strbuf strbuf);
+
+void hex_ast_compound_stmt_to_text(CompoundStmt compound_stmt, unsigned char indent_level, Strbuf strbuf);
+
+void hex_ast_return_stmt_to_text(ReturnStmt return_stmt, Strbuf strbuf);
+
+void hex_ast_control_simple_stmt_to_text(ControlSimpleStmt stmt, Strbuf strbuf);
+
+void hex_ast_stmt_to_text(Stmt stmt, unsigned char indent_level, Strbuf strbuf);
+
+void hex_ast_stmt_group_to_text(StmtGroup group, unsigned char indent_level, Strbuf strbuf);
+
+void hex_ast_suite_to_text(Suite suite, unsigned char indent_level, Strbuf strbuf);
+
 
 #ifdef __cplusplus
 }

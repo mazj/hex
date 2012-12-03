@@ -15,14 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * Front-end parser for HEX.
+ *
+ * NOTE: when parser.y gets compiled, it will overwrite this
+ * file(parser.c), which is not the desired behavior.
+ * To reset the override, do 'git checkout -- compiler/parser.c'.
+ */
+
 #include <stdlib.h>
 #include "parser.tab.h"
 #include "ast.h"
 #include "../base/assert.h"
 #include "../base/utils.h"
 
+typedef void* yyscan_t;
 
 extern FILE * yyin;
+extern YY_FLUSH_BUFFER;
+extern int yyparse( yyscan_t );
+extern int yylex_init( yyscan_t* );
 
 int parse(const char *path, void **root, int *root_type)
 {
@@ -32,8 +44,18 @@ int parse(const char *path, void **root, int *root_type)
     return -1;
   }
 
+  YY_FLUSH_BUFFER;
   yylex();
-  res = yyparse();
+  res = yyparse(yyin);
+
+  /*
+  yyscan_t scanner;
+  yy_delete_buffer(NULL);
+  yylex_init(&scanner);
+  yylex(scanner);
+  res = yyparse(scanner);
+  yylex_destroy(scanner);
+  */
 
   /*
    * yyparse() returns 0 for successful parsing, and other values

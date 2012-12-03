@@ -1,0 +1,9 @@
+
+i = a == b
+i = "apple" != "orange"
+i = 3 < 4
+i = 5 > 4
+i = myobj <= yourobj
+i = yourobj >= hisobj
+i = a is "apple"
+i = "apple" is not "orange"

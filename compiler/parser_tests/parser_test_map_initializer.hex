@@ -1,0 +1,2 @@
+
+colors_to_fruits = {RED: "apple", GREEN: "kiwi", YELLOW: "lemon", PURPLE: "grape"}

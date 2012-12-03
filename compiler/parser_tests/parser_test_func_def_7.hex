@@ -1,0 +1,3 @@
+
+def static get_string(short c, double d):
+  c = 'c'

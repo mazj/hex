@@ -27,8 +27,8 @@
 #define HEX_TYPE_SPECIFIERS_COUNT 10
 char *HEX_TYPE_SPECIFIERS[HEX_TYPE_SPECIFIERS_COUNT] =
 {
-  "short",
   "char",
+  "short",
   "int",
   "long",
   "float",
@@ -37,6 +37,14 @@ char *HEX_TYPE_SPECIFIERS[HEX_TYPE_SPECIFIERS_COUNT] =
   "ushort",
   "uint",
   "ulong"
+};
+
+#define HEX_TYPE_QUALIFIERS_COUNT 3
+char *HEX_TYPE_QUALIFIERS[HEX_TYPE_QUALIFIERS_COUNT] =
+{
+  "const",
+  "volatile",
+  "static"
 };
 
 #define HEX_EQUALITY_OPERATORS_COUNT 8
@@ -89,6 +97,29 @@ char *HEX_ASSIGNMENT_OPERATORS[HEX_ASSIGNMENT_OPERATORS_COUNT] =
   "^="
 };
 
+void hex_ast_type_qualifier_list_to_text(TypeQualifierList type_qualifier_list, Strbuf strbuf)
+{
+  HEX_ASSERT(type_qualifier_list);
+  HEX_ASSERT(strbuf);
+
+  TypeQualifierList _list = type_qualifier_list;
+
+  while(_list) {
+    TypeQualifier type_qualifier = _list->type_qualifier;
+
+    HEX_ASSERT(type_qualifier >= 0);
+    HEX_ASSERT(type_qualifier < HEX_TYPE_QUALIFIERS_COUNT);
+
+    strbuf_append(strbuf, HEX_TYPE_QUALIFIERS[type_qualifier]);
+
+    if(_list->next) {
+      strbuf_append(strbuf, " ");
+    }
+
+    _list = _list->next;
+  }
+}
+
 void hex_ast_type_specifier_to_text(int type_specifier, Strbuf strbuf)
 {
   HEX_ASSERT(strbuf);
@@ -136,6 +167,22 @@ void hex_ast_literal_to_text(Literal literal, Strbuf strbuf)
     case literal_type_integer:
       hex_ast_integer_to_text(literal->literal_integer, strbuf);
       break;
+    case literal_type_char:
+      {
+        char buf[2];
+        snprintf(buf, sizeof(buf), "%c", literal->literal_char);
+        strbuf_append(strbuf, "'");
+        strbuf_append(strbuf, buf);
+        strbuf_append(strbuf, "'");
+      }
+      break;
+    case literal_type_float:
+      {
+        char buf[10];
+        snprintf(buf, sizeof(buf), "%f", literal->literal_float);
+        strbuf_append(strbuf, buf);
+      }
+      break;
     default:
       AST_TO_TEXT_ERROR("Unknown HexLiteral type");
       break;
@@ -169,7 +216,7 @@ void hex_ast_postfix_accessor_expr_to_text(PostfixAccessorExpr expr, Strbuf strb
 
   hex_ast_expr_to_text(expr->caller, strbuf);
   strbuf_append(strbuf, ".");
-  strbuf_append(strbuf, expr->accessor);
+  strbuf_append(strbuf, (char*)expr->accessor);
 }
 
 void hex_ast_postfix_invocation_expr_to_text(PostfixInvocationExpr expr, Strbuf strbuf)
@@ -630,6 +677,33 @@ void hex_ast_set_initializer_to_text(SetInitializer set, Strbuf strbuf)
   strbuf_append(strbuf, ")]");
 }
 
+void hex_ast_map_initializer_to_text(MapInitializer map, Strbuf strbuf)
+{
+  HEX_ASSERT(map);
+  HEX_ASSERT(strbuf);
+  HEX_ASSERT(map->map_initializer_list);
+
+  strbuf_append(strbuf, "{");
+
+  MapInitializerList list = map->map_initializer_list;
+  while(list) {
+    MapInitializerSingle map_initializer_single = list->map_initializer_single;
+    HEX_ASSERT(map_initializer_single);
+
+    hex_ast_expr_to_text(map_initializer_single->key, strbuf);
+    strbuf_append(strbuf, ": ");
+    hex_ast_expr_to_text(map_initializer_single->value, strbuf);
+
+    if(list->next) {
+      strbuf_append(strbuf, ", ");
+    }
+
+    list = list->next;
+  }
+
+  strbuf_append(strbuf, "}");
+}
+
 void hex_ast_initializer_to_text(Initializer initializer, Strbuf strbuf)
 {
   HEX_ASSERT(initializer);
@@ -652,10 +726,103 @@ void hex_ast_initializer_to_text(Initializer initializer, Strbuf strbuf)
     case initializer_type_set:
       hex_ast_set_initializer_to_text(initializer->set_initializer, strbuf);
       break;
-    case initializer_type_mapmultimap:
+    case initializer_type_map:
+      hex_ast_map_initializer_to_text(initializer->map_initializer, strbuf);
       break;
     default:
       AST_TO_TEXT_ERROR("Unknown HexInitializer type");
+      break;
+  }
+}
+
+void hex_ast_parameter_to_text(Parameter parameter, Strbuf strbuf)
+{
+  HEX_ASSERT(parameter);
+  HEX_ASSERT(strbuf);
+  HEX_ASSERT(parameter->parameter_name);
+
+  if(parameter->is_ref) {
+    strbuf_append(strbuf, "ref ");
+  }
+
+  if(parameter->type_qualifier_list) {
+    hex_ast_type_qualifier_list_to_text(parameter->type_qualifier_list, strbuf);
+    strbuf_append(strbuf, " ");
+  }
+
+  if(parameter->custom_type) {
+    strbuf_append(strbuf, parameter->custom_type);
+    strbuf_append(strbuf, " ");
+  } else if(parameter->type_specifier >= 0) {
+    HEX_ASSERT(parameter->type_specifier < HEX_TYPE_SPECIFIERS_COUNT);
+
+    char *type = HEX_TYPE_SPECIFIERS[parameter->type_specifier];
+
+    strbuf_append(strbuf, type);
+    strbuf_append(strbuf, " ");
+  }
+
+  strbuf_append(strbuf, (char*)parameter->parameter_name);
+
+  if(parameter->alias) {
+    strbuf_append(strbuf, " as ");
+    strbuf_append(strbuf, parameter->alias);
+  }
+}
+
+void hex_ast_parameter_list_to_text(ParameterList paramlist, Strbuf strbuf)
+{
+  HEX_ASSERT(paramlist);
+  HEX_ASSERT(strbuf);
+
+  strbuf_append(strbuf, "(");
+
+  ParameterList list = paramlist;
+  while(list) {
+    Parameter parameter = list->parameter;
+    HEX_ASSERT(parameter);
+
+    hex_ast_parameter_to_text(parameter, strbuf);
+
+    if(list->next) {
+      strbuf_append(strbuf, ", ");
+    }
+
+    list = list->next;
+  }
+
+  strbuf_append(strbuf, ")");
+}
+
+void hex_ast_lambda_expr_to_text(LambdaExpr lambda, Strbuf strbuf)
+{
+  HEX_ASSERT(lambda);
+  HEX_ASSERT(strbuf);
+
+  switch(lambda->lambda_type)
+  {
+    case lambda_type_simple:
+      if(lambda->lambda_param_list) {
+        hex_ast_parameter_list_to_text(lambda->lambda_param_list, strbuf);
+      }
+
+      strbuf_append(strbuf, " => ");
+
+      strbuf_append(strbuf, "[");
+      hex_ast_simple_stmt_list_to_text(lambda->lambda_simple_stmt_list, strbuf);
+      strbuf_append(strbuf, "]");
+      break;
+    case lambda_type_suite:
+      if(lambda->lambda_param_list) {
+        hex_ast_parameter_list_to_text(lambda->lambda_param_list, strbuf);
+      }
+
+      strbuf_append(strbuf, " => ");
+
+      hex_ast_suite_to_text(lambda->lambda_suite, 1, strbuf);
+      break;
+    default:
+      AST_TO_TEXT_ERROR("Unknown HexLambdaExpr type");
       break;
   }
 }
@@ -665,14 +832,182 @@ void hex_ast_declaration_to_text(Declaration declaration, Strbuf strbuf)
   HEX_ASSERT(declaration);
   HEX_ASSERT(strbuf);
 
+  if(declaration->type_qualifier_list) {
+    hex_ast_type_qualifier_list_to_text(declaration->type_qualifier_list, strbuf);
+    strbuf_append(strbuf, " ");
+  }
+
   if(declaration->custom_type) {
     strbuf_append(strbuf, declaration->custom_type);
     strbuf_append(strbuf, " ");
-  } else {
+  } else if(declaration->type_specifier >= 0) {
     hex_ast_type_specifier_to_text(declaration->type_specifier, strbuf);
   }
 
   hex_ast_exprlist_to_text(declaration->expr_list, strbuf);
+}
+
+void hex_ast_func_declaration_to_text(FuncDec func_dec, Strbuf strbuf)
+{
+  HEX_ASSERT(func_dec);
+  HEX_ASSERT(func_dec->func_name);
+  HEX_ASSERT(strbuf);
+
+  strbuf_append(strbuf, "def ");
+
+  if(func_dec->return_type_qualifier_list) {
+    hex_ast_type_qualifier_list_to_text(func_dec->return_type_qualifier_list, strbuf);
+    strbuf_append(strbuf, " ");
+  }
+
+  if(func_dec->custom_return_type) {
+    strbuf_append(strbuf, func_dec->custom_return_type);
+    strbuf_append(strbuf, " ");
+  } else if(func_dec->return_type_specifier >= 0) {
+    hex_ast_type_specifier_to_text(func_dec->return_type_specifier, strbuf);
+  }
+
+  strbuf_append(strbuf, func_dec->func_name);
+
+  if(func_dec->parameter_list) {
+    hex_ast_parameter_list_to_text(func_dec->parameter_list, strbuf);
+  } else {
+    strbuf_append(strbuf, "()");
+  }
+}
+
+void hex_ast_module_list_to_text(ModuleList module_list, Strbuf strbuf)
+{
+  HEX_ASSERT(module_list);
+  HEX_ASSERT(strbuf);
+
+  ModuleList list = module_list;
+  while(list) {
+    Module module = list->module;
+    HEX_ASSERT(module);
+    HEX_ASSERT(module->module_identifier);
+
+    strbuf_append(strbuf, module->module_identifier);
+
+    if(list->next) {
+      strbuf_append(strbuf, ".");
+    }
+
+    list = list->next;
+  }
+}
+
+void hex_ast_direct_import_stmt_to_text(DirectImportStmt stmt, Strbuf strbuf)
+{
+  HEX_ASSERT(stmt);
+  HEX_ASSERT(strbuf);
+
+  strbuf_append(strbuf, "import ");
+
+  hex_ast_module_list_to_text(stmt->module_list, strbuf);
+
+  if(stmt->alias) {
+    strbuf_append(strbuf, " as ");
+    strbuf_append(strbuf, stmt->alias);
+  }
+}
+
+void hex_ast_relative_import_stmt_to_text(RelativeImportStmt stmt, Strbuf strbuf)
+{
+  HEX_ASSERT(stmt);
+  HEX_ASSERT(stmt->module);
+  HEX_ASSERT(strbuf);
+
+  strbuf_append(strbuf, "from ");
+
+  hex_ast_module_list_to_text(stmt->module_list, strbuf);
+
+  strbuf_append(strbuf, " import ");
+  strbuf_append(strbuf, stmt->module->module_identifier);
+
+  if(stmt->alias) {
+    strbuf_append(strbuf, " as ");
+    strbuf_append(strbuf, stmt->alias);
+  }
+}
+
+void hex_ast_import_stmt_to_text(ImportStmt import_stmt, Strbuf strbuf)
+{
+  HEX_ASSERT(import_stmt);
+  HEX_ASSERT(strbuf);
+
+  switch(import_stmt->import_stmt_type)
+  {
+    case import_stmt_type_direct:
+      hex_ast_direct_import_stmt_to_text(import_stmt->import_stmt_direct_import_stmt, strbuf);
+      break;
+    case import_stmt_type_relative:
+      hex_ast_relative_import_stmt_to_text(import_stmt->import_stmt_relative_import_stmt, strbuf);
+      break;
+    default:
+      AST_TO_TEXT_ERROR("Unknown HexImportStmt type");
+      break;
+  }
+}
+
+void hex_ast_compiler_property_to_text(CompilerProperty compiler_property, Strbuf strbuf)
+{
+  HEX_ASSERT(compiler_property);
+  HEX_ASSERT(strbuf);
+
+  HEX_ASSERT(compiler_property->compiler_property_name);
+  HEX_ASSERT(compiler_property->compiler_property_value);
+
+  strbuf_append(strbuf, "#");
+  strbuf_append(strbuf, compiler_property->compiler_property_name);
+  strbuf_append(strbuf, "=");
+  strbuf_append(strbuf, compiler_property->compiler_property_value);
+}
+
+void hex_ast_attribute_to_text(Attribute attribute, Strbuf strbuf)
+{
+  HEX_ASSERT(attribute);
+  HEX_ASSERT(strbuf);
+
+  strbuf_append(strbuf, "@");
+  hex_ast_expr_to_text(attribute->expr, strbuf);
+}
+
+void hex_ast_decorator_to_text(Decorator decorator, Strbuf strbuf)
+{
+  HEX_ASSERT(decorator);
+  HEX_ASSERT(strbuf);
+
+  strbuf_append(strbuf, "[");
+
+  DecoratorList decorator_list = decorator->decorator_list;
+  while(decorator_list) {
+    DecoratorListSingle decorator_list_single = decorator_list->decorator_list_single;
+    HEX_ASSERT(decorator_list_single);
+
+    switch(decorator_list_single->decorator_list_single_type)
+    {
+      case decorator_list_single_type_attribute:
+        hex_ast_attribute_to_text(
+          decorator_list_single->decorator_list_single_attribute, strbuf);
+        break;
+      case decorator_list_single_type_compiler_property:
+        hex_ast_compiler_property_to_text(
+          decorator_list_single->decorator_list_single_compiler_property, strbuf);
+        break;
+      default:
+        AST_TO_TEXT_ERROR("Unknown HexDecorator type");
+        break;
+    }
+
+    if(decorator_list->next) {
+      strbuf_append(strbuf, ", ");
+    }
+
+    decorator_list = decorator_list->next;
+  }
+
+  strbuf_append(strbuf, "]");
 }
 
 void hex_ast_assignment_to_text(Assignment assignment, Strbuf strbuf)
@@ -698,6 +1033,12 @@ void hex_ast_assignment_to_text(Assignment assignment, Strbuf strbuf)
       strbuf_append(strbuf, operator);
       strbuf_append(strbuf, " ");
       hex_ast_initializer_to_text(assignment->assignment_initializer, strbuf);
+      break;
+    case assignment_type_lambda:
+      strbuf_append(strbuf, " ");
+      strbuf_append(strbuf, operator);
+      strbuf_append(strbuf, " ");
+      hex_ast_lambda_expr_to_text(assignment->assignment_lambda, strbuf);
       break;
     default:
       AST_TO_TEXT_ERROR("Unknown HexAssignment type");
@@ -752,6 +1093,19 @@ void hex_ast_simple_stmt_to_text(SimpleStmt stmt, Strbuf strbuf)
       break;
     case simple_stmt_type_expr_list:
       hex_ast_exprlist_to_text(stmt->simple_stmt_expr_list, strbuf);
+      break;
+    case simple_stmt_type_func_declaration:
+      hex_ast_func_declaration_to_text(stmt->simple_stmt_func_declaration, strbuf);
+      break;
+    case simple_stmt_type_import_stmt:
+      hex_ast_import_stmt_to_text(stmt->simple_stmt_import_stmt, strbuf);
+      break;
+    case simple_stmt_type_decorator:
+      hex_ast_decorator_to_text(stmt->simple_stmt_decorator, strbuf);
+      break;
+    case simple_stmt_type_declaration:
+      hex_ast_declaration_to_text(stmt->simple_stmt_declaration, strbuf);
+      break;
     default:
       AST_TO_TEXT_ERROR("Unknown HexSimpleStmt type");
       break;
@@ -767,12 +1121,256 @@ void hex_ast_simple_stmt_list_to_text(SimpleStmtList list, Strbuf strbuf)
     SimpleStmt stmt = list->simple_stmt;
     hex_ast_simple_stmt_to_text(stmt, strbuf);
 
+    if(list->next) {
+      strbuf_append(strbuf, "; ");
+    }
+
     list = list->next;
-    if(list) strbuf_append(strbuf, "\n");
   }
 }
 
-void hex_ast_stmt_to_text(Stmt stmt, Strbuf strbuf)
+void hex_ast_if_stmt_to_text(IfStmt if_stmt, unsigned char indent_level, Strbuf strbuf)
+{
+  HEX_ASSERT(if_stmt);
+  HEX_ASSERT(if_stmt->if_expr);
+  HEX_ASSERT(if_stmt->if_suite);
+  HEX_ASSERT(strbuf);
+
+  strbuf_append(strbuf, "if ");
+  hex_ast_expr_to_text(if_stmt->if_expr, strbuf);
+  strbuf_append(strbuf, ":");
+  hex_ast_suite_to_text(if_stmt->if_suite, indent_level+1, strbuf);
+
+  if(if_stmt->elif_group) {
+    hex_ast_elif_group_to_text(if_stmt->elif_group, indent_level, strbuf);
+  }
+
+  if(if_stmt->else_stmt) {
+    strbuf_append(strbuf, "else:");
+    hex_ast_suite_to_text(if_stmt->else_stmt, indent_level+1, strbuf);
+  }
+}
+
+void hex_ast_elif_group_to_text(ElifGroup elif_group, unsigned char indent_level, Strbuf strbuf)
+{
+  HEX_ASSERT(elif_group);
+  HEX_ASSERT(strbuf);
+
+  ElifGroup _elif_group = elif_group;
+  while(_elif_group) {
+    ElifStmt elif_stmt = _elif_group->elif_stmt;
+    HEX_ASSERT(elif_stmt);
+
+    strbuf_append(strbuf, "elif ");
+    hex_ast_expr_to_text(elif_stmt->elif_expr, strbuf);
+    strbuf_append(strbuf, ":");
+    hex_ast_suite_to_text(elif_stmt->elif_suite, indent_level+1, strbuf);
+
+    _elif_group = _elif_group->next;
+  }
+}
+
+void hex_ast_while_stmt_to_text(WhileStmt while_stmt, unsigned char indent_level, Strbuf strbuf)
+{
+  HEX_ASSERT(while_stmt);
+  HEX_ASSERT(while_stmt->while_expr);
+  HEX_ASSERT(while_stmt->while_suite);
+  HEX_ASSERT(strbuf);
+
+  strbuf_append(strbuf, "while ");
+  hex_ast_expr_to_text(while_stmt->while_expr, strbuf);
+  strbuf_append(strbuf, ":");
+  hex_ast_suite_to_text(while_stmt->while_suite, indent_level+1, strbuf);
+}
+
+void hex_ast_iterable_to_text(Iterable iterable, Strbuf strbuf)
+{
+  HEX_ASSERT(iterable);
+  HEX_ASSERT(strbuf);
+
+  switch(iterable->iterable_type)
+  {
+    case iterable_type_expr:
+      hex_ast_expr_to_text(iterable->iterable_expr, strbuf);
+      break;
+    case iterable_type_initializer:
+      hex_ast_initializer_to_text(iterable->iterable_initializer, strbuf);
+      break;
+    default:
+      AST_TO_TEXT_ERROR("Unknown HexIterable type");
+      break;
+  }
+}
+
+void hex_ast_for_stmt_to_text(ForStmt for_stmt, unsigned char indent_level, Strbuf strbuf)
+{
+  HEX_ASSERT(for_stmt);
+  HEX_ASSERT(for_stmt->expr);
+  HEX_ASSERT(for_stmt->iterable);
+  HEX_ASSERT(for_stmt->suite);
+
+  strbuf_append(strbuf, "for ");
+  hex_ast_expr_to_text(for_stmt->expr, strbuf);
+  strbuf_append(strbuf, " in ");
+  hex_ast_iterable_to_text(for_stmt->iterable, strbuf);
+
+  if(for_stmt->where_expr) {
+    strbuf_append(strbuf, " where ");
+    hex_ast_expr_to_text(for_stmt->where_expr, strbuf);
+  }
+
+  strbuf_append(strbuf, ":");
+  hex_ast_suite_to_text(for_stmt->suite, indent_level+1, strbuf);
+}
+
+void hex_ast_catch_stmt_to_text(CatchStmt catch_stmt, unsigned char indent_level, Strbuf strbuf)
+{
+  HEX_ASSERT(catch_stmt);
+  HEX_ASSERT(strbuf);
+
+  unsigned char _indent_level = indent_level;
+  while(_indent_level > 0) {
+    strbuf_append(strbuf, "  ");
+    _indent_level--;
+  }
+
+  strbuf_append(strbuf, "catch");
+
+  switch(catch_stmt->catch_stmt_type)
+  {
+    case catch_stmt_type_none:
+      break;
+    case catch_stmt_type_identifier:
+      strbuf_append(strbuf, " ");
+      strbuf_append(strbuf, "(");
+      strbuf_append(strbuf, catch_stmt->catch_identifier);
+      strbuf_append(strbuf, ")");
+      break;
+    case catch_stmt_type_declaration:
+      strbuf_append(strbuf, " ");
+      strbuf_append(strbuf, "(");
+      hex_ast_declaration_to_text(catch_stmt->catch_declaration, strbuf);
+      strbuf_append(strbuf, ")");
+      break;
+    default:
+      AST_TO_TEXT_ERROR("Unknown HexCatchStmt type");
+      break;
+  }
+
+  strbuf_append(strbuf, ":");
+
+  hex_ast_suite_to_text(catch_stmt->catch_suite, indent_level+1, strbuf);
+}
+
+void hex_ast_try_stmt_to_text(TryStmt try_stmt, unsigned char indent_level, Strbuf strbuf)
+{
+  HEX_ASSERT(try_stmt);
+  HEX_ASSERT(try_stmt->try_suite);
+  HEX_ASSERT(try_stmt->catch_stmt_group);
+  HEX_ASSERT(strbuf);
+
+  strbuf_append(strbuf, "try:");
+  hex_ast_suite_to_text(try_stmt->try_suite, indent_level+1, strbuf);
+
+  CatchStmtGroup catch_stmt_group = try_stmt->catch_stmt_group;
+  while(catch_stmt_group) {
+    CatchStmt catch_stmt = catch_stmt_group->catch_stmt;
+    HEX_ASSERT(catch_stmt);
+
+    hex_ast_catch_stmt_to_text(catch_stmt, indent_level, strbuf);
+
+    catch_stmt_group = catch_stmt_group->next;
+  }
+
+  if(try_stmt->finally_stmt) {
+    strbuf_append(strbuf, "finally:");
+    hex_ast_suite_to_text(try_stmt->finally_stmt->finally_suite, indent_level+1, strbuf);
+  }
+}
+
+void hex_ast_func_def_to_text(FuncDef func_def, Strbuf strbuf)
+{
+  HEX_ASSERT(func_def);
+  HEX_ASSERT(func_def->func_declaration);
+  HEX_ASSERT(func_def->func_suite);
+
+  hex_ast_func_declaration_to_text(func_def->func_declaration, strbuf);
+  strbuf_append(strbuf, ":");
+  hex_ast_suite_to_text(func_def->func_suite, 1, strbuf);
+}
+
+void hex_ast_compound_stmt_to_text(CompoundStmt compound_stmt, unsigned char indent_level, Strbuf strbuf)
+{
+  HEX_ASSERT(compound_stmt);
+  HEX_ASSERT(strbuf);
+
+  switch(compound_stmt->compound_stmt_type)
+  {
+    case compound_stmt_type_if_stmt:
+      hex_ast_if_stmt_to_text(compound_stmt->compound_stmt_if_stmt, indent_level, strbuf);
+      break;
+    case compound_stmt_type_while_stmt:
+      hex_ast_while_stmt_to_text(compound_stmt->compound_stmt_while_stmt, indent_level, strbuf);
+      break;
+    case compound_stmt_type_for_stmt:
+      hex_ast_for_stmt_to_text(compound_stmt->compound_stmt_for_stmt, indent_level, strbuf);
+      break;
+    case compound_stmt_type_try_stmt:
+      hex_ast_try_stmt_to_text(compound_stmt->compound_stmt_try_stmt, indent_level, strbuf);
+      break;
+    case compound_stmt_type_func_def:
+      hex_ast_func_def_to_text(compound_stmt->compound_stmt_func_def, strbuf);
+      break;
+    default:
+      AST_TO_TEXT_ERROR("Unknown HexCompoundStmt type");
+      break;
+  }
+}
+
+void hex_ast_return_stmt_to_text(ReturnStmt return_stmt, Strbuf strbuf)
+{
+  HEX_ASSERT(return_stmt);
+  HEX_ASSERT(strbuf);
+
+  strbuf_append(strbuf, "return");
+
+  switch(return_stmt->return_stmt_type)
+  {
+    case return_stmt_type_none:
+      break;
+    case return_stmt_type_expr_list:
+      strbuf_append(strbuf, " ");
+      hex_ast_exprlist_to_text(return_stmt->return_expr_list, strbuf);
+      break;
+    default:
+      AST_TO_TEXT_ERROR("Unknown HexReturnStmt type");
+      break;
+  }
+}
+
+void hex_ast_control_simple_stmt_to_text(ControlSimpleStmt stmt, Strbuf strbuf)
+{
+  HEX_ASSERT(stmt);
+  HEX_ASSERT(strbuf);
+
+  switch(stmt->control_simple_stmt_type)
+  {
+    case control_simple_stmt_return:
+      hex_ast_return_stmt_to_text(stmt->control_simple_stmt_return_stmt, strbuf);
+      break;
+    case control_simple_stmt_continue:
+      strbuf_append(strbuf, "continue");
+      break;
+    case control_simple_stmt_break:
+      strbuf_append(strbuf, "break");
+      break;
+    default:
+      AST_TO_TEXT_ERROR("Unknown HexControlSimpleStmt type");
+      break;
+  }
+}
+
+void hex_ast_stmt_to_text(Stmt stmt, unsigned char indent_level, Strbuf strbuf)
 {
   HEX_ASSERT(stmt);
   HEX_ASSERT(strbuf);
@@ -781,6 +1379,12 @@ void hex_ast_stmt_to_text(Stmt stmt, Strbuf strbuf)
   {
     case stmt_type_simple_stmt_list:
       hex_ast_simple_stmt_list_to_text(stmt->stmt_simple_stmt_list, strbuf);
+      break;
+    case stmt_type_compound_stmt:
+      hex_ast_compound_stmt_to_text(stmt->stmt_compound_stmt, indent_level, strbuf);
+      break;
+    case stmt_type_control_simple_stmt:
+      hex_ast_control_simple_stmt_to_text(stmt->stmt_control_simple_stmt, strbuf);
       break;
     default:
       AST_TO_TEXT_ERROR("Unknown HexStmt type");
@@ -806,14 +1410,36 @@ void hex_ast_assignment_stmt_list_to_text(AssignmentStmtList stmt_list, Strbuf s
   }
 }
 
-void hex_ast_stmt_group_to_text(StmtGroup group, Strbuf strbuf)
+void hex_ast_stmt_group_to_text(StmtGroup group, unsigned char indent_level, Strbuf strbuf)
 {
   HEX_ASSERT(group);
   HEX_ASSERT(strbuf);
 
   while(group) {
     Stmt stmt = group->stmt;
-    hex_ast_stmt_to_text(stmt, strbuf);
+
+    HEX_ASSERT(stmt);
+    unsigned char _indent_level = indent_level;
+    while(_indent_level > 0) {
+      strbuf_append(strbuf, "  ");
+      _indent_level--;
+    }
+    hex_ast_stmt_to_text(stmt, indent_level, strbuf);
+
+    if(group->next) {
+      strbuf_append(strbuf, "\n");
+    }
+
     group = group->next;
   }
+}
+
+void hex_ast_suite_to_text(Suite suite, unsigned char indent_level, Strbuf strbuf)
+{
+  HEX_ASSERT(suite);
+  HEX_ASSERT(strbuf);
+
+  strbuf_append(strbuf, "\n");
+  hex_ast_stmt_group_to_text(suite->stmt_group, indent_level, strbuf);
+  strbuf_append(strbuf, "\n");
 }

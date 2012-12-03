@@ -1,0 +1,4 @@
+
+def MyObj lock_obj():
+  obj = new MyObj()
+  obj += yourobj

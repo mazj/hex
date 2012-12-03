@@ -1,5 +1,0 @@
-
-try:
-  doSomethingThatMightBreak()
-catch:
-  doSomethingToRecover()

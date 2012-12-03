@@ -157,7 +157,7 @@ L?'(\\.|[^\\'])+'           LEXER_TOKEN("CHARACTER_LITERAL", yytext, CHARACTER_L
 L?\"(\\.|[^\\"])*\"         LEXER_TOKEN("STRING_LITERAL", yytext, STRING_LITERAL);
 
 #inline_comment
-\/\/.*                      LEXER_TOKEN("COMMENT", yytext, COMMENT);
+\/\/.*                      //LEXER_TOKEN("COMMENT", yytext, COMMENT);
 
 #integer
 ([0]|[0-9]*)[lL]?           LEXER_TOKEN("INTEGER", yytext, DECIMALINTEGER);

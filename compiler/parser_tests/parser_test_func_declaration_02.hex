@@ -1,5 +1,0 @@
-
-def doSomething2()     /* def => DEF
-                        * doSomething2 => IDENTIFIER
-                        * def something2() => DEF IDENTIFIER LPAREN RPAREN => func_declaration
-                        */

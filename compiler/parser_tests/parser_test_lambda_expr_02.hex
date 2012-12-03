@@ -1,6 +1,0 @@
-
-lbd = (int a, int b) =>
-  printf("a+b=%d", a+b)
-  int c,d
-  c = 1; d = 2
-  int s = sum(c,d)

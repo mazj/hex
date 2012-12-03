@@ -1,0 +1,7 @@
+
+def init(int a, double b, float c):
+  try:
+    var = a + b + c
+  catch:
+    var = 5
+

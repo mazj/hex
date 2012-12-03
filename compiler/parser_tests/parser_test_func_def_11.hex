@@ -1,0 +1,3 @@
+
+def static const volatile MyObj sum():
+  myobj += yourobj

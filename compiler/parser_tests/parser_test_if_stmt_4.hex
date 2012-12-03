@@ -1,0 +1,9 @@
+
+if get_value() > 10:
+  i = 10
+elif get_value() > 5:
+  i = 5
+elif get_value() == 0:
+  i = 1
+else:
+  i = 0
